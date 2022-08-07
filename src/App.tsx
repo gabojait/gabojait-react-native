@@ -8,18 +8,11 @@
  * @format
  */
 
-import {Input, Button, ButtonProps, Theme, useTheme, Text, AirbnbRating, FAB} from '@rneui/themed';
-import {createTheme, ThemeProvider} from '@rneui/themed';
-import React, {type PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  useColorScheme,
-  View,
-} from 'react-native';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {Input, Button, ButtonProps, Theme, useTheme, Text, AirbnbRating, FAB} from '@rneui/themed'
+import {createTheme, ThemeProvider} from '@rneui/themed'
+import React, {type PropsWithChildren} from 'react'
+import {SafeAreaView, ScrollView, StatusBar, StyleSheet, useColorScheme, View} from 'react-native'
+import {SafeAreaProvider} from 'react-native-safe-area-context'
 
 import {
   Colors,
@@ -27,7 +20,7 @@ import {
   Header,
   LearnMoreLinks,
   ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+} from 'react-native/Libraries/NewAppScreen'
 
 // ⚠️ 테마 생성 옵션을 변경하고 난 다음에는 앱을 꼭 리로드해주세요!
 const theme = createTheme({
@@ -53,13 +46,13 @@ const theme = createTheme({
   rd1: 24,
   rd2: 10,
   rd3: 5,
-});
+})
 const FilledButton = (
   props: JSX.IntrinsicAttributes &
     ButtonProps & {
-      theme?: Theme | undefined;
-      children?: React.ReactNode;
-      rounded?: boolean;
+      theme?: Theme | undefined
+      children?: React.ReactNode
+      rounded?: boolean
     },
 ) => (
   <Button
@@ -75,17 +68,17 @@ const FilledButton = (
       color: 'black',
     }}
   />
-);
+)
 const OutlinedButton = (
   props: JSX.IntrinsicAttributes &
     ButtonProps & {
-      theme?: Theme | undefined;
-      children?: React.ReactNode;
-      radius?: number;
-      highlighted?: boolean;
+      theme?: Theme | undefined
+      children?: React.ReactNode
+      radius?: number
+      highlighted?: boolean
     },
 ) => {
-  const {theme} = useTheme();
+  const {theme} = useTheme()
   return (
     <Button
       {...props}
@@ -100,16 +93,16 @@ const OutlinedButton = (
         color: props.highlighted ? theme.colors.disabled : 'black',
       }}
     />
-  );
-};
+  )
+}
 const App = () => {
-  const isDarkMode = useColorScheme() === 'dark';
+  const isDarkMode = useColorScheme() === 'dark'
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
     flex: 1,
-    margin:20
-  };
+    margin: 20,
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -130,20 +123,18 @@ const App = () => {
           <Text h3>Outlined Buttons</Text>
           <View style={styles.wrapButtonConatiner}>
             <OutlinedButton title="중복확인" radius={theme.rd3} highlighted />
-            <OutlinedButton
-              title="확인완료"
-              radius={theme.rd3}
-              highlighted
-              disabled
-            />
+            <OutlinedButton title="확인완료" radius={theme.rd3} highlighted disabled />
           </View>
-          <AirbnbRating count={10} reviews={['최악이에요', '별로에요', '괜찮아요', '좋아요', '최고에요']} />
+          <AirbnbRating
+            count={10}
+            reviews={['최악이에요', '별로에요', '괜찮아요', '좋아요', '최고에요']}
+          />
           <FAB />
         </SafeAreaView>
       </SafeAreaProvider>
     </ThemeProvider>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   wrapButtonConatiner: {
@@ -163,6 +154,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     marginBottom: 10,
   },
-});
+})
 
-export default App;
+export default App
