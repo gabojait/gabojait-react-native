@@ -21,6 +21,7 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen'
+import ProfileCard from './presentation/ProfileCard'
 
 // ⚠️ 테마 생성 옵션을 변경하고 난 다음에는 앱을 꼭 리로드해주세요!
 const theme = createTheme({
@@ -108,7 +109,7 @@ const App = () => {
     <ThemeProvider theme={theme}>
       <SafeAreaProvider>
         <SafeAreaView style={backgroundStyle}>
-          <Text h3>Full Width Buttons</Text>
+          {/* <Text h3>Full Width Buttons</Text>
           <FilledButton title="시작하기" />
           <FilledButton title="시작하기" disabled />
           <Text h3>Wraped Buttons (with flex)</Text>
@@ -129,7 +130,32 @@ const App = () => {
             count={10}
             reviews={['최악이에요', '별로에요', '괜찮아요', '좋아요', '최고에요']}
           />
-          <FAB />
+          <FAB /> */}
+          <ScrollView>
+            <ProfileCard
+              height={1}
+              placeholderText="앱등이, 01년생"
+              title="기본정보"
+              nextIcon={true}
+            />
+            <ProfileCard
+              height={15}
+              placeholderText="어떤 공부를 하고있는지 알려주세요"
+              title="자기소개"
+            />
+            <ProfileCard
+              height={3}
+              placeholderText="도전해본 기술스택을 적어주세요"
+              title="기술스택/직무"
+              nextIcon={true}
+            />
+            <ProfileCard
+              height={4}
+              placeholderText="자유롭게 적어주세요"
+              title="학력/경력"
+              nextIcon={true}
+            />
+          </ScrollView>
         </SafeAreaView>
       </SafeAreaProvider>
     </ThemeProvider>
