@@ -2,7 +2,7 @@ import {StyleSheet} from 'react-native'
 
 const textStyles = StyleSheet.create({
   weight1: {
-    fontWeight: '900',
+    fontWeight: '700',
     fontFamily: 'Pretendard-Bold',
   },
   weight2: {
@@ -10,11 +10,11 @@ const textStyles = StyleSheet.create({
     fontFamily: 'Pretendard-SemiBold',
   },
   weight3: {
-    fontWeight: '300',
+    fontWeight: '500',
     fontFamily: 'Pretendard-Medium',
   },
   weight4: {
-    fontWeight: '100',
+    fontWeight: '300',
     fontFamily: 'Pretendard-Light',
   },
   size1: {
