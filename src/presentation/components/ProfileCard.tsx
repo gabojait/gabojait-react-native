@@ -1,8 +1,8 @@
 import React from 'react'
 import {Icon} from '@rneui/themed'
 import {StyleSheet, TextInput, View} from 'react-native'
-import textStyles from './res/styles/textStyles'
-import colors from './res/styles/color'
+import textStyles from '../res/styles/textStyles'
+import colors from '../res/styles/color'
 import {Text} from '@rneui/base'
 
 interface profileCard {
