@@ -22,7 +22,7 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen'
 import LoginInput from './presentation/components/LoginInput'
-import ProfileCard from './presentation/components/ProfileCard'
+import ProfileCard2 from './presentation/components/ProfileCard2'
 
 // ⚠️ 테마 생성 옵션을 변경하고 난 다음에는 앱을 꼭 리로드해주세요!
 const theme = createTheme({
@@ -133,15 +133,27 @@ const App = () => {
           />
           <FAB /> */}
           <ScrollView>
-            <LoginInput state={'default'} />
-            <LoginInput state={'success'} />
-            <LoginInput state={'error'} />
-            <LoginInput iconInput={true} state={'default'} />
-            <LoginInput iconInput={true} state={'success'} />
-            <LoginInput iconInput={true} state={'error'} />
-            <LoginInput secureInput={true} state={'default'} />
-            <LoginInput secureInput={true} state={'success'} />
-            <LoginInput secureInput={true} state={'error'} />
+            <ProfileCard2
+              state="default"
+              height={10}
+              placeholderText="아무거나 적어봐"
+              title="기본정보"
+              nextIcon={true}
+            />
+            <ProfileCard2
+              state="success"
+              height={10}
+              placeholderText="아무거나 적어봐"
+              title="기본정보"
+              nextIcon={true}
+            />
+            <ProfileCard2
+              state="error"
+              height={10}
+              placeholderText="아무거나 적어봐"
+              title="기본정보"
+              nextIcon={true}
+            />
           </ScrollView>
         </SafeAreaView>
       </SafeAreaProvider>
