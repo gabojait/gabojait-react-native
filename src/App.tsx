@@ -17,6 +17,8 @@ import LoginInput from '@/presentation/components/LoginInput'
 import ProfileCard from '@/presentation/components/ProfileCard'
 import {FilledButton, OutlinedButton} from '@/presentation/components/Button'
 import styles from './styles'
+import BirthDropdown2 from '@/presentation/components/BirthDropdown2'
+import ProfileCard2 from './presentation/components/ProfileCard2'
 
 const App = () => {
   const backgroundStyle = {
@@ -50,6 +52,9 @@ const App = () => {
               reviews={['최악이에요', '별로에요', '괜찮아요', '좋아요', '최고에요']}
             />
             <FAB />
+            <Text h3>Birth Dropdown</Text>
+            <BirthDropdown2 />
+            <Text h3>LoginInput</Text>
             <LoginInput state={'default'} />
             <LoginInput state={'success'} />
             <LoginInput state={'error'} />
@@ -59,6 +64,28 @@ const App = () => {
             <LoginInput secureInput={true} state={'default'} />
             <LoginInput secureInput={true} state={'success'} />
             <LoginInput secureInput={true} state={'error'} />
+            <Text h3>ProfileCard</Text>
+            <ProfileCard2
+              height={5}
+              title="자기소개"
+              placeholderText="관심있는 기술분야와 경험을 작성해보세요!"
+              state="default"
+              nextIcon={true}
+            />
+            <ProfileCard2
+              height={5}
+              title="자기소개"
+              placeholderText="관심있는 기술분야와 경험을 작성해보세요!"
+              state="success"
+              nextIcon={true}
+            />
+            <ProfileCard2
+              height={5}
+              title="자기소개"
+              placeholderText="관심있는 기술분야와 경험을 작성해보세요!"
+              state="error"
+              nextIcon={true}
+            />
           </ScrollView>
         </SafeAreaView>
       </SafeAreaProvider>
