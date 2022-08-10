@@ -17,7 +17,7 @@ import LoginInput from '@/presentation/components/LoginInput'
 import ProfileCard from '@/presentation/components/ProfileCard'
 import {FilledButton, OutlinedButton} from '@/presentation/components/Button'
 import styles from './styles'
-import BirthDropdown2 from '@/presentation/components/BirthDropdown2'
+import BirthDropdown from '@/presentation/components/BirthDropdown'
 import ProfileCard2 from './presentation/components/ProfileCard2'
 
 const App = () => {
@@ -53,7 +53,7 @@ const App = () => {
             />
             <FAB />
             <Text h3>Birth Dropdown</Text>
-            <BirthDropdown2 />
+            <BirthDropdown />
             <Text h3>LoginInput</Text>
             <LoginInput state={'default'} />
             <LoginInput state={'success'} />

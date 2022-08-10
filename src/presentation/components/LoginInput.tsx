@@ -1,9 +1,6 @@
 import React, {useState} from 'react'
 import {Icon, Input, Card, Text, createTheme, ThemeProvider, useTheme} from '@rneui/themed'
-import {StyleSheet} from 'react-native'
 import colors from '../res/styles/color'
-import textStyles from '../res/styles/textStyles'
-import {InputProps} from '@rneui/base'
 
 interface PartialProps {
   state?: 'success' | 'error' | 'default' //값이 undefined, default일 때 디폴트UI를 나타냄
