@@ -2,9 +2,9 @@ import React from 'react'
 import {View, StyleSheet} from 'react-native'
 import colors from '@/presentation/res/styles/color'
 
-const DiveiderWrapper = ({children}: any) => {
+const DiveiderWrapper = ({children, style}: any) => {
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, style]}>
       {React.Children.map(children, (child, index) =>
         index != children.length - 1 ? (
           <View style={[styles.element]}>{child}</View>
