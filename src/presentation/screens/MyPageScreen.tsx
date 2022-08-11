@@ -37,11 +37,11 @@ const MyPageScreen = () => {
       </View>
 
       <View style={styles.body1}>
-        <CardWrapper>
+        <CardWrapper style={styles.icon}>
           <Ionicons name="heart-outline" size={60} color={colors.black} />
           <Text style={[textStyles.size4, textStyles.weight2, styles.textcolor]}>찜</Text>
         </CardWrapper>
-        <CardWrapper>
+        <CardWrapper style={styles.icon}>
           <Ionicons name="person-circle-outline" size={60} color={colors.black} />
           <Text style={[textStyles.size4, textStyles.weight2, styles.textcolor]}>프로필</Text>
         </CardWrapper>
@@ -61,7 +61,7 @@ const MyPageScreen = () => {
 
       <View style={styles.body3}>
         <Text style={[textStyles.size2, textStyles.weight1, styles.textcolor]}>나의 리뷰</Text>
-        <Text style={[textStyles.size2, textStyles.weight1, styles.textcolor]}>* * * * * 5.0</Text>
+        <Text style={[textStyles.size2, textStyles.weight1, styles.textcolor]}>* * * * * 5</Text>
       </View>
       <View>
         <FlatList
@@ -77,60 +77,31 @@ const MyPageScreen = () => {
 export default MyPageScreen
 
 const styles = StyleSheet.create({
-  card: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '45%',
-    height: 100,
-    backgroundColor: colors.white,
-    borderRadius: 14,
-    shadowColor: colors.black,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
   container: {
     flex: 1,
+    marginBottom: 81,
+    marginTop: 28,
+    marginHorizontal: 26,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVertical: 5,
   },
   body1: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginVertical: 10,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 20,
+    height: '16%',
   },
   body3: {
-    marginVertical: 5,
-    height: 60,
+    marginVertical: 10,
+    padding: 10,
   },
   flatlist: {
     width: '100%',
     height: 100,
     backgroundColor: colors.disable,
-  },
-  review: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 300,
-    height: 200,
-    backgroundColor: colors.white,
-    borderRadius: 14,
-    shadowColor: colors.black,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    margin: 10,
   },
   setting: {
     justifyContent: 'center',
@@ -151,8 +122,12 @@ const styles = StyleSheet.create({
   textcolor: {
     color: colors.black,
   },
+  icon: {
+    width: '47.5%',
+    height: '100%',
+  },
   item: {
     width: 256,
-    height: 184,
+    height: '71%',
   },
 })

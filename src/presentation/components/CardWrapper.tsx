@@ -12,8 +12,6 @@ const styles = StyleSheet.create({
   card: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: '45%',
-    height: 100,
     backgroundColor: colors.white,
     borderRadius: 14,
     shadowColor: colors.black,
@@ -24,7 +22,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    marginHorizontal: 9,
-    marginVertical: 5,
+    marginEnd: 10,
   },
 })
