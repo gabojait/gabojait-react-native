@@ -9,6 +9,8 @@ const styles = StyleSheet.create({
   outlinedButton: {
     borderWidth: 1,
     backgroundColor: 'white',
+  },
+  buttonShadow: {
     shadowColor: 'black',
     shadowOpacity: 0.25,
     shadowOffset: {
@@ -16,7 +18,9 @@ const styles = StyleSheet.create({
       height: 4,
     },
     shadowRadius: 4,
-    marginBottom: 10,
   },
+  buttonContainer: {
+    padding: 8
+  }
 })
 export default styles
