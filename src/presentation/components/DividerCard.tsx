@@ -10,16 +10,22 @@ const DividerWrapper = ({children, style}: any) => {
       {React.Children.map(children, (child, index) =>
         index != children.length - 1 ? (
           <View
-            style={[styles.element, style, textStyles.size4, textStyles.weight3, styles.textcolor]}>
+            style={[
+              styles.element,
+              style,
+              theme.spacing?.sm,
+              theme.fontWeight?.medium,
+              styles.textcolor,
+            ]}>
             {child}
           </View>
         ) : (
           <View
             style={[
-              styles.last_element,
+              styles.element,
               style,
-              textStyles.size4,
-              textStyles.weight3,
+              theme.spacing?.sm,
+              theme.fontWeight?.medium,
               styles.textcolor,
             ]}>
             {child}
