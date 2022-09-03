@@ -35,6 +35,12 @@ declare module '@rneui/themed' {
       semibold: FontWeight
       bold: FontWeight
     }
+    shadow: {
+      opacity: number
+      radius: number
+      elevation: number
+      marginVertical: number
+    }
   }
 }
 
@@ -78,5 +84,11 @@ export const theme = createTheme({
     md: 14,
     lg: 20,
     xl: 20,
+  },
+  shadow: {
+    opacity: 0.25,
+    radius: 3.84,
+    elevation: 5,
+    marginVertical: 5,
   },
 })
