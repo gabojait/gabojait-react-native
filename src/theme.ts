@@ -4,18 +4,19 @@ import {Button, ButtonProps, createTheme, Theme} from '@rneui/themed'
 /**
  * StyleSheet FontWeight Type이에요.
  */
-type FontWeight =  'bold'
-| 'normal'
-| '100'
-| '200'
-| '300'
-| '400'
-| '500'
-| '600'
-| '700'
-| '800'
-| '900'
-| undefined
+type FontWeight =
+  | 'bold'
+  | 'normal'
+  | '100'
+  | '200'
+  | '300'
+  | '400'
+  | '500'
+  | '600'
+  | '700'
+  | '800'
+  | '900'
+  | undefined
 
 /**
  * 여기서 테마에 새로운 값을 정의해줄 수 있어요.
@@ -51,7 +52,7 @@ export const theme = createTheme({
     Button: {
       titleStyle: {
         fontFamily: 'Pretendard-Medium',
-        fontWeight: "600"
+        fontWeight: '600',
       },
     },
     Text: {
@@ -67,14 +68,14 @@ export const theme = createTheme({
     xl: 30,
   },
   fontWeight: {
-    light: "300",
-    medium: "500",
-    semibold: "600",
-    bold: "700"
+    light: '300',
+    medium: '500',
+    semibold: '600',
+    bold: '700',
   },
   radius: {
     sm: 10,
-    md: 10,
+    md: 14,
     lg: 20,
     xl: 20,
   },
