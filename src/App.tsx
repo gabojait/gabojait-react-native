@@ -7,7 +7,7 @@ import {AirbnbRating, FAB, Text, ThemeProvider} from '@rneui/themed'
 import {NavigationContainer, useNavigation} from '@react-navigation/native'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs'
-import 'react-native-gesture-handler'
+//import 'react-native-gesture-handler'
 
 import {theme} from '@/theme'
 import LoginInput from '@/presentation/components/LoginInput'
@@ -19,6 +19,7 @@ import Main from '@/presentation/Main'
 import {ButtonProps} from '@rneui/themed'
 import BirthDropdown from '@/presentation/components/BirthDropdown'
 import ProfileCard2 from '@/presentation/components/ProfileCard2'
+import DividerWrapper from './presentation/components/DividerWrapper'
 
 const DesignSystem = () => {
   return (
@@ -26,7 +27,7 @@ const DesignSystem = () => {
       style={{
         padding: 20,
       }}>
-      <Text h3>Wraped Buttons (with flex)</Text>
+      {/* <Text h3>Wraped Buttons (with flex)</Text>
       <View style={styles.wrapButtonConatiner}>
         <FilledButton title="시작하기" />
         <FilledButton title="시작하기" disabled />
@@ -44,7 +45,13 @@ const DesignSystem = () => {
         count={5}
         reviews={['최악이에요', '별로에요', '괜찮아요', '좋아요', '최고에요']}
       />
-      <FAB />
+      <FAB /> */}
+      <Text h3>MenuCard - divide</Text>
+      <DividerWrapper>
+        <Text style={[]}>지원 &제안</Text>
+        <Text style={[]}>내가 쓴 글 보기</Text>
+        <Text style={[]}>팀 히스토리</Text>
+      </DividerWrapper>
       <Text h3>Birth Dropdown</Text>
       <BirthDropdown />
       <Text h3>LoginInput</Text>
