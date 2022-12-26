@@ -16,13 +16,13 @@ const MenuCard = ({title, iconName}: MenuCardProps) => {
   return (
     <ThemeProvider
       theme={theme_default}>
-      <View>
+      <Card>
         <Icon
             name = {iconName}
             type='ionicon' // 프로젝트 전용 커스텀 아이콘이 미완성인 관계로 ionicon으로 임시지정
         />
         <Text>{title}</Text>
-      </View>
+      </Card>
     </ThemeProvider>
   )
 }
@@ -33,6 +33,8 @@ const theme_default = createTheme({
       containerStyle: {
         alignItems: 'center',
         backgroundColor:colors.white,
+        borderColor:colors.transparent,
+        shadowColor:colors.transparent,
         flex:1,
         justifyContent: 'center',
         marginHorizontal: 5,
