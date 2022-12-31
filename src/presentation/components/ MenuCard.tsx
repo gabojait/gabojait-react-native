@@ -1,10 +1,7 @@
-import React, {ButtonHTMLAttributes, useState} from 'react'
-import {Icon, Input, Card, Text, createTheme, ThemeProvider, useTheme, CardProps, TextProps} from '@rneui/themed'
-import {StyleSheet, TextInput, View} from 'react-native'
-import textStyles from '../res/styles/textStyles'
+import React from 'react'
+import {Icon,Card, Text} from '@rneui/themed'
 import colors from '../res/styles/color'
 import textstyles from '../res/styles/textStyles'
-import color from '../res/styles/color'
 
 interface MenuCardProps {
   placeholderText?: string

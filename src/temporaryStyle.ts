@@ -11,9 +11,6 @@ const temporaryStyles = StyleSheet.create({
     justifyContent:'space-around',
     alignItems:'center',
   },
-  profiles:{
-    backgroundColor:colors.lightGrey
-  },
   container:{
     backgroundColor:colors.transparent,
     alignItems:'center',

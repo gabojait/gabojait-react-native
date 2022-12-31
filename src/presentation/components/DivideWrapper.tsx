@@ -1,8 +1,14 @@
 import React from 'react'
-import {View, StyleSheet} from 'react-native'
+import {View, StyleSheet, StyleProp, ViewProps} from 'react-native'
 import colors from '@/presentation/res/styles/color'
 
-const DiveiderWrapper = ({children, style}: any) => {
+interface DivideWrapperProps {
+  children:any
+  style?:any
+  color?:any
+}
+
+const DivideWrapper = ({children,style,color}:DivideWrapperProps) => {
   return (
     <View style={[styles.card, style]}>
       {React.Children.map(children, (child, index) =>
@@ -16,7 +22,7 @@ const DiveiderWrapper = ({children, style}: any) => {
   )
 }
 
-export default DiveiderWrapper
+export default DivideWrapper
 
 const styles = StyleSheet.create({
   card: {

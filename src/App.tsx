@@ -23,6 +23,9 @@ import MenuCard from '@/presentation/components/ MenuCard'
 import temporaryStyles from '@/temporaryStyle'
 import DivideWrapper from '@/presentation/components/DivideWrapper'
 import textStyles from './presentation/res/styles/textStyles'
+import colors from '@/presentation/res/styles/color'
+import color from '@/presentation/res/styles/color'
+
 const App = () => {
   const backgroundStyle = {
     flex: 1,
@@ -85,7 +88,10 @@ const App = () => {
               state="error"
               nextIcon={true}
             />
-            <View style={temporaryStyles.firstRow}>
+            <View style={{
+              flexDirection:'row',
+              justifyContent:'space-around',
+              alignItems:'center',}}>
               <MenuCard
                 title="찜"
                 iconName="heart-circle-outline"/>
@@ -104,16 +110,22 @@ const App = () => {
                 title='팀 히스토리'
                 iconName="people"/>
             </DivideWrapper>
-            <DivideWrapper style={temporaryStyles.profiles}>
-              <View style={temporaryStyles.container}>
+            <DivideWrapper style={{backgroundColor:colors.lightGrey}}>
+              <View style={{
+                backgroundColor:colors.transparent,
+                alignItems:'center',}}>
                 <Text style={[textStyles.size6, textStyles.weight4]}>팀 매칭</Text>
                 <Text style={[textStyles.size3, textStyles.weight2]}>3회</Text>
               </View>
-              <View style={temporaryStyles.container}>
+              <View style={{
+                backgroundColor:colors.transparent,
+                alignItems:'center',}}>
                 <Text style={[textStyles.size6, textStyles.weight4]}>리뷰</Text>
                 <Text style={[textStyles.size3, textStyles.weight2]}>3.5</Text>
               </View>
-              <View style={temporaryStyles.container}>
+              <View style={{
+                backgroundColor:colors.transparent,
+                alignItems:'center',}}>
                 <Text style={[textStyles.size6, textStyles.weight4]}>총 경력</Text>
                 <Text style={[textStyles.size3, textStyles.weight2]}>2년</Text>
               </View>
