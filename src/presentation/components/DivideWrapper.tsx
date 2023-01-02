@@ -8,7 +8,7 @@ interface DivideWrapperProps {
   color?:any
 }
 
-const DivideWrapper = ({children,style,color}:DivideWrapperProps) => {
+const DivideWrapper = ({children,style}:DivideWrapperProps) => {
   return (
     <View style={[styles.card, style]}>
       {React.Children.map(children, (child, index) =>
