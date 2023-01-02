@@ -89,10 +89,12 @@ const App = () => {
             <View style={temporaryStyles.firstRow}>
               <MenuCard
                 title="찜"
-                iconName="heart-circle-outline"/>
+                iconName="heart-circle-outline"
+                style={{backgroundColor:colors.white}}/>
               <MenuCard
                 title="프로필"
-                iconName="person-circle-outline"/>
+                iconName="person-circle-outline"
+                style={{backgroundColor:colors.white}}/>
             </View>
             <DivideWrapper>
               <MenuCard
