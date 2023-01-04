@@ -62,9 +62,10 @@ const App = () => {
             <Text h3>IconInput</Text>
             <IconInput inputType='id' placeholder='5~15자 영문, 숫자 조합'/>
             <IconInput inputType='realname'placeholder='2~5자'/>
-            <IconInput inputType='nickname'placeholder='2~8자'/>
+            <IconInput inputType='nickname' placeholder='2~8자'/>
             <Text h3>PasswordInput</Text>
-            <PasswordInput />
+            <PasswordInput inputType='password' placeholder='영문, 숫자 조합 10~30자'/>
+            <PasswordInput inputType='spellingCheck'/>
             <Text h3>ProfileCard</Text>
             <ProfileCard2
               height={5}

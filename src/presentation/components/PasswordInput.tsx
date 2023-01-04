@@ -3,27 +3,81 @@ import {Icon, Input} from '@rneui/themed'
 import colors from '../res/styles/color'
 import {InputProps} from '@rneui/base'
 
-const successColor= {borderBottomColor: colors.primary}
-const errorColor= {borderBottomColor: colors.error}
-const defaultColor= {borderBottomColor: colors.lightGrey}
+const validBorderBottomColor= {borderBottomColor: colors.primary}
+const invalidBorderBottomColor= {borderBottomColor: colors.error}
+const defaultBorderBottomColor= {borderBottomColor: colors.lightGrey}
 const borderBottomWidth = {borderBottomWidth: 2}
 
- 
-
-let inputType:InputTypeProps
-
+interface StateProps{
+  state?: 'valid'|'invalid'|'none'
+}
 interface InputTypeProps{
-    value?: 'AccordanceCheck'
-  }
-
-export const PasswordInput = ({inputType}:any, props:JSX.IntrinsicAttributes & InputProps) => {
+  inputType: 'password'|'spellingCheck'
+  placeholder?:string
+  passwordSpell?:string
+}
+function judgeRegexError(isCorrect:boolean) {
+  if (isCorrect == false) throw Error('지정된 형식이 아닙니다')
+}
+export const PasswordInput = ({inputType,placeholder,passwordSpell}:InputTypeProps, props:JSX.IntrinsicAttributes & InputProps) => {
   const [secure, setSecure] = useState(true)
-  const [isAvailableValue, setIsAvailableValue] = useState<boolean>(true)
-  const [isExistedError, setIsExistedError] = useState<boolean>(false)
+  const [regexState, setRegexState] = useState<StateProps>({state:'none'})
+  const [isEqualToPasswordSpell, setIsEqualToPasswordSpell] = useState<boolean>(false)
+  const [renderMessage, setRenderMessage] = useState<boolean>(false)
+
+  function isInputEmpty(text:string){
+    if(text.length == 0) return true
+  }
+  function showDefaultTheme(){
+    setRegexState({state:'none'})
+    setRenderMessage(false)
+  }
+  function showValidTheme(){
+    setRegexState({state:'valid'})
+    setRenderMessage(false)
+  }
+  function showErrorTheme(){
+    setRegexState({state:'invalid'})
+    setRenderMessage(true)
+  }
+  function CheckPasswordRegex(text:string){
+    const PasswordRegex = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{10,30}$/ //영문, 숫자 조합 10~30자
+      try {
+        judgeRegexError(PasswordRegex.test(text))
+        showValidTheme()
+        return {state:'valid'}
+      } catch (error) {
+        showErrorTheme()
+      }
+  }
+  function CheckTargetAccordance(text:string){
+    setIsEqualToPasswordSpell(()=>{
+      if(text == passwordSpell) {
+        showValidTheme()
+        return true
+      }
+      else{
+        showErrorTheme()
+        return false
+      }
+    })
+  }
+  function handleChange(text:string){
+    switch (inputType) {
+      case 'password':
+        CheckPasswordRegex(text)
+        break
+      case 'spellingCheck':
+        CheckTargetAccordance(text)
+        break
+    }
+  }
   return (
     <Input
-      {...isAvailableValue? {inputContainerStyle:[successColor,borderBottomWidth]}: {inputContainerStyle:[errorColor,borderBottomWidth]}}
-      inputContainerStyle={[defaultColor,borderBottomWidth]}
+    {...props}
+    {...regexState.state === 'none'? {inputContainerStyle:[defaultBorderBottomColor,borderBottomWidth]}:
+    regexState.state === 'valid'?{inputContainerStyle:[validBorderBottomColor,borderBottomWidth]}:
+    regexState.state === 'invalid'?{inputContainerStyle:[invalidBorderBottomColor,borderBottomWidth]}:{}}
       secureTextEntry={secure}
       rightIcon={
         <Icon
@@ -36,7 +90,15 @@ export const PasswordInput = ({inputType}:any, props:JSX.IntrinsicAttributes & I
           color={colors.barIcon}
         />
       }
-      renderErrorMessage={isExistedError}
+      onChangeText={text => {
+        handleChange(text)
+        isInputEmpty(text)?showDefaultTheme():{}
+      }}
+      {...renderMessage && regexState.state==='invalid'? {errorMessage:'지정된 형식을 입력해주세요'}:
+      renderMessage && !isEqualToPasswordSpell?{errorMessage:'위에 입력한 비밀번호와 일치하지 않습니다'}:{}}
+      renderErrorMessage={renderMessage}
+      placeholder={placeholder}
+      placeholderTextColor={colors.disable}
     />
   )
 }
