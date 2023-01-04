@@ -32,6 +32,9 @@ const textStyles = StyleSheet.create({
   size5: {
     fontSize: 13,
   },
+  size6: {
+    fontSize: 11
+  }
 })
 
 export default textStyles

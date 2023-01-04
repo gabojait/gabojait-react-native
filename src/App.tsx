@@ -10,29 +10,29 @@
 
 import {AirbnbRating, FAB, Text, ThemeProvider} from '@rneui/themed'
 import React from 'react'
-import {SafeAreaView, ScrollView, useColorScheme, View} from 'react-native'
+import {Platform, SafeAreaView, ScrollView,View} from 'react-native'
 import {SafeAreaProvider} from 'react-native-safe-area-context'
 import {theme} from '@/theme'
 import LoginInput from '@/presentation/components/LoginInput'
-import ProfileCard from '@/presentation/components/ProfileCard'
 import {FilledButton, OutlinedButton} from '@/presentation/components/Button'
 import styles from './styles'
-import BirthDropdown2 from '@/presentation/components/BirthDropdown2'
+import BirthDropdown2 from '@/presentation/components/BirthDropdown'
 import ProfileCard2 from './presentation/components/ProfileCard2'
+import MenuCard from '@/presentation/components/ MenuCard'
+import temporaryStyles from '@/temporaryStyle'
+import DivideWrapper from '@/presentation/components/DivideWrapper'
+import textStyles from './presentation/res/styles/textStyles'
+import colors from '@/presentation/res/styles/color'
 
 const App = () => {
   const backgroundStyle = {
     flex: 1,
   }
-
   return (
     <ThemeProvider theme={theme}>
       <SafeAreaProvider>
         <SafeAreaView style={backgroundStyle}>
-          <ScrollView
-            style={{
-              padding: 20,
-            }}>
+          <ScrollView>
             <Text h3>Wraped Buttons (with flex)</Text>
             <View style={styles.wrapButtonConatiner}>
               <FilledButton title="시작하기" />
@@ -86,11 +86,47 @@ const App = () => {
               state="error"
               nextIcon={true}
             />
+            <View style={temporaryStyles.firstRow}>
+              <MenuCard
+                title="찜"
+                iconName="heart-circle-outline"
+                style={{backgroundColor:colors.white}}/>
+              <MenuCard
+                title="프로필"
+                iconName="person-circle-outline"
+                style={{backgroundColor:colors.white}}/>
+            </View>
+            <DivideWrapper>
+              <MenuCard
+                title="지원소식"
+                iconName="apps"/>
+              <MenuCard
+                title="내가 쓴 글 보기"
+                iconName="albums"/>
+              <MenuCard
+                title='팀 히스토리'
+                iconName="people"/>
+            </DivideWrapper>
+            <DivideWrapper style={{backgroundColor:colors.lightGrey}}>
+              <View style={temporaryStyles.container}>
+                <Text style={[textStyles.size6, textStyles.weight4]}>팀 매칭</Text>
+                <Text style={[textStyles.size3, textStyles.weight2]}>3회</Text>
+              </View>
+              <View style={temporaryStyles.container}>
+                <Text style={[textStyles.size6, textStyles.weight4]}>리뷰</Text>
+                <Text style={[textStyles.size3, textStyles.weight2]}>3.5</Text>
+              </View>
+              <View style={temporaryStyles.container}>
+                <Text style={[textStyles.size6, textStyles.weight4]}>총 경력</Text>
+                <Text style={[textStyles.size3, textStyles.weight2]}>2년</Text>
+              </View>
+            </DivideWrapper>
           </ScrollView>
         </SafeAreaView>
       </SafeAreaProvider>
     </ThemeProvider>
   )
 }
+
 
 export default App
