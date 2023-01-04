@@ -13,7 +13,7 @@ interface StateProps{
   state?: 'valid'|'invalid'|'none'
 }
 interface InputTypeProps{
-  inputType?: 'id'|'realname'|'nickname'
+  inputType?: 'id'|'realname'|'nickname'|'email'
   placeholder:string
 }
 function judgeRegexError(isCorrect:boolean) {
@@ -23,7 +23,6 @@ function judgeRegexError(isCorrect:boolean) {
 export const IconInput = ({inputType,placeholder}:InputTypeProps, props:JSX.IntrinsicAttributes & InputProps) => {
   const [regexState, setRegexState] = useState<StateProps>({state:'none'})
   const [renderMessage, setRenderMessage] = useState<boolean>(false)
-  const [textLength, setTextLength] = useState<number>(0)
 
   function isInputEmpty(text:string){
     if(text.length == 0) return true
@@ -32,52 +31,49 @@ export const IconInput = ({inputType,placeholder}:InputTypeProps, props:JSX.Intr
     setRegexState({state:'none'})
     setRenderMessage(false)
   }
-  function renderErrorMessage(){
-    setRenderMessage(true)
-  }
-  function removeErrorMessage(){
+  function showValidTheme(){
+    setRegexState({state:'valid'})
     setRenderMessage(false)
+  }
+  function showErrorTheme(){
+    setRegexState({state:'invalid'})
+    setRenderMessage(true)
   }
   function CheckIdRegex(text:string){
     const IdRegex = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{5,15}$/ //5~15자 영문, 숫자 조합
-    setRegexState(()=>{
       try {
         judgeRegexError(IdRegex.test(text))
-        removeErrorMessage()
-        return {state:'valid'}
+        showValidTheme()
       } catch (error) {
-        renderErrorMessage()
-        return {state:'invalid'}
+        showErrorTheme()
       }
-    })
   }
   function CheckRealnameRegex(text:string){
     const RealnameRegex = /^.{2,5}$/ //2~5자
-    setRegexState(()=>{
       try {
         judgeRegexError(RealnameRegex.test(text))
-        removeErrorMessage()
-        return {state:'valid'}
+        showValidTheme()
       } catch (error) {
-        renderErrorMessage()
-        return {state:'invalid'}
+        showErrorTheme()
       }
-    })
   }
   function CheckNicknameRegex(text:string){
     const NicknameRegex = /^.{2,8}$/ //2~8자
-    setRegexState(()=>{
-      try {
-        judgeRegexError(NicknameRegex.test(text))
-        removeErrorMessage()
-        return {state:'valid'}
-      } catch (error) {
-        renderErrorMessage()
-        return {state:'invalid'}
-      }
-    })
-      console.log('regexState')
-      console.log(regexState)
+    try {
+      judgeRegexError(NicknameRegex.test(text))
+      showValidTheme()
+    } catch (error) {
+      showErrorTheme()
+    }
+  }
+  function CheckEmailRegex(text:string){
+    const EmailRegex = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/
+    try {
+      judgeRegexError(EmailRegex.test(text))
+      showValidTheme()
+    } catch (error) {
+      showErrorTheme()
+    }
   }
   function handleChange(text:string){
     switch (inputType) {
@@ -90,6 +86,9 @@ export const IconInput = ({inputType,placeholder}:InputTypeProps, props:JSX.Intr
       case 'nickname':
         CheckNicknameRegex(text)
         break
+      case 'email':
+        CheckEmailRegex(text)
+      break
     }
   }
   return (
