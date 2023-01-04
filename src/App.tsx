@@ -13,7 +13,8 @@ import React from 'react'
 import {Platform, SafeAreaView, ScrollView,View} from 'react-native'
 import {SafeAreaProvider} from 'react-native-safe-area-context'
 import {theme} from '@/theme'
-import LoginInput from '@/presentation/components/LoginInput'
+import {IconInput} from '@/presentation/components/IconInput'
+import { PasswordInput } from '@/presentation/components/PasswordInput'
 import {FilledButton, OutlinedButton} from '@/presentation/components/Button'
 import styles from './styles'
 import BirthDropdown2 from '@/presentation/components/BirthDropdown'
@@ -54,16 +55,16 @@ const App = () => {
             <FAB />
             <Text h3>Birth Dropdown</Text>
             <BirthDropdown2 />
-            <Text h3>LoginInput</Text>
-            <LoginInput state={'default'} />
-            <LoginInput state={'success'} />
-            <LoginInput state={'error'} />
-            <LoginInput iconInput={true} state={'default'} />
-            <LoginInput iconInput={true} state={'success'} />
-            <LoginInput iconInput={true} state={'error'} />
-            <LoginInput secureInput={true} state={'default'} />
-            <LoginInput secureInput={true} state={'success'} />
-            <LoginInput secureInput={true} state={'error'} />
+            {/* <Text h3>BasicInput</Text>
+            <BasicInput />
+            <BasicInput state='success'/>
+            <BasicInput state='error'/> */}
+            <Text h3>IconInput</Text>
+            <IconInput inputType='id' placeholder='5~15자 영문, 숫자 조합'/>
+            <IconInput inputType='realname'placeholder='2~5자'/>
+            <IconInput inputType='nickname'placeholder='2~8자'/>
+            <Text h3>PasswordInput</Text>
+            <PasswordInput />
             <Text h3>ProfileCard</Text>
             <ProfileCard2
               height={5}
