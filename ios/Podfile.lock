@@ -286,11 +286,11 @@ PODS:
     - glog
   - react-native-date-picker (4.2.5):
     - React-Core
-  - react-native-safe-area-context (4.3.1):
+  - react-native-safe-area-context (4.3.3):
     - RCT-Folly
     - RCTRequired
     - RCTTypeSafety
-    - React
+    - React-Core
     - ReactCommon/turbomodule/core
   - React-perflogger (0.69.3)
   - React-RCTActionSheet (0.69.3):
@@ -360,7 +360,9 @@ PODS:
     - React-perflogger (= 0.69.3)
   - RNCAsyncStorage (1.17.7):
     - React-Core
-  - RNScreens (3.15.0):
+  - RNGestureHandler (2.6.0):
+    - React-Core
+  - RNScreens (3.17.0):
     - React-Core
     - React-RCTImage
   - RNVectorIcons (9.2.0):
@@ -429,6 +431,7 @@ DEPENDENCIES:
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
+  - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -520,6 +523,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
+  RNGestureHandler:
+    :path: "../node_modules/react-native-gesture-handler"
   RNScreens:
     :path: "../node_modules/react-native-screens"
   RNVectorIcons:
@@ -561,7 +566,7 @@ SPEC CHECKSUMS:
   React-jsinspector: bb2605f98aada5d81f3494690da3ef3b4ff3b716
   React-logger: 23a50ef4c18bf9adbb51e2c979318e6b3a2e44a1
   react-native-date-picker: 55193347d8d0f40948f441ffd4e5db6f0a8fbe13
-  react-native-safe-area-context: 6c12e3859b6f27b25de4fee8201cfb858432d8de
+  react-native-safe-area-context: b456e1c40ec86f5593d58b275bd0e9603169daca
   React-perflogger: 39d2ba8cbcac54d1bb1d9a980dab348e96aef467
   React-RCTActionSheet: b1ad907a2c8f8e4d037148ca507b7f2d6ab1c66d
   React-RCTAnimation: 914a9ba46fb6e7376f7709c7ce825d53b47ca2ee
@@ -575,7 +580,8 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: 607eb048e22a16388c908ee1f6644200e8d1e19b
   ReactCommon: af7636436b382db7cde4583bbd642f0978e6e3ed
   RNCAsyncStorage: d81ee5c3db1060afd49ea7045ad460eff82d2b7d
-  RNScreens: 4a1af06327774490d97342c00aee0c2bafb497b7
+  RNGestureHandler: 920eb17f5b1e15dae6e5ed1904045f8f90e0b11e
+  RNScreens: 0df01424e9e0ed7827200d6ed1087ddd06c493f9
   RNVectorIcons: fcc2f6cb32f5735b586e66d14103a74ce6ad61f8
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
   Yoga: 44c64131616253fa83366295acdbce3d14926041
