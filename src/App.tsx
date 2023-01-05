@@ -10,7 +10,6 @@ import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs'
 //import 'react-native-gesture-handler'
 
 import {theme} from '@/theme'
-import ProfileCard from '@/presentation/components/ProfileCard'
 import {FilledButton, OutlinedButton} from '@/presentation/components/Button'
 import styles from './styles'
 import {createStackNavigator} from '@react-navigation/stack'
@@ -18,6 +17,8 @@ import Main from '@/presentation/Main'
 import {ButtonProps} from '@rneui/themed'
 import BirthDropdown from '@/presentation/components/BirthDropdown'
 import ProfileCard2 from '@/presentation/components/ProfileCard2'
+import { IconInput } from '@/presentation/components/IconInput'
+import { PasswordInput } from '@/presentation/components/PasswordInput'
 
 const DesignSystem = () => {
   return (
@@ -47,7 +48,7 @@ const DesignSystem = () => {
       <Text h3>MenuCard - divide</Text>
       <Text h3>Birth Dropdown</Text>
       <BirthDropdown />
-      <Text h3>LoginInput</Text>
+      {InputDesignSystem()}
       <Text h3>ProfileCard</Text>
       <ProfileCard2
         height={5}
@@ -104,6 +105,20 @@ const Buttons = () => {
 
 const InputDesignSystem = () => (
   <ScrollView>
+    <Text h3>IconInput</Text>
+            <Text h4>아이디</Text>
+            <IconInput inputType='id' placeholder='5~15자 영문, 숫자 조합'/>
+            <Text h4>실명</Text>
+            <IconInput inputType='realname'placeholder='2~5자'/>
+            <Text h4>별명</Text>
+            <IconInput inputType='nickname' placeholder='2~8자'/>
+            <Text h4>이메일</Text>
+            <IconInput inputType='email' placeholder='ex) gabojait@naver.com'/>
+            <Text h3>PasswordInput</Text>
+            <Text h4>비밀번호</Text>
+            <PasswordInput inputType='password' placeholder='영문, 숫자 조합 10~30자'/>
+            <Text h4>비밀번호 확인</Text>
+            <PasswordInput inputType='spellingCheck'/>
   </ScrollView>
 )
 
