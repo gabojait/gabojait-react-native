@@ -10,7 +10,6 @@ import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs'
 //import 'react-native-gesture-handler'
 
 import {theme} from '@/theme'
-import LoginInput from '@/presentation/components/LoginInput'
 import ProfileCard from '@/presentation/components/ProfileCard'
 import {FilledButton, OutlinedButton} from '@/presentation/components/Button'
 import styles from './styles'
@@ -19,7 +18,6 @@ import Main from '@/presentation/Main'
 import {ButtonProps} from '@rneui/themed'
 import BirthDropdown from '@/presentation/components/BirthDropdown'
 import ProfileCard2 from '@/presentation/components/ProfileCard2'
-import DividerWrapper from './presentation/components/DividerWrapper'
 
 const DesignSystem = () => {
   return (
