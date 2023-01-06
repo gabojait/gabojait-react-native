@@ -4,7 +4,7 @@ import {Button, ButtonProps, createTheme, Theme} from '@rneui/themed'
 /**
  * StyleSheet FontWeight Type이에요.
  */
-type FontWeight =
+export type FontWeight =
   | 'bold'
   | 'normal'
   | '100'
@@ -24,12 +24,14 @@ type FontWeight =
 declare module '@rneui/themed' {
   export interface Theme {
     radius: {
+      xs: number
       sm: number
       md: number
       lg: number
       xl: number
     }
     fontSize: {
+      xs: number
       sm: number
       md: number
       lg: number
@@ -67,12 +69,14 @@ export const theme = createTheme({
     },
   },
   spacing: {
+    xs: 7,
     sm: 14,
     md: 17,
     lg: 22,
     xl: 30,
   },
   fontSize: {
+    xs: 12,
     sm: 14,
     md: 17,
     lg: 22,
@@ -84,6 +88,7 @@ export const theme = createTheme({
     bold: '700',
   },
   radius: {
+    xs: 5,
     sm: 10,
     md: 10,
     lg: 20,

@@ -1,16 +1,32 @@
 import styles from '@/styles'
-import {theme} from '@/theme'
+import {FontWeight, theme} from '@/theme'
 import {Button, useTheme, ButtonProps} from '@rneui/themed'
 import React from 'react'
 
 const sizeToRadius = (size: string) => (size == 'sm' || size == 'md' ? 'sm' : 'lg')
+
+interface CustomButtomProps extends Omit<ButtonProps, 'size'> {
+  size?: 'xs' | 'sm' | 'md' | 'lg'
+}
+
+interface FilledButtonProps extends CustomButtomProps {
+  fontWeight?: FontWeight
+}
+
+interface OutlinedButtonProps extends CustomButtomProps {
+  shadow?: boolean
+  highlighted?: boolean
+}
+
 /**
  * FilledButton은 sm 사이즈만 fontWeight가 semibold입니다.
  */
-const FilledButton = (props: ButtonProps) => {
+const FilledButton: React.FC<FilledButtonProps> = ({
+  size = 'md',
+  fontWeight = size == 'sm' ? theme.fontWeight?.semibold : theme.fontWeight?.bold,
+  ...props
+}) => {
   const {theme} = useTheme()
-  const size = props.size ?? 'md' // Default Size: md
-  const fontWeight = size == 'sm' ? theme.fontWeight?.semibold : theme.fontWeight?.bold
   return (
     <Button
       {...props}
@@ -19,6 +35,7 @@ const FilledButton = (props: ButtonProps) => {
         color: 'black',
         fontWeight: fontWeight,
         fontSize: theme.fontSize[size],
+
       }}
       disabledTitleStyle={{
         color: 'black',
@@ -28,18 +45,21 @@ const FilledButton = (props: ButtonProps) => {
     />
   )
 }
+
 /**
  * OutlinedButton은..
  *
- * sm 사이즈만 그림자가 안들어갑니다.
+ * xs 사이즈만 그림자가 안들어갑니다.
  *
  * md/sm 사이즈만 fontWeight가 semibold입니다.
  */
-const OutlinedButton = (props: ButtonProps & {shadow?: boolean}) => {
-  const {theme} = useTheme()
-  const size = props.size ?? 'md' // Default Size: md
-  const shadow = props.shadow || size != 'sm'
-
+const OutlinedButton: React.FC<OutlinedButtonProps> = ({
+  size = 'md',
+  shadow = size != 'xs',
+  highlighted = false,
+  ...props
+}) => {
+  const {theme} = useTheme();
   return (
     <Button
       {...props}
@@ -47,12 +67,15 @@ const OutlinedButton = (props: ButtonProps & {shadow?: boolean}) => {
         styles.outlinedButton,
         {
           borderRadius: theme.radius[size],
+          padding: theme.spacing[size],
+          paddingHorizontal: theme.spacing[size]
         },
       ]}
       type="outline"
       titleStyle={{
         color: theme.colors.primary,
         fontSize: theme.fontSize[size],
+        margin: 0,
       }}
       containerStyle={[shadow ? styles.buttonShadow : null, styles.buttonContainer]}
       disabledTitleStyle={{

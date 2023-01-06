@@ -13,7 +13,7 @@ const Header: React.FC<StackHeaderProps> = ({navigation, route, options, back}) 
       <Icon name="bell" size={25} style={{
         marginRight: 8
       }} />
-      <OutlinedButton title="팀원찾기" size="sm" />
+      <OutlinedButton title="팀원찾기" size="xs" />
     </View>
   )
 
