@@ -1,6 +1,6 @@
 import React from 'react'
 
-import {SafeAreaView, ScrollView, useColorScheme, View} from 'react-native'
+import {Platform, SafeAreaView, ScrollView,View} from 'react-native'
 import {SafeAreaProvider} from 'react-native-safe-area-context'
 import {AirbnbRating, FAB, Text, ThemeProvider} from '@rneui/themed'
 
@@ -133,7 +133,7 @@ const App = () => {
         <NavigationContainer>
           <RootStack.Navigator initialRouteName="Main">
             <RootStack.Group screenOptions={{headerShown: false}}>
-              <RootStack.Screen name="Onboarding" component={Buttons} />
+              <RootStack.Screen name="Onboarding" component={DesignSystem} />
               <RootStack.Screen name="Main" component={Main} />
             </RootStack.Group>
           </RootStack.Navigator>
