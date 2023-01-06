@@ -1,9 +1,16 @@
-import { Text } from '@rneui/themed'
+import {CardTitle} from '@rneui/base/dist/Card/Card.Title'
+import {Card, Text, useTheme} from '@rneui/themed'
 import React from 'react'
-import { View } from 'react-native'
+import {PixelRatio, View} from 'react-native'
+import GroupListCard, {Part} from './GroupListCard'
 
-const List = () => <View>
-  <Text>Cool List</Text><Text>Cool List2</Text><Text>Cool List2</Text>
-</View>
+const List = () => {
+  const {theme} = useTheme()
+  return (
+    <View style={{flex: 1, backgroundColor: 'white'}}>
+      <GroupListCard title="가보자잇" parts={[new Part('design', '디자인', ['KimWash']),new Part('frontend', '프론트엔드', ['KimWash'])]} />
+    </View>
+  )
+}
 
 export default List

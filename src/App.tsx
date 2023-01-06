@@ -134,9 +134,9 @@ const App = () => {
     <ThemeProvider theme={theme}>
       <SafeAreaView style={backgroundStyle}>
         <NavigationContainer>
-          <RootStack.Navigator initialRouteName="Onboarding">
+          <RootStack.Navigator initialRouteName="Main">
             <RootStack.Group screenOptions={{headerShown: false}}>
-              <RootStack.Screen name="Onboarding" component={DesignSystem} />
+              <RootStack.Screen name="Onboarding" component={Buttons} />
               <RootStack.Screen name="Main" component={Main} />
             </RootStack.Group>
           </RootStack.Navigator>

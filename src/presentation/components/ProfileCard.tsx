@@ -5,14 +5,14 @@ import textStyles from '../res/styles/textStyles'
 import colors from '../res/styles/color'
 import {Text} from '@rneui/base'
 
-interface profileCard {
+interface ProfileCardProps {
   height: number
   placeholderText: string
   state?: 'success' | 'error' //undefined, success, error 3가지 상태 -> 3가지 UI 색상 적용
   title: string
   nextIcon?: boolean //상세 페이지로 넘어가는 아이콘버튼의 표시여부 결정
 }
-const ProfileCard = ({height, placeholderText, state, title, nextIcon = false}: profileCard) => {
+const ProfileCard = ({height, placeholderText, state, title, nextIcon = false}: ProfileCardProps) => {
   return (
     <View
       style={[

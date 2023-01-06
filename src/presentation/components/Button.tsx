@@ -8,6 +8,7 @@ const sizeToRadius = (size: string) => (size == 'sm' || size == 'md' ? 'sm' : 'l
  * FilledButton은 sm 사이즈만 fontWeight가 semibold입니다.
  */
 const FilledButton = (props: ButtonProps) => {
+  const {theme} = useTheme()
   const size = props.size ?? 'md' // Default Size: md
   const fontWeight = size == 'sm' ? theme.fontWeight?.semibold : theme.fontWeight?.bold
   return (
@@ -17,6 +18,7 @@ const FilledButton = (props: ButtonProps) => {
       titleStyle={{
         color: 'black',
         fontWeight: fontWeight,
+        fontSize: theme.fontSize[size],
       }}
       disabledTitleStyle={{
         color: 'black',
@@ -27,16 +29,16 @@ const FilledButton = (props: ButtonProps) => {
   )
 }
 /**
- * OutlinedButton은.. 
- * 
- * sm 사이즈만 그림자가 들어갑니다.
- * 
+ * OutlinedButton은..
+ *
+ * sm 사이즈만 그림자가 안들어갑니다.
+ *
  * md/sm 사이즈만 fontWeight가 semibold입니다.
  */
 const OutlinedButton = (props: ButtonProps & {shadow?: boolean}) => {
   const {theme} = useTheme()
   const size = props.size ?? 'md' // Default Size: md
-  const shadow = props.shadow || size == 'sm'
+  const shadow = props.shadow || size != 'sm'
 
   return (
     <Button
@@ -44,12 +46,13 @@ const OutlinedButton = (props: ButtonProps & {shadow?: boolean}) => {
       buttonStyle={[
         styles.outlinedButton,
         {
-          borderRadius: theme.radius[size]
+          borderRadius: theme.radius[size],
         },
       ]}
       type="outline"
       titleStyle={{
         color: theme.colors.primary,
+        fontSize: theme.fontSize[size],
       }}
       containerStyle={[shadow ? styles.buttonShadow : null, styles.buttonContainer]}
       disabledTitleStyle={{

@@ -6,7 +6,7 @@ import {View} from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import Home from './Home'
 import MyPage from './MyPage'
-import Team from './Team'
+import Team from './components/Team'
 
 const Main = () => {
   const MainBottomTab = createBottomTabNavigator()
