@@ -4,21 +4,16 @@ import {Platform, SafeAreaView, ScrollView,View} from 'react-native'
 import {SafeAreaProvider} from 'react-native-safe-area-context'
 import {AirbnbRating, FAB, Text, ThemeProvider} from '@rneui/themed'
 
-import {NavigationContainer, useNavigation} from '@react-navigation/native'
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
-import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs'
 //import 'react-native-gesture-handler'
 
 import {theme} from '@/theme'
 import {FilledButton, OutlinedButton} from '@/presentation/components/Button'
 import styles from './styles'
-import {createStackNavigator} from '@react-navigation/stack'
-import Main from '@/presentation/Main'
-import {ButtonProps} from '@rneui/themed'
 import BirthDropdown from '@/presentation/components/BirthDropdown'
 import ProfileCard2 from '@/presentation/components/ProfileCard2'
 import { IconInput } from '@/presentation/components/IconInput'
 import { PasswordInput } from '@/presentation/components/PasswordInput'
+import { RootNavigation } from './presentation/navigation/RootNavigation'
 
 const DesignSystem = () => {
   return (
@@ -26,25 +21,6 @@ const DesignSystem = () => {
       style={{
         padding: 20,
       }}>
-      {/* <Text h3>Wraped Buttons (with flex)</Text>
-      <View style={styles.wrapButtonConatiner}>
-        <FilledButton title="시작하기" />
-        <FilledButton title="시작하기" disabled />
-      </View>
-      <Text h3>Outlined Buttons (Round)</Text>
-      <OutlinedButton title="삭제하기" disabled />
-      <OutlinedButton title="종료하기" />
-      <OutlinedButton title="해산하기" disabled />
-      <Text h3>Outlined Buttons</Text>
-      <View style={styles.wrapButtonConatiner}>
-        <OutlinedButton title="중복확인" />
-        <OutlinedButton title="확인완료" disabled />
-      </View>
-      <AirbnbRating
-        count={5}
-        reviews={['최악이에요', '별로에요', '괜찮아요', '좋아요', '최고에요']}
-      />
-      <FAB /> */}
       <Text h3>MenuCard - divide</Text>
       <Text h3>Birth Dropdown</Text>
       <BirthDropdown />
@@ -126,18 +102,11 @@ const App = () => {
   const backgroundStyle = {
     flex: 1,
   }
-  const RootStack = createStackNavigator()
+
   return (
     <ThemeProvider theme={theme}>
       <SafeAreaView style={backgroundStyle}>
-        <NavigationContainer>
-          <RootStack.Navigator initialRouteName="Main">
-            <RootStack.Group screenOptions={{headerShown: false}}>
-              <RootStack.Screen name="Onboarding" component={DesignSystem} />
-              <RootStack.Screen name="Main" component={Main} />
-            </RootStack.Group>
-          </RootStack.Navigator>
-        </NavigationContainer>
+        <RootNavigation/>
       </SafeAreaView>
     </ThemeProvider>
   )

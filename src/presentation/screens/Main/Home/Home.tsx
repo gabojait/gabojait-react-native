@@ -1,7 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import React from 'react'
-import GroupList from './components/GroupList'
+import GroupList from './GroupList'
 
 const Home : React.FC = (props) => {
   return <GroupList />
