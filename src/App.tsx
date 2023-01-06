@@ -1,17 +1,13 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * Generated with the TypeScript template
- * https://github.com/react-native-community/react-native-template-typescript
- *
- * @format
- */
-
-import {AirbnbRating, FAB, Text, ThemeProvider} from '@rneui/themed'
 import React from 'react'
 import {Platform, SafeAreaView, ScrollView,View} from 'react-native'
 import {SafeAreaProvider} from 'react-native-safe-area-context'
+import {AirbnbRating, FAB, Text, ThemeProvider} from '@rneui/themed'
+
+import {NavigationContainer, useNavigation} from '@react-navigation/native'
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
+import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs'
+import 'react-native-gesture-handler'
+
 import {theme} from '@/theme'
 import {IconInput} from '@/presentation/components/IconInput'
 import { PasswordInput } from '@/presentation/components/PasswordInput'
@@ -29,11 +25,20 @@ const App = () => {
   const backgroundStyle = {
     flex: 1,
   }
+  const RootStack = createStackNavigator()
   return (
     <ThemeProvider theme={theme}>
       <SafeAreaProvider>
         <SafeAreaView style={backgroundStyle}>
           <ScrollView>
+                  <NavigationContainer>
+          <RootStack.Navigator initialRouteName="Main">
+            <RootStack.Group screenOptions={{headerShown: false}}>
+              <RootStack.Screen name="Onboarding" component={Buttons} />
+              <RootStack.Screen name="Main" component={Main} />
+            </RootStack.Group>
+          </RootStack.Navigator>
+        </NavigationContainer>
             <Text h3>Wraped Buttons (with flex)</Text>
             <View style={styles.wrapButtonConatiner}>
               <FilledButton title="시작하기" />
