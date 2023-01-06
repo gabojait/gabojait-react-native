@@ -15,12 +15,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowOffset: {
       width: 0,
-      height: 4,
+      height: 0,
     },
-    shadowRadius: 4,
+    shadowRadius: 2,
   },
   buttonContainer: {
-    padding: 8
+    padding: 4
   }
 })
 export default styles

@@ -29,6 +29,11 @@ declare module '@rneui/themed' {
       lg: number
       xl: number
     }
+    fontSize: {
+      sm: number
+      md: number
+      lg: number
+    }
     fontWeight: {
       light: FontWeight
       medium: FontWeight
@@ -72,6 +77,11 @@ export const theme = createTheme({
     md: 17,
     lg: 22,
     xl: 30,
+  },
+  fontSize: {
+    sm: 14,
+    md: 17,
+    lg: 22,
   },
   fontWeight: {
     light: '300',
