@@ -2,17 +2,17 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import {NavigationContainer} from '@react-navigation/native'
 import {Text} from '@rneui/base'
 import React from 'react'
-import {View} from 'react-native'
+import {StyleSheet, View} from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
-import Home from './Home'
-import MyPage from './MyPage'
-import Team from './components/Team'
+import Home from '../screens/Main/Home/Home'
+import MyPage from '../screens/Main/MyPage/MyPage'
+import Team from '../screens/Main/Team'
 
-const Main = () => {
+const MainNavigation = () => {
   const MainBottomTab = createBottomTabNavigator()
   return (
-    <MainBottomTab.Navigator initialRouteName="Home">
-      <MainBottomTab.Group screenOptions={{headerShown: false}}>
+    <MainBottomTab.Navigator>
+      <MainBottomTab.Group screenOptions={{headerShown: false}} >
         <MainBottomTab.Screen
           name="Home"
           component={Home}
@@ -39,4 +39,4 @@ const Main = () => {
   )
 }
 
-export default Main
+export default MainNavigation
