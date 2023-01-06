@@ -54,6 +54,7 @@ declare module '@rneui/themed' {
 // ⚠️ 테마 생성 옵션을 변경하고 난 다음에는 앱을 꼭 리로드해주세요!
 export const theme = createTheme({
   lightColors: {
+    white: '#FFFFFF',
     primary: '#1CDF71',
     error: '#FC0101',
     warning: '#F06823',

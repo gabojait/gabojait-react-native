@@ -10,10 +10,11 @@ import {FilledButton, OutlinedButton} from '@/presentation/components/Button'
 import styles from './styles'
 import BirthDropdown from '@/presentation/components/BirthDropdown'
 import ProfileCard2 from '@/presentation/components/ProfileCard2'
-import { IconInput } from '@/presentation/components/IconInput'
-import { PasswordInput } from '@/presentation/components/PasswordInput'
-import { RootNavigation } from './presentation/navigation/RootNavigation'
+import {IconInput} from '@/presentation/components/IconInput'
+import {PasswordInput} from '@/presentation/components/PasswordInput'
+import {RootNavigation} from './presentation/navigation/RootNavigation'
 import {createStackNavigator} from '@react-navigation/stack'
+import ProfileCard from './presentation/components/ProfileCard'
 
 const DesignSystem = () => {
   return (
@@ -26,11 +27,10 @@ const DesignSystem = () => {
       <BirthDropdown />
       {InputDesignSystem()}
       <Text h3>ProfileCard</Text>
-      <ProfileCard2
+      <ProfileCard
         height={5}
         title="자기소개"
         placeholderText="관심있는 기술분야와 경험을 작성해보세요!"
-        state="default"
         nextIcon={true}
       />
       <ProfileCard2
@@ -82,19 +82,19 @@ const Buttons = () => {
 const InputDesignSystem = () => (
   <ScrollView>
     <Text h3>IconInput</Text>
-            <Text h4>아이디</Text>
-            <IconInput inputType='id' placeholder='5~15자 영문, 숫자 조합'/>
-            <Text h4>실명</Text>
-            <IconInput inputType='realname'placeholder='2~5자'/>
-            <Text h4>별명</Text>
-            <IconInput inputType='nickname' placeholder='2~8자'/>
-            <Text h4>이메일</Text>
-            <IconInput inputType='email' placeholder='ex) gabojait@naver.com'/>
-            <Text h3>PasswordInput</Text>
-            <Text h4>비밀번호</Text>
-            <PasswordInput inputType='password' placeholder='영문, 숫자 조합 10~30자'/>
-            <Text h4>비밀번호 확인</Text>
-            <PasswordInput inputType='spellingCheck'/>
+    <Text h4>아이디</Text>
+    <IconInput inputType="id" placeholder="5~15자 영문, 숫자 조합" />
+    <Text h4>실명</Text>
+    <IconInput inputType="realname" placeholder="2~5자" />
+    <Text h4>별명</Text>
+    <IconInput inputType="nickname" placeholder="2~8자" />
+    <Text h4>이메일</Text>
+    <IconInput inputType="email" placeholder="ex) gabojait@naver.com" />
+    <Text h3>PasswordInput</Text>
+    <Text h4>비밀번호</Text>
+    <PasswordInput inputType="password" placeholder="영문, 숫자 조합 10~30자" />
+    <Text h4>비밀번호 확인</Text>
+    <PasswordInput inputType="spellingCheck" />
   </ScrollView>
 )
 
@@ -106,7 +106,9 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <SafeAreaView style={backgroundStyle}>
-        <RootNavigation/>
+        {/*         <RootNavigation/>
+         */}
+        <DesignSystem />
       </SafeAreaView>
     </ThemeProvider>
   )
