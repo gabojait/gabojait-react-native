@@ -2,7 +2,7 @@ import {CardTitle} from '@rneui/base/dist/Card/Card.Title'
 import {Card, Text, useTheme} from '@rneui/themed'
 import React from 'react'
 import {PixelRatio, View} from 'react-native'
-import GroupListCard, {Part} from './GroupListCard'
+import GroupListCard, {Part} from '../../../../components/GroupListCard'
 
 const List = () => {
   const {theme} = useTheme()
