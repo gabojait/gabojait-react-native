@@ -1,5 +1,5 @@
 import {Text} from "@rneui/themed"
-
-const Detail = () => <Text>Beautiful Team detail</Text>
+import React from "react";
+const Detail = () => <Text>팀페이지</Text>
 
 export default Detail;
