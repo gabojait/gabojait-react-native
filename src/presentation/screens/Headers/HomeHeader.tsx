@@ -3,8 +3,8 @@ import {StackHeaderProps} from '@react-navigation/stack'
 import React from 'react'
 import { View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
-import { OutlinedButton } from '../../../../components/Button'
-import CustomHeader from '../../../../components/CustomHeader'
+import { OutlinedButton } from '../../components/Button'
+import CustomHeader from '../../components/CustomHeader'
 
 const Header: React.FC<StackHeaderProps> = ({navigation, route, options, back}) => {
   const title = getHeaderTitle(options, route.name)

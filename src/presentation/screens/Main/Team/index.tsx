@@ -1,20 +1,21 @@
-import {NavigationContainer} from '@react-navigation/native'
 import {createStackNavigator} from '@react-navigation/stack'
 import React from 'react'
-import CustomHeader from '../../../components/CustomHeader'
-import Header from '../Home/GroupList/Header'
-import Detail from './Detail'
-import List from './List'
+import HomeHeader from '@/presentation/screens/Headers/HomeHeader'
+import Detail from '@/presentation/screens/Main/Team/Detail'
+import Review from '@/presentation/screens/Main/Team/Review'
+import TeamSelector from '@/presentation/screens/Main/Team/TeamSelector'
+import TitleHeader from '@/presentation/screens/Headers/TitleHeader'
 
 const TeamScreen = () => {
   const TeamStack = createStackNavigator()
   return (
-    <TeamStack.Navigator initialRouteName="List">
-      <TeamStack.Screen name="List" component={List} options={{
-        header: Header,
-        headerTitle: ""
+    <TeamStack.Navigator initialRouteName="Detail">
+      <TeamStack.Screen name="Detail" component={Detail} options={{
+        header: TitleHeader,
+        headerTitle: "팀페이지"
       }} />
-      <TeamStack.Screen name="Detail" component={Detail} />
+      <TeamStack.Screen name="TeamSelector" component={TeamSelector} />
+      <TeamStack.Screen name="Review" component={Review} />
     </TeamStack.Navigator>
   )
 }

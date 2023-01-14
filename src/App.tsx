@@ -14,6 +14,7 @@ import ProfileCard2 from '@/presentation/components/ProfileCard2'
 import { IconInput } from '@/presentation/components/IconInput'
 import { PasswordInput } from '@/presentation/components/PasswordInput'
 import { RootNavigation } from './presentation/navigation/RootNavigation'
+import { SwitchButton } from '@/presentation/components/SwitchButton'
 
 const DesignSystem = () => {
   return (
