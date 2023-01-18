@@ -14,6 +14,7 @@ import { IconInput } from '@/presentation/components/IconInput'
 import { PasswordInput } from '@/presentation/components/PasswordInput'
 import { RootNavigation } from './presentation/navigation/RootNavigation'
 import { Icon } from '@rneui/base'
+import { CustomCheckBox } from './presentation/components/CustomCheckbox'
 
 const DesignSystem = () => {
   return (
@@ -43,6 +44,7 @@ const DesignSystem = () => {
         placeholderText="관심있는 기술분야와 경험을 작성해보세요!"
         nextIcon={true}
       />
+      <CustomCheckBox/>
     </ScrollView>
   )
 }
