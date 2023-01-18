@@ -1,12 +1,7 @@
 import React, {useState} from 'react'
 import {Icon, Input} from '@rneui/themed'
 import colors from '../res/styles/color'
-import {InputProps} from '@rneui/base'
-
-const validBorderBottomColor= {borderBottomColor: colors.primary}
-const invalidBorderBottomColor= {borderBottomColor: colors.error}
-const defaultBorderBottomColor= {borderBottomColor: colors.lightGrey}
-const borderBottomWidth = {borderBottomWidth: 2}
+import {InputProps, makeStyles} from '@rneui/base'
 
 interface StateProps{
   state?: 'valid'|'invalid'|'none'
@@ -24,6 +19,7 @@ export const PasswordInput = ({inputType,placeholder,passwordSpell}:InputTypePro
   const [regexState, setRegexState] = useState<StateProps>({state:'none'})
   const [isEqualToPasswordSpell, setIsEqualToPasswordSpell] = useState<boolean>(false)
   const [renderMessage, setRenderMessage] = useState<boolean>(false)
+  const styles = useStyles(regexState)
 
   function isInputEmpty(text:string){
     if(text.length == 0) return true
@@ -75,9 +71,9 @@ export const PasswordInput = ({inputType,placeholder,passwordSpell}:InputTypePro
   return (
     <Input
     {...props}
-    {...regexState.state === 'none'? {inputContainerStyle:[defaultBorderBottomColor,borderBottomWidth]}:
-    regexState.state === 'valid'?{inputContainerStyle:[validBorderBottomColor,borderBottomWidth]}:
-    regexState.state === 'invalid'?{inputContainerStyle:[invalidBorderBottomColor,borderBottomWidth]}:{}}
+    style={[
+      styles.input
+    ]}
       secureTextEntry={secure}
       rightIcon={
         <Icon
@@ -102,3 +98,21 @@ export const PasswordInput = ({inputType,placeholder,passwordSpell}:InputTypePro
     />
   )
 }
+
+const useStyles = makeStyles((regexState:StateProps) => {
+  const stateColors = {
+    none: colors.lightGrey,
+    valid: colors.primary,
+    invalid: colors.error
+  }
+
+  return {
+    input:{
+      borderBottomColor: stateColors[regexState.state!!],
+      borderBottomWidth: 2,
+    },
+    icon:{
+      color: stateColors[regexState.state!!]
+    }
+  }
+})

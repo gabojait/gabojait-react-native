@@ -8,11 +8,12 @@ import {AirbnbRating, FAB, Text, ThemeProvider} from '@rneui/themed'
 import {theme} from '@/theme'
 import {FilledButton, OutlinedButton} from '@/presentation/components/Button'
 import styles from './styles'
-import BirthDropdown from '@/presentation/components/BirthDropdown'
-import ProfileCard2 from '@/presentation/components/ProfileCard2'
+import { DateDropdown } from '@/presentation/components/DateDropdown'
+import {ProfileCard } from '@/presentation/components/ProfileCard'
 import { IconInput } from '@/presentation/components/IconInput'
 import { PasswordInput } from '@/presentation/components/PasswordInput'
 import { RootNavigation } from './presentation/navigation/RootNavigation'
+import { Icon } from '@rneui/base'
 
 const DesignSystem = () => {
   return (
@@ -22,27 +23,24 @@ const DesignSystem = () => {
       }}>
       <Text h3>MenuCard - divide</Text>
       <Text h3>Birth Dropdown</Text>
-      <BirthDropdown />
-      {InputDesignSystem()}
+      <DateDropdown title="시작 기간을 입력해주세요"/>
       <Text h3>ProfileCard</Text>
-      <ProfileCard2
+      <ProfileCard
         height={5}
         title="자기소개"
         placeholderText="관심있는 기술분야와 경험을 작성해보세요!"
         nextIcon={true}
       />
-      <ProfileCard2
+      <ProfileCard
         height={5}
         title="자기소개"
         placeholderText="관심있는 기술분야와 경험을 작성해보세요!"
-        state="success"
         nextIcon={true}
       />
-      <ProfileCard2
-        height={5}
+      <ProfileCard
+        height={10}
         title="자기소개"
         placeholderText="관심있는 기술분야와 경험을 작성해보세요!"
-        state="error"
         nextIcon={true}
       />
     </ScrollView>
@@ -81,7 +79,7 @@ const InputDesignSystem = () => (
   <ScrollView>
     <Text h3>IconInput</Text>
     <Text h4>아이디</Text>
-    <IconInput inputType="id" placeholder="5~15자 영문, 숫자 조합" />
+    <IconInput inputType="id" placeholder="5~15자 영문, 숫자 조합"/>
     <Text h4>실명</Text>
     <IconInput inputType="realname" placeholder="2~5자" />
     <Text h4>별명</Text>
@@ -104,7 +102,7 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <SafeAreaView style={backgroundStyle}>
-        <RootNavigation/>
+        <DesignSystem/>
       </SafeAreaView>
     </ThemeProvider>
   )
