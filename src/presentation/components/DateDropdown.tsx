@@ -5,7 +5,11 @@ import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import colors from '@/presentation/res/styles/color'
 import textStyles from '@/presentation/res/styles/textStyles'
 
-export default () => {
+interface DateDropdownProps{
+  title:string
+}
+
+export const DateDropdown =  (({title}:DateDropdownProps) => {
   const [date, setDate] = useState(new Date())
   const [open, setOpen] = useState(false)
   const [confirm, setConfirm] = useState(false)
@@ -22,7 +26,7 @@ export default () => {
           ]}>
           {confirm == true
             ? `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`
-            : '생년월일 입력'}
+            : title}
         </Text>
         <DatePicker
           modal
@@ -36,7 +40,9 @@ export default () => {
           }}
           onCancel={() => {
             setOpen(false)
+            setConfirm(false)
           }}
+          title={title}
         />
       </TouchableOpacity>
       <FontAwesomeIcon
@@ -47,7 +53,7 @@ export default () => {
       />
     </View>
   )
-}
+})
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
