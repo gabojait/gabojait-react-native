@@ -59,7 +59,8 @@
 		<string>Fonts/Octicons.ttf</string>
 		<string>Fonts/SimpleLineIcons.ttf</string>
 		<string>Fonts/Zocial.ttf</string>
-		<string>Gabojait.ttf</string>
+		<string>heart_circled.ttf</string>
+		<string>gabojait.ttf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

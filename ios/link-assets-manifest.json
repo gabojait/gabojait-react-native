@@ -2,8 +2,12 @@
   "migIndex": 1,
   "data": [
     {
-      "path": "src/assets/fonts/Gabojait.ttf",
+      "path": "src/assets/fonts/gabojait.ttf",
       "sha1": "93c8afbcf99e3a8a6d90366ee078770c7a90dfe5"
+    },
+    {
+      "path": "src/assets/fonts/heart_circled.ttf",
+      "sha1": "b2888892c715dffe906ca54ad1c4f1e6ce26db74"
     }
   ]
 }
