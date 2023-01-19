@@ -1,5 +1,5 @@
 import React from 'react'
-import {Platform, SafeAreaView, ScrollView, View} from 'react-native'
+import {Platform, SafeAreaView, ScrollView, StyleSheet, View} from 'react-native'
 import {SafeAreaProvider} from 'react-native-safe-area-context'
 import {AirbnbRating, FAB, Text, ThemeProvider} from '@rneui/themed'
 
@@ -12,9 +12,12 @@ import { DateDropdown } from '@/presentation/components/DateDropdown'
 import {ProfileCard } from '@/presentation/components/ProfileCard'
 import { IconInput } from '@/presentation/components/IconInput'
 import { PasswordInput } from '@/presentation/components/PasswordInput'
-import { RootNavigation } from './presentation/navigation/RootNavigation'
-import { Icon } from '@rneui/base'
 import { CustomCheckBox } from './presentation/components/CustomCheckbox'
+import { CustomSwitch } from './presentation/components/CustomSwitch'
+import { RootNavigation } from './presentation/navigation/RootNavigation'
+import { CustomInput } from '@/presentation/components/CustomInput'
+import GabojaitIcon from '@/assets/fonts/iconCreator/Gabojait'
+import color from './presentation/res/styles/color'
 
 const DesignSystem = () => {
   return (
@@ -22,6 +25,8 @@ const DesignSystem = () => {
       style={{
         padding: 20,
       }}>
+        <CustomCheckBox checked={false} disabled={false}/>
+      <CustomSwitch/>
       <Text h3>MenuCard - divide</Text>
       <Text h3>Birth Dropdown</Text>
       <DateDropdown title="시작 기간을 입력해주세요"/>
@@ -44,7 +49,6 @@ const DesignSystem = () => {
         placeholderText="관심있는 기술분야와 경험을 작성해보세요!"
         nextIcon={true}
       />
-      <CustomCheckBox/>
     </ScrollView>
   )
 }
@@ -79,6 +83,8 @@ const Buttons = () => {
 
 const InputDesignSystem = () => (
   <ScrollView>
+    <Text h3>CustomInput</Text>
+    <CustomInput size="md" placeholder="아이디를 입력해주세요" multiline={false}/>
     <Text h3>IconInput</Text>
     <Text h4>아이디</Text>
     <IconInput inputType="id" placeholder="5~15자 영문, 숫자 조합"/>
@@ -97,14 +103,18 @@ const InputDesignSystem = () => (
 )
 
 const App = () => {
-  const backgroundStyle = {
-    flex: 1,
-  }
+  const styles = StyleSheet.create({
+    background:{
+      backgroundColor:color.white,
+      flex:1,
+      paddingHorizontal: 20
+    }
+  })
 
   return (
     <ThemeProvider theme={theme}>
-      <SafeAreaView style={backgroundStyle}>
-        <DesignSystem/>
+      <SafeAreaView style={styles.background}>
+        <RootNavigation/>
       </SafeAreaView>
     </ThemeProvider>
   )
