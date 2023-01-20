@@ -10,11 +10,13 @@ const TeamScreen = () => {
   const TeamStack = createStackNavigator()
   return (
     <TeamStack.Navigator initialRouteName="List">
-      <TeamStack.Screen name="List" component={List} options={{
-        header: Header,
-        headerTitle: ""
-      }} />
-      <TeamStack.Screen name="Detail" component={Detail} />
+      <TeamStack.Group
+        screenOptions={{
+          header: Header,
+          headerTitle: '팀페이지',
+        }}>
+        <TeamStack.Screen name="Detail" component={Detail} />
+      </TeamStack.Group>
     </TeamStack.Navigator>
   )
 }

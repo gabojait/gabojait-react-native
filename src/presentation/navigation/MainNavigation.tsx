@@ -8,10 +8,11 @@ import Home from '../screens/Main/Home/Home'
 import MyPage from '../screens/Main/MyPage/MyPage'
 import Team from '../screens/Main/Team'
 
+// 바텀네비게이션
 const MainNavigation = () => {
   const MainBottomTab = createBottomTabNavigator()
   return (
-    <MainBottomTab.Navigator>
+    <MainBottomTab.Navigator backBehavior='none'>
       <MainBottomTab.Group screenOptions={{headerShown: false}} >
         <MainBottomTab.Screen
           name="Home"
