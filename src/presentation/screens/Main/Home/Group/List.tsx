@@ -8,7 +8,16 @@ const List = () => {
   const {theme} = useTheme()
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
-      <GroupListCard title="가보자잇" parts={[new Part('design', '디자인', ['KimWash']),new Part('frontend', '프론트엔드', ['KimWash'])]} />
+      <GroupListCard
+        title="가보자잇"
+        parts={[
+          new Part('design', '디자인', ['KimWash']),
+          new Part('frontend', '프론트엔드', ['KimWash']),
+        ]}
+        onClick={() => {
+          
+        }}
+      />
     </View>
   )
 }
