@@ -26,7 +26,7 @@ const CustomHeader: React.FC<HeaderProps> = ({
     />
   )
   return (
-    <View style={headerStyle.parent}>
+    <View style={[headerStyle.parent, {borderColor: theme.colors.disabled}]}>
       <View style={headerStyle.left}>
         {canGoBack ? back : null}
         {leftChildren}
@@ -49,10 +49,10 @@ const headerStyle = StyleSheet.create({
     ...headerGlobalStyle,
     paddingHorizontal: 20,
     paddingBottom: 5,
-    borderBottomWidth: 1,
-    borderBottomColor: 'white',
+    borderBottomWidth: 0.8,
     backgroundColor: 'white',
     justifyContent: 'space-between',
+
   },
   left: headerGlobalStyle,
 })

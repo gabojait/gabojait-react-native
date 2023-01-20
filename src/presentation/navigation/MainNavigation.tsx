@@ -19,11 +19,12 @@ export type MainStackNavigationProps<
 
 const MainBottomTab = createBottomTabNavigator()
 
+// 바텀네비게이션
 const MainNavigation = () => {
 
   return (
-    <MainBottomTab.Navigator>
-      <MainBottomTab.Group screenOptions={{headerShown: false,}} >
+    <MainBottomTab.Navigator backBehavior='none'>
+      <MainBottomTab.Group screenOptions={{headerShown: false}} >
         <MainBottomTab.Screen
           name="Home"
           component={Home}

@@ -21,7 +21,7 @@ export const RootNavigation = () => {
             <RootStack.Screen name='OnboardingNavigation' component={OnboardingNavigation} />
             <RootStack.Screen name='MainNavigation' component={MainNavigation} />
         </RootStack.Group>
-        </RootStack.Navigator>
+      </RootStack.Navigator>
     </NavigationContainer>
-    )
+  )
 }
