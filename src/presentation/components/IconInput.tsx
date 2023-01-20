@@ -90,9 +90,7 @@ export const IconInput = ({inputType,placeholder}:InputTypeProps, props:JSX.Intr
   return (
     <Input 
       {...props}
-      style={[
-        styles.input
-      ]}
+      inputContainerStyle={[styles.input]}
       rightIcon={<Icon 
         name="checkmark-circle-outline" type="ionicon" size={18}
         iconStyle={styles.icon}
@@ -120,7 +118,7 @@ const useStyles = makeStyles((regexState:StateProps) => {
   return {
     input:{
       borderBottomColor: stateColors[regexState.state!!],
-      borderBottomWidth: 2
+      borderBottomWidth: 1.5
     },
     icon:{
       color: stateColors[regexState.state!!]

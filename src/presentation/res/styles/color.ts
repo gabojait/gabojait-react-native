@@ -1,6 +1,6 @@
 export default {
-  barIcon: '#6c6c6c',
   black: '#000000',
+  darkGrey: '#6c6c6c',
   disable: '#d9d9d9',
   error: '#fc0101',
   lightGrey:'#eeeeee',

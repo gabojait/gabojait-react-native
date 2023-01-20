@@ -71,9 +71,7 @@ export const PasswordInput = ({inputType,placeholder,passwordSpell}:InputTypePro
   return (
     <Input
     {...props}
-    style={[
-      styles.input
-    ]}
+    inputContainerStyle={[styles.input]}
       secureTextEntry={secure}
       rightIcon={
         <Icon
@@ -83,7 +81,7 @@ export const PasswordInput = ({inputType,placeholder,passwordSpell}:InputTypePro
             console.log(secure)
           }}
           type="ionicon"
-          color={colors.barIcon}
+          color={colors.darkGrey}
         />
       }
       onChangeText={text => {
@@ -109,7 +107,7 @@ const useStyles = makeStyles((regexState:StateProps) => {
   return {
     input:{
       borderBottomColor: stateColors[regexState.state!!],
-      borderBottomWidth: 2,
+      borderBottomWidth: 1.5,
     },
     icon:{
       color: stateColors[regexState.state!!]

@@ -1,32 +1,35 @@
 
-import { makeStyles } from '@rneui/base'
+import { CheckBoxProps, makeStyles } from '@rneui/base'
 import { CheckBox } from '@rneui/themed'
 import React, {useState} from 'react'
+import { StyleSheet } from 'react-native'
 import color from '../res/styles/color'
 
-export const CustomCheckBox =  ({}) => {
+export const CustomCheckBox:React.FC<CheckBoxProps> =  ({...props}) => {
     const [checked, setChecked] = React.useState(false)
     const toggleCheckbox = () => setChecked(!checked);
-    const styles = useStyles(checked)
-
     return(
         <CheckBox
-        style={styles.input}
+        {...props}
+        style={styles.checkBox}
         iconType="material-community"
            checkedIcon="checkbox-marked"
            uncheckedIcon="checkbox-blank-outline"
            checkedColor={color.primary}
         checked={checked}
-        onPress={toggleCheckbox}/>
+        onPress={toggleCheckbox}
+        disabledStyle={styles.checkBox}/>
     )
 }
 
-const useStyles = makeStyles((checked:Boolean) => {
-  
-    return {
-      input:{
-        borderBottomWidth: 2,
-        
-      }
-    }
-  })
+const styles = StyleSheet.create({
+  checkBox:{
+    borderBottomWidth: 2,
+    width: 10,
+    height: 10,
+    borderColor: color.grey
+  },
+  disabled:{
+    borderColor: color.disable
+  }
+})
