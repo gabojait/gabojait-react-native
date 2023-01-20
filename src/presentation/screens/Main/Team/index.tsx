@@ -1,10 +1,7 @@
 import {createStackNavigator} from '@react-navigation/stack'
 import React from 'react'
-import HomeHeader from '@/presentation/screens/Headers/HomeHeader'
 import Detail from '@/presentation/screens/Main/Team/Detail'
-import Review from '@/presentation/screens/Main/Team/Review'
-import TeamSelector from '@/presentation/screens/Main/Team/TeamSelector'
-import TitleHeader from '@/presentation/screens/Headers/TitleHeader'
+import Header from '../../Headers/TitleHeader'
 
 const TeamScreen = () => {
   const TeamStack = createStackNavigator()
