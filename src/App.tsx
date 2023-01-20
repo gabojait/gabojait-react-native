@@ -1,6 +1,5 @@
 import React from 'react'
-
-import {Platform, SafeAreaView, ScrollView,View} from 'react-native'
+import {Platform, SafeAreaView, ScrollView, View} from 'react-native'
 import {SafeAreaProvider} from 'react-native-safe-area-context'
 import {AirbnbRating, FAB, Text, ThemeProvider} from '@rneui/themed'
 
@@ -30,7 +29,6 @@ const DesignSystem = () => {
         height={5}
         title="자기소개"
         placeholderText="관심있는 기술분야와 경험을 작성해보세요!"
-        state="default"
         nextIcon={true}
       />
       <ProfileCard2
@@ -82,19 +80,19 @@ const Buttons = () => {
 const InputDesignSystem = () => (
   <ScrollView>
     <Text h3>IconInput</Text>
-            <Text h4>아이디</Text>
-            <IconInput inputType='id' placeholder='5~15자 영문, 숫자 조합'/>
-            <Text h4>실명</Text>
-            <IconInput inputType='realname'placeholder='2~5자'/>
-            <Text h4>별명</Text>
-            <IconInput inputType='nickname' placeholder='2~8자'/>
-            <Text h4>이메일</Text>
-            <IconInput inputType='email' placeholder='ex) gabojait@naver.com'/>
-            <Text h3>PasswordInput</Text>
-            <Text h4>비밀번호</Text>
-            <PasswordInput inputType='password' placeholder='영문, 숫자 조합 10~30자'/>
-            <Text h4>비밀번호 확인</Text>
-            <PasswordInput inputType='spellingCheck'/>
+    <Text h4>아이디</Text>
+    <IconInput inputType="id" placeholder="5~15자 영문, 숫자 조합" />
+    <Text h4>실명</Text>
+    <IconInput inputType="realname" placeholder="2~5자" />
+    <Text h4>별명</Text>
+    <IconInput inputType="nickname" placeholder="2~8자" />
+    <Text h4>이메일</Text>
+    <IconInput inputType="email" placeholder="ex) gabojait@naver.com" />
+    <Text h3>PasswordInput</Text>
+    <Text h4>비밀번호</Text>
+    <PasswordInput inputType="password" placeholder="영문, 숫자 조합 10~30자" />
+    <Text h4>비밀번호 확인</Text>
+    <PasswordInput inputType="spellingCheck" />
   </ScrollView>
 )
 

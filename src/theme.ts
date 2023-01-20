@@ -4,7 +4,7 @@ import {Button, ButtonProps, createTheme, Theme} from '@rneui/themed'
 /**
  * StyleSheet FontWeight Type이에요.
  */
-type FontWeight =
+export type FontWeight =
   | 'bold'
   | 'normal'
   | '100'
@@ -24,12 +24,14 @@ type FontWeight =
 declare module '@rneui/themed' {
   export interface Theme {
     radius: {
+      xs: number
       sm: number
       md: number
       lg: number
       xl: number
     }
     fontSize: {
+      xs: number
       sm: number
       md: number
       lg: number
@@ -52,6 +54,7 @@ declare module '@rneui/themed' {
 // ⚠️ 테마 생성 옵션을 변경하고 난 다음에는 앱을 꼭 리로드해주세요!
 export const theme = createTheme({
   lightColors: {
+    white: '#FFFFFF',
     primary: '#1CDF71',
     error: '#FC0101',
     warning: '#F06823',
@@ -73,12 +76,14 @@ export const theme = createTheme({
     },
   },
   spacing: {
+    xs: 7,
     sm: 14,
     md: 17,
     lg: 22,
     xl: 30,
   },
   fontSize: {
+    xs: 12,
     sm: 14,
     md: 17,
     lg: 22,
@@ -90,6 +95,7 @@ export const theme = createTheme({
     bold: '700',
   },
   radius: {
+    xs: 5,
     sm: 10,
     md: 14,
     lg: 20,

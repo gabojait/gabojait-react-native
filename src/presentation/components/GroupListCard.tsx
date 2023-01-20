@@ -38,7 +38,7 @@ const GroupListCard: React.FC<CardProps & {title: string; parts: Array<Part>}> =
       <Text h4>{title}</Text>
       <View style={{padding: 10, flexDirection: 'row', justifyContent: 'center'}}>
         {parts.map(part => (
-          <PartIcon partInitial={part.name[0]} />
+          <PartIcon key={part.id} partInitial={part.name[0]} />
         ))}
       </View>
 
