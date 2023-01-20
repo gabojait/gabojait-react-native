@@ -1,5 +1,5 @@
 import React from 'react'
-import {Platform, SafeAreaView, ScrollView, StyleSheet, View} from 'react-native'
+import {Platform, SafeAreaView, ScrollView, StyleSheet, TextInput, TextInputProps, View} from 'react-native'
 import {SafeAreaProvider} from 'react-native-safe-area-context'
 import {AirbnbRating, FAB, Text, ThemeProvider} from '@rneui/themed'
 
@@ -15,9 +15,11 @@ import { PasswordInput } from '@/presentation/components/PasswordInput'
 import { CustomCheckBox } from './presentation/components/CustomCheckbox'
 import { CustomSwitch } from './presentation/components/CustomSwitch'
 import { RootNavigation } from './presentation/navigation/RootNavigation'
-import { CustomInput } from '@/presentation/components/CustomInput'
-import GabojaitIcon from '@/assets/fonts/iconCreator/Gabojait'
+import GabojaitIcon from '@/presentation/components/icon/Gabojait'
 import color from './presentation/res/styles/color'
+import { BottomTabBar } from '@react-navigation/bottom-tabs'
+import Login from './presentation/screens/Onboarding/Login'
+import CustomInput2 from './presentation/components/CustomInput'
 
 const DesignSystem = () => {
   return (
@@ -84,7 +86,7 @@ const Buttons = () => {
 const InputDesignSystem = () => (
   <ScrollView>
     <Text h3>CustomInput</Text>
-    <CustomInput size="md" placeholder="아이디를 입력해주세요" multiline={false}/>
+    <CustomInput2 placeholder={'아이디'}/>
     <Text h3>IconInput</Text>
     <Text h4>아이디</Text>
     <IconInput inputType="id" placeholder="5~15자 영문, 숫자 조합"/>
@@ -102,12 +104,24 @@ const InputDesignSystem = () => (
   </ScrollView>
 )
 
+class LoginTest extends React.Component{
+
+  handleChange(){
+    console.log("working well")
+  }
+  render() {
+    return(
+      <CustomInput2 value={"id"} onChange={this.handleChange}/>
+    )
+  }
+}
 const App = () => {
   const styles = StyleSheet.create({
     background:{
       backgroundColor:color.white,
       flex:1,
-      paddingHorizontal: 20
+      paddingHorizontal: 20,
+      paddingBottom: Platform.OS === "android"? 20: 0
     }
   })
 
@@ -115,6 +129,7 @@ const App = () => {
     <ThemeProvider theme={theme}>
       <SafeAreaView style={styles.background}>
         <RootNavigation/>
+        {/* <LoginTest/> */}
       </SafeAreaView>
     </ThemeProvider>
   )
