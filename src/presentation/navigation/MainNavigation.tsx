@@ -1,16 +1,27 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
-import {NavigationContainer} from '@react-navigation/native'
-import {Text} from '@rneui/base'
+import {CompositeNavigationProp, NavigationContainer} from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import React from 'react'
-import {StyleSheet, View} from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
-import Home from '../screens/Main/Home/Home'
+import Home from '@/presentation/navigation/HomeNavigation'
 import MyPage from '../screens/Main/MyPage/MyPage'
 import Team from '../screens/Main/Team'
+import { RootStackNavigationProps } from './RootNavigation'
+import { MainStackParamList} from './types'
+
+type MainNavigationProp<
+T extends keyof MainStackParamList = 'Home'
+> = StackNavigationProp<MainStackParamList, T>
+
+export type MainStackNavigationProps<
+  T extends keyof MainStackParamList = 'Home'
+> = CompositeNavigationProp< MainNavigationProp<T>, RootStackNavigationProps<'MainNavigation'>>
+
+const MainBottomTab = createBottomTabNavigator()
 
 // 바텀네비게이션
 const MainNavigation = () => {
-  const MainBottomTab = createBottomTabNavigator()
+
   return (
     <MainBottomTab.Navigator backBehavior='none'>
       <MainBottomTab.Group screenOptions={{headerShown: false}} >

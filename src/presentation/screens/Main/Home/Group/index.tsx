@@ -3,16 +3,16 @@ import {createStackNavigator} from '@react-navigation/stack'
 import React from 'react'
 import Detail from './Detail'
 import Editor from './Editor'
-import Header from './Header'
+import HomeHeader from '@/presentation/screens/Headers/HomeHeader'
 import List from './List'
 import PositionSelector from './PositionSelector'
 
-const GroupList = () => {
+const Group = () => {
   const BoardStack = createStackNavigator()
   return (
     <BoardStack.Navigator initialRouteName="List">
       <BoardStack.Screen name="List" component={List} options={{
-        header: Header,
+        header: HomeHeader,
         headerTitle: "팀 구하기",
       }}/>
       <BoardStack.Screen name="Detail" component={Detail} />
@@ -22,4 +22,4 @@ const GroupList = () => {
   )
 }
 
-export default GroupList
+export default Group

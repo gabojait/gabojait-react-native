@@ -10,11 +10,9 @@ import {FilledButton, OutlinedButton} from '@/presentation/components/Button'
 import styles from './styles'
 import BirthDropdown from '@/presentation/components/BirthDropdown'
 import ProfileCard2 from '@/presentation/components/ProfileCard2'
-import {IconInput} from '@/presentation/components/IconInput'
-import {PasswordInput} from '@/presentation/components/PasswordInput'
-import {RootNavigation} from './presentation/navigation/RootNavigation'
-import {createStackNavigator} from '@react-navigation/stack'
-import ProfileCard from './presentation/components/ProfileCard'
+import { IconInput } from '@/presentation/components/IconInput'
+import { PasswordInput } from '@/presentation/components/PasswordInput'
+import { RootNavigation } from './presentation/navigation/RootNavigation'
 
 const DesignSystem = () => {
   return (
@@ -27,7 +25,7 @@ const DesignSystem = () => {
       <BirthDropdown />
       {InputDesignSystem()}
       <Text h3>ProfileCard</Text>
-      <ProfileCard
+      <ProfileCard2
         height={5}
         title="자기소개"
         placeholderText="관심있는 기술분야와 경험을 작성해보세요!"
@@ -106,9 +104,7 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <SafeAreaView style={backgroundStyle}>
-        {/*         <RootNavigation/>
-         */}
-        <DesignSystem />
+        <RootNavigation/>
       </SafeAreaView>
     </ThemeProvider>
   )

@@ -1,10 +1,10 @@
-import {NavigationContainer} from '@react-navigation/native'
 import {createStackNavigator} from '@react-navigation/stack'
 import React from 'react'
-import CustomHeader from '../../../components/CustomHeader'
-import Header from '../Home/GroupList/Header'
-import Detail from './Detail'
-import List from './List'
+import HomeHeader from '@/presentation/screens/Headers/HomeHeader'
+import Detail from '@/presentation/screens/Main/Team/Detail'
+import Review from '@/presentation/screens/Main/Team/Review'
+import TeamSelector from '@/presentation/screens/Main/Team/TeamSelector'
+import TitleHeader from '@/presentation/screens/Headers/TitleHeader'
 
 const TeamScreen = () => {
   const TeamStack = createStackNavigator()
