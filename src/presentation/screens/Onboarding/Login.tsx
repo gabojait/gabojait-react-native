@@ -5,7 +5,7 @@ import React, { useRef, useState } from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { OnboardingStackParamList, RootStackParamList } from '@/presentation/navigation/types'
 import color from '@/presentation/res/styles/color'
-import CustomInput2 from '@/presentation/components/CustomInput'
+import { CustomInput } from '@/presentation/components/CustomInput'
 import Gabojait from '@/presentation/components/icon/Gabojait'
 
 export type OnboardingProps = StackScreenProps<OnboardingStackParamList, 'Login'>
@@ -22,8 +22,8 @@ const Login = ({navigation}:OnboardingProps ) => {
                 <Gabojait name='gabojait' color={color.primary} size={35}/>
             </View>
             <View style={styles.inputView}>
-                <CustomInput2 style={styles.input} placeholder={'아이디'} inputChange={(text:string)=>{usernameRef.current = text}}/>
-                <CustomInput2 style={styles.input} placeholder={'비밀번호'} inputChange={(text:string)=>{passwordRef.current = text}}/>
+                <CustomInput style={styles.input} placeholder={'아이디'} inputChange={(text:string)=>{usernameRef.current = text}}/>
+                <CustomInput style={styles.input} placeholder={'비밀번호'} inputChange={(text:string)=>{passwordRef.current = text}}/>
             </View>
             <FilledButton size="sm" title="로그인" onPress={() => navigation.popToTop}/> 
             <View style={styles.linkTextView}>
