@@ -7,6 +7,8 @@ import { OnboardingStackParamList, RootStackParamList } from '@/presentation/nav
 import color from '@/presentation/res/styles/color'
 import { CustomInput } from '@/presentation/components/CustomInput'
 import Gabojait from '@/presentation/components/icon/Gabojait'
+import Heart_circled from '@/presentation/components/icon/Heart_circled'
+import { CustomInputProps, StateProp } from '@/presentation/components/props/StateProps'
 
 export type OnboardingProps = StackScreenProps<OnboardingStackParamList, 'Login'>
 
@@ -25,7 +27,13 @@ const Login = ({navigation}:OnboardingProps ) => {
                 <CustomInput style={styles.input} placeholder={'아이디'} inputChange={(text:string)=>{usernameRef.current = text}}/>
                 <CustomInput style={styles.input} placeholder={'비밀번호'} inputChange={(text:string)=>{passwordRef.current = text}}/>
             </View>
-            <FilledButton size="sm" title="로그인" onPress={() => navigation.popToTop}/> 
+            <FilledButton size="sm" title="로그인" 
+                onPress={() => {
+                    console.log("id:",usernameRef.current)
+        console.log("pw:",passwordRef.current)
+                    navigation.popToTop
+                }
+            }/> 
             <View style={styles.linkTextView}>
                 <TouchableOpacity onPress={() => navigation.navigate('FindAccount')}>
                     <Text style={styles.text}>아이디 찾기/ 비밀번호 찾기</Text>

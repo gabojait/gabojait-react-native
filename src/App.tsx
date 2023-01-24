@@ -19,7 +19,6 @@ import GabojaitIcon from '@/presentation/components/icon/Gabojait'
 import color from './presentation/res/styles/color'
 import { BottomTabBar } from '@react-navigation/bottom-tabs'
 import Login from './presentation/screens/Onboarding/Login'
-import CustomInput2 from './presentation/components/CustomInput'
 
 const DesignSystem = () => {
   return (
@@ -86,7 +85,6 @@ const Buttons = () => {
 const InputDesignSystem = () => (
   <ScrollView>
     <Text h3>CustomInput</Text>
-    <CustomInput2 placeholder={'아이디'}/>
     <Text h3>IconInput</Text>
     <Text h4>아이디</Text>
     <IconInput inputType="id" placeholder="5~15자 영문, 숫자 조합"/>
@@ -104,17 +102,6 @@ const InputDesignSystem = () => (
   </ScrollView>
 )
 
-class LoginTest extends React.Component{
-
-  handleChange(){
-    console.log("working well")
-  }
-  render() {
-    return(
-      <CustomInput2 value={"id"} onChange={this.handleChange}/>
-    )
-  }
-}
 const App = () => {
   const styles = StyleSheet.create({
     background:{
@@ -129,7 +116,6 @@ const App = () => {
     <ThemeProvider theme={theme}>
       <SafeAreaView style={styles.background}>
         <RootNavigation/>
-        {/* <LoginTest/> */}
       </SafeAreaView>
     </ThemeProvider>
   )

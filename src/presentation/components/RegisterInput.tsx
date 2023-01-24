@@ -1,19 +1,20 @@
 import { theme } from '@/theme'
-import { Icon, useTheme } from '@rneui/themed'
+import { Icon, Input, useTheme } from '@rneui/themed'
 import React, {useRef, useState} from 'react'
 import { StyleSheet, TextInput, TextInputProps, View,  } from 'react-native'
 import color from '../res/styles/color'
 import type { CustomInputProps} from '@/presentation/components/props/StateProps'
-export const CustomInput = ({inputChange, size='sm', placeholder ,state='none', ...props}:CustomInputProps&TextInputProps) => {
+
+export const RegisterInput = ({inputChange, size='sm', placeholder ,state='none', ...props}:CustomInputProps&TextInputProps) => {
     const valueRef = useRef('')
-    const {theme} = useTheme()
+
     const iconColors = {
         none: color.transparent,
         valid: color.primary,
         invalid: color.transparent
     }
     const borderColors = {
-        none: color.grey,
+        none: color.lightGrey,
         valid: color.primary,
         invalid: color.error
     }
@@ -23,25 +24,25 @@ export const CustomInput = ({inputChange, size='sm', placeholder ,state='none', 
     }
     
     return (
-        <View style={[{borderColor:borderColors[state]},styles.view, props.style,{borderRadius:theme.radius[size]}]}>
-            <TextInput 
-            style={[styles.input]}
-            placeholderTextColor={color.grey}
-            placeholder={placeholder}
-            onChangeText={(text) => updateText(text)}/>
-            <Icon style={styles.icon} name="checkmark-circle-outline" type="ionicon" size={18} color={iconColors[state]}/>
-        </View>
+        <>
+            <Input
+                inputContainerStyle={{borderBottomWidth:1.3, borderBottomColor:borderColors[state]}}
+                style={[styles.input, props.style]}
+                placeholderTextColor={color.grey}
+                placeholder={placeholder}
+                onChangeText={(text) => updateText(text)}
+                rightIcon={
+                <Icon name="checkmark-circle-outline" type="ionicon" size={18} color={iconColors[state]}/>
+                }
+            />
+        </>
+        
     )
 }
 const styles = StyleSheet.create({
-    view:{
-        borderWidth: 1.3,
-        flex:1,
-        flexDirection:'row',
-    },
     input:{
         paddingLeft:14,
-        flex: 10,
+        flex: 10
     },
     icon:{
         flex:1,

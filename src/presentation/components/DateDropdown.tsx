@@ -58,8 +58,8 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     backgroundColor: 'white',
-    borderRadius: 5,
-    borderWidth: 2,
+    borderRadius: 4,
+    borderWidth: 1.3,
     flexDirection: 'row',
     padding: 0,
     height: 50,
