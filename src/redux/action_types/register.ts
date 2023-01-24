@@ -1,0 +1,5 @@
+export const enum RegisterActionType {
+  REGISTER = 'REGISTER',
+  REGISTER_SUCCESS = 'REGISTER_SUCCESS',
+  REGISTER_ERROR = 'REGISTER_ERROR',
+}

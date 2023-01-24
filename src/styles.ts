@@ -1,6 +1,10 @@
 import {StyleSheet} from 'react-native'
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
   wrapButtonConatiner: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -20,7 +24,10 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
   },
   buttonContainer: {
-    padding: 4
-  }
+    padding: 4,
+  },
+  centerText: {
+    textAlign: 'center',
+  },
 })
 export default styles
