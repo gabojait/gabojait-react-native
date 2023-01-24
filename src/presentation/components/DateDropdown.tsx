@@ -6,10 +6,11 @@ import colors from '@/presentation/res/styles/color'
 import textStyles from '@/presentation/res/styles/textStyles'
 
 interface DateDropdownProps{
+  inputChange?:any
   title:string
 }
 
-export const DateDropdown =  (({title}:DateDropdownProps) => {
+export const DateDropdown =  (({inputChange, title}:DateDropdownProps) => {
   const [date, setDate] = useState(new Date())
   const [open, setOpen] = useState(false)
   const [confirm, setConfirm] = useState(false)
@@ -31,11 +32,12 @@ export const DateDropdown =  (({title}:DateDropdownProps) => {
         <DatePicker
           modal
           mode="date"
+          locale='ko'
           open={open}
           date={date}
           onConfirm={date => {
             setOpen(false)
-            setDate(date)
+            inputChange(date)
             setConfirm(true)
           }}
           onCancel={() => {
