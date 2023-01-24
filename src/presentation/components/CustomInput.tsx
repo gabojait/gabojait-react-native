@@ -1,6 +1,5 @@
-import { theme } from '@/theme'
 import { Icon, useTheme } from '@rneui/themed'
-import React, {useRef, useState} from 'react'
+import React, {useRef} from 'react'
 import { StyleSheet, TextInput, TextInputProps, View,  } from 'react-native'
 import color from '../res/styles/color'
 import type { CustomInputProps} from '@/presentation/components/props/StateProps'
@@ -24,7 +23,7 @@ export const CustomInput = ({inputChange, size='sm', placeholder ,state='none', 
     
     return (
         <View style={[{borderColor:borderColors[state]},styles.view, props.style,{borderRadius:theme.radius[size]}]}>
-            <TextInput 
+            <TextInput
             style={[styles.input]}
             placeholderTextColor={color.grey}
             placeholder={placeholder}
