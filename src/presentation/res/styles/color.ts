@@ -5,6 +5,7 @@ export default {
   error: '#fc0101',
   lightGrey:'#eeeeee',
   grey:'#8e8e8e',
+  grey2:'#9a9a9a',
   primary: '#1cdf71',
   progress1: '#ffdb20',
   progress2: '#f06823',
