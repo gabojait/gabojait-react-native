@@ -12,7 +12,7 @@ export type RootStackNavigationProps<
 const RootStack = createStackNavigator<RootStackParamList>()
 
 export const RootNavigation = () => {
-    
+  console.log("HELLO")
     return (
     <NavigationContainer>
         {/* initialRouteName은 일시적. 추후 자동로그인 가능 여부에 따라 OnboardingNavigation, MainNavigation으로 라우팅될 예정 */}

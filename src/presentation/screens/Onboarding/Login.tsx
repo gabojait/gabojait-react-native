@@ -14,8 +14,10 @@ export type OnboardingProps = StackScreenProps<OnboardingStackParamList, 'Login'
 
 const Login = ({navigation}:OnboardingProps ) => {
 
-    const usernameRef = useRef('')
-    const passwordRef = useRef('')
+  const [loginState, setLoginState] = useState({username: '', password: ''} as LoginRequestDTO)
+    const dispatch = useDispatch()
+  const {data, loading, error} = useSelector((state: RootState) => state.loginReducer.loginResult)
+
 
     return (
         <View style={styles.entireView}>
@@ -24,13 +26,13 @@ const Login = ({navigation}:OnboardingProps ) => {
                 <Gabojait name='gabojait' color={color.primary} size={35}/>
             </View>
             <View style={styles.inputView}>
-                <CustomInput style={styles.input} placeholder={'아이디'} inputChange={(text:string)=>{usernameRef.current = text}}/>
-                <CustomInput style={styles.input} placeholder={'비밀번호'} inputChange={(text:string)=>{passwordRef.current = text}}/>
+                <CustomInput style={styles.input} placeholder={'아이디'} inputChange={(text:string)=> setLoginState(prevState => ({...prevState, username: value}))} />
+                <CustomInput style={styles.input} placeholder={'비밀번호'} inputChange={(text:string)=> setLoginState(prevState => ({...prevState, password: value}))} />
             </View>
             <FilledButton size="sm" title="로그인" 
                 onPress={() => {
-                    console.log("id:",usernameRef.current)
-        console.log("pw:",passwordRef.current)
+                console.log(loginState.username, loginState.password)
+         login({username: loginState.username, password: loginState.password})(dispatch)
                     navigation.popToTop
                 }
             }/> 
