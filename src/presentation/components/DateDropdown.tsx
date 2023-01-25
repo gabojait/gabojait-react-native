@@ -5,7 +5,12 @@ import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import colors from '@/presentation/res/styles/color'
 import textStyles from '@/presentation/res/styles/textStyles'
 
-export default () => {
+interface DateDropdownProps{
+  inputChange?:any
+  title:string
+}
+
+export const DateDropdown =  (({inputChange, title}:DateDropdownProps) => {
   const [date, setDate] = useState(new Date())
   const [open, setOpen] = useState(false)
   const [confirm, setConfirm] = useState(false)
@@ -22,21 +27,24 @@ export default () => {
           ]}>
           {confirm == true
             ? `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`
-            : '생년월일 입력'}
+            : title}
         </Text>
         <DatePicker
           modal
           mode="date"
+          locale='ko'
           open={open}
           date={date}
           onConfirm={date => {
             setOpen(false)
-            setDate(date)
+            inputChange(date)
             setConfirm(true)
           }}
           onCancel={() => {
             setOpen(false)
+            setConfirm(false)
           }}
+          title={title}
         />
       </TouchableOpacity>
       <FontAwesomeIcon
@@ -47,13 +55,13 @@ export default () => {
       />
     </View>
   )
-}
+})
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     backgroundColor: 'white',
-    borderRadius: 5,
-    borderWidth: 2,
+    borderRadius: 4,
+    borderWidth: 1.3,
     flexDirection: 'row',
     padding: 0,
     height: 50,

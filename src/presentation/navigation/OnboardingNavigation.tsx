@@ -23,7 +23,11 @@ const OnboardingStack = createStackNavigator<OnboardingStackParamList>()
 const OnboardingNavigation= () => {
     return (
         <OnboardingStack.Navigator initialRouteName='Login'>
-            <OnboardingStack.Screen name='Login' component={Login}/>
+            <OnboardingStack.Screen name='Login' component={Login}
+            options={{
+                header: TitleHeader,
+                title: ""
+             }}/>
             <OnboardingStack.Screen name='Register' component={Register} 
             options={{
                header: TitleHeader,

@@ -1,13 +1,8 @@
 import React, {useState} from 'react'
 import {Icon, Input} from '@rneui/themed'
 import colors from '../res/styles/color'
-import {InputProps} from '@rneui/base'
+import {IconProps, InputProps, makeStyles} from '@rneui/base'
 import color from '../res/styles/color'
-
-const validBorderBottomColor= {borderBottomColor: colors.primary}
-const invalidBorderBottomColor= {borderBottomColor: colors.error}
-const defaultBorderBottomColor= {borderBottomColor: colors.lightGrey}
-const borderBottomWidth = {borderBottomWidth: 2}
 
 interface StateProps{
   state?: 'valid'|'invalid'|'none'
@@ -20,9 +15,10 @@ function judgeRegexError(isCorrect:boolean) {
   if (isCorrect == false) throw Error('지정된 형식이 아닙니다')
 }
 
-export const IconInput = ({inputType,placeholder}:InputTypeProps, props:JSX.IntrinsicAttributes & InputProps) => {
+export const IconInput = ({inputType,placeholder}:InputTypeProps, props:JSX.IntrinsicAttributes & InputProps & IconProps) => {
   const [regexState, setRegexState] = useState<StateProps>({state:'none'})
   const [renderMessage, setRenderMessage] = useState<boolean>(false)
+  const styles = useStyles(regexState)
 
   function isInputEmpty(text:string){
     if(text.length == 0) return true
@@ -94,14 +90,11 @@ export const IconInput = ({inputType,placeholder}:InputTypeProps, props:JSX.Intr
   return (
     <Input 
       {...props}
-      {...regexState.state === 'none'? {inputContainerStyle:[defaultBorderBottomColor,borderBottomWidth]}:
-      regexState.state === 'valid'?{inputContainerStyle:[validBorderBottomColor,borderBottomWidth]}:
-      regexState.state === 'invalid'?{inputContainerStyle:[invalidBorderBottomColor,borderBottomWidth]}:{}}
+      inputContainerStyle={[styles.input]}
       rightIcon={<Icon 
         name="checkmark-circle-outline" type="ionicon" size={18}
-        {...regexState.state === 'none'? {iconStyle:{color:color.lightGrey}}:
-        regexState.state === 'valid'? {iconStyle:{color:color.primary}}:
-        regexState.state === 'invalid'? {iconStyle:{color:color.lightGrey}}:{}}
+        iconStyle={styles.icon}
+        
       />}
       onChangeText={text => {
         handleChange(text)
@@ -114,3 +107,21 @@ export const IconInput = ({inputType,placeholder}:InputTypeProps, props:JSX.Intr
     />
   )
 }
+
+const useStyles = makeStyles((regexState:StateProps) => {
+  const stateColors = {
+    none: colors.lightGrey,
+    valid: colors.primary,
+    invalid: colors.error
+  }
+
+  return {
+    input:{
+      borderBottomColor: stateColors[regexState.state!!],
+      borderBottomWidth: 1.5
+    },
+    icon:{
+      color: stateColors[regexState.state!!]
+    }
+  }
+})
