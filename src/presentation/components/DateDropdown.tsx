@@ -7,14 +7,23 @@ import textStyles from '@/presentation/res/styles/textStyles'
 
 interface DateDropdownProps{
   inputChange?:any
-  title:string
+  label:string
 }
 
-export const DateDropdown =  (({inputChange, title}:DateDropdownProps) => {
+export const DateDropdown =  (({inputChange, label}:DateDropdownProps) => {
   const [date, setDate] = useState(new Date())
   const [open, setOpen] = useState(false)
   const [confirm, setConfirm] = useState(false)
+  const [title, setTitle] = useState(label)
 
+  function updateDate(date:Date):string{
+    let yy = date.getFullYear().toString()
+    let mm = date.getMonth()+1 < 10? '0'+ (date.getMonth()+1).toString() : (date.getMonth()+1).toString()
+    let dd = date.getDate()+1 < 10? '0'+ (date.getDate()).toString() : (date.getDate()).toString()
+    let text = `${yy}-${mm}-${dd}`
+    inputChange(text)
+    return text
+  }
   return (
     <View
       style={[styles.container, {borderColor: confirm == true ? colors.primary : colors.disable}]}>
@@ -25,26 +34,24 @@ export const DateDropdown =  (({inputChange, title}:DateDropdownProps) => {
             textStyles.size4,
             textStyles.weight2,
           ]}>
-          {confirm == true
-            ? `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`
-            : title}
+            {title}
         </Text>
         <DatePicker
           modal
           mode="date"
-          locale='ko'
           open={open}
           date={date}
           onConfirm={date => {
             setOpen(false)
-            inputChange(date)
+            let text= updateDate(date)
+            setTitle(text)
             setConfirm(true)
           }}
           onCancel={() => {
             setOpen(false)
             setConfirm(false)
           }}
-          title={title}
+          title={label}
         />
       </TouchableOpacity>
       <FontAwesomeIcon

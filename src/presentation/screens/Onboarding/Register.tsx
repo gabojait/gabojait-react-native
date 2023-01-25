@@ -18,7 +18,7 @@ const Register = ({navigation, route}:RegisterProps) => {
     const passwordRef = useRef('')
     const passwordCheckRef = useRef('')
     const emailRef = useRef('')
-    const realnameRef = useRef('')
+    const legalName = useRef('')
     const birthdateRef = useRef('')
 
     const [usernameState, setUsernameState]= useState<StateProp>({state:'none'})
@@ -108,14 +108,16 @@ const Register = ({navigation, route}:RegisterProps) => {
             </View>
             <RegisterInput state={realnameState.state} label='이름(실명)'
                 inputChange={(text:string)=>{
-                    realnameRef.current = text
+                    legalName.current = text
                     let state = getState(realnameRegex.test(text))
                     setRealnameState(state)
                 }}
             />
             <View style={styles.itemBox}>
                 <Text style={styles.label}>생년월일 입력</Text>
-                <DateDropdown title={'생년월일 입력'} inputChange={(text:string)=>{console.log(text)}}/>
+                <DateDropdown label={'생년월일 입력'} 
+                    inputChange={(text:string)=>{ console.log(text) }}
+                />
             </View>
             <View style={styles.itemBox}>
                 <Text style={styles.label}>성별</Text>
