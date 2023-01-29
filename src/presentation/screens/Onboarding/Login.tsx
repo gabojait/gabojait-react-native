@@ -8,17 +8,17 @@ import color from '@/presentation/res/styles/color'
 import {CustomInput} from '@/presentation/components/CustomInput'
 import Gabojait from '@/presentation/components/icon/Gabojait'
 import {useDispatch, useSelector} from 'react-redux'
-import {RootState} from '@/redux/reducers'
 import {LoginRequestDTO} from '@/redux/action/login'
 import {login} from '@/redux/reducers/loginReducer'
 import Heart_circled from '@/presentation/components/icon/Heart_circled'
+import {useAppDispatch, useAppSelector} from '@/redux/hooks'
 
 export type OnboardingProps = StackScreenProps<OnboardingStackParamList, 'Login'>
 
 const Login = ({navigation}: OnboardingProps) => {
   const [loginState, setLoginState] = useState({username: '', password: ''} as LoginRequestDTO)
-  const dispatch = useDispatch()
-  const {data, loading, error} = useSelector((state: RootState) => state.loginReducer.loginResult)
+  const dispatch = useAppDispatch()
+  const {data, loading, error} = useAppSelector(state => state.loginReducer.loginResult)
 
   return (
     <View style={styles.entireView}>
@@ -53,7 +53,7 @@ const Login = ({navigation}: OnboardingProps) => {
         title="로그인"
         onPress={() => {
           console.log(loginState.username, loginState.password)
-          login({username: loginState.username, password: loginState.password})(dispatch)
+          dispatch(login({username: loginState.username, password: loginState.password}))
           navigation.popToTop
         }}
       />
