@@ -4,7 +4,6 @@ import {loginAsyncAction, LoginRequestDTO} from '../action/login'
 
 import createAsyncThunk from '@/lib/createAsyncThunk'
 import {LoginAction} from '@/redux/action_types/login'
-import {LOGIN, LOGIN_SUCCESS, LOGIN_ERROR} from '@/redux/action/login'
 import * as loginApi from '@/api/login'
 import {AsyncState, asyncState, createAsyncReducer} from '@/lib/reducerUtils'
 import {User} from '@/model/User'

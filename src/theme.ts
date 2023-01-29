@@ -59,8 +59,9 @@ export const theme = createTheme({
     error: '#FC0101',
     warning: '#F06823',
     disabled: '#D9D9D9',
-    grey0: '#6C6C6C',
-    grey1: '#8E8E8E',
+    grey0: '#EEEEEE',
+    grey1: '#6C6C6C',
+    grey2: '#8E8E8E',
   },
   mode: 'light',
   components: {

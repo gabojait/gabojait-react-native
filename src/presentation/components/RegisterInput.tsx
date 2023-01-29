@@ -49,6 +49,9 @@ export const RegisterInput = ({inputChange, size='sm', label, placeholder, isFor
                     secureTextEntry={isForPassword?secure:false}
                     label={label}
                     labelStyle={styles.label}
+                    autoCapitalize='none'
+                    autoComplete='off'
+                    autoCorrect={false}
                 />
         </View>       
     )
