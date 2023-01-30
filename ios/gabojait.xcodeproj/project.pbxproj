@@ -11,14 +11,11 @@
 		0C80B921A6F3F58F76C31292 /* libPods-gabojait.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-gabojait.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		54EBC332858F4753AEE1603B /* gabojait.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F2E05F2C5D88429F8B569FE7 /* gabojait.ttf */; };
 		748D0B58297D838D00D52108 /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = D58FC3FF289E1A610083569D /* Fonts */; };
 		7491F128297DA89300CD23E4 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		7699B88040F8A987B510C191 /* libPods-gabojait-gabojaitTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-gabojait-gabojaitTests.a */; };
-		7E991E679B4245DFABCB95F0 /* heart_circled.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0C18888FE37A4401ADB29A76 /* heart_circled.ttf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		D58FC400289E1A610083569D /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = D58FC3FF289E1A610083569D /* Fonts */; };
-
+		8ACA7506D45C4ECEB4BB4F00 /* fontello.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D0FE3AF2A7D84188B1B0E2C7 /* fontello.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,7 +32,6 @@
 		00E356EE1AD99517003FC87E /* gabojaitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = gabojaitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* gabojaitTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = gabojaitTests.m; sourceTree = "<group>"; };
-		0C18888FE37A4401ADB29A76 /* heart_circled.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = heart_circled.ttf; path = ../src/assets/fonts/heart_circled.ttf; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* gabojait.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = gabojait.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = gabojait/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = gabojait/AppDelegate.mm; sourceTree = "<group>"; };
@@ -50,10 +46,8 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = gabojait/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-gabojait-gabojaitTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gabojait-gabojaitTests.release.xcconfig"; path = "Target Support Files/Pods-gabojait-gabojaitTests/Pods-gabojait-gabojaitTests.release.xcconfig"; sourceTree = "<group>"; };
 		D58FC3FF289E1A610083569D /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fonts; sourceTree = "<group>"; };
-		D5B7215C29802A9900505ACF /* heart_circled.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = heart_circled.ttf; sourceTree = SOURCE_ROOT; };
-		D5B7215D29802A9900505ACF /* gabojait.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = gabojait.ttf; sourceTree = SOURCE_ROOT; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		F2E05F2C5D88429F8B569FE7 /* gabojait.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = gabojait.ttf; path = ../src/assets/fonts/gabojait.ttf; sourceTree = "<group>"; };
+		D0FE3AF2A7D84188B1B0E2C7 /* fontello.ttf */ = {isa = PBXFileReference; name = "fontello.ttf"; path = "../src/assets/fonts/fontello.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -152,9 +146,7 @@
 		960EC18ED72C4D5C94936034 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				D5B7215C29802A9900505ACF /* heart_circled.ttf */,
-				D5B7215D29802A9900505ACF /* gabojait.ttf */,
-
+				D0FE3AF2A7D84188B1B0E2C7 /* fontello.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -267,8 +259,7 @@
 				7491F128297DA89300CD23E4 /* Images.xcassets in Resources */,
 				748D0B58297D838D00D52108 /* Fonts in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
-				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-
+				8ACA7506D45C4ECEB4BB4F00 /* fontello.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

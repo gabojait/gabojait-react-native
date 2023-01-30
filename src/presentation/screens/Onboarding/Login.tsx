@@ -10,7 +10,6 @@ import Gabojait from '@/presentation/components/icon/Gabojait'
 import {useDispatch, useSelector} from 'react-redux'
 import {LoginRequestDTO} from '@/redux/action/login'
 import {login} from '@/redux/reducers/loginReducer'
-import Heart_circled from '@/presentation/components/icon/Heart_circled'
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
 
 export type OnboardingProps = StackScreenProps<OnboardingStackParamList, 'Login'>
@@ -24,8 +23,8 @@ const Login = ({navigation}: OnboardingProps) => {
     <View style={styles.entireView}>
       <View style={{flex: 0.3}} />
       <View style={styles.logoView}>
-        <Gabojait name="gabojait" color={color.primary} size={35} />
-        <Heart_circled name="heart_circled" color={color.primary} size={35} />
+        <Gabojait name="gabozait" color={color.primary} size={35} />
+        <Gabojait name="heart-circle" color={color.primary} size={35} />
       </View>
       <View style={styles.inputView}>
         <CustomInput
@@ -34,9 +33,6 @@ const Login = ({navigation}: OnboardingProps) => {
           inputChange={(text: string) =>
             setLoginState(prevState => ({...prevState, username: text}))
           }
-          autoCapitalize="none"
-          autoComplete="off"
-          autoCorrect={false}
         />
         <CustomInput
           style={styles.input}

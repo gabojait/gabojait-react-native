@@ -4,6 +4,7 @@ import React, {useRef, useState} from 'react'
 import {StyleSheet, TextInput, TextInputProps, View} from 'react-native'
 import color from '../res/styles/color'
 import type {CustomInputProps} from '@/presentation/components/props/StateProps'
+
 export const CustomInput = ({
   inputChange,
   size = 'sm',
@@ -41,6 +42,9 @@ export const CustomInput = ({
         placeholderTextColor={color.grey}
         placeholder={placeholder}
         onChangeText={text => updateText(text)}
+        autoCapitalize="none"
+        autoComplete="off"
+        autoCorrect={false}
         {...props}
       />
       <Icon

@@ -36,7 +36,7 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Fonts/Pretendard-Bold.ttf</string>
@@ -61,6 +61,7 @@
 		<string>Fonts/Zocial.ttf</string>
 		<string>Fonts/gabojait.ttf</string>
 		<string>Fonts/heart_circled.ttf</string>
+		<string>fontello.ttf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
