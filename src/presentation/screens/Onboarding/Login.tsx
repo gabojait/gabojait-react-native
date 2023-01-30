@@ -8,9 +8,9 @@ import color from '@/presentation/res/styles/color'
 import {CustomInput} from '@/presentation/components/CustomInput'
 import Gabojait from '@/presentation/components/icon/Gabojait'
 import {useDispatch, useSelector} from 'react-redux'
-import {LoginRequestDTO} from '@/redux/action/login'
 import {login} from '@/redux/reducers/loginReducer'
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
+import LoginRequestDTO from '@/model/LoginRequestDto'
 
 export type OnboardingProps = StackScreenProps<OnboardingStackParamList, 'Login'>
 

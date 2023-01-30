@@ -1,5 +1,6 @@
 import {combineReducers} from 'redux'
 import {loginReducer} from './loginReducer'
+import { registerReducer } from './registerReducer'
 
 export interface Result<T> {
   data?: T
@@ -12,6 +13,7 @@ export class Empty {}
 // 모든 Reducer를 모아 하나의 Reducer로 만들어줍니다!
 const rootReducer = combineReducers({
   loginReducer,
+  registerReducer
 })
 
 // 루트 리듀서를 내보내주세요.
