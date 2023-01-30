@@ -1,3 +1,4 @@
 import {LoginActions} from './login'
 import { RegisterActions } from './register'
-export type Action = LoginActions | RegisterActions
+import  {BoardSwitchActions} from '@/redux/action/boardSwitchActions'
+export type Action = LoginActions | RegisterActions | BoardSwitchActions
