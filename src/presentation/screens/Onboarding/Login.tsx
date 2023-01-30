@@ -1,7 +1,7 @@
 import {StackScreenProps} from '@react-navigation/stack'
 import {FilledButton} from '@/presentation/components/Button'
 import {Image, Text, useTheme} from '@rneui/themed'
-import React, {useRef, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {StyleSheet, TouchableOpacity, View} from 'react-native'
 import {OnboardingStackParamList, RootStackParamList} from '@/presentation/navigation/types'
 import color from '@/presentation/res/styles/color'
@@ -19,6 +19,12 @@ const Login = ({navigation}: OnboardingProps) => {
   const dispatch = useAppDispatch()
   const {data, loading, error} = useAppSelector(state => state.loginReducer.loginResult)
 
+  useEffect(() => {
+    if (data) {
+      // Todo: 로그인 반환값 처리!
+    }
+  }, [data])
+
   return (
     <View style={styles.entireView}>
       <View style={{flex: 0.3}} />
@@ -30,19 +36,20 @@ const Login = ({navigation}: OnboardingProps) => {
         <CustomInput
           style={styles.input}
           placeholder={'아이디'}
-          inputChange={(text: string) =>
+          onChangeText={(text: string) =>
             setLoginState(prevState => ({...prevState, username: text}))
           }
+          value={loginState.username}
         />
         <CustomInput
           style={styles.input}
           placeholder={'비밀번호'}
-          inputChange={(text: string) =>
+          onChangeText={(text: string) =>
             setLoginState(prevState => ({...prevState, password: text}))
           }
           secureTextEntry={true}
+          value={loginState.password}
         />
-        <Text>{data?.birthdate}</Text>
       </View>
       <FilledButton
         size="sm"
@@ -50,7 +57,6 @@ const Login = ({navigation}: OnboardingProps) => {
         onPress={() => {
           console.log(loginState.username, loginState.password)
           dispatch(login({username: loginState.username, password: loginState.password}))
-          navigation.popToTop
         }}
       />
       <View style={styles.linkTextView}>

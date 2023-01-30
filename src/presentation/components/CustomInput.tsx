@@ -6,7 +6,6 @@ import color from '../res/styles/color'
 import type {CustomInputProps} from '@/presentation/components/props/StateProps'
 
 export const CustomInput = ({
-  inputChange,
   size = 'sm',
   placeholder,
   state = 'none',
@@ -24,10 +23,6 @@ export const CustomInput = ({
     valid: color.primary,
     invalid: color.error,
   }
-  function updateText(text: string) {
-    valueRef.current = text
-    inputChange(text)
-  }
 
   return (
     <View
@@ -41,7 +36,6 @@ export const CustomInput = ({
         style={[styles.input]}
         placeholderTextColor={color.grey}
         placeholder={placeholder}
-        onChangeText={text => updateText(text)}
         autoCapitalize="none"
         autoComplete="off"
         autoCorrect={false}
