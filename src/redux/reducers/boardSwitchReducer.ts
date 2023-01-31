@@ -2,27 +2,26 @@ import { BoardSwitchActions } from '@/redux/action/boardSwitchActions'
 import React from 'react'
 import { BoardSwitchActionType } from '../action_types/boardSwitchTypes'
 
-const initialStates = {
-    switch:BoardSwitchActionType.GROUP_SWITCH
+const initialStates:any = {
+    switchTitle:BoardSwitchActionType.FiND_TEAMATE_SWITCH
 }
 
-const boardSwitchReducers = (state = initialStates,action:BoardSwitchActions) => {
-    const {type} = action
-
-    switch(type) {
-        case BoardSwitchActionType.GROUP_SWITCH: {
+const boardSwitchReducer = (state = initialStates, action:BoardSwitchActions) => {
+    switch(action.type) {
+        case BoardSwitchActionType.FIND_GROUP_SWITCH: {
             return {
                 ...state,
-                switch: BoardSwitchActionType.GROUP_SWITCH
+                switchTitle: BoardSwitchActionType.FiND_TEAMATE_SWITCH
             }
         }
-        case BoardSwitchActionType.TEAMATE_SWITCH: {
+        case BoardSwitchActionType.FiND_TEAMATE_SWITCH: {
             return {
                 ...state,
-                switch: BoardSwitchActionType.TEAMATE_SWITCH
-            }
+                switchTitle: BoardSwitchActionType.FIND_GROUP_SWITCH
+            } 
         }
+        default:
+            return state
     }
 }
-
-export default boardSwitchReducers
+export default boardSwitchReducer

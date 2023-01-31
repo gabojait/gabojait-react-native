@@ -1,4 +1,4 @@
 export const enum BoardSwitchActionType {
-    GROUP_SWITCH = 'GROUP_SWITCH',
-    TEAMATE_SWITCH = 'TEAMATE_SWITCH'
+    FIND_GROUP_SWITCH = '팀 찾기',
+    FiND_TEAMATE_SWITCH = '팀원찾기'
 }

@@ -1,10 +1,11 @@
 import {BoardSwitchActionType} from '@/redux/action_types/boardSwitchTypes'
-interface GroupSwitchAction {
-    type: BoardSwitchActionType.GROUP_SWITCH
+
+export interface FindGroupSwitchAction {
+    type: BoardSwitchActionType.FIND_GROUP_SWITCH
 }
 
-interface TeamateSwitchAction {
-    type: BoardSwitchActionType.TEAMATE_SWITCH
+export interface FindTeamateSwitchAction {
+    type: BoardSwitchActionType.FiND_TEAMATE_SWITCH
 }
 
-export type BoardSwitchActions = GroupSwitchAction | TeamateSwitchAction
+export type BoardSwitchActions = FindGroupSwitchAction | FindTeamateSwitchAction
