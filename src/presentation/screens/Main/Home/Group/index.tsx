@@ -1,24 +1,34 @@
-import {NavigationContainer} from '@react-navigation/native'
-import {createStackNavigator} from '@react-navigation/stack'
+import {CompositeNavigationProp, NavigationContainer} from '@react-navigation/native'
+import {createStackNavigator, StackNavigationProp} from '@react-navigation/stack'
 import React from 'react'
 import Detail from './Detail'
 import Editor from './Editor'
 import HomeHeader from '@/presentation/screens/Headers/HomeHeader'
 import List from './List'
 import PositionSelector from './PositionSelector'
+import { GroupStackParamList } from '@/presentation/navigation/types'
+import { BoardStackNavigationProps } from '@/presentation/navigation/HomeNavigation'
+
+type GroupNavigationProp<
+T extends keyof GroupStackParamList = 'List'
+> = StackNavigationProp<GroupStackParamList, T>
+
+export type GroupNavigationProps<
+  T extends keyof GroupStackParamList = 'List'
+> = CompositeNavigationProp< GroupNavigationProp<T>, BoardStackNavigationProps<'Group'>>
 
 const Group = () => {
-  const BoardStack = createStackNavigator()
+  const GroupStack = createStackNavigator<GroupStackParamList>()
   return (
-    <BoardStack.Navigator initialRouteName="List">
-      <BoardStack.Screen name="List" component={List} options={{
+    <GroupStack.Navigator initialRouteName="List">
+      <GroupStack.Screen name="List" component={List} options={{
         header: HomeHeader,
         headerTitle: "팀 구하기",
       }}/>
-      <BoardStack.Screen name="Detail" component={Detail} />
-      <BoardStack.Screen name="PositionSelector" component={PositionSelector} />
-      <BoardStack.Screen name="Editor" component={Editor} />
-    </BoardStack.Navigator>
+      <GroupStack.Screen name="Detail" component={Detail} />
+      <GroupStack.Screen name="PositionSelector" component={PositionSelector} />
+      <GroupStack.Screen name="Editor" component={Editor} />
+    </GroupStack.Navigator>
   )
 }
 

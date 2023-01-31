@@ -1,23 +1,41 @@
+import FloatingButton from '@/presentation/components/FloatingButton'
+import { GroupStackParamList } from '@/presentation/navigation/types'
+import { StackScreenProps } from '@react-navigation/stack'
 import {CardTitle} from '@rneui/base/dist/Card/Card.Title'
 import {Card, Text, useTheme} from '@rneui/themed'
 import React from 'react'
-import {PixelRatio, View} from 'react-native'
+import {FlatList, PixelRatio, TouchableHighlight, TouchableOpacity, View} from 'react-native'
 import GroupListCard, {Part} from '../../../../components/GroupListCard'
 
-const List = () => {
-  const {theme} = useTheme()
+export type GroupStackParamListProps = StackScreenProps<GroupStackParamList, 'List'>
+
+const List = ({navigation}:GroupStackParamListProps) => {
+  const {theme} = useTheme() 
+  const arr = [
+  [new Part('design', 'D', ['KimWash']),
+  new Part('p????', 'P', ['KimWash']),
+  new Part('frontend', 'F', ['KimWash']),
+  new Part('backend', 'B', ['KimWash'])],
+]
+  function moveToNext(){
+    console.log("navigate!")
+    navigation.navigate('Detail')
+  }
+  
   return (
-    <View style={{flex: 1, backgroundColor: 'white'}}>
-      <GroupListCard
-        title="가보자잇"
-        parts={[
-          new Part('design', '디자인', ['KimWash']),
-          new Part('frontend', '프론트엔드', ['KimWash']),
-        ]}
-        onClick={() => {
-          
-        }}
+    <View style={{flex: 1, flexGrow:1, backgroundColor: 'white', justifyContent:'flex-end', position:'relative'}}>
+      <FlatList
+        keyExtractor={item => item.toString()}
+        data={arr}
+        renderItem={({item}) => 
+          <GroupListCard
+            title="가보자잇"
+            parts={item}
+          />}
       />
+      <View style={{position:'absolute',flex:1, flexDirection:'column-reverse',justifyContent:'flex-start', alignItems:'flex-end', width: '95%', backgroundColor:theme.colors.disabled}}>
+        <FloatingButton title='팀 생성' onPress={() => moveToNext()}/>
+      </View>
     </View>
   )
 }

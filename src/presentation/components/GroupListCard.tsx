@@ -1,8 +1,9 @@
 import {CardProps} from '@rneui/base'
 import {Card, Text, useTheme} from '@rneui/themed'
 import React from 'react'
-import {AppRegistry, FlatList, PixelRatio, View} from 'react-native'
-import Icon from 'react-native-vector-icons/MaterialIcons'
+import {PixelRatio, View} from 'react-native'
+import color from '../res/styles/color'
+import CustomIcon from '@/presentation/components/icon/Gabojait'
 
 export class Part {
   id: string
@@ -32,25 +33,23 @@ const GroupListCard: React.FC<CardProps & {title: string; parts: Array<Part>}> =
           height: 2,
         },
         borderRadius: 20,
-        paddingVertical: 25,
+        paddingBottom:25,
         paddingStart: 25,
+        flex:1
       }}>
-      <Text h4>{title}</Text>
+      <Text style={{justifyContent:'flex-end',fontWeight:theme.fontWeight.bold, fontSize:theme.fontSize.md}}>{title}</Text>
       <View style={{padding: 10, flexDirection: 'row', justifyContent: 'center'}}>
         {parts.map(part => (
           <PartIcon key={part.id} partInitial={part.name[0]} />
         ))}
-      </View>
-
-      <View
+        <View
         style={{
-          position: 'absolute',
-          end: 0,
-          display: 'flex',
           height: '100%',
           justifyContent: 'center',
+          paddingHorizontal:10
         }}>
-        <Icon name="chevron-right" size={30} style={{margin: -10}} />
+        <CustomIcon name="arrow-next" size={30} style={{margin: -10}} color={color.primary}/>
+      </View>
       </View>
     </Card>
   )
@@ -71,7 +70,7 @@ const PartIcon: React.FC<{partInitial: string; isDone?: boolean}> = ({
         borderRadius: PixelRatio.getPixelSizeForLayoutSize(38),
         width: PixelRatio.getPixelSizeForLayoutSize(20),
         height: PixelRatio.getPixelSizeForLayoutSize(20),
-        marginHorizontal: PixelRatio.getPixelSizeForLayoutSize(3),
+        marginHorizontal: PixelRatio.getPixelSizeForLayoutSize(2),
         backgroundColor: isDone ? theme.colors.primary : '',
       }}>
       {<Text h3>{partInitial}</Text>}
