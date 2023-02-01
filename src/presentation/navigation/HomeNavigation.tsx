@@ -2,8 +2,8 @@ import { BoardStackParamList } from '@/presentation/navigation/types'
 import { CompositeNavigationProp, NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack'
 import React from 'react'
-import Group from '../screens/Main/Home/Group'
 import TeamMate from '../screens/Main/Home/TeamMate'
+import GroupNavigation from './GroupNavigation'
 import { RootStackNavigationProps } from './RootNavigation'
 
 type BoardNavigationProp<
@@ -19,7 +19,7 @@ const BoardStack = createStackNavigator<BoardStackParamList>()
 const Home = () => {
   return (
     <BoardStack.Navigator initialRouteName='Group' screenOptions={{headerShown:false}}>
-        <BoardStack.Screen name='Group' component={Group}/>
+        <BoardStack.Screen name='Group' component={GroupNavigation}/>
         <BoardStack.Screen name='TeamMate' component={TeamMate}/>
     </BoardStack.Navigator>
   )
