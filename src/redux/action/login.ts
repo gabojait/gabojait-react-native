@@ -2,11 +2,8 @@ import {createAsyncAction} from 'typesafe-actions'
 import {AxiosError} from 'axios'
 import {User} from '@/model/User'
 import {ActionType} from 'typesafe-actions'
+import LoginRequestDTO from '@/model/LoginRequestDto'
 
-export interface LoginRequestDTO {
-  username: string
-  password: string
-}
 
 export const LOGIN = 'LOGIN'
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS'

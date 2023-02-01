@@ -1,5 +1,5 @@
 import {CheckBox, makeStyles, Text, useTheme} from '@rneui/themed'
-import React, {useEffect, useRef, useState} from 'react'
+import React, {createRef, useEffect, useRef, useState} from 'react'
 import {Alert, Modal, ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native'
 import {FilledButton, OutlinedButton} from '@/presentation/components/Button'
 import {OnboardingStackParamList, RootStackParamList} from '@/presentation/navigation/types'
@@ -16,27 +16,17 @@ import {Link, useNavigation} from '@react-navigation/native'
 import {ValidatorState} from '@/presentation/components/props/StateProps'
 import Icon from 'react-native-vector-icons/Ionicons'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+import AgreementItem, {AgreementState} from '@/presentation/components/Agreement'
+import DropdownWithoutItem from '@/presentation/components/DropdownWithoutItem'
+import DropdownButton from '@/presentation/components/DropdownWithoutItem'
+import {
+  checkNicknameDuplicate,
+  checkUsernameDuplicate,
+  register,
+} from '@/redux/reducers/registerReducer'
+import {useAppDispatch, useAppSelector} from '@/redux/hooks'
 
 export type RegisterProps = StackScreenProps<OnboardingStackParamList, 'Register'>
-
-interface AgreementState {
-  checkedAll: boolean
-  items: Agreement[]
-}
-
-interface SelectItem {
-  text: string
-  value: string
-}
-
-interface Agreement extends SelectItem {
-  checked: boolean
-  url: string
-}
-
-interface AgreementItemProps extends Agreement {
-  onCheckedChange: (checked: boolean) => void
-}
 
 const agreementItems = [
   {
@@ -58,10 +48,8 @@ const Register = ({navigation, route}: RegisterProps) => {
     gender: Gender.Female,
     birthdate: new Date().toISOString(),
   })
-  useEffect(() => {
-    console.log(registerState)
-  }, [registerState])
   const {theme} = useTheme()
+  const dispatch = useAppDispatch()
 
   const [agreementState, setAgreementState] = useState<AgreementState>({
     checkedAll: false,
@@ -88,6 +76,39 @@ const Register = ({navigation, route}: RegisterProps) => {
     }
   }
 
+  const {
+    data: registerResult,
+    loading: registerLoading,
+    error: registerError,
+  } = useAppSelector(state => state.registerReducer.registerResult)
+
+  const {
+    data: usernameDup,
+    loading: usernameDupLoading,
+    error: usernameDupError,
+  } = useAppSelector(state => state.registerReducer.usernameDupCheckResult)
+
+  const {
+    data: nicknameDup,
+    loading: nicknameDupLoading,
+    error: nicknameDupError,
+  } = useAppSelector(state => state.registerReducer.nicknameDupCheckResult)
+
+  useEffect(() => {
+    console.log(registerResult)
+  }, [registerResult])
+
+  const checkAllFieldsValidate = () => {
+    //FIXME: 개똥코드. 고쳐야해요
+    return (
+      usernameRegex.test(registerState.username ?? '') &&
+      nicknameRegex.test(registerState.nickname ?? '') &&
+      passwordRegex.test(registerState.password ?? '') &&
+      emailRegex.test(registerState.email ?? '') &&
+      agreementState.checkedAll
+    )
+  }
+
   return (
     <View>
       <ScrollView style={styles.view} showsVerticalScrollIndicator={false}>
@@ -102,7 +123,14 @@ const Register = ({navigation, route}: RegisterProps) => {
               }}
             />
           </View>
-          <OutlinedButton title="중복확인" size="sm" />
+          <OutlinedButton
+            title="중복확인"
+            size="sm"
+            onPress={() => {
+              if (usernameRegex.test(registerState.username ?? ''))
+                dispatch(checkUsernameDuplicate(registerState.username ?? ''))
+            }}
+          />
         </View>
         <View style={styles.item}>
           <View style={{flex: 5}}>
@@ -115,7 +143,14 @@ const Register = ({navigation, route}: RegisterProps) => {
               }}
             />
           </View>
-          <OutlinedButton title="중복확인" size="sm" />
+          <OutlinedButton
+            title="중복확인"
+            size="sm"
+            onPress={() => {
+              if (nicknameRegex.test(registerState.nickname ?? ''))
+                dispatch(checkNicknameDuplicate(registerState.nickname ?? ''))
+            }}
+          />
         </View>
         <View style={styles.item}>
           <RegisterInput
@@ -173,14 +208,14 @@ const Register = ({navigation, route}: RegisterProps) => {
 
         <View style={styles.itemBox}>
           <Text style={styles.label}>생년월일 입력</Text>
-          <TouchableOpacity onPress={() => setModalOpened(true)}>
-            <View style={styles.dateDropdown}>
-              <Text style={{alignSelf: 'baseline'}}>
-                {new Date(registerState.birthdate ?? '생년월일 입력').toLocaleDateString()}
-              </Text>
-              <Icon name="chevron-down-outline" size={18} />
-            </View>
-          </TouchableOpacity>
+          <DropdownButton
+            text={
+              !registerState.birthdate
+                ? '생년월일 입력'
+                : new Date(registerState.birthdate).toLocaleDateString()
+            }
+            onClick={() => setModalOpened(true)}
+          />
         </View>
 
         <View style={styles.itemBox}>
@@ -249,7 +284,9 @@ const Register = ({navigation, route}: RegisterProps) => {
         </View>
         <FilledButton
           title="가입하기"
-          onPress={() => navigation.navigate('CompleteOnboarding')}
+          onPress={() => {
+            if (checkAllFieldsValidate()) dispatch(register(registerState))
+          }}
           containerStyle={{marginBottom: 40}}
         />
       </ScrollView>
@@ -267,43 +304,7 @@ const Register = ({navigation, route}: RegisterProps) => {
   )
 }
 
-const AgreementItem: React.FC<AgreementItemProps & RegisterProps> = props => {
-  const {theme} = useTheme()
-  const navigation = props.navigation.getParent()!
-  return (
-    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-      <CheckBox
-        checked={props.checked}
-        onPress={() => props.onCheckedChange(!props.checked)}
-        title={props.text}
-        containerStyle={{alignSelf: 'baseline', paddingEnd: 0, marginEnd: 0}}
-        checkedIcon={<MaterialIcon name="check-box" size={18} color={theme.colors.primary} />}
-        uncheckedIcon={
-          <MaterialIcon name="check-box-outline-blank" size={18} color={theme.colors.grey2} />
-        }
-      />
-      <Text
-        onPress={() =>
-          navigation.navigate('WebView', {
-            url: props.url,
-            title: '약관',
-          })
-        }>
-        약관보기
-      </Text>
-    </View>
-  )
-}
-
 const useStyles = makeStyles((theme, props: RegisterProps) => ({
-  dateDropdown: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    borderWidth: 1,
-    borderColor: '#EEEEEE',
-    padding: 12,
-    borderRadius: 4,
-  },
   agreementContainer: {
     borderRadius: 5,
     borderWidth: 1,
