@@ -72,18 +72,6 @@ const Editor = ({navigation, route}: GroupStackProps) => {
           </View>
         </>}
       />
-
-      {/* <View style={styles.item}>
-        <Text style={styles.text}>원하는 팀원</Text>
-        <View style={[styles.inputBox, {borderRadius:20, justifyContent:'center', padding:20}]}>
-          <View style={{alignItems:'center'}}>
-            <TouchableOpacity onPress={()=> {addPositionMaker}}>
-              <CustomIcon name="plus-square" size={25}/>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View> */}
-
     </>    
   )
 }
