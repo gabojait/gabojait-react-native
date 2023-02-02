@@ -1,5 +1,6 @@
 import {combineReducers} from 'redux'
 import boardSwitchReducer from './boardSwitchReducer'
+import countReducer from './countReducer'
 import {loginReducer} from './loginReducer'
 import { registerReducer } from './registerReducer'
 
@@ -15,7 +16,8 @@ export class Empty {}
 const rootReducer = combineReducers({
   loginReducer,
   boardSwitchReducer,
-  registerReducer
+  registerReducer,
+  countReducer
 })
 
 // 루트 리듀서를 내보내주세요.

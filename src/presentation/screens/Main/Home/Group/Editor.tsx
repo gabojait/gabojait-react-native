@@ -45,7 +45,7 @@ const Editor = ({navigation, route}: GroupStackProps) => {
 
         keyExtractor={item => item.idex}
         data={array}
-        renderItem={ () => <PositionMaker/>}
+        renderItem={ () => <PositionMaker callback={()=> {/*number, position 바인딩하면 됨*/}}/>}
         contentContainerStyle={{backgroundColor: theme.colors.white, paddingHorizontal:20}}
 
         ListFooterComponent={<>
