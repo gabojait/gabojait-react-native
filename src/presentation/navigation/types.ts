@@ -28,3 +28,10 @@ export type BoardStackParamList = {
   Group: undefined
   TeamMate: undefined
 }
+
+export type GroupStackParamList = {
+  List: undefined
+  Detail: undefined
+  PositionSelector: undefined
+  Editor: undefined
+}

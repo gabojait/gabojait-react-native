@@ -47,6 +47,10 @@ declare module '@rneui/themed' {
       radius: number
       elevation: number
       marginVertical: number
+      shadowOffset:{
+        width: number
+        height: number
+      }
     }
   }
 }
@@ -104,9 +108,13 @@ export const theme = createTheme({
     xl: 20,
   },
   shadow: {
-    opacity: 0.25,
-    radius: 3.84,
+    opacity: 1,
+    radius: 20,
     elevation: 5,
     marginVertical: 5,
+    shadowOffset:{
+      width: 0,
+      height: 40
+    }
   },
 })

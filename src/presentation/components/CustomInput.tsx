@@ -16,7 +16,7 @@ export const CustomInput = ({
   const iconColors = {
     none: color.transparent,
     valid: color.primary,
-    invalid: color.transparent,
+    invalid: color.transparent
   }
   const borderColors = {
     none: color.grey,

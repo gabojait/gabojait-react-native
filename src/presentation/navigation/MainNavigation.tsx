@@ -1,5 +1,5 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
-import {CompositeNavigationProp, NavigationContainer} from '@react-navigation/native'
+import {CompositeNavigationProp} from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import React from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome'
@@ -8,6 +8,7 @@ import MyPage from '../screens/Main/MyPage/MyPage'
 import Team from '../screens/Main/Team'
 import { RootStackNavigationProps } from './RootNavigation'
 import { MainStackParamList} from './types'
+import CustomIcon from '@/presentation/components/icon/Gabojait'
 
 type MainNavigationProp<
 T extends keyof MainStackParamList = 'Home'
@@ -26,21 +27,21 @@ const MainNavigation = () => {
     <MainBottomTab.Navigator backBehavior='none'>
       <MainBottomTab.Group screenOptions={{headerShown: false}} >
         <MainBottomTab.Screen
-          name="Home"
+          name="홈"
           component={Home}
           options={{
-            tabBarIcon: ({size, color}) => <Icon name="home" size={size} color={color} />,
+            tabBarIcon: ({size, color}) => <CustomIcon name="home" size={size} color={color} />,
           }}
         />
         <MainBottomTab.Screen
-          name="Team"
+          name="팀페이지"
           component={Team}
           options={{
             tabBarIcon: ({size, color}) => <Icon name="music" size={size} color={color} />,
           }}
         />
         <MainBottomTab.Screen
-          name="MyPage"
+          name="마이페이지"
           component={MyPage}
           options={{
             tabBarIcon: ({size, color}) => <Icon name="user" size={size} color={color} />,
