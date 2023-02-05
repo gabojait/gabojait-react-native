@@ -46,15 +46,14 @@ const isSuccess = (statusCode: number) => statusCode <= 200 && statusCode < 300
 const client: CustomInstance = axios.create(axiosConfig)
 client.interceptors.request.use(req => {
   console.log(`'${req.url}' Header: ${req.headers},`)
+  console.log(req.data)
   // Todo: 토큰 삽입
   req.headers.Authorization = ''
   return req
 })
 
 client.interceptors.response.use(res => {
-  console.log(
-    `${res.config.url} Responsed: ${res.status},\nHeader: ${res.headers}, \nBody: ${res.data.data}`,
-  )
+  console.log(`${res.config.url} Responsed: ${res.status}, \nBody: ${res.data.data}`)
   try {
     if (isSuccess(res.status)) {
       if (!res.data.data || res.status == 204) {

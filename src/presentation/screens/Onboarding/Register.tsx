@@ -8,7 +8,14 @@ import {RegisterInput} from '@/presentation/components/RegisterInput'
 import color from '@/presentation/res/styles/color'
 import {DateDropdown} from '@/presentation/components/DateDropdown'
 import RegisterRequestDto from '@/model/RegisterRequestDto'
-import {emailRegex, nicknameRegex, passwordRegex, realnameRegex, usernameRegex} from '@/util'
+import {
+  authCodeRegex,
+  emailRegex,
+  nicknameRegex,
+  passwordRegex,
+  realnameRegex,
+  usernameRegex,
+} from '@/util'
 import {Gender} from '@/model/Gender'
 import globalStyles from '@/styles'
 import DatePickerModal from '@/presentation/components/DatePickerModal'
@@ -23,8 +30,11 @@ import {
   checkNicknameDuplicate,
   checkUsernameDuplicate,
   register,
+  sendAuthCode,
+  verifyAuthCode,
 } from '@/redux/reducers/registerReducer'
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
+import {ModalContext} from '@/presentation/components/modal/context'
 
 export type RegisterProps = StackScreenProps<OnboardingStackParamList, 'Register'>
 
@@ -50,6 +60,7 @@ const Register = ({navigation, route}: RegisterProps) => {
   })
   const {theme} = useTheme()
   const dispatch = useAppDispatch()
+  const modal = React.useContext(ModalContext)
 
   const [agreementState, setAgreementState] = useState<AgreementState>({
     checkedAll: false,
@@ -75,6 +86,7 @@ const Register = ({navigation, route}: RegisterProps) => {
       return regex.test(text) ? 'valid' : 'invalid'
     }
   }
+  // Todo: 우선 단순 리퀘 구현. 추후 에러 핸들링 등 예정.
 
   const {
     data: registerResult,
@@ -82,18 +94,33 @@ const Register = ({navigation, route}: RegisterProps) => {
     error: registerError,
   } = useAppSelector(state => state.registerReducer.registerResult)
 
+  useEffect(() => {
+    if (!registerLoading && !registerError) {
+    }
+  }, [registerResult, registerLoading, registerError])
+
   const {
     data: usernameDup,
     loading: usernameDupLoading,
     error: usernameDupError,
   } = useAppSelector(state => state.registerReducer.usernameDupCheckResult)
+  useEffect(() => {
+    console.log(usernameDup, usernameDupLoading, usernameDupError)
 
+    if (usernameDup && !usernameDupLoading && !usernameDupError) {
+      modal?.show(<Text>타이틀</Text>, <Text>하이루우</Text>)
+    }
+  }, [usernameDup, usernameDupLoading, usernameDupError])
   const {
     data: nicknameDup,
     loading: nicknameDupLoading,
     error: nicknameDupError,
   } = useAppSelector(state => state.registerReducer.nicknameDupCheckResult)
 
+  useEffect(() => {
+    if (!nicknameDupLoading && !nicknameDupError) {
+    }
+  }, [nicknameDup, nicknameDupLoading, nicknameDupError])
   useEffect(() => {
     console.log(registerResult)
   }, [registerResult])
@@ -188,12 +215,45 @@ const Register = ({navigation, route}: RegisterProps) => {
               state={isValid(emailRegex, registerState.email)}
               label="이메일 입력"
               value={registerState.email}
+              keyboardType="email-address"
               onChangeText={(text: string) => {
                 setRegisterState(prevState => ({...prevState, email: text}))
               }}
             />
           </View>
-          <OutlinedButton title="인증하기" size="sm" />
+          <OutlinedButton
+            title="인증하기"
+            size="sm"
+            onPress={() => {
+              if (registerState.email && emailRegex.test(registerState.email))
+                dispatch(sendAuthCode(registerState.email))
+            }}
+          />
+        </View>
+        <View style={styles.item}>
+          <View style={{flex: 5}}>
+            <RegisterInput
+              state={isValid(authCodeRegex, registerState.authCode)}
+              label="인증번호 입력"
+              value={registerState.authCode}
+              onChangeText={(text: string) => {
+                setRegisterState(prevState => ({...prevState, authCode: text}))
+              }}
+            />
+          </View>
+          <OutlinedButton
+            title="인증하기"
+            size="sm"
+            onPress={() => {
+              if (registerState.authCode && authCodeRegex.test(registerState.authCode))
+                dispatch(
+                  verifyAuthCode({
+                    email: registerState.email ?? '',
+                    verificationCode: registerState.authCode ?? '',
+                  }),
+                )
+            }}
+          />
         </View>
         <View style={styles.item}>
           <RegisterInput

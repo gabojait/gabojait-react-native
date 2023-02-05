@@ -28,3 +28,21 @@ export const nicknameDupCheckAction = createAsyncAction(
   NICKNAME_DUP_CHECK_SUCCESS,
   NICKNAME_DUP_CHECK_ERROR,
 )<string, Boolean, Error>()
+
+export const SEND_AUTH_CODE = 'SEND_AUTH_CODE'
+export const SEND_AUTH_CODE_SUCCESS = 'SEND_AUTH_CODE_SUCCESS'
+export const SEND_AUTH_CODE_ERROR = 'SEND_AUTH_CODE_ERROR'
+export const sendAuthCodeAction = createAsyncAction(
+  SEND_AUTH_CODE,
+  SEND_AUTH_CODE_SUCCESS,
+  SEND_AUTH_CODE_ERROR,
+)<string, Boolean, Error>()
+
+export const VERIFY_AUTH_CODE = 'VERIFY_AUTH_CODE'
+export const VERIFY_AUTH_CODE_SUCCESS = 'VERIFY_AUTH_CODE_SUCCESS'
+export const VERIFY_AUTH_CODE_ERROR = 'VERIFY_AUTH_CODE_ERROR'
+export const verifyAuthCodeAction = createAsyncAction(
+  VERIFY_AUTH_CODE,
+  VERIFY_AUTH_CODE_SUCCESS,
+  VERIFY_AUTH_CODE_ERROR,
+)<string, Boolean, Error>()
