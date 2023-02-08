@@ -1,5 +1,6 @@
 import '@rneui/themed'
 import {Button, ButtonProps, createTheme, Theme} from '@rneui/themed'
+import color from './presentation/res/styles/color'
 
 /**
  * StyleSheet FontWeight Type이에요.
@@ -114,7 +115,7 @@ export const theme = createTheme({
     marginVertical: 5,
     shadowOffset:{
       width: 0,
-      height: 40
-    }
+      height: 2
+    },
   },
 })

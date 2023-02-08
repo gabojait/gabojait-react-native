@@ -33,8 +33,7 @@ const Header: React.FC<StackHeaderProps> = ({navigation, route, options, back}) 
   }
 
   return (
-    <Provider store={store}>
-      <CustomHeader title={title} canGoBack={navigation.canGoBack()}  
+    <CustomHeader title={title} canGoBack={navigation.canGoBack()}  
       rightChildren={
         <View style={{flexDirection:'row', alignItems:'center'}}>
           <CustomIcon name='notification' size={30} style={{paddingHorizontal:5}} color={color.black}/>
@@ -42,9 +41,8 @@ const Header: React.FC<StackHeaderProps> = ({navigation, route, options, back}) 
             switchBoard()
           }}/>
         </View>
-      }
-    />
-    </Provider>
+    }
+  />
   )
 }
 
