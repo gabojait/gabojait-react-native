@@ -6,8 +6,9 @@ import color from '@/presentation/res/styles/color'
 import { StackScreenProps } from '@react-navigation/stack'
 import { Text, useTheme, makeStyles } from '@rneui/themed'
 import React, { useState } from 'react'
-import { FlatList, ScrollView, TextInput, TouchableOpacity, View } from 'react-native'
+import { FlatList, TextInput, TouchableOpacity, View } from 'react-native'
 import CustomIcon from '@/presentation/components/icon/Gabojait'
+import CustomModal from '@/presentation/components/CustomModal'
 
 export type GroupStackProps = StackScreenProps<GroupStackParamList, 'Editor'>
 
@@ -15,14 +16,16 @@ const Editor = ({navigation, route}: GroupStackProps) => {
   const {theme} = useTheme()
   const styles = useStyles({navigation, route})
   const [array, setArray] = useState([{idex:'0'}])
-  const [addCount, setAddCount] = useState(1)
-  const addPositionMaker = () => {
-    let newArray = [...array, {idex: (addCount + 1).toString()}]
-    setArray(newArray)
-    setAddCount(addCount + 1)
-    console.log(addCount)
-  }
+  const [positionMakerCount, setPositionMakerCount] = useState(1)
+  const [modalOpened, setModalOpened] = useState(false)
 
+  function addPositionMaker() {
+    let newArray = [...array, {idex: (positionMakerCount + 1).toString()}]
+    setArray(newArray)
+    setPositionMakerCount(positionMakerCount + 1)
+    console.log(positionMakerCount)
+  }
+  
   return (
     <>
       <FlatList
@@ -45,11 +48,11 @@ const Editor = ({navigation, route}: GroupStackProps) => {
 
         keyExtractor={item => item.idex}
         data={array}
-        renderItem={ () => <PositionMaker/>}
+        renderItem={ () => <PositionMaker callback={()=> {/*number, position 바인딩하면 됨*/}}/>}
         contentContainerStyle={{backgroundColor: theme.colors.white, paddingHorizontal:20}}
 
         ListFooterComponent={<>
-          <TouchableOpacity style={{alignItems:'center'}} onPress={()=> {addPositionMaker()}} disabled={addCount > 3? true: false}>
+          <TouchableOpacity style={{alignItems:'center'}} onPress={()=> {addPositionMaker()}} disabled={positionMakerCount > 3? true: false}>
             <CustomIcon name="plus-square" size={25}/>
           </TouchableOpacity>
           <View style={styles.item}>
@@ -67,23 +70,26 @@ const Editor = ({navigation, route}: GroupStackProps) => {
           </View>
 
           <View style={{paddingHorizontal: 30}}>
-            <FilledButton title={'완료'} disabled={false} />
-            <FilledButton title={'삭제하기'} buttonStyle={{backgroundColor:theme.colors.grey0}}/>
+            <FilledButton title={'완료'} disabled={false} onPress={() => navigation.popToTop()}/>
+            <FilledButton title={'삭제하기'} buttonStyle={{backgroundColor:theme.colors.grey0}} onPress={() => setModalOpened(true)}/>
           </View>
         </>}
       />
-
-      {/* <View style={styles.item}>
-        <Text style={styles.text}>원하는 팀원</Text>
-        <View style={[styles.inputBox, {borderRadius:20, justifyContent:'center', padding:20}]}>
-          <View style={{alignItems:'center'}}>
-            <TouchableOpacity onPress={()=> {addPositionMaker}}>
-              <CustomIcon name="plus-square" size={25}/>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View> */}
-
+      <CustomModal 
+        title={'글을 삭제하시겠습니까?'}
+        upperButtonText={'삭제하기'} 
+        lowerButtonText={'돌아가기'} 
+        modalVisible={modalOpened} 
+        onModalVisibityChanged={visibility => setModalOpened(visibility)}
+        callback={() => navigation.popToTop()}
+      >
+        <Text style={{fontSize:theme.fontSize.sm, alignItems:'center'}}>
+          글을 삭제하면
+        </Text>
+        <Text style={{fontSize:theme.fontSize.sm, alignItems:'center'}}>
+          다시 되돌릴 수 없습니다 :()
+        </Text>
+      </CustomModal>
     </>    
   )
 }
