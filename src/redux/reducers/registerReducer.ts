@@ -6,6 +6,7 @@ import * as accountApi from '@/api/accounts'
 import {asyncState, createAsyncReducer} from '@/lib/reducerUtils'
 import {createReducer} from 'typesafe-actions'
 import {RegisterAction, RegisterState} from '../action_types/register'
+import {getType} from 'typesafe-actions'
 import {
   nicknameDupCheckAction,
   registerAsyncAction,

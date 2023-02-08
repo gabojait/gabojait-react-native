@@ -4,7 +4,7 @@ import CustomModal from './Modal'
 
 type ModalContextType = {
   content: React.ReactNode
-  show: (content: React.ReactNode, title: React.ReactNode) => void
+  show: ({title, content}: {title: React.ReactNode; content: React.ReactNode}) => void
   hide: () => void
   title: React.ReactNode
   modal: boolean
@@ -13,7 +13,7 @@ type ModalContextType = {
 let ModalContext: React.Context<ModalContextType | undefined>
 const {Provider} = (ModalContext = React.createContext<ModalContextType | undefined>({
   content: <></>,
-  show: (content: React.ReactNode, title: React.ReactNode) => {},
+  show: () => {},
   hide: () => {},
   title: <></>,
   modal: false,

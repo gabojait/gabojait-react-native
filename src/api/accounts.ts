@@ -4,7 +4,7 @@ import LoginRequestDTO from '@/model/LoginRequestDto'
 import RegisterRequestDto from '@/model/RegisterRequestDto'
 
 export const login = async (dto: LoginRequestDTO) => {
-  const result = await client.post('login', dto)
+  const result = await client.post('user/login', dto)
   console.log(result)
   return result
 }

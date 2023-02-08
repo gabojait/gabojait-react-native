@@ -5,8 +5,10 @@ export default () => {
   const [content, setContent] = React.useState<React.ReactNode>(null)
   const [title, setTitle] = React.useState<React.ReactNode>(null)
 
-
-  const show: (content: React.ReactNode, title: React.ReactNode) => void = (content, title) => {
+  const show: ({title, content}: {title: React.ReactNode; content: React.ReactNode}) => void = ({
+    content,
+    title,
+  }) => {
     setModal(!modal)
     if (content) {
       setContent(content)

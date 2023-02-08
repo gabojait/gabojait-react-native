@@ -13,6 +13,7 @@ export type RootStackParamList = {
 export type OnboardingStackParamList = {
   Login: undefined
   Register: undefined
+  RegisterCompleted: undefined
   FindAccount: undefined
   CompleteOnboarding: undefined
 }

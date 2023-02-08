@@ -8,15 +8,17 @@ import textStyles from '../res/styles/textStyles'
 export type RegisterInput = typeof RegisterInput
 
 export const RegisterInput = forwardRef(
-  ({
-    size = 'sm',
-    label,
-    placeholder,
-    isForPassword = false,
-    state = 'none',
-    ...props
-  }: CustomInputProps & TextInputProps, ref) => {
-
+  (
+    {
+      size = 'sm',
+      label,
+      placeholder,
+      isForPassword = false,
+      state = 'none',
+      ...props
+    }: CustomInputProps & TextInputProps,
+    ref,
+  ) => {
     function isValid() {}
     const [secure, setSecure] = useState(true)
 
@@ -34,7 +36,7 @@ export const RegisterInput = forwardRef(
     return (
       <View style={{flex: 1, justifyContent: 'flex-end'}}>
         <Input
-          containerStyle={{height: '70%'}}
+          containerStyle={{height: '70%', paddingHorizontal: 0}}
           inputContainerStyle={{
             borderBottomWidth: 1.3,
             borderBottomColor: borderColors[state],
