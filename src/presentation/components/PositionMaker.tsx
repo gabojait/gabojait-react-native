@@ -1,5 +1,4 @@
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { decreaseCount, increaseCount } from '@/redux/reducers/countReducer'
 import { useTheme } from '@rneui/themed'
 import React, { useState } from 'react'
 import { PixelRatio, Text, TouchableOpacity, View } from 'react-native'
@@ -14,23 +13,22 @@ export const PositionMaker = ({
   }: positionProps) => {
     
   const {theme} = useTheme()
-  const dispatch = useAppDispatch()
-  const {number} = useAppSelector(state => state.countReducer)
   const [position, setPosition] = useState("")
+  const [count, setCount] = useState(0)
   const data = [
-      {key:'1', value:'Frontend'},
-      {key:'2', value:'Backend'},
-      {key:'3', value:'Designer'},
-      {key:'4', value:'ProductManager'}
+      {key:'1', value:'Frontend', disabled:true},
+      {key:'2', value:'Backend', disabled:true},
+      {key:'3', value:'Designer', disabled:true},
+      {key:'4', value:'ProductManager', disabled:true}
   ]
 
   function increase(){
-    dispatch(increaseCount())
-    callback(number, position)
+    setCount(count + 1)
+    callback(count, position)
   }
   function decrease(){
-    dispatch(decreaseCount())
-    callback(number, position)
+    count > 0 ? setCount(count - 1) : {}
+    callback(count, position)
   }
 
     return (
@@ -58,7 +56,7 @@ export const PositionMaker = ({
                 </TouchableOpacity>
               </View>
               <View style={{width:51, height:21, backgroundColor: theme.colors.grey0, alignItems:'center', marginTop: 10}}>
-                <Text>{number}</Text>
+                <Text>{count}</Text>
               </View>
               <View style={{width:10, height:21, backgroundColor: theme.colors.grey0, alignItems:'center', marginTop: 10}}>
                 <TouchableOpacity onPress={() => increase()}>
@@ -75,7 +73,7 @@ export const PositionMaker = ({
             boxStyles={{backgroundColor: theme.colors.grey0, borderColor: theme.colors.grey0, marginTop:6, marginLeft:10, width: 200}}
             search={false}
             onSelect={() => {
-              callback(number, position)
+              callback(count, position)
             }}
           />
         </View>
