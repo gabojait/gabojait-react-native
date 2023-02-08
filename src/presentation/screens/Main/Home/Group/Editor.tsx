@@ -53,7 +53,7 @@ const Editor = ({navigation, route}: GroupStackProps) => {
 
         ListFooterComponent={<>
           <TouchableOpacity style={{alignItems:'center'}} onPress={()=> {addPositionMaker()}} disabled={positionMakerCount > 3? true: false}>
-            <CustomIcon name="plus-square" size={25}/>
+            <CustomIcon name="plus-square" size={25} color={theme.colors.grey1}/>
           </TouchableOpacity>
           <View style={styles.item}>
             <Text style={styles.text}>바라는 점</Text>
@@ -109,7 +109,8 @@ const useStyles = makeStyles((theme, props: GroupStackProps) => ({
   },
   input:{
     flex: 10,
-    paddingVertical:5
+    paddingVertical:5,
+    paddingHorizontal:5
   },
   inputBox:{
     flex:1,
@@ -121,7 +122,7 @@ const useStyles = makeStyles((theme, props: GroupStackProps) => ({
     shadowOffset: theme.shadow.shadowOffset,
     elevation: theme.shadow.elevation,
     backgroundColor: theme.colors.white,
-    shadowColor: theme.colors.black,
+    shadowColor: theme.colors.disabled,
     marginBottom: 20
   },
 }))
