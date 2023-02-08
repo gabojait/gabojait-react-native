@@ -10,7 +10,6 @@ export default CardWrapper
 
 const styles = StyleSheet.create({
   card: {
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colors.white,
     borderRadius: 14,
@@ -22,6 +21,5 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    marginEnd: 10,
   },
 })
