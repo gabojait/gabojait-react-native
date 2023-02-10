@@ -1,6 +1,7 @@
 import { FilledButton } from '@/presentation/components/Button'
 import CardWrapper from '@/presentation/components/CardWrapper'
 import { PartIcon } from '@/presentation/components/GroupListCard'
+import PositionIcon from '@/presentation/components/PositionIcon'
 import { GroupStackParamList } from '@/presentation/navigation/types'
 import { StackScreenProps } from '@react-navigation/stack'
 import { makeStyles, Text, useTheme } from '@rneui/themed'
@@ -16,12 +17,12 @@ const Detail = ({navigation}:GroupStackParamListProps) => {
   return (
     <ScrollView style={styles.scrollView}>
       <CardWrapper style={[styles.card,{minHeight: 243}]}>
-        <View>
+        <View style={{width:'100%', paddingHorizontal:10, flex:1, justifyContent:'space-between'}}>
           <Text style={styles.teamname}>같이 앱 만들 사람 구해요</Text>
           <View style={styles.partIcon}>
-            <PartIcon partInitial={'D'} size={23}/>
-            <PartIcon partInitial={'P'} size={23}/>
-            <PartIcon partInitial={'E'} size={23}/>
+              <PositionIcon currentApplicant={1} vancancyNumber={1} textView ={ <Text style={{fontWeight:theme.fontWeight.bold, fontSize:30}}>D</Text>}/>
+              <PositionIcon currentApplicant={1} vancancyNumber={2} textView ={ <Text style={{fontWeight:theme.fontWeight.bold, fontSize:30}}>F</Text>}/>
+              <PositionIcon currentApplicant={1} vancancyNumber={1} textView ={ <Text style={{fontWeight:theme.fontWeight.bold, fontSize:30}}>B</Text>}/>
           </View>
           <FilledButton title={'함께 하기'} onPress={() => navigation.navigate('PositionSelector')}/>
         </View>
@@ -80,7 +81,7 @@ const useStyles = makeStyles((theme)=> ({
   partIcon:{
     paddingTop: 30,
     paddingBottom: 25, 
-    flexDirection: 'row'
+    flexDirection: 'row',
   }
 }))
 export default Detail
