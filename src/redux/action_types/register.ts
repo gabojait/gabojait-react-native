@@ -8,5 +8,6 @@ export type RegisterState = {
   registerResult: AsyncState<User, Error>
   usernameDupCheckResult: AsyncState<Boolean, Error>
   nicknameDupCheckResult: AsyncState<Boolean, Error>
-  
+  sendAuthCodeResult: AsyncState<Boolean, Error>
+  verifyAuthCodeResult: AsyncState<Boolean, Error>
 }

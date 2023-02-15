@@ -8,6 +8,7 @@ import axios, {
   AxiosResponse,
   AxiosInterceptorOptions,
 } from 'axios'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const axiosConfig: AxiosRequestConfig = {
   baseURL: 'https://gabojait-dev.nogamsung.com/api/v1/',
@@ -44,22 +45,29 @@ interface CustomResponseInterceptorManager
 const isSuccess = (statusCode: number) => statusCode <= 200 && statusCode < 300
 
 const client: CustomInstance = axios.create(axiosConfig)
-client.interceptors.request.use(req => {
+client.interceptors.request.use(async req => {
   console.log(`'${req.url}' Header: ${req.headers},`)
-  // Todo: 토큰 삽입
-  req.headers.Authorization = ''
+  console.log(req.data)
+  // Todo: 재시도 구현
+  req.headers.Authorization = await AsyncStorage.getItem('accessToken')
   return req
 })
 
-client.interceptors.response.use(res => {
-  console.log(
-    `${res.config.url} Responsed: ${res.status},\nHeader: ${res.headers}, \nBody: ${res.data.data}`,
-  )
+client.interceptors.response.use(async res => {
+  console.log(`${res.config.url} Responsed: ${res.status}, \nBody: ${res.data.data}`)
   try {
     if (isSuccess(res.status)) {
+      if (res.headers['authorization']) {
+        // authorization: [access-token: ]
+        const headerRegex = /\[access-token: (.+?), refresh-token: (.+?)\]/g
+        const tokens = headerRegex.exec(res.headers.authorization)!
+        await AsyncStorage.setItem('accessToken', tokens[1])
+        await AsyncStorage.setItem('refreshToken', tokens[2])
+      }
       if (!res.data.data || res.status == 204) {
         // Todo: Handle No Content
         // Todo: 빈 리스트(204?)/201 대응
+
         return {data: [], loading: false}
       } else {
         return {data: res.data.data, loading: false}

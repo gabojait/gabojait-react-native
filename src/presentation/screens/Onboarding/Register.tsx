@@ -8,10 +8,17 @@ import {RegisterInput} from '@/presentation/components/RegisterInput'
 import color from '@/presentation/res/styles/color'
 import {DateDropdown} from '@/presentation/components/DateDropdown'
 import RegisterRequestDto from '@/model/RegisterRequestDto'
-import {emailRegex, nicknameRegex, passwordRegex, realnameRegex, usernameRegex} from '@/util'
+import {
+  authCodeRegex,
+  emailRegex,
+  nicknameRegex,
+  passwordRegex,
+  realnameRegex,
+  usernameRegex,
+} from '@/util'
 import {Gender} from '@/model/Gender'
 import globalStyles from '@/styles'
-import DatePickerModal from '@/presentation/components/DatePickerModal'
+import DatePickerModalContent from '@/presentation/components/DatePickerModalContent'
 import {Link, useNavigation} from '@react-navigation/native'
 import {ValidatorState} from '@/presentation/components/props/StateProps'
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -23,8 +30,15 @@ import {
   checkNicknameDuplicate,
   checkUsernameDuplicate,
   register,
+  sendAuthCode,
+  verifyAuthCode,
 } from '@/redux/reducers/registerReducer'
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
+import {ModalContext} from '@/presentation/components/modal/context'
+import DatePicker from 'react-native-date-picker'
+import DefaultDialogModalContent from '@/presentation/components/DefaultDialogModalContent'
+import OkDialogModalContent from '@/presentation/components/OkDialogModalContent'
+import {sendAuthCodeAction} from '@/redux/action/register'
 
 export type RegisterProps = StackScreenProps<OnboardingStackParamList, 'Register'>
 
@@ -50,6 +64,7 @@ const Register = ({navigation, route}: RegisterProps) => {
   })
   const {theme} = useTheme()
   const dispatch = useAppDispatch()
+  const modal = React.useContext(ModalContext)
 
   const [agreementState, setAgreementState] = useState<AgreementState>({
     checkedAll: false,
@@ -75,6 +90,7 @@ const Register = ({navigation, route}: RegisterProps) => {
       return regex.test(text) ? 'valid' : 'invalid'
     }
   }
+  // Todo: 우선 단순 리퀘 구현. 추후 에러 핸들링 등 예정.
 
   const {
     data: registerResult,
@@ -82,12 +98,38 @@ const Register = ({navigation, route}: RegisterProps) => {
     error: registerError,
   } = useAppSelector(state => state.registerReducer.registerResult)
 
+  useEffect(() => {
+    if (
+      !registerLoading &&
+      ((registerResult && !registerError) || (!registerResult && registerError))
+    ) {
+    }
+  }, [registerResult, registerLoading, registerError])
+
   const {
     data: usernameDup,
     loading: usernameDupLoading,
     error: usernameDupError,
   } = useAppSelector(state => state.registerReducer.usernameDupCheckResult)
+  useEffect(() => {
+    console.log(usernameDup, usernameDupLoading, usernameDupError)
 
+    if (usernameDup && !usernameDupLoading) {
+      modal?.show({
+        title: <Text>중복확인</Text>,
+        content: (
+          <OkDialogModalContent
+            text={
+              !usernameDupError ? '사용할 수 있는 아이디입니다.' : '이미 존재하는 아이디입니다.'
+            }
+            onOkClick={() => {
+              modal?.hide()
+            }}
+          />
+        ),
+      })
+    }
+  }, [usernameDup, usernameDupLoading, usernameDupError])
   const {
     data: nicknameDup,
     loading: nicknameDupLoading,
@@ -95,8 +137,79 @@ const Register = ({navigation, route}: RegisterProps) => {
   } = useAppSelector(state => state.registerReducer.nicknameDupCheckResult)
 
   useEffect(() => {
-    console.log(registerResult)
-  }, [registerResult])
+    if (nicknameDup && !nicknameDupLoading) {
+      modal?.show({
+        title: <Text>중복확인</Text>,
+        content: (
+          <OkDialogModalContent
+            text={
+              !nicknameDupError ? '사용할 수 있는 닉네임입니다.' : '이미 존재하는 닉네임입니다.'
+            }
+            onOkClick={() => {
+              modal?.hide()
+            }}
+          />
+        ),
+      })
+    }
+  }, [nicknameDup, nicknameDupLoading, nicknameDupError])
+
+  const {
+    data: sendAuthCodeResult,
+    loading: sendAuthCodeLoading,
+    error: sendAuthCodeError,
+  } = useAppSelector(state => state.registerReducer.sendAuthCodeResult)
+
+  useEffect(() => {
+    if (sendAuthCodeResult && !sendAuthCodeLoading) {
+      modal?.show({
+        title: <Text>인증번호 발송</Text>,
+        content: (
+          <OkDialogModalContent
+            text={
+              !sendAuthCodeError
+                ? '이메일이 발송되었습니다. 보이지 않을 경우 스팸메일함을 확인해주세요.'
+                : '이메일 발송에 실패했습니다. 존재하는 이메일인지 확인해주세요.'
+            }
+            onOkClick={() => {
+              modal?.hide()
+            }}
+          />
+        ),
+      })
+    }
+  }, [sendAuthCodeResult, sendAuthCodeLoading, sendAuthCodeError])
+
+  const {
+    data: verifyAuthCodeResult,
+    loading: verifyAuthCodeLoading,
+    error: verifyAuthCodeError,
+  } = useAppSelector(state => state.registerReducer.verifyAuthCodeResult)
+
+  useEffect(() => {
+    console.log(verifyAuthCodeResult, verifyAuthCodeLoading, verifyAuthCodeError)
+    if (
+      !verifyAuthCodeLoading &&
+      ((verifyAuthCodeResult && !verifyAuthCodeError) ||
+        (!verifyAuthCodeResult && verifyAuthCodeError))
+    ) {
+      modal?.show({
+        title: <Text>인증번호 확인</Text>,
+        content: (
+          <OkDialogModalContent
+            text={
+              !verifyAuthCodeError
+                ? '이메일 인증에 성공했습니다. 나머지 정보를 입력하고 가입을 완료해주세요.'
+                : '인증번호가 올바르지 않습니다.'
+            }
+            onOkClick={() => {
+              modal?.hide()
+            }}
+          />
+        ),
+      })
+    }
+  }, [verifyAuthCodeResult, verifyAuthCodeLoading, verifyAuthCodeError])
 
   const checkAllFieldsValidate = () => {
     //FIXME: 개똥코드. 고쳐야해요
@@ -188,13 +301,49 @@ const Register = ({navigation, route}: RegisterProps) => {
               state={isValid(emailRegex, registerState.email)}
               label="이메일 입력"
               value={registerState.email}
+              keyboardType="email-address"
               onChangeText={(text: string) => {
                 setRegisterState(prevState => ({...prevState, email: text}))
               }}
             />
           </View>
-          <OutlinedButton title="인증하기" size="sm" />
+          <OutlinedButton
+            title="인증하기"
+            size="sm"
+            onPress={() => {
+              if (registerState.email && emailRegex.test(registerState.email))
+                dispatch(sendAuthCode(registerState.email))
+            }}
+          />
         </View>
+        {sendAuthCodeResult ? (
+          <View style={styles.item}>
+            <View style={{flex: 5}}>
+              <RegisterInput
+                state={isValid(authCodeRegex, registerState.authCode)}
+                label="인증번호 입력"
+                value={registerState.authCode}
+                onChangeText={(text: string) => {
+                  setRegisterState(prevState => ({...prevState, authCode: text}))
+                }}
+              />
+            </View>
+            <OutlinedButton
+              title="인증확인"
+              size="sm"
+              onPress={() => {
+                if (registerState.authCode && authCodeRegex.test(registerState.authCode))
+                  dispatch(
+                    verifyAuthCode({
+                      email: registerState.email ?? '',
+                      verificationCode: registerState.authCode ?? '',
+                    }),
+                  )
+              }}
+            />
+          </View>
+        ) : null}
+
         <View style={styles.item}>
           <RegisterInput
             state={isValid(realnameRegex, registerState.legalName)}
@@ -214,7 +363,23 @@ const Register = ({navigation, route}: RegisterProps) => {
                 ? '생년월일 입력'
                 : new Date(registerState.birthdate).toLocaleDateString()
             }
-            onClick={() => setModalOpened(true)}
+            onClick={() =>
+              modal?.show({
+                title: <Text>생년월일 입력</Text>,
+                content: (
+                  <DatePickerModalContent
+                    doneButtonText="다음"
+                    onModalVisibityChanged={visibility => {
+                      if (!visibility) modal.hide()
+                    }}
+                    date={new Date(registerState.birthdate ?? new Date().toISOString())}
+                    onDatePicked={date => {
+                      setRegisterState(prevState => ({...prevState, birthdate: date.toISOString()}))
+                    }}
+                  />
+                ),
+              })
+            }
           />
         </View>
 
@@ -285,21 +450,14 @@ const Register = ({navigation, route}: RegisterProps) => {
         <FilledButton
           title="가입하기"
           onPress={() => {
-            if (checkAllFieldsValidate()) dispatch(register(registerState))
+            if (checkAllFieldsValidate())
+              dispatch(
+                register({...registerState, birthdate: registerState.birthdate?.split('T')[0]}),
+              )
           }}
           containerStyle={{marginBottom: 40}}
         />
       </ScrollView>
-      <DatePickerModal
-        title="생년월일을 입력해주세요"
-        doneButtonText="다음"
-        modalVisible={modalOpened}
-        onModalVisibityChanged={visibility => setModalOpened(visibility)}
-        date={new Date(registerState.birthdate ?? new Date().toISOString())}
-        onDatePicked={date => {
-          setRegisterState(prevState => ({...prevState, birthdate: date.toISOString()}))
-        }}
-      />
     </View>
   )
 }
