@@ -27,8 +27,7 @@ const FloatingButton = ({title, onPress}:FloatingButtonProps) => {
             backgroundColor: theme.colors.primary,
             }}
             onPress={() => onPress()}>
-            {/* 임시 아이콘 */}
-            <CustomIcon name='home' color={theme.colors.white} size={20}/>
+            <CustomIcon name='pencil' color={theme.colors.white} size={20}/>
             <Text style={{color:theme.colors.white, fontWeight:theme.fontWeight.bold, fontSize:theme.fontSize.md}}>{title}</Text>
         </TouchableOpacity>
     )

@@ -10,6 +10,7 @@ import List from '../screens/Main/Home/Group/List'
 import Detail from '../screens/Main/Home/Group/Detail'
 import PositionSelector from '../screens/Main/Home/Group/PositionSelector'
 import Editor from '../screens/Main/Home/Group/Editor'
+import BackHeader from '../screens/Headers/BackHeader'
 
 type GroupNavigationProp<
 T extends keyof GroupStackParamList = 'List'
@@ -27,8 +28,14 @@ const Group = () => {
         header: HomeHeader,
         headerTitle: "팀 구하기",
       }}/>
-      <GroupStack.Screen name="Detail" component={Detail} />
-      <GroupStack.Screen name="PositionSelector" component={PositionSelector}/>
+      <GroupStack.Screen name="Detail" component={Detail} options={{
+        header: BackHeader,
+        headerTitle: ""
+      }}/>
+      <GroupStack.Screen name="PositionSelector" component={PositionSelector} options={{
+        header: BackHeader,
+        headerTitle: "포지션 선택"
+      }}/>
       <GroupStack.Screen name="Editor" component={Editor} options={{
         header: TitleHeader,
         headerTitle: ""

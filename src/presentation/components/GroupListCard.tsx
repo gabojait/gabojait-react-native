@@ -54,9 +54,10 @@ const GroupListCard: React.FC<CardProps & {title: string; parts: Array<Part>}> =
     </Card>
   )
 }
-const PartIcon: React.FC<{partInitial: string; isDone?: boolean}> = ({
+export const PartIcon: React.FC<{partInitial: string; isDone?: boolean, size?: number}> = ({
   partInitial,
   isDone = false,
+  size = 20
 }) => {
   const {theme} = useTheme()
   return (
@@ -68,12 +69,12 @@ const PartIcon: React.FC<{partInitial: string; isDone?: boolean}> = ({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: PixelRatio.getPixelSizeForLayoutSize(38),
-        width: PixelRatio.getPixelSizeForLayoutSize(20),
-        height: PixelRatio.getPixelSizeForLayoutSize(20),
+        width: PixelRatio.getPixelSizeForLayoutSize(size),
+        height: PixelRatio.getPixelSizeForLayoutSize(size),
         marginHorizontal: PixelRatio.getPixelSizeForLayoutSize(2),
         backgroundColor: isDone ? theme.colors.primary : '',
       }}>
-      {<Text h3>{partInitial}</Text>}
+      {<Text style={{fontWeight:theme.fontWeight.bold, fontSize:30}}>{partInitial}</Text>}
     </View>
   )
 }
