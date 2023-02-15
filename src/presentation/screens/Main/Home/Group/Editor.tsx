@@ -5,7 +5,7 @@ import { GroupStackParamList } from '@/presentation/navigation/types'
 import color from '@/presentation/res/styles/color'
 import { StackScreenProps } from '@react-navigation/stack'
 import { Text, useTheme, makeStyles } from '@rneui/themed'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FlatList, TextInput, TouchableOpacity, View } from 'react-native'
 import CustomIcon from '@/presentation/components/icon/Gabojait'
 import CustomModal from '@/presentation/components/CustomModal'
@@ -25,7 +25,15 @@ const Editor = ({navigation, route}: GroupStackProps) => {
     setPositionMakerCount(positionMakerCount + 1)
     console.log(positionMakerCount)
   }
-  
+
+ const [data, setData] = useState([
+  {key:'B', value:'벡엔드 개발자', disabled:false},
+  {key:'F', value:'프론트엔드 개발자', disabled:false},
+  {key:'D', value:'디자이너', disabled:false},
+  {key:'P', value:'프로덕트 매니저', disabled:false}
+])
+
+
   return (
     <>
       <FlatList
@@ -33,14 +41,14 @@ const Editor = ({navigation, route}: GroupStackProps) => {
           <View style={styles.item}>
             <Text style={styles.text}>프로젝트 이름</Text>
             <View style={[styles.inputBox, {borderRadius:15}]}>
-              <TextInput style={[styles.input, {height: 50}]} multiline={false} maxLength={30} placeholder='개발용: 최대 30자'/>
+              <TextInput style={[styles.input, {height: 50}]} multiline={false} maxLength={30}/>
             </View>
           </View>
 
           <View style={styles.item}>
             <Text style={styles.text}>프로젝트 설명</Text>
             <View style={[styles.inputBox, {borderRadius:20}]}>
-              <TextInput style={[styles.input, {height: 160}]} multiline={true} maxLength={500} placeholder='개발용: 최대 500자'/>
+              <TextInput style={[styles.input, {height: 160}]} multiline={true} maxLength={500}/>
             </View>
           </View>
           <Text style={styles.text}>원하는 팀원</Text>
@@ -48,7 +56,17 @@ const Editor = ({navigation, route}: GroupStackProps) => {
 
         keyExtractor={item => item.idex}
         data={array}
-        renderItem={ () => <PositionMaker callback={()=> {/*number, position 바인딩하면 됨*/}}/>}
+        renderItem={ () => 
+          <PositionMaker 
+            callback={(count:number, position:string)=> {
+              /*서버로 보낼 number, position을 바인딩하면 됨*/
+              setData(prevState => (
+                [...prevState.filter(item => item.value != position), {key:position, value:position, disabled:true}]
+              ))
+            }} 
+            data={data}
+          />
+        }
         contentContainerStyle={{backgroundColor: theme.colors.white, paddingHorizontal:20}}
 
         ListFooterComponent={<>
@@ -58,14 +76,14 @@ const Editor = ({navigation, route}: GroupStackProps) => {
           <View style={styles.item}>
             <Text style={styles.text}>바라는 점</Text>
             <View style={[styles.inputBox, {borderRadius:20}]}>
-              <TextInput style={[styles.input, {height: 95}]} multiline={true} maxLength={200} placeholder='개발용: 최대 200자'/>
+              <TextInput style={[styles.input, {height: 95}]} multiline={true} maxLength={200}/>
             </View>
           </View>
 
           <View style={styles.item}>
             <Text style={styles.text}>오픈채팅 링크</Text>
             <View style={[styles.inputBox, {borderRadius:20}]}>
-              <TextInput style={[styles.input, {height: 50}]} multiline={true} maxLength={200} placeholder='개발용: 최대 200자'/>
+              <TextInput style={[styles.input, {height: 50}]} multiline={true} maxLength={200}/>
             </View>
           </View>
 
@@ -109,8 +127,8 @@ const useStyles = makeStyles((theme, props: GroupStackProps) => ({
   },
   input:{
     flex: 10,
-    paddingVertical:5,
-    paddingHorizontal:5
+    paddingVertical:10,
+    paddingHorizontal:10
   },
   inputBox:{
     flex:1,
