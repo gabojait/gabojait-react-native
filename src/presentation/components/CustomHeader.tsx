@@ -31,7 +31,7 @@ const CustomHeader: React.FC<HeaderProps> = ({
       <View style={headerStyle.left}>
         {canGoBack ? back : null}
         {leftChildren}
-        <Text style={{fontWeight:theme.fontWeight.semibold, fontSize:theme.fontSize.lg, width:'90%',textAlign:'center'}}>{title}</Text>
+        <Text style={{fontWeight:theme.fontWeight.semibold, fontSize:theme.fontSize.lg,textAlign:'center'}}>{title}</Text>
       </View>
       {rightChildren}
     </View>
