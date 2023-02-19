@@ -25,6 +25,7 @@ const globalStyles = StyleSheet.create({
   },
   buttonContainer: {
     padding: 4,
+    paddingHorizontal: 0,
   },
   centerText: {
     textAlign: 'center',
@@ -50,8 +51,8 @@ const globalStyles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  modalDim:{
-    backgroundColor:'rgba(0, 0, 0, 0.5)'
-  }
+  modalDim: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
 })
 export default globalStyles

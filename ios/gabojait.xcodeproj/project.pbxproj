@@ -43,11 +43,11 @@
 		5709B34CF0A7D63546082F79 /* Pods-gabojait.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gabojait.release.xcconfig"; path = "Target Support Files/Pods-gabojait/Pods-gabojait.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-gabojait-gabojaitTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gabojait-gabojaitTests.debug.xcconfig"; path = "Target Support Files/Pods-gabojait-gabojaitTests/Pods-gabojait-gabojaitTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-gabojait.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-gabojait.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7E9CE6B31F4F41CD8FA8F877 /* fontello.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = fontello.ttf; path = ../src/assets/fonts/fontello.ttf; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = gabojait/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-gabojait-gabojaitTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gabojait-gabojaitTests.release.xcconfig"; path = "Target Support Files/Pods-gabojait-gabojaitTests/Pods-gabojait-gabojaitTests.release.xcconfig"; sourceTree = "<group>"; };
 		D58FC3FF289E1A610083569D /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fonts; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		7E9CE6B31F4F41CD8FA8F877 /* fontello.ttf */ = {isa = PBXFileReference; name = "fontello.ttf"; path = "../src/assets/fonts/fontello.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */

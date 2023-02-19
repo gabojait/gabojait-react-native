@@ -18,7 +18,7 @@ import {
 } from '@/util'
 import {Gender} from '@/model/Gender'
 import globalStyles from '@/styles'
-import DatePickerModalContent from '@/presentation/components/DatePickerModalContent'
+import DatePickerModalContent from '@/presentation/components/modalContent/DatePickerModalContent'
 import {Link, useNavigation} from '@react-navigation/native'
 import {ValidatorState} from '@/presentation/components/props/StateProps'
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -36,8 +36,8 @@ import {
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
 import {ModalContext} from '@/presentation/components/modal/context'
 import DatePicker from 'react-native-date-picker'
-import DefaultDialogModalContent from '@/presentation/components/DefaultDialogModalContent'
-import OkDialogModalContent from '@/presentation/components/OkDialogModalContent'
+import DefaultDialogModalContent from '@/presentation/components/modalContent/DefaultDialogModalContent'
+import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent'
 import {sendAuthCodeAction} from '@/redux/action/register'
 
 export type RegisterProps = StackScreenProps<OnboardingStackParamList, 'Register'>
@@ -78,8 +78,6 @@ const Register = ({navigation, route}: RegisterProps) => {
       setAgreementState(prevState => ({...prevState, checkedAll: false}))
     }
   }, [agreementState.items])
-
-  const [modalOpened, setModalOpened] = useState(false)
 
   const styles = useStyles({navigation, route})
 

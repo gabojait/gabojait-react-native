@@ -8,7 +8,7 @@ import { Text, useTheme, makeStyles } from '@rneui/themed'
 import React, { useEffect, useState } from 'react'
 import { FlatList, TextInput, TouchableOpacity, View } from 'react-native'
 import CustomIcon from '@/presentation/components/icon/Gabojait'
-import CustomModal from '@/presentation/components/CustomModal'
+import CustomModal from '@/presentation/components/modalContent/CustomModal'
 
 export type GroupStackProps = StackScreenProps<GroupStackParamList, 'Editor'>
 

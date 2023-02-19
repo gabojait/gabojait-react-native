@@ -11,12 +11,11 @@ export const CustomInput = ({
   state = 'none',
   ...props
 }: CustomInputProps & TextInputProps) => {
-  const valueRef = useRef('')
   const {theme} = useTheme()
   const iconColors = {
     none: color.transparent,
     valid: color.primary,
-    invalid: color.transparent
+    invalid: color.transparent,
   }
   const borderColors = {
     none: color.grey,
@@ -29,11 +28,11 @@ export const CustomInput = ({
       style={[
         {borderColor: borderColors[state]},
         styles.view,
-        props.style,
+        props.containerStyle,
         {borderRadius: theme.radius[size]},
       ]}>
       <TextInput
-        style={[styles.input]}
+        style={[styles.input, props.style]}
         placeholderTextColor={color.grey}
         placeholder={placeholder}
         autoCapitalize="none"
@@ -54,16 +53,16 @@ export const CustomInput = ({
 const styles = StyleSheet.create({
   view: {
     borderWidth: 1.3,
-    flex: 1,
     flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   input: {
-    paddingLeft: 14,
-    flex: 10,
+    padding: 14,
+    flex: 1,
   },
   icon: {
     flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: 14,
+    paddingEnd: 14,
   },
 })
