@@ -4,6 +4,7 @@ const globalStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+    padding: 20,
   },
   wrapButtonConatiner: {
     flexDirection: 'row',

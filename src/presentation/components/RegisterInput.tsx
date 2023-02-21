@@ -41,6 +41,7 @@ export const RegisterInput = forwardRef(
             borderBottomWidth: 1.3,
             borderBottomColor: borderColors[state],
             height: '60%',
+            marginEnd: 10,
           }}
           style={[styles.input, props.style]}
           placeholderTextColor={color.grey}

@@ -46,7 +46,7 @@ const isSuccess = (statusCode: number) => statusCode <= 200 && statusCode < 300
 
 const client: CustomInstance = axios.create(axiosConfig)
 client.interceptors.request.use(async req => {
-  console.log(`'${req.url}' Header: ${req.headers},`)
+  console.log(`'${req.url}' Header: ${req.headers}, ${req}`)
   console.log(req.data)
   // Todo: 재시도 구현
   req.headers.Authorization = await AsyncStorage.getItem('accessToken')
@@ -64,7 +64,7 @@ client.interceptors.response.use(async res => {
         await AsyncStorage.setItem('accessToken', tokens[1])
         await AsyncStorage.setItem('refreshToken', tokens[2])
       }
-      if (!res.data.data || res.status == 204) {
+      if (!res.data.data || res.status == 204 || res.status == 201) {
         // Todo: Handle No Content
         // Todo: 빈 리스트(204?)/201 대응
 

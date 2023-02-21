@@ -97,10 +97,22 @@ const Register = ({navigation, route}: RegisterProps) => {
   } = useAppSelector(state => state.registerReducer.registerResult)
 
   useEffect(() => {
-    if (
-      !registerLoading &&
-      ((registerResult && !registerError) || (!registerResult && registerError))
-    ) {
+    if (!registerLoading) {
+      if (registerResult && !registerError) {
+        navigation.navigate('RegisterCompleted')
+      } else if (!registerResult && registerError) {
+        modal?.show({
+          title: '오류',
+          content: (
+            <OkDialogModalContent
+              text={'회원가입에 실패했어요.'}
+              onOkClick={() => {
+                modal.hide()
+              }}
+            />
+          ),
+        })
+      }
     }
   }, [registerResult, registerLoading, registerError])
 
@@ -166,8 +178,8 @@ const Register = ({navigation, route}: RegisterProps) => {
           <OkDialogModalContent
             text={
               !sendAuthCodeError
-                ? '이메일이 발송되었습니다. 보이지 않을 경우 스팸메일함을 확인해주세요.'
-                : '이메일 발송에 실패했습니다. 존재하는 이메일인지 확인해주세요.'
+                ? '이메일이 발송되었습니다.\n보이지 않을 경우 스팸메일함을 확인해주세요.'
+                : '이메일 발송에 실패했습니다.\n존재하는 이메일인지 확인해주세요.'
             }
             onOkClick={() => {
               modal?.hide()
@@ -197,7 +209,7 @@ const Register = ({navigation, route}: RegisterProps) => {
           <OkDialogModalContent
             text={
               !verifyAuthCodeError
-                ? '이메일 인증에 성공했습니다. 나머지 정보를 입력하고 가입을 완료해주세요.'
+                ? '이메일 인증에 성공했습니다.\n가입을 완료해주세요.'
                 : '인증번호가 올바르지 않습니다.'
             }
             onOkClick={() => {
