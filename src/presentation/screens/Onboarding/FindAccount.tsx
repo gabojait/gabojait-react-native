@@ -5,7 +5,7 @@ import useModal from '@/presentation/components/modal/useModal'
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent'
 import globalStyles from '@/styles'
 import {emailRegex, usernameRegex} from '@/util'
-import {Button, Input, Text} from '@rneui/themed'
+import {Button, Input, Text, useTheme} from '@rneui/themed'
 import React, {useState} from 'react'
 import {View} from 'react-native'
 const FindAccount = () => {
@@ -13,6 +13,7 @@ const FindAccount = () => {
   const [userEmail, setUserEmail] = useState('')
 
   const modal = React.useContext(ModalContext)
+  const {theme} = useTheme()
 
   const test = (regex: RegExp, text: string) => {
     if (text.length == 0) return 'none'
@@ -26,7 +27,7 @@ const FindAccount = () => {
         <SymbolModalContent
           title="아이디 전달 완료!"
           text={`아이디를 이메일로 전달했습니다!\n이메일을 확인해주세요`}
-          symbol={<Text style={{fontSize: 80, textAlign: 'center'}}>✉️</Text>}
+          symbol={<Text style={{fontSize: theme.emojiSize.md, textAlign: 'center'}}>✉️</Text>}
           yesButton={{title: '확인', onPress: () => modal.hide()}}
         />
       ),
@@ -40,7 +41,7 @@ const FindAccount = () => {
         <SymbolModalContent
           title="임시 비밀번호 전달 완료!"
           text={`임시 비밀번호를 이메일로 보냈습니다!\n이메일을 확인해주세요`}
-          symbol={<Text style={{fontSize: 80, textAlign: 'center'}}>✉️</Text>}
+          symbol={<Text style={{fontSize: theme.emojiSize.md, textAlign: 'center'}}>✉️</Text>}
           yesButton={{title: '확인', onPress: () => modal.hide()}}
         />
       ),
