@@ -39,6 +39,8 @@ import DatePicker from 'react-native-date-picker'
 import DefaultDialogModalContent from '@/presentation/components/modalContent/DefaultDialogModalContent'
 import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent'
 import {sendAuthCodeAction} from '@/redux/action/register'
+import ErrorCode from '@/api/ErrorCode'
+import {AxiosError} from 'axios'
 
 export type RegisterProps = StackScreenProps<OnboardingStackParamList, 'Register'>
 
@@ -122,9 +124,7 @@ const Register = ({navigation, route}: RegisterProps) => {
     error: usernameDupError,
   } = useAppSelector(state => state.registerReducer.usernameDupCheckResult)
   useEffect(() => {
-    console.log(usernameDup, usernameDupLoading, usernameDupError)
-
-    if (usernameDup && !usernameDupLoading) {
+    if (usernameDup && !usernameDupLoading && !usernameDupError) {
       modal?.show({
         title: <Text>중복확인</Text>,
         content: (
@@ -138,6 +138,17 @@ const Register = ({navigation, route}: RegisterProps) => {
           />
         ),
       })
+    } else if (!usernameDupLoading && !usernameDup && usernameDupError) {
+      if (usernameDupError.name == ErrorCode.EXISTING_USERNAME.name)
+        modal?.show({
+          title: <Text>중복확인</Text>,
+          content: (
+            <OkDialogModalContent
+              text="이미 존재하는 아이디입니다."
+              onOkClick={() => modal?.hide()}
+            />
+          ),
+        })
     }
   }, [usernameDup, usernameDupLoading, usernameDupError])
   const {
@@ -197,7 +208,6 @@ const Register = ({navigation, route}: RegisterProps) => {
   } = useAppSelector(state => state.registerReducer.verifyAuthCodeResult)
 
   useEffect(() => {
-    console.log(verifyAuthCodeResult, verifyAuthCodeLoading, verifyAuthCodeError)
     if (
       !verifyAuthCodeLoading &&
       ((verifyAuthCodeResult && !verifyAuthCodeError) ||

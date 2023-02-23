@@ -1,5 +1,9 @@
 import {FilledButton} from '@/presentation/components/Button'
-import {MainStackParamList, OnboardingStackParamList, RootStackParamList} from '@/presentation/navigation/types'
+import {
+  MainStackParamList,
+  OnboardingStackParamList,
+  RootStackParamList,
+} from '@/presentation/navigation/types'
 import globalStyles from '@/styles'
 import {useNavigation} from '@react-navigation/native'
 import {StackScreenProps} from '@react-navigation/stack/lib/typescript/src/types'
@@ -10,8 +14,7 @@ import {RegisterProps} from './Register'
 
 const RegisterCompleted = ({
   navigation,
-  route,
-}: StackScreenProps<RootStackParamList, "OnboardingNavigation">) => {
+}: StackScreenProps<OnboardingStackParamList, 'RegisterCompleted'>) => {
   const {theme} = useTheme()
 
   return (
@@ -29,7 +32,10 @@ const RegisterCompleted = ({
       <Text style={{fontSize: theme.fontSize.md, textAlign: 'center', marginBottom: 93}}>
         함께 팀매칭 하러 가보자잇!
       </Text>
-      <FilledButton title="시작하기" onPress={() => navigation.navigate("MainNavigation")} />
+      <FilledButton
+        title="시작하기"
+        onPress={() => navigation.getParent()?.navigate('MainNavigation')}
+      />
     </View>
   )
 }

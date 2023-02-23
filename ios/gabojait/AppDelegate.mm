@@ -6,6 +6,9 @@
 
 #import <React/RCTAppSetupUtils.h>
 
+#import "RNSplashScreen.h"  // here
+
+
 #if RCT_NEW_ARCH_ENABLED
 #import <React/CoreModulesPlugins.h>
 #import <React/RCTCxxBridgeDelegate.h>
@@ -15,6 +18,8 @@
 #import <ReactCommon/RCTTurboModuleManager.h>
 
 #import <react/config/ReactNativeConfig.h>
+
+
 
 static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 
@@ -63,7 +68,14 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
           NSLog(@"--Font name: %@", fontName);
       }
   }
+  
+  
+  [RNSplashScreen show];  // here
+  // or
+  //[RNSplashScreen showSplash:@"LaunchScreen" inRootView:rootView];
   return YES;
+  
+  
 }
 
 /// This method controls whether the `concurrentRoot`feature of React18 is turned on or off.
