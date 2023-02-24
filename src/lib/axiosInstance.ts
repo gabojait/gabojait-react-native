@@ -12,7 +12,7 @@ import axios, {
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const axiosConfig: AxiosRequestConfig = {
-  baseURL: 'https://gabojait-dev.nogamsung.com/api/v1/',
+  baseURL: 'https://gabojait-dev.nogamsung.com/api/',
   headers: {} as AxiosRequestHeaders,
 }
 
@@ -47,21 +47,22 @@ const isSuccess = (statusCode: number) => statusCode <= 200 && statusCode < 300
 
 const client: CustomInstance = axios.create(axiosConfig)
 client.interceptors.request.use(async req => {
-  console.log(`'${req.url}' Header: ${req.headers}, ${req}`)
   // Todo: 재시도 구현
-  req.headers.Authorization = await AsyncStorage.getItem('accessToken')
+  req.headers.Authorization = `Bearer ${await AsyncStorage.getItem('accessToken')}`
+  console.log(`'${req.url}'\nHeader:`, req.headers, req)
   return req
 })
 
 client.interceptors.response.use(
   async res => {
-    console.log(`${res.config.url} Responsed: ${res.status}, \nBody: ${res.data.data}`)
+    console.log(`${res.config.url} Responsed: ${res.status}}\n Response:`, res.data.data)
     try {
       if (isSuccess(res.status)) {
         if (res.headers['authorization']) {
           // authorization: [access-token: ]
           const headerRegex = /\[access-token: (.+?), refresh-token: (.+?)\]/g
           const tokens = headerRegex.exec(res.headers.authorization)!
+          console.log(`Login Success! setting tokens: ${tokens[1]} ${tokens[2]}`)
           await AsyncStorage.setItem('accessToken', tokens[1])
           await AsyncStorage.setItem('refreshToken', tokens[2])
         }
@@ -93,6 +94,15 @@ client.interceptors.response.use(
   },
   error => {
     const e = error as AxiosError
+    console.log(
+      `Path: ${e.config?.url} | StatusCode: ${e.response?.status}\nResponse:`,
+      e.response?.data,
+    )
+    if (e.response?.status == 403) {
+      // Todo: Try token renew and logout when renew failed
+      AsyncStorage.setItem('accessToken', '')
+      AsyncStorage.setItem('refreshToken', '')
+    }
     const response = e.response?.data as ResponseWrapper<undefined>
     throw {
       name: response.responseCode ?? 'UNKNOWN_ERROR',

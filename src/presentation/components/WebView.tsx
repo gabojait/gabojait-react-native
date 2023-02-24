@@ -4,11 +4,9 @@ import {RootStackNavigationProps} from '../navigation/RootNavigation'
 import {RootStackParamList} from '../navigation/types'
 import React, {useState} from 'react'
 import {ActivityIndicator, StyleSheet, View} from 'react-native'
-import {Button} from '@rneui/themed'
-import globalStyles from '@/styles'
 
 const WebViewPage = ({navigation, route}: StackScreenProps<RootStackParamList, 'WebView'>) => {
-  navigation.setOptions({headerTitle: route.params.title})
+  navigation.setOptions({headerTitle: route.params?.title ?? '웹뷰'})
   const [loading, setLoading] = useState(false)
   return (
     <View style={{flex: 1}}>
@@ -16,7 +14,11 @@ const WebViewPage = ({navigation, route}: StackScreenProps<RootStackParamList, '
         style={{zIndex: 0}}
         onLoadStart={() => setLoading(true)}
         onLoadEnd={() => setLoading(false)}
-        source={{uri: route.params.url}}
+        source={{
+          uri:
+            route.params?.url ??
+            'https://www.notion.so/gs97ahninu/f129b3cf9f0641499e6375a741408d09?pvs=4',
+        }}
       />
       {loading ? (
         <View style={styles.loadingWrapper}>

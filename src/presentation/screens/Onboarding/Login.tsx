@@ -12,6 +12,8 @@ import {login} from '@/redux/reducers/loginReducer'
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
 import LoginRequestDTO from '@/model/LoginRequestDto'
 import globalStyles from '@/styles'
+import {ModalContext} from '@/presentation/components/modal/context'
+import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent'
 
 export type OnboardingProps = StackScreenProps<OnboardingStackParamList, 'Login'>
 
@@ -19,10 +21,25 @@ const Login = ({navigation}: OnboardingProps) => {
   const [loginState, setLoginState] = useState({username: '', password: ''} as LoginRequestDTO)
   const dispatch = useAppDispatch()
   const {data, loading, error} = useAppSelector(state => state.loginReducer.loginResult)
+  const modal = React.useContext(ModalContext)
 
   useEffect(() => {
-    if (data) {
-      // Todo: 로그인 반환값 처리!
+    if (!loading) {
+      if (data && !error) {
+        navigation.getParent()?.navigate('MainNavigation')
+      } else if (error) {
+        modal?.show({
+          title: <Text>로그인</Text>,
+          content: (
+            <OkDialogModalContent
+              text={error?.message ?? '알 수 없는 오류로 로그인에 실패했습니다.'}
+              onOkClick={function (): void {
+                modal.hide()
+              }}
+            />
+          ),
+        })
+      }
     }
   }, [data])
 
