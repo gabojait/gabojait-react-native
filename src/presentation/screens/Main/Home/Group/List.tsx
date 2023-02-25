@@ -1,4 +1,4 @@
-import CustomModal from '@/presentation/components/CustomModal'
+import CustomModal from '@/presentation/components/modalContent/CustomModal'
 import FloatingButton from '@/presentation/components/FloatingButton'
 import { GroupStackParamList } from '@/presentation/navigation/types'
 import { StackScreenProps } from '@react-navigation/stack'

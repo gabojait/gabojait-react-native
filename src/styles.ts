@@ -4,6 +4,7 @@ const globalStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+    padding: 20,
   },
   wrapButtonConatiner: {
     flexDirection: 'row',
@@ -25,6 +26,7 @@ const globalStyles = StyleSheet.create({
   },
   buttonContainer: {
     padding: 4,
+    paddingHorizontal: 0,
   },
   centerText: {
     textAlign: 'center',
@@ -33,7 +35,8 @@ const globalStyles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 22,
+    paddingTop: 22,
+    backgroundColor: 'white',
   },
   modal: {
     margin: 20,
@@ -50,8 +53,8 @@ const globalStyles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  modalDim:{
-    backgroundColor:'rgba(0, 0, 0, 0.5)'
-  }
+  modalDim: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
 })
 export default globalStyles

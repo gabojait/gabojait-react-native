@@ -46,6 +46,7 @@ const OnboardingNavigation = () => {
         component={FindAccount}
         options={{
           header: BackHeader,
+          headerTitle: "",
         }}
       />
       <OnboardingStack.Screen

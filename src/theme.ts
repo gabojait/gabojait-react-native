@@ -37,6 +37,10 @@ declare module '@rneui/themed' {
       md: number
       lg: number
     }
+    emojiSize: {
+      md: number
+      lg: number
+    }
     fontWeight: {
       light: FontWeight
       medium: FontWeight
@@ -48,7 +52,7 @@ declare module '@rneui/themed' {
       radius: number
       elevation: number
       marginVertical: number
-      shadowOffset:{
+      shadowOffset: {
         width: number
         height: number
       }
@@ -95,6 +99,10 @@ export const theme = createTheme({
     md: 17,
     lg: 22,
   },
+  emojiSize: {
+    md: 80,
+    lg: 130,
+  },
   fontWeight: {
     light: '300',
     medium: '500',
@@ -113,9 +121,9 @@ export const theme = createTheme({
     radius: 20,
     elevation: 5,
     marginVertical: 5,
-    shadowOffset:{
+    shadowOffset: {
       width: 0,
-      height: 2
+      height: 2,
     },
   },
 })

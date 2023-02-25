@@ -8,6 +8,13 @@ export const login = async (dto: LoginRequestDTO) => {
   console.log(result)
   return result
 }
+
+export const getUser = async () => {
+  const result = await client.post('user')
+  console.log('res: ', result)
+  return result
+}
+
 export const checkUsernameDuplicate = async (username: string) => {
   const result = await client.get(`user/username/duplicate/${username}`)
   console.log(result)

@@ -6,6 +6,7 @@ interface WebViewPageProps {
 export type RootStackParamList = {
   default: undefined
   WebView: WebViewPageProps
+  SplashScreen: undefined
   OnboardingNavigation: undefined
   MainNavigation: undefined
 }

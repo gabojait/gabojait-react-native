@@ -18,7 +18,7 @@ import {
 } from '@/util'
 import {Gender} from '@/model/Gender'
 import globalStyles from '@/styles'
-import DatePickerModalContent from '@/presentation/components/DatePickerModalContent'
+import DatePickerModalContent from '@/presentation/components/modalContent/DatePickerModalContent'
 import {Link, useNavigation} from '@react-navigation/native'
 import {ValidatorState} from '@/presentation/components/props/StateProps'
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -36,9 +36,11 @@ import {
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
 import {ModalContext} from '@/presentation/components/modal/context'
 import DatePicker from 'react-native-date-picker'
-import DefaultDialogModalContent from '@/presentation/components/DefaultDialogModalContent'
-import OkDialogModalContent from '@/presentation/components/OkDialogModalContent'
+import DefaultDialogModalContent from '@/presentation/components/modalContent/DefaultDialogModalContent'
+import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent'
 import {sendAuthCodeAction} from '@/redux/action/register'
+import ErrorCode from '@/api/ErrorCode'
+import {AxiosError} from 'axios'
 
 export type RegisterProps = StackScreenProps<OnboardingStackParamList, 'Register'>
 
@@ -79,8 +81,6 @@ const Register = ({navigation, route}: RegisterProps) => {
     }
   }, [agreementState.items])
 
-  const [modalOpened, setModalOpened] = useState(false)
-
   const styles = useStyles({navigation, route})
 
   function isValid(regex: RegExp, text?: string): ValidatorState {
@@ -99,10 +99,22 @@ const Register = ({navigation, route}: RegisterProps) => {
   } = useAppSelector(state => state.registerReducer.registerResult)
 
   useEffect(() => {
-    if (
-      !registerLoading &&
-      ((registerResult && !registerError) || (!registerResult && registerError))
-    ) {
+    if (!registerLoading) {
+      if (registerResult && !registerError) {
+        navigation.navigate('RegisterCompleted')
+      } else if (!registerResult && registerError) {
+        modal?.show({
+          title: '오류',
+          content: (
+            <OkDialogModalContent
+              text={'회원가입에 실패했어요.'}
+              onOkClick={() => {
+                modal.hide()
+              }}
+            />
+          ),
+        })
+      }
     }
   }, [registerResult, registerLoading, registerError])
 
@@ -112,9 +124,7 @@ const Register = ({navigation, route}: RegisterProps) => {
     error: usernameDupError,
   } = useAppSelector(state => state.registerReducer.usernameDupCheckResult)
   useEffect(() => {
-    console.log(usernameDup, usernameDupLoading, usernameDupError)
-
-    if (usernameDup && !usernameDupLoading) {
+    if (usernameDup && !usernameDupLoading && !usernameDupError) {
       modal?.show({
         title: <Text>중복확인</Text>,
         content: (
@@ -128,6 +138,17 @@ const Register = ({navigation, route}: RegisterProps) => {
           />
         ),
       })
+    } else if (!usernameDupLoading && !usernameDup && usernameDupError) {
+      if (usernameDupError.name == ErrorCode.EXISTING_USERNAME.name)
+        modal?.show({
+          title: <Text>중복확인</Text>,
+          content: (
+            <OkDialogModalContent
+              text="이미 존재하는 아이디입니다."
+              onOkClick={() => modal?.hide()}
+            />
+          ),
+        })
     }
   }, [usernameDup, usernameDupLoading, usernameDupError])
   const {
@@ -168,8 +189,8 @@ const Register = ({navigation, route}: RegisterProps) => {
           <OkDialogModalContent
             text={
               !sendAuthCodeError
-                ? '이메일이 발송되었습니다. 보이지 않을 경우 스팸메일함을 확인해주세요.'
-                : '이메일 발송에 실패했습니다. 존재하는 이메일인지 확인해주세요.'
+                ? '이메일이 발송되었습니다.\n보이지 않을 경우 스팸메일함을 확인해주세요.'
+                : '이메일 발송에 실패했습니다.\n존재하는 이메일인지 확인해주세요.'
             }
             onOkClick={() => {
               modal?.hide()
@@ -187,7 +208,6 @@ const Register = ({navigation, route}: RegisterProps) => {
   } = useAppSelector(state => state.registerReducer.verifyAuthCodeResult)
 
   useEffect(() => {
-    console.log(verifyAuthCodeResult, verifyAuthCodeLoading, verifyAuthCodeError)
     if (
       !verifyAuthCodeLoading &&
       ((verifyAuthCodeResult && !verifyAuthCodeError) ||
@@ -199,7 +219,7 @@ const Register = ({navigation, route}: RegisterProps) => {
           <OkDialogModalContent
             text={
               !verifyAuthCodeError
-                ? '이메일 인증에 성공했습니다. 나머지 정보를 입력하고 가입을 완료해주세요.'
+                ? '이메일 인증에 성공했습니다.\n가입을 완료해주세요.'
                 : '인증번호가 올바르지 않습니다.'
             }
             onOkClick={() => {

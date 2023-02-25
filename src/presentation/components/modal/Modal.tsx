@@ -22,9 +22,13 @@ const CustomModal = () => {
         Alert.alert('Modal has been closed.')
         modal?.hide()
       }}>
-      <View style={globalStyles.centeredView}>
+      <View
+        style={[
+          globalStyles.centeredView,
+          {backgroundColor: 'rgba(217, 217, 217, 0.5)', marginTop: 0},
+        ]}>
         <View style={globalStyles.modal}>
-          <Text h3>{modal?.title}</Text>
+          {modal?.title != '' ? <Text h3>{modal?.title}</Text> : null}
           {modal?.content}
         </View>
       </View>
