@@ -31,6 +31,13 @@ declare module '@rneui/themed' {
       lg: number
       xl: number
     }
+    ratingBarSize:{
+      xs: number
+      sm: number
+      md: number
+      lg: number
+      xl: number
+    }
     fontSize: {
       xs: number
       sm: number
@@ -115,6 +122,13 @@ export const theme = createTheme({
     md: 14,
     lg: 20,
     xl: 20,
+  },
+  ratingBarSize: {
+    xs: 16,
+    sm: 19,
+    md: 22,
+    lg: 26,
+    xl: 34
   },
   shadow: {
     opacity: 1,
