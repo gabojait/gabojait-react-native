@@ -2,7 +2,11 @@ import {CheckBox, makeStyles, Text, useTheme} from '@rneui/themed'
 import React, {createRef, useEffect, useRef, useState} from 'react'
 import {Alert, Modal, ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native'
 import {FilledButton, OutlinedButton} from '@/presentation/components/Button'
-import {OnboardingStackParamList, RootStackParamList} from '@/presentation/navigation/types'
+import {
+  OnboardingScreenProps,
+  OnboardingStackParamList,
+  RootStackParamList,
+} from '@/presentation/navigation/types'
 import {StackScreenProps} from '@react-navigation/stack'
 import {RegisterInput} from '@/presentation/components/RegisterInput'
 import color from '@/presentation/res/styles/color'
@@ -42,8 +46,6 @@ import {sendAuthCodeAction} from '@/redux/action/register'
 import ErrorCode from '@/api/ErrorCode'
 import {AxiosError} from 'axios'
 
-export type RegisterProps = StackScreenProps<OnboardingStackParamList, 'Register'>
-
 const agreementItems = [
   {
     text: '이용약관에 동의합니다.(필수)',
@@ -59,7 +61,7 @@ const agreementItems = [
   },
 ]
 
-const Register = ({navigation, route}: RegisterProps) => {
+const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
   const [registerState, setRegisterState] = useState<RegisterRequestDto>({
     gender: Gender.Female,
     birthdate: new Date().toISOString(),
@@ -451,7 +453,7 @@ const Register = ({navigation, route}: RegisterProps) => {
                 key={idx}
                 text={item.text}
                 checked={item.checked}
-                onCheckedChange={checked => {
+                onCheckedChange={(checked: boolean) => {
                   console.log(checked)
                   setAgreementState(prevState => {
                     const items = [...prevState.items]
@@ -482,7 +484,7 @@ const Register = ({navigation, route}: RegisterProps) => {
   )
 }
 
-const useStyles = makeStyles((theme, props: RegisterProps) => ({
+const useStyles = makeStyles(theme => ({
   agreementContainer: {
     borderRadius: 5,
     borderWidth: 1,

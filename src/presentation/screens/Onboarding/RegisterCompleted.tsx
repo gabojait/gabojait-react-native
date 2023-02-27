@@ -1,6 +1,7 @@
 import {FilledButton} from '@/presentation/components/Button'
 import {
   MainStackParamList,
+  OnboardingScreenProps,
   OnboardingStackParamList,
   RootStackParamList,
 } from '@/presentation/navigation/types'
@@ -10,11 +11,8 @@ import {StackScreenProps} from '@react-navigation/stack/lib/typescript/src/types
 import {Text, useTheme} from '@rneui/themed'
 import React from 'react'
 import {View} from 'react-native'
-import {RegisterProps} from './Register'
 
-const RegisterCompleted = ({
-  navigation,
-}: StackScreenProps<OnboardingStackParamList, 'RegisterCompleted'>) => {
+const RegisterCompleted = ({navigation}: OnboardingScreenProps<'RegisterCompleted'>) => {
   const {theme} = useTheme()
 
   return (
@@ -34,7 +32,9 @@ const RegisterCompleted = ({
       </Text>
       <FilledButton
         title="시작하기"
-        onPress={() => navigation.getParent()?.navigate('MainNavigation')}
+        onPress={() =>
+          navigation.getParent()?.navigate('MainBottomTabNavigation', {screen: 'Home'})
+        }
       />
     </View>
   )

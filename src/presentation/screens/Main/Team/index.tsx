@@ -3,8 +3,9 @@ import React from 'react'
 import Detail from '@/presentation/screens/Main/Team/Detail'
 import Header from '../../Headers/TitleHeader'
 
+const TeamStack = createStackNavigator()
+
 const TeamScreen = () => {
-  const TeamStack = createStackNavigator()
   return (
     <TeamStack.Navigator initialRouteName="List">
       <TeamStack.Group

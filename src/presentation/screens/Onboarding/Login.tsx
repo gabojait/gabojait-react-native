@@ -3,7 +3,11 @@ import {FilledButton} from '@/presentation/components/Button'
 import {Image, Text, useTheme} from '@rneui/themed'
 import React, {useEffect, useRef, useState} from 'react'
 import {StyleSheet, TouchableOpacity, View} from 'react-native'
-import {OnboardingStackParamList, RootStackParamList} from '@/presentation/navigation/types'
+import {
+  OnboardingScreenProps,
+  OnboardingStackParamList,
+  RootStackParamList,
+} from '@/presentation/navigation/types'
 import color from '@/presentation/res/styles/color'
 import {CustomInput} from '@/presentation/components/CustomInput'
 import Gabojait from '@/presentation/components/icon/Gabojait'
@@ -15,9 +19,7 @@ import globalStyles from '@/styles'
 import {ModalContext} from '@/presentation/components/modal/context'
 import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent'
 
-export type OnboardingProps = StackScreenProps<OnboardingStackParamList, 'Login'>
-
-const Login = ({navigation}: OnboardingProps) => {
+const Login = ({navigation}: OnboardingScreenProps<'Login'>) => {
   const [loginState, setLoginState] = useState({username: '', password: ''} as LoginRequestDTO)
   const dispatch = useAppDispatch()
   const {data, loading, error} = useAppSelector(state => state.loginReducer.loginResult)
@@ -26,7 +28,7 @@ const Login = ({navigation}: OnboardingProps) => {
   useEffect(() => {
     if (!loading) {
       if (data && !error) {
-        navigation.getParent()?.navigate('MainNavigation')
+        navigation.getParent()?.navigate('MainBottomTabNavigation', {screen: 'Home '})
       } else if (error) {
         modal?.show({
           title: <Text>로그인</Text>,

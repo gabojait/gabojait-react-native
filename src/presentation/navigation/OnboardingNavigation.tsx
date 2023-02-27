@@ -11,15 +11,6 @@ import {OnboardingStackParamList} from '@/presentation/navigation/types'
 import {RootStackNavigationProps} from '@/presentation/navigation/RootNavigation'
 import RegisterCompleted from '../screens/Onboarding/RegisterCompleted'
 
-type OnboardingNavigationProp<T extends keyof OnboardingStackParamList = 'Login'> =
-  StackNavigationProp<OnboardingStackParamList, T>
-
-export type OnboardingStackNavigationProps<T extends keyof OnboardingStackParamList = 'Login'> =
-  CompositeNavigationProp<
-    OnboardingNavigationProp<T>,
-    RootStackNavigationProps<'OnboardingNavigation'>
-  >
-
 const OnboardingStack = createStackNavigator<OnboardingStackParamList>()
 
 const OnboardingNavigation = () => {
@@ -46,7 +37,7 @@ const OnboardingNavigation = () => {
         component={FindAccount}
         options={{
           header: BackHeader,
-          headerTitle: "",
+          headerTitle: '',
         }}
       />
       <OnboardingStack.Screen

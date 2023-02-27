@@ -10,7 +10,7 @@ export const login = async (dto: LoginRequestDTO) => {
 }
 
 export const getUser = async () => {
-  const result = await client.post('user')
+  const result = await client.get('user')
   console.log('res: ', result)
   return result
 }
