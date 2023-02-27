@@ -1,16 +1,12 @@
 import { FilledButton } from '@/presentation/components/Button'
 import CardWrapper from '@/presentation/components/CardWrapper'
-import { PartIcon } from '@/presentation/components/GroupListCard'
 import PositionIcon from '@/presentation/components/PositionIcon'
-import { GroupStackParamList } from '@/presentation/navigation/types'
-import { StackScreenProps } from '@react-navigation/stack'
+import { MainStackScreenProps } from '@/presentation/navigation/types'
 import { makeStyles, Text, useTheme } from '@rneui/themed'
 import React from 'react'
 import { ScrollView, View } from 'react-native'
 
-export type GroupStackParamListProps = StackScreenProps<GroupStackParamList, 'Detail'>
-
-const Detail = ({navigation}:GroupStackParamListProps) => {
+const GroupDetail = ({navigation}:MainStackScreenProps<'GroupDetail'>) => {
   const {theme} = useTheme() 
   const styles = useStyles()
 
@@ -84,4 +80,4 @@ const useStyles = makeStyles((theme)=> ({
     flexDirection: 'row',
   }
 }))
-export default Detail
+export default GroupDetail

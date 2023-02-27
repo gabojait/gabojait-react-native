@@ -34,9 +34,16 @@ export type OnboardingScreenProps<T extends keyof OnboardingStackParamList> = St
   OnboardingStackParamList,
   T
 >
+export type MainStackScreenProps<T extends keyof MainStackParamList> = StackScreenProps<
+  MainStackParamList,
+  T
+>
 
 export type MainStackParamList = {
   Profile: undefined
+  GroupDetail: undefined
+  GroupEditor: undefined
+  PositionSelector: undefined
 }
 
 export type MainBottomTabParamList = {
@@ -50,16 +57,11 @@ export type MainBottomTabNavigationProps<T extends keyof MainBottomTabParamList 
   CompositeScreenProps<
     BottomTabScreenProps<MainBottomTabParamList, T>,
     RootStackScreenProps<keyof RootStackParamList>
-  >
+>
 
 export type BoardStackParamList = {
-  Group: undefined
-  TeamMate: undefined
+  GroupList: undefined
+  TeamMate: undefined,
+  MainNavigation: NavigatorScreenParams<MainStackParamList>
 }
 
-export type GroupStackParamList = {
-  List: undefined
-  Detail: undefined
-  PositionSelector: undefined
-  Editor: undefined
-}

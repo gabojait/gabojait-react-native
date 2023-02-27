@@ -1,15 +1,15 @@
 import CustomModal from '@/presentation/components/modalContent/CustomModal'
 import FloatingButton from '@/presentation/components/FloatingButton'
-import { GroupStackParamList } from '@/presentation/navigation/types'
+import { BoardStackParamList} from '@/presentation/navigation/types'
 import { StackScreenProps } from '@react-navigation/stack'
 import {useTheme} from '@rneui/themed'
 import React, { useState } from 'react'
 import {FlatList, Text, TouchableOpacity, View} from 'react-native'
 import GroupListCard, {Part} from '../../../../components/GroupListCard'
 
-export type GroupStackParamListProps = StackScreenProps<GroupStackParamList, 'List'>
+export type BoardStackParamListProps = StackScreenProps<BoardStackParamList, 'GroupList'>
 
-const List = ({navigation}:GroupStackParamListProps) => {
+const GroupList = ({navigation}:BoardStackParamListProps) => {
   const {theme} = useTheme() 
   const arr = [
   [new Part('design', 'D', ['KimWash']),
@@ -25,7 +25,7 @@ const List = ({navigation}:GroupStackParamListProps) => {
         keyExtractor={item => item.toString()}
         data={arr}
         renderItem={({item}) => 
-        <TouchableOpacity onPress={() => navigation.navigate('Detail')}>
+        <TouchableOpacity onPress={() => navigation.navigate('MainNavigation', {screen: 'GroupDetail'})}>
           <GroupListCard
             title="가보자잇"
             parts={item}
@@ -33,7 +33,7 @@ const List = ({navigation}:GroupStackParamListProps) => {
         </TouchableOpacity>}
       />
       <View style={{position:'absolute',flex:1, flexDirection:'column-reverse',justifyContent:'flex-start', alignItems:'flex-end', width: '95%', backgroundColor:theme.colors.disabled}}>
-        <FloatingButton title='팀 생성' onPress={() => navigation.navigate('Editor')}/>
+        <FloatingButton title='팀 생성' onPress={() => navigation.navigate('MainNavigation', {screen: 'GroupEditor'})}/>
       </View>
       <CustomModal 
         title={'팀 찾기 모드로 변경하시겠어요?'}
@@ -55,4 +55,4 @@ const List = ({navigation}:GroupStackParamListProps) => {
   )
 }
 
-export default List
+export default GroupList
