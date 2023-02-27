@@ -6,7 +6,6 @@ import HomeHeader from '../screens/Headers/HomeHeader'
 import GroupList from '../screens/Main/Home/Group/GroupList'
 import TeamMate from '../screens/Main/Home/TeamMate'
 import { RootStackNavigationProps } from './RootNavigation'
-
 type BoardNavigationProp<
 T extends keyof BoardStackParamList = 'GroupList'
 > = StackNavigationProp<BoardStackParamList, T>
