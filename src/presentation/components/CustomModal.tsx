@@ -14,7 +14,8 @@ interface CustomModalProps {
     modalVisible: boolean,
     onModalVisibityChanged: (visibility: boolean) => void,
     neverSeeAgainButton?: boolean,
-    callback?: any
+    validCallback?: () => void
+    closeModalUntilExpires?: () => void
 }
 
 const CustomModal:React.FC<CustomModalProps> = ({neverSeeAgainButton: neverSeeAgain=false, ...props}) => {
@@ -49,7 +50,7 @@ const CustomModal:React.FC<CustomModalProps> = ({neverSeeAgainButton: neverSeeAg
                             titleStyle={{color: theme.colors.black}}
                             onPress={() => {
                                 props.onModalVisibityChanged(false)
-                                props.callback()
+                                props.validCallback
                             }}
                         />
                         <FilledButton
@@ -61,7 +62,12 @@ const CustomModal:React.FC<CustomModalProps> = ({neverSeeAgainButton: neverSeeAg
                             }}
                         />
                     </View>
-                    {neverSeeAgain? <NeverSeeAgain/>:<></>}
+                    {neverSeeAgain
+                        ?<TouchableOpacity onPress={props.closeModalUntilExpires}>
+                            <Text style={{color: theme.colors.black, paddingTop: 10}}>다시보지 않기</Text>
+                        </TouchableOpacity>
+                        :<></>
+                    }
                 </View>
             </View>
         </Modal>

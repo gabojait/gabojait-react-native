@@ -33,7 +33,7 @@ export const RatingBar = ({ratingScore}: RatingProps) => {
                 starHalfArray.map(() => { return(<GabojaitIcon name="star-half" size={26} color={theme.colors.primary}/>) })
             }
             {
-                starEmptyArray.map(() => { return(<GabojaitIcon name="star-empty" size={20} style={{paddingTop: 1}}/>) })
+                starEmptyArray.map(() => { return(<GabojaitIcon name="star-empty" size={20} style={{paddingTop: 2}}/>) })
             }
         </View>
     )
