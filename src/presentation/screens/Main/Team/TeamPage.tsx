@@ -1,30 +1,53 @@
 import { FilledButton } from '@/presentation/components/Button'
 import CardWrapper from '@/presentation/components/CardWrapper'
-import { PartIcon } from '@/presentation/components/GroupListCard'
 import PositionIcon from '@/presentation/components/PositionIcon'
-import { GroupStackParamList } from '@/presentation/navigation/types'
-import { StackScreenProps } from '@react-navigation/stack'
-import { makeStyles, Text, useTheme } from '@rneui/themed'
-import React from 'react'
-import { ScrollView, View } from 'react-native'
+import {makeStyles, Text, useTheme} from '@rneui/themed'
+import React, {ReactNode} from 'react'
+import {ScrollView, View} from 'react-native'
 
-export type GroupStackParamListProps = StackScreenProps<GroupStackParamList, 'Detail'>
+const Center: React.FC<{children: ReactNode}> = ({children}) => (
+  <View
+    style={{
+      flex: 1,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'white',
+    }}>
+    {children}
+  </View>
+)
+const NoProcessingTeam = () => (
+  <Center>
+    <Text h1 h1Style={{fontSize: 100, marginBottom: 20}}>
+      🫥
+    </Text>
+    <Text h4>현재 진행 중인 팀이 없어요</Text>
+  </Center>
+)
 
-const Detail = ({navigation}:GroupStackParamListProps) => {
+const Detail = () => {
+  // network
   const {theme} = useTheme() 
   const styles = useStyles()
-
   return (
+    
     <ScrollView style={styles.scrollView}>
-      <CardWrapper style={[styles.card,{minHeight: 243}]}>
-        <View style={{width:'100%', paddingHorizontal:10, flex:1, justifyContent:'space-between'}}>
-          <Text style={styles.teamname}>같이 앱 만들 사람 구해요</Text>
+      <CardWrapper style={[styles.teamcard,{minHeight: 190, justifyContent: 'center'}]}>
+        <View style={{width:'100%', paddingHorizontal:10, flex:1, justifyContent:'space-evenly'}}>
+          <Text style={styles.teamname}>3팀</Text>
           <View style={styles.partIcon}>
               <PositionIcon currentApplicant={1} vancancyNumber={1} textView ={ <Text style={{fontWeight:theme.fontWeight.bold, fontSize:30}}>D</Text>}/>
-              <PositionIcon currentApplicant={1} vancancyNumber={2} textView ={ <Text style={{fontWeight:theme.fontWeight.bold, fontSize:30}}>F</Text>}/>
+              <PositionIcon currentApplicant={2} vancancyNumber={2} textView ={ <Text style={{fontWeight:theme.fontWeight.bold, fontSize:30}}>F</Text>}/>
               <PositionIcon currentApplicant={1} vancancyNumber={1} textView ={ <Text style={{fontWeight:theme.fontWeight.bold, fontSize:30}}>B</Text>}/>
           </View>
-          <FilledButton title={'함께 하기'} onPress={() => navigation.navigate('PositionSelector')}/>
+        </View>
+      </CardWrapper>
+      <CardWrapper style={[styles.card,{minHeight: 50}]}>
+        <View>
+        <Text style={styles.text}>
+          카카오톡 오픈채팅 링크
+         </Text>
         </View>
       </CardWrapper>
       <CardWrapper style={[styles.card,{minHeight: 200}]}>
@@ -52,14 +75,22 @@ const Detail = ({navigation}:GroupStackParamListProps) => {
 const useStyles = makeStyles((theme)=> ({
   scrollView:{
     backgroundColor: theme.colors.white,
-    paddingHorizontal:20,
     paddingVertical:18,
     flex:1,
+  },
+  teamcard:{
+    paddingHorizontal:13,
+    paddingBottom:17,
+    marginVertical:5,
+    marginHorizontal:20,
+    borderRadius:20
   },
   card:{
     paddingHorizontal:13,
     paddingVertical:17,
-    marginBottom:10,
+    marginVertical:5,
+    marginHorizontal:20,
+    borderRadius:20
   },
   teamname:{
     fontSize:theme.fontSize.lg,
@@ -79,9 +110,8 @@ const useStyles = makeStyles((theme)=> ({
     lineHeight:22
   },
   partIcon:{
-    paddingTop: 30,
-    paddingBottom: 25, 
     flexDirection: 'row',
   }
 }))
+
 export default Detail

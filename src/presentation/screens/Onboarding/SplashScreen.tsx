@@ -21,10 +21,13 @@ const SplashScreen = ({navigation}: RootStackScreenProps<'SplashScreen'>) => {
           screen: 'Home',
         })
       }
-      if (!user.data && user.error) {
-        console.log('토큰 리프레시 실패. 로그인으로 이동.')
-        navigation.navigate('OnboardingNavigation', {screen: 'Login'})
-      }
+      navigation.navigate('MainBottomTabNavigation', {
+        screen: 'Home',
+      })
+      // if (!user.data && user.error) {
+      //   console.log('토큰 리프레시 실패. 로그인으로 이동.')
+      //   navigation.navigate('OnboardingNavigation', {screen: 'Login'})
+      // }
       Splash.hide()
     }
   }

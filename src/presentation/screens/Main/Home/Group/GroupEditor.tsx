@@ -1,7 +1,7 @@
 import { FilledButton } from '@/presentation/components/Button'
 import { CustomInput } from '@/presentation/components/CustomInput'
 import { PositionMaker } from '@/presentation/components/PositionMaker'
-import { GroupStackParamList } from '@/presentation/navigation/types'
+import { MainStackScreenProps } from '@/presentation/navigation/types'
 import color from '@/presentation/res/styles/color'
 import { StackScreenProps } from '@react-navigation/stack'
 import { Text, useTheme, makeStyles } from '@rneui/themed'
@@ -10,9 +10,8 @@ import { FlatList, TextInput, TouchableOpacity, View } from 'react-native'
 import CustomIcon from '@/presentation/components/icon/Gabojait'
 import CustomModal from '@/presentation/components/modalContent/CustomModal'
 
-export type GroupStackProps = StackScreenProps<GroupStackParamList, 'Editor'>
 
-const Editor = ({navigation, route}: GroupStackProps) => {
+const Editor = ({navigation, route}:MainStackScreenProps<'GroupEditor'>) => {
   const {theme} = useTheme()
   const styles = useStyles({navigation, route})
   const [array, setArray] = useState([{idex:'0'}])
@@ -99,7 +98,7 @@ const Editor = ({navigation, route}: GroupStackProps) => {
         lowerButtonText={'돌아가기'} 
         modalVisible={modalOpened} 
         onModalVisibityChanged={visibility => setModalOpened(visibility)}
-        callback={() => navigation.popToTop()}
+        validCallback={() => navigation.popToTop()}
       >
         <Text style={{fontSize:theme.fontSize.sm, alignItems:'center'}}>
           글을 삭제하면
@@ -111,7 +110,7 @@ const Editor = ({navigation, route}: GroupStackProps) => {
     </>    
   )
 }
-const useStyles = makeStyles((theme, props: GroupStackProps) => ({
+const useStyles = makeStyles((theme) => ({
   view: {
     backgroundColor: color.white,
     paddingHorizontal: 20,
