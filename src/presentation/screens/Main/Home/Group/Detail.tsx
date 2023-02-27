@@ -52,14 +52,14 @@ const Detail = ({navigation}:GroupStackParamListProps) => {
 const useStyles = makeStyles((theme)=> ({
   scrollView:{
     backgroundColor: theme.colors.white,
-    paddingHorizontal:20,
     paddingVertical:18,
     flex:1,
   },
   card:{
     paddingHorizontal:13,
     paddingVertical:17,
-    marginBottom:10,
+    marginVertical:5,
+    marginHorizontal:20
   },
   teamname:{
     fontSize:theme.fontSize.lg,

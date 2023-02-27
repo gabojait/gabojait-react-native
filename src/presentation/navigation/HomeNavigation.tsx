@@ -5,7 +5,6 @@ import React from 'react'
 import TeamMate from '../screens/Main/Home/TeamMate'
 import GroupNavigation from './GroupNavigation'
 import { RootStackNavigationProps } from './RootNavigation'
-
 type BoardNavigationProp<
 T extends keyof BoardStackParamList = 'Group'
 > = StackNavigationProp<BoardStackParamList, T>

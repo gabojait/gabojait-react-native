@@ -29,8 +29,7 @@ const Login = ({navigation}: OnboardingProps) => {
     <View style={styles.entireView}>
       <View style={{flex: 0.3}} />
       <View style={styles.logoView}>
-        <Gabojait name="gabozait" color={color.primary} size={35} />
-        <Gabojait name="heart-circle" color={color.primary} size={35} />
+        <Gabojait name="gabojait" color={color.primary} size={35} />
       </View>
       <View style={styles.inputView}>
         <CustomInput

@@ -99,7 +99,7 @@ const Editor = ({navigation, route}: GroupStackProps) => {
         lowerButtonText={'돌아가기'} 
         modalVisible={modalOpened} 
         onModalVisibityChanged={visibility => setModalOpened(visibility)}
-        callback={() => navigation.popToTop()}
+        validCallback={() => navigation.popToTop()}
       >
         <Text style={{fontSize:theme.fontSize.sm, alignItems:'center'}}>
           글을 삭제하면

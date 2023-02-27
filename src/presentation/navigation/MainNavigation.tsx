@@ -1,5 +1,5 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
-import {CompositeNavigationProp} from '@react-navigation/native'
+import {CompositeNavigationProp, NavigationContainer} from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import React from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome'
@@ -39,7 +39,7 @@ const MainNavigation = () => {
           name="홈"
           component={Home}
           options={{
-            tabBarIcon: ({size, color}) => <CustomIcon name="home" size={size} color={color}/>,
+            tabBarIcon: ({size, color}) => <CustomIcon name="home" size={size} color={color}/>
           }}
         />
         <MainBottomTab.Screen
