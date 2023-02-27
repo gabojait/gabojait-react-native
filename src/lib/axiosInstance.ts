@@ -71,9 +71,9 @@ client.interceptors.response.use(
           // Todo: Handle No Content
           // Todo: 빈 리스트(204?)/201 대응
 
-          return {data: [], loading: false}
+          return []
         } else {
-          return {data: res.data.data, loading: false}
+          return res.data.data
         }
       } else {
         throw {

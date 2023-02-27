@@ -4,6 +4,7 @@ import {MainStackParamList} from './types'
 import Profile from '../screens/Main/MyPage/Profile'
 import {CompositeNavigationProp} from '@react-navigation/native'
 import {RootStackNavigationProps} from './RootNavigation'
+import CloseHeader from '../screens/Headers/CloseHeader'
 
 const Main = createStackNavigator<MainStackParamList>()
 
@@ -11,7 +12,7 @@ const MainNavigation = () => {
   console.log('MainNavigation')
   return (
     <Main.Navigator>
-      <Main.Screen name="Profile" component={Profile}></Main.Screen>
+      <Main.Screen name="Profile" options={{header: CloseHeader}} component={Profile}></Main.Screen>
     </Main.Navigator>
   )
 }
