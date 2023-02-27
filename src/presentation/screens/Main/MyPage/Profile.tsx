@@ -1,10 +1,11 @@
 import React from 'react'
 import globalStyles from '@/styles'
 import {CheckBox, makeStyles, Text, useTheme} from '@rneui/themed'
-import {StyleSheet, View} from 'react-native'
+import {ScrollView, StyleSheet, View} from 'react-native'
 import {FilledButton} from '@/presentation/components/Button'
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
 import ProfileViewDto from '@/model/Profile/ProfileViewDto'
+import {Slider} from '@miblanchard/react-native-slider'
 
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import {StringOmit} from '@rneui/base'
@@ -47,24 +48,17 @@ const Profile = () => {
     nickname: '대충 닉네임',
     portfolios: [
       {
-        name: '앱센터 프로젝트 ‘가보자잇’',
+        name: '네이버 블로그',
         portfolioId: 'string',
         portfolioType: 'string',
         schemaVersion: 'string',
         url: 'string',
       },
     ],
-    position: 'string',
+    position: 'Designer',
     rating: 0,
     schemaVersion: 'string',
     skills: [
-      {
-        isExperienced: true,
-        level: 'string',
-        schemaVersion: 'string',
-        skillId: 'string',
-        skillName: 'Designer',
-      },
       {
         isExperienced: true,
         level: 'string',
@@ -116,67 +110,79 @@ const Profile = () => {
   )
 
   return !pageLoading ? (
-    <View style={{flex: 1}}>
-      <View style={{flex: 0.2, backgroundColor: '#f5f5f5'}} />
-      <View style={{flex: 0.8,}}>
-      {!profileExist ? (
-        <View
-          style={{
-            backgroundColor: 'white',
-            borderTopStartRadius: 18,
-            borderTopEndRadius: 18,
-            paddingHorizontal: 20,
-            paddingVertical: 50,
-          }}>
-          <View style={styles.profileContainer}></View>
-          <PortfolioNotExist />
-        </View>
-      ) : (
-        <View>
+    <ScrollView style={{flex: 1}}>
+      <View style={{flex: 0.2, backgroundColor: '#f5f5f5', marginBottom: "30%"}} />
+      <View style={{flex: 0.8}}>
+        {!profileExist ? (
           <View
             style={{
               backgroundColor: 'white',
-              borderRadius: 18,
+              borderTopStartRadius: 18,
+              borderTopEndRadius: 18,
               paddingHorizontal: 20,
               paddingVertical: 50,
             }}>
             <View style={styles.profileContainer}></View>
-            <PortfolioView profile={profile} onProfileVisibilityChanged={isPublic => {}} />
+            <PortfolioNotExist />
           </View>
-          <View
-            style={{
-              backgroundColor: 'white',
-              borderRadius: 18,
-              alignItems: 'flex-start',
-              flexWrap: 'nowrap',
-              padding: 20,
-              marginTop: 20,
-            }}>
-            <Text h4>학력/경력</Text>
-            <IconLabel
-              iconName="school"
-              label={profile.educations[profile.educations.length - 1].institutionName}
-            />
-            <IconLabel
-              iconName="work"
-              label={profile.works[profile.works.length - 1].corporationName}
-            />
-            <IconLabel
-              iconName="work"
-              label={profile.portfolios[profile.portfolios.length - 1].name}
-            />
-            <Text h4>기술스택/직무</Text>
-            <View style={{flexWrap: 'wrap', flexDirection: 'row'}}>
-              {profile.skills.map(skill => (
-                <ToggleButton title={skill.skillName} key={skill.skillId} />
-              ))}
+        ) : (
+          <>
+            <View
+              style={{
+                backgroundColor: 'white',
+                borderRadius: 18,
+                paddingHorizontal: 20,
+                paddingVertical: 50,
+              }}>
+              <View style={styles.profileContainer}></View>
+              <PortfolioView profile={profile} onProfileVisibilityChanged={isPublic => {}} />
             </View>
-          </View>
-        </View>
-      )}
+            <View
+              style={{
+                backgroundColor: 'white',
+                borderRadius: 18,
+                alignItems: 'flex-start',
+                flexWrap: 'nowrap',
+                padding: 20,
+                marginTop: 20,
+              }}>
+              <Text h4>학력/경력</Text>
+              <IconLabel
+                iconName="school"
+                label={profile.educations[profile.educations.length - 1].institutionName}
+              />
+              <IconLabel
+                iconName="work"
+                label={profile.works[profile.works.length - 1].corporationName}
+              />
+              <IconLabel
+                iconName="work"
+                label={profile.portfolios[profile.portfolios.length - 1].name}
+              />
+              <Text h4>기술스택/직무</Text>
+              <ToggleButton title={profile.position} />
+              {profile.skills.map(skill => (
+                <>
+                  <Text>희망 기술스택</Text>
+                  <CustomSlider
+                    text={skill.skillName}
+                    value={parseInt(skill.level)}
+                    onChangeValue={function (value: number | number[]): void {}}
+                    minimumTrackTintColor="#FFDB20"
+                  />
+                </>
+              ))}
+              <Text h4>포트폴리오</Text>
+              <View style={{flexWrap: 'wrap', flexDirection: 'row'}}>
+                {profile.portfolios.map(portfolio => (
+                  <ToggleButton title={portfolio.name} backgroundColor="#FFF" />
+                ))}
+              </View>
+            </View>
+          </>
+        )}
       </View>
-     
-    </View>
+    </ScrollView>
   ) : (
     <View style={globalStyles.container}>
       <Text>로딩</Text>
@@ -184,17 +190,28 @@ const Profile = () => {
   )
 }
 
-const ToggleButton = ({title, onClick}: {title: string; onClick?: () => void}) => {
+const ToggleButton = ({
+  title,
+  icon,
+  onClick,
+  backgroundColor,
+}: {
+  title: string
+  icon?: React.ReactNode
+  onClick?: () => void
+  backgroundColor?: string
+}) => {
   const {theme} = useTheme()
   return (
     <View
       style={{
         borderWidth: 1,
         borderColor: 'black',
-        backgroundColor: theme.colors.primary,
+        backgroundColor: backgroundColor ?? theme.colors.primary,
         borderRadius: 10,
         padding: 6,
       }}>
+      {icon}
       <Text>{title}</Text>
     </View>
   )
@@ -206,6 +223,50 @@ const IconLabel = ({iconName, label}: {iconName: string; label: string}) => (
     <Text>{label}</Text>
   </View>
 )
+
+const CustomSlider = ({
+  text,
+  value,
+  onChangeValue,
+  minimumTrackTintColor,
+}: {
+  text: string
+  value: number
+  onChangeValue: (value: number | number[]) => void
+  minimumTrackTintColor: string
+}) => {
+  return (
+    <View style={{width: '100%'}}>
+      <Slider
+        containerStyle={{
+          width: '100%',
+          overflow: 'hidden',
+          height: 20,
+          borderWidth: 1,
+          borderColor: 'black',
+          borderRadius: 7,
+        }}
+        trackClickable
+        step={1}
+        maximumValue={3}
+        trackStyle={{
+          height: 20,
+          borderRadius: 7,
+          backgroundColor: 'white',
+        }}
+        trackMarks={[1, 2]}
+        renderTrackMarkComponent={() => (
+          <View style={{width: 1, height: 20, backgroundColor: 'black'}}></View>
+        )}
+        value={value}
+        onValueChange={onChangeValue}
+        thumbStyle={{backgroundColor: 'transparent', width: 0, borderWidth: 0}}
+        minimumTrackTintColor={minimumTrackTintColor}
+      />
+      <Text style={{position: 'absolute', left: 5, top: 2}}>{text}</Text>
+    </View>
+  )
+}
 
 const PortfolioView = ({
   profile,
