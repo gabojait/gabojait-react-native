@@ -5,7 +5,7 @@ import { Float } from 'react-native/Libraries/Types/CodegenTypes'
 import { useTheme } from '@rneui/themed'
 
 interface RatingInputProps{
-    ratingScore: ()=>void,
+    updateRatingScore: (ratingScore:number) => void,
     size?: number
 }
 interface StarStateProps{
@@ -22,12 +22,11 @@ interface StarPaddingTopProps{
 }
 interface RatingInputModel{
     stateArray: Array<StarStateProps>,
-    ratingScore: number,
     colorArray: Array<StarColorProps>,
     sizeArray: Array<StarSizeProps>,
     paddingTopArray: Array<StarPaddingTopProps>
 }
-export const RatingInput = ({ratingScore, size=26}: RatingInputProps) => {
+export const RatingInput = ({updateRatingScore, size=26}: RatingInputProps) => {
     const {theme} = useTheme()
     const stateArray = Array<StarStateProps>({state:'star-empty'},{state:'star-empty'},{state:'star-empty'},{state:'star-empty'},{state:'star-empty'})
     const colorArray = Array<StarColorProps>({color: 'black'},{color: 'black'},{color: 'black'},{color: 'black'},{color: 'black'})
@@ -37,7 +36,6 @@ export const RatingInput = ({ratingScore, size=26}: RatingInputProps) => {
     const [ratingState, setRatingState] = useState<RatingInputModel>(
         {
             stateArray: stateArray,
-            ratingScore: 0,
             colorArray: colorArray,
             sizeArray: sizeArray,
             paddingTopArray: paddingTopArray
@@ -45,7 +43,6 @@ export const RatingInput = ({ratingScore, size=26}: RatingInputProps) => {
     )
 
     const setRatingBar = (ratingScore: Float) => {
-        console.log(ratingScore)
         let starFilled = Math.floor(ratingScore)
         let starHalf = Math.ceil(ratingScore - starFilled)
         let starEmpty = 5 - starFilled - starHalf
@@ -73,13 +70,12 @@ export const RatingInput = ({ratingScore, size=26}: RatingInputProps) => {
             i += 1
         }
 
-        for (let i=0; i<5; i++){
-            console.log(ratingState.stateArray[i])
-        }
         setRatingState( prevState => ({...prevState, stateArray: stateArray}) )
         setRatingState( prevState => ({...prevState, colorArray: colorArray}) )
         setRatingState( prevState => ({...prevState, sizeArray: sizeArray}) )
         setRatingState( prevState => ({...prevState, paddingTopArray: paddingTopArray}) )
+        
+        updateRatingScore(ratingScore)
     }
 
     return (

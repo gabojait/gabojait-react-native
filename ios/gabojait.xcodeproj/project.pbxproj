@@ -45,7 +45,7 @@
 		5DCACB8F33CDC322A6C60F78 /* libPods-gabojait.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-gabojait.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = gabojait/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-gabojait-gabojaitTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gabojait-gabojaitTests.release.xcconfig"; path = "Target Support Files/Pods-gabojait-gabojaitTests/Pods-gabojait-gabojaitTests.release.xcconfig"; sourceTree = "<group>"; };
-		956AE6CC7B6049AAB674EF4C /* fontello.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = fontello.ttf; path = ../src/assets/fonts/fontello.ttf; sourceTree = "<group>"; };
+		956AE6CC7B6049AAB674EF4C /* fontello.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = fontello.ttf; path = ../src/assets/fonts/fontello.ttf; sourceTree = "<group>"; };
 		D58FC3FF289E1A610083569D /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fonts; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -504,7 +504,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = JFM39N7Z6U;
+				DEVELOPMENT_TEAM = 7ATZ46BS8N;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = gabojait/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -530,7 +530,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = JFM39N7Z6U;
+				DEVELOPMENT_TEAM = 7ATZ46BS8N;
 				INFOPLIST_FILE = gabojait/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
