@@ -87,7 +87,7 @@ const Editor = ({navigation, route}:MainStackScreenProps<'GroupEditor'>) => {
           </View>
 
           <View style={{paddingHorizontal: 30}}>
-            <FilledButton title={'완료'} disabled={false} onPress={() => navigation.popToTop()}/>
+            <FilledButton title={'완료'} disabled={false} onPress={() => navigation.goBack()}/>
             <FilledButton title={'삭제하기'} buttonStyle={{backgroundColor:theme.colors.grey0}} onPress={() => setModalOpened(true)}/>
           </View>
         </>}
@@ -98,7 +98,7 @@ const Editor = ({navigation, route}:MainStackScreenProps<'GroupEditor'>) => {
         lowerButtonText={'돌아가기'} 
         modalVisible={modalOpened} 
         onModalVisibityChanged={visibility => setModalOpened(visibility)}
-        validCallback={() => navigation.popToTop()}
+        validCallback={() => navigation.goBack()}
       >
         <Text style={{fontSize:theme.fontSize.sm, alignItems:'center'}}>
           글을 삭제하면

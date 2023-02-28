@@ -13,8 +13,6 @@ import TeamScreen from '../screens/Main/Team'
 export type MainBottomTabNavigationProp<T extends keyof MainBottomTabParamList = 'Home'> =
   BottomTabNavigationProp<MainBottomTabParamList, T>
 
-
-
 const MainBottomTab = createBottomTabNavigator<MainBottomTabParamList>()
 
 // 바텀네비게이션

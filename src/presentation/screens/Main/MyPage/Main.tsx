@@ -61,7 +61,7 @@ const Main = ({navigation}: MainBottomTabNavigationProps<'MyPage'>) => {
           </TouchableOpacity>
         </CardWrapper>
         <CardWrapper style={[{flex:1, minHeight: 93, justifyContent: 'center', marginLeft:7}]}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('MainNavigation', {screen: 'Profile'})}>
             <Gabojait style={{padding:5}} name='person' size={34} color='black'/>
             <Text style={{textAlign:'center'}}>프로필</Text>
           </TouchableOpacity>
@@ -80,6 +80,7 @@ const Main = ({navigation}: MainBottomTabNavigationProps<'MyPage'>) => {
       </View>
       <View style={{paddingBottom: 70}}>
         <FlatList 
+        showsHorizontalScrollIndicator={false}
           horizontal={true}
           data= {data}
           renderItem={({item}) => 

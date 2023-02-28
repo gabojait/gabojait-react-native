@@ -10,13 +10,13 @@ import GroupEditor from '../screens/Main/Home/Group/GroupEditor'
 import GroupDetail from '../screens/Main/Home/Group/GroupDetail'
 import ApplyStatus from '../screens/Main/MyPage/ApplyStatus/ApplyStatus'
 import TeamHistory from '../screens/Main/MyPage/TeamHistory'
-import TitleCenterHeader from '../components/TitleCenterHeader'
 import TitleWithCloseHeader from '../screens/Headers/TitleWithCloseHeader'
+import TeamReview from '../screens/Main/MyPage/TeamReview'
+import CustomHeader from '../components/CustomHeader'
 
 const Main = createStackNavigator<MainStackParamList>()
 
 const MainNavigation = () => {
-  console.log('MainNavigation')
   return (
     <Main.Navigator initialRouteName='GroupDetail'>
       <Main.Screen name="Profile" options={{header: CloseHeader}} component={Profile}></Main.Screen>
@@ -27,6 +27,9 @@ const MainNavigation = () => {
       <Main.Screen name="TeamHistory" component={TeamHistory} options={{
         header: TitleWithCloseHeader,
         headerTitle: "팀 히스토리"
+      }}/>
+      <Main.Screen name="TeamReview" component={TeamReview} options={{
+        headerShown:false
       }}/>
       <Main.Screen name="GroupDetail" component={GroupDetail} options={{
         header: BackHeader,

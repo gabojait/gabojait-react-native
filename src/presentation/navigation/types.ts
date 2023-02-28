@@ -44,6 +44,7 @@ export type MainStackParamList = {
   Profile: undefined
   ApplyStatus: undefined
   TeamHistory:undefined
+  TeamReview:undefined
   GroupDetail: undefined
   GroupEditor: undefined
   PositionSelector: undefined
@@ -67,6 +68,10 @@ export type BoardStackParamList = {
   TeamMate: undefined,
   MainNavigation: NavigatorScreenParams<MainStackParamList>
 }
+export type BoardStackParamListProps<T extends keyof BoardStackParamList> =  StackScreenProps<
+BoardStackParamList,
+T
+>
 
 export type ApplyStatusTabParamList = {
   Frontend:undefined
