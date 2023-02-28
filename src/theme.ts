@@ -130,7 +130,7 @@ export const theme = createTheme({
     sm: 19,
     md: 22,
     lg: 26,
-    xl: 34
+    xl: 29
   },
   shadow: {
     opacity: 1,
