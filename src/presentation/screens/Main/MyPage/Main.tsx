@@ -54,13 +54,13 @@ const Main = ({navigation}: MainBottomTabNavigationProps<'MyPage'>) => {
         </CardWrapper>
       </View>
       <View style={{flexDirection: 'row', marginHorizontal:20, marginTop:20}}>
-        <CardWrapper style={[{flex:1, minHeight: 93, justifyContent: 'center', marginRight:5}]}>
+        <CardWrapper style={[{flex:1, minHeight: 93, justifyContent: 'center', marginRight:7}]}>
           <TouchableOpacity>
             <Icon type='ionicon' size={43} name='heart-circle-outline'/>
             <Text style={{textAlign:'center'}}>찜</Text>
           </TouchableOpacity>
         </CardWrapper>
-        <CardWrapper style={[{flex:1, minHeight: 93, justifyContent: 'center', marginLeft:5}]}>
+        <CardWrapper style={[{flex:1, minHeight: 93, justifyContent: 'center', marginLeft:7}]}>
           <TouchableOpacity>
             <Gabojait style={{padding:5}} name='person' size={34} color='black'/>
             <Text style={{textAlign:'center'}}>프로필</Text>
@@ -68,7 +68,10 @@ const Main = ({navigation}: MainBottomTabNavigationProps<'MyPage'>) => {
         </CardWrapper>
       </View>
       <View style={styles.divider}>
-        <LeaderComponent/>
+        <LeaderComponent 
+          onPressApply={() => navigation.navigate('MainNavigation',{screen:'ApplyStatus'})}
+          onPressTeam={() => navigation.navigate('MainNavigation', {screen: 'GroupDetail'})}
+          onPressHistory={() => navigation.navigate('MainNavigation', {screen: 'TeamHistory'})}/>
       </View>
       <Text style={{fontSize:20, fontWeight:theme.fontWeight.bold, marginLeft:24, paddingBottom:3, marginTop:20 }}>나의 리뷰</Text>
       <View style={{marginLeft:20, flexDirection:'row'}}>
@@ -109,25 +112,30 @@ const ReviewItem = ({name, score, content}: ReviewItemProps) => {
   )
 }
 
-const MemberComponent = () => {
+interface Component{
+  onPressApply: ()=> void, 
+  onPressTeam: ()=> void, 
+  onPressHistory: ()=> void
+}
+const MemberComponent = ({onPressApply, onPressTeam, onPressHistory}: Component) => {
   const styles = useStyles()
 
   return(
     <DivideWrapper style={{flex:1, minHeight: 93, justifyContent: 'center'}}>
       <View>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={()=> onPressApply()}>
           <Icon type='ionicon' size={43} name='grid-outline'/>
           <Text style={{textAlign:'center'}}>받은 제안</Text>
         </TouchableOpacity>
       </View>
       <View>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={()=> onPressTeam()}>
           <Icon type='ionicon' size={43} name='document-text-outline'/>
           <Text style={{textAlign:'center'}}>지원한 팀</Text>
         </TouchableOpacity>
       </View>
       <View>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={()=> onPressHistory()}>
           <Gabojait style={{padding:5}} name='people' size={34} color='black'/>
           <Text style={{textAlign:'center'}}>팀 히스토리</Text>
         </TouchableOpacity>
@@ -136,22 +144,28 @@ const MemberComponent = () => {
   )
 }
 
-const LeaderComponent = () => {
+const LeaderComponent = ({onPressApply, onPressTeam, onPressHistory}:Component) => {
   const styles = useStyles()
 
   return(
     <DivideWrapper style={{flex:1, minHeight: 93, justifyContent: 'center'}}>
       <View>
-        <Icon type='ionicon' size={43} name='grid-outline'/>
-        <Text style={{textAlign:'center'}}>지원 소식</Text>
+        <TouchableOpacity onPress={()=> onPressApply()}>
+          <Icon type='ionicon' size={43} name='grid-outline'/>
+          <Text style={{textAlign:'center'}}>지원 소식</Text>
+        </TouchableOpacity>
       </View>
       <View>
-        <Icon type='ionicon' size={43} name='document-text-outline'/>
-        <Text style={{textAlign:'center'}}>팀 정보</Text>
+        <TouchableOpacity onPress={()=> onPressTeam()}>
+          <Icon type='ionicon' size={43} name='document-text-outline'/>
+          <Text style={{textAlign:'center'}}>팀 정보</Text>
+        </TouchableOpacity>
       </View>
       <View>
-        <Gabojait style={{padding:5}} name='people' size={34} color='black'/>
-        <Text style={{textAlign:'center'}}>팀 히스토리</Text>
+        <TouchableOpacity onPress={()=> onPressHistory()}>
+          <Gabojait style={{padding:5}} name='people' size={34} color='black'/>
+          <Text style={{textAlign:'center'}}>팀 히스토리</Text>
+        </TouchableOpacity>
       </View>
     </DivideWrapper>
   )
