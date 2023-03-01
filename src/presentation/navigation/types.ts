@@ -45,9 +45,16 @@ export type MainStackParamList = {
   ApplyStatus: undefined
   TeamHistory:undefined
   TeamReview:undefined
+  BookMark:undefined
+  OfferPage:undefined
+  TeamApplied:undefined
   GroupDetail: undefined
   GroupEditor: undefined
   PositionSelector: undefined
+  Setting:undefined
+  AlarmSetting:undefined
+  Etc:undefined
+  UserModifier:undefined
 }
 
 export type MainBottomTabParamList = {

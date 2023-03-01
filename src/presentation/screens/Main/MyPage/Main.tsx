@@ -48,14 +48,14 @@ const Main = ({navigation}: MainBottomTabNavigationProps<'MyPage'>) => {
           </TouchableOpacity>
         </View>
         <CardWrapper style={[{borderRadius: 22, justifyContent:'center', maxHeight:45, paddingHorizontal:22}]}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('MainNavigation', {screen: 'Setting'})}>
             <Gabojait name='setting' size={34} color='black'/>
           </TouchableOpacity>
         </CardWrapper>
       </View>
       <View style={{flexDirection: 'row', marginHorizontal:20, marginTop:20}}>
         <CardWrapper style={[{flex:1, minHeight: 93, justifyContent: 'center', marginRight:7}]}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('MainNavigation', {screen: 'BookMark'})}>
             <Icon type='ionicon' size={43} name='heart-circle-outline'/>
             <Text style={{textAlign:'center'}}>찜</Text>
           </TouchableOpacity>
@@ -68,10 +68,14 @@ const Main = ({navigation}: MainBottomTabNavigationProps<'MyPage'>) => {
         </CardWrapper>
       </View>
       <View style={styles.divider}>
-        <LeaderComponent 
+        {/* <LeaderComponent 
           onPressApply={() => navigation.navigate('MainNavigation',{screen:'ApplyStatus'})}
           onPressTeam={() => navigation.navigate('MainNavigation', {screen: 'GroupDetail'})}
-          onPressHistory={() => navigation.navigate('MainNavigation', {screen: 'TeamHistory'})}/>
+          onPressHistory={() => navigation.navigate('MainNavigation', {screen: 'TeamHistory'})}/> */}
+          <MemberComponent 
+            onPressApply={() => navigation.navigate('MainNavigation',{screen:'OfferPage'})}
+            onPressTeam={() => navigation.navigate('MainNavigation', {screen: 'TeamApplied'})}
+            onPressHistory={() => navigation.navigate('MainNavigation', {screen: 'TeamHistory'})}/>
       </View>
       <Text style={{fontSize:20, fontWeight:theme.fontWeight.bold, marginLeft:24, paddingBottom:3, marginTop:20 }}>나의 리뷰</Text>
       <View style={{marginLeft:20, flexDirection:'row'}}>

@@ -3,7 +3,7 @@ import { MainStackScreenProps } from '@/presentation/navigation/types'
 import React from 'react'
 import { FlatList, TouchableOpacity, View } from 'react-native'
 
-const TeamHistory = ({navigation}:MainStackScreenProps<'TeamHistory'>) => {
+const TeamsApplied = ({navigation}:MainStackScreenProps<'TeamApplied'>) => {
     const arr = [
         [new Part('design', 'D', ['KimWash']),
         new Part('p????', 'P', ['KimWash']),
@@ -17,7 +17,7 @@ const TeamHistory = ({navigation}:MainStackScreenProps<'TeamHistory'>) => {
                 keyExtractor={item => item.toString()}
                 data={arr}
                 renderItem={({item}) => 
-                    <TouchableOpacity onPress={() => navigation.navigate('TeamReview')}>
+                    <TouchableOpacity onPress={() => navigation.navigate('GroupDetail')}>
                     <GroupListCard
                         title="가보자잇"
                         parts={item}
@@ -29,4 +29,4 @@ const TeamHistory = ({navigation}:MainStackScreenProps<'TeamHistory'>) => {
     )
 }
 
-export default TeamHistory
+export default TeamsApplied
