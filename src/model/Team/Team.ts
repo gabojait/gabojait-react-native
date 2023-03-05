@@ -1,5 +1,5 @@
-import { User } from "./User"
-import UserProfileBriefDto from "./User/UserProfileBriefDto"
+import { User } from "../User"
+import UserProfileBriefDto from "../User/UserProfileBriefDto"
 
 export default interface Team {
     backendTotalRecruitCnt: number
@@ -7,7 +7,8 @@ export default interface Team {
     designerTotalRecruitCnt: number
     designers: Array<UserProfileBriefDto>
     expectation: string
-    frontendTotalRecruitCnt: Array<UserProfileBriefDto>
+    frontendTotalRecruitCnt: number
+    frontends: Array<UserProfileBriefDto>
     leaderUserId: string
     openChatUrl: string
     projectDescription: string

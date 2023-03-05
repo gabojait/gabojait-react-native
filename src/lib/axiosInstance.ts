@@ -8,6 +8,7 @@ import axios, {
   AxiosResponse,
   AxiosInterceptorOptions,
   AxiosError,
+  RawAxiosRequestConfig,
 } from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
@@ -23,7 +24,7 @@ interface CustomInstance extends AxiosInstance {
   }
   getUri(config?: AxiosRequestConfig): string
   request<T>(config: AxiosRequestConfig): Promise<T>
-  get<T>(url: string, config?: AxiosRequestConfig): Promise<T>
+  get<T>(url: string, params?: RawAxiosRequestConfig, config?: AxiosRequestConfig,): Promise<T>
   delete<T>(url: string, config?: AxiosRequestConfig): Promise<T>
   head<T>(url: string, config?: AxiosRequestConfig): Promise<T>
   options<T>(url: string, config?: AxiosRequestConfig): Promise<T>
