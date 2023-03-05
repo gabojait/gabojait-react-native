@@ -1,7 +1,6 @@
-import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { useTheme } from '@rneui/themed'
 import React, { useState } from 'react'
-import { PixelRatio, Text, TouchableOpacity, View } from 'react-native'
+import { PixelRatio, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SelectList } from 'react-native-dropdown-select-list'
 import Gabojait from '@/presentation/components/icon/Gabojait'
 
@@ -53,20 +52,20 @@ export const PositionMaker = ({
                   backgroundColor: select? theme.colors.primary:theme.colors.grey0,
                 }}
               />
-              <Text style={{fontSize:30, fontWeight:theme.fontWeight.bold, position:'absolute'}}>{codename}</Text>
+              <Text style={{fontSize:30, fontWeight:theme.fontWeight.bold, position:'absolute', color:'black'}}>{codename}</Text>
             </View>
             <View style={{flexDirection:'row'}}>
-              <View style={{width:15, height:21, backgroundColor: theme.colors.grey0, alignItems:'flex-end',marginTop: 10}}>
+              <View style={{width:15, height:21, backgroundColor: theme.colors.grey0, alignItems:'center',marginTop: 10}}>
                 <TouchableOpacity  onPress={() => increase()}>
-                  <Text>+</Text>
+                  <Gabojait name='plus' size={13} style={styles.plusIcon} color={theme.colors.grey2}/>
                 </TouchableOpacity>
               </View>
               <View style={{width:51, height:21, backgroundColor: theme.colors.grey0, alignItems:'center', marginTop: 10}}>
-                <Text style={{color:theme.colors.grey1, fontSize:17}}>{count}</Text>
+                <Text style={{color:theme.colors.grey2, fontSize:17}}>{count}</Text>
               </View>
-              <View style={{width:15, height:21, backgroundColor: theme.colors.grey0, alignItems:'flex-start', marginTop: 10}}>
+              <View style={{width:15, height:21, backgroundColor: theme.colors.grey0, alignItems:'center', marginTop: 10}}>
                 <TouchableOpacity onPress={() => decrease()}>
-                  <Text>-</Text>
+                <Gabojait name='minus' size={2} style={styles.minusIcon} color={theme.colors.grey2}/>
                 </TouchableOpacity>
               </View>
             </View>
@@ -90,3 +89,27 @@ export const PositionMaker = ({
       </View>
     )
 }
+const styles = StyleSheet.create({
+  plusIcon: {
+    flex:1,
+     ...Platform.select({
+      ios:{
+        paddingTop:3
+      },
+      android: {
+        textAlignVertical:'center',
+      }
+     })
+  },
+  minusIcon: {
+    flex:1,
+     ...Platform.select({
+      ios:{
+        paddingTop:9
+      },
+      android: {
+        textAlignVertical:'center',
+      }
+     })
+  }
+});
