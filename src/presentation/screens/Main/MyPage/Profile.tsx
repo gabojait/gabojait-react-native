@@ -1,6 +1,6 @@
 import React from 'react'
 import globalStyles from '@/styles'
-import {CheckBox, makeStyles, Text, useTheme} from '@rneui/themed'
+import {AirbnbRating, CheckBox, makeStyles, Text, useTheme} from '@rneui/themed'
 import {ScrollView, StyleSheet, View} from 'react-native'
 import {FilledButton} from '@/presentation/components/Button'
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
@@ -30,7 +30,13 @@ const Profile = () => {
 
   const profileExist = true
   const profile = {
-    completedTeamIds: ['string'],
+    completedTeams: [
+      {
+        position: '디자이너',
+        projectName: '가보자잇',
+        teamId: '234324',
+      },
+    ],
     currentTeamId: 'string',
     description: '모든 국민은 종교의 자유를 가진다. 대통령의 임기는 5년으로 하며, 중임할 수 없다.',
     educations: [
@@ -77,7 +83,7 @@ const Profile = () => {
     userId: 'string',
     works: [
       {
-        corporationName: '11회사에서 인턴',
+        corporationName: '00회사에서 인턴',
         description: 'string',
         endedDate: '2022-01-01',
         isCurrent: true,
@@ -86,7 +92,7 @@ const Profile = () => {
         workId: 'string',
       },
       {
-        corporationName: '00회사에서 인턴',
+        corporationName: '11회사에서 인턴',
         description: 'string',
         endedDate: '2023-02-26',
         isCurrent: true,
@@ -109,9 +115,13 @@ const Profile = () => {
     </View>
   )
 
+  const portfolioTypeIconName = {
+    pdf: 'description',
+  }
+
   return !pageLoading ? (
     <ScrollView style={{flex: 1}}>
-      <View style={{flex: 0.2, backgroundColor: '#f5f5f5', marginBottom: "30%"}} />
+      <View style={{flex: 0.2, backgroundColor: '#f5f5f5', marginBottom: '30%'}} />
       <View style={{flex: 0.8}}>
         {!profileExist ? (
           <View
@@ -151,14 +161,10 @@ const Profile = () => {
                 iconName="school"
                 label={profile.educations[profile.educations.length - 1].institutionName}
               />
-              <IconLabel
-                iconName="work"
-                label={profile.works[profile.works.length - 1].corporationName}
-              />
-              <IconLabel
-                iconName="work"
-                label={profile.portfolios[profile.portfolios.length - 1].name}
-              />
+              {profile.works
+                .map(work => <IconLabel iconName="work" label={work.corporationName} />)
+                .slice(0, 2)}
+
               <Text h4>기술스택/직무</Text>
               <ToggleButton title={profile.position} />
               {profile.skills.map(skill => (
@@ -175,8 +181,25 @@ const Profile = () => {
               <Text h4>포트폴리오</Text>
               <View style={{flexWrap: 'wrap', flexDirection: 'row'}}>
                 {profile.portfolios.map(portfolio => (
-                  <ToggleButton title={portfolio.name} backgroundColor="#FFF" />
+                  <ToggleButton
+                    title={portfolio.name}
+                    icon={<MaterialIcon name={portfolioTypeIconName['pdf']} />}
+                    backgroundColor="#FFF"
+                  />
                 ))}
+              </View>
+              <Text h4>이전 프로젝트</Text>
+              {profile.completedTeams.map(team => (
+                <Text>
+                  프로젝트 '{team.projectName}' - {team.position}
+                </Text>
+              ))}
+              <Text h4>리뷰</Text>
+              <View style={{flexDirection: 'row'}}>
+                <Text>{profile.rating}</Text>
+                <View>
+                  <AirbnbRating isDisabled={true} reviews={[]} count={5} defaultRating={4.5} />
+                </View>
               </View>
             </View>
           </>
@@ -210,8 +233,9 @@ const ToggleButton = ({
         backgroundColor: backgroundColor ?? theme.colors.primary,
         borderRadius: 10,
         padding: 6,
+        flexDirection: 'row',
       }}>
-      {icon}
+      {icon ? <View style={{marginEnd: 3}}>{icon}</View> : null}
       <Text>{title}</Text>
     </View>
   )
@@ -300,7 +324,7 @@ const PortfolioView = ({
         <View>
           <Text style={{fontWeight: theme.fontWeight.light, textAlign: 'center'}}>팀 매칭</Text>
           <Text style={{fontWeight: theme.fontWeight.bold, textAlign: 'center'}}>
-            {profile.completedTeamIds.length}회
+            {profile.completedTeams.length}회
           </Text>
         </View>
         <View>
