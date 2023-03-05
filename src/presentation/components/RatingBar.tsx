@@ -5,11 +5,14 @@ import { Float } from 'react-native/Libraries/Types/CodegenTypes'
 import { useTheme } from '@rneui/themed'
 
 interface RatingProps{
-    ratingScore: Float
+    ratingScore: Float,
+    size?: number
   }
 
-export const RatingBar = ({ratingScore}: RatingProps) => {
+export const RatingBar = ({ratingScore, size=25}: RatingProps) => {
+    const {theme} = useTheme()
     ratingScore = ratingScore > 5? 5: ratingScore
+
     const starFilled = Math.floor(ratingScore)
     const starHalf = Math.round(ratingScore - starFilled)
     const starEmpty = 5 - starFilled - starHalf
@@ -22,18 +25,16 @@ export const RatingBar = ({ratingScore}: RatingProps) => {
     for (let i=0; i<starHalf; i++){ starHalfArray.push('0') }
     for (let i=0; i<starEmpty; i++){ starEmptyArray.push('0') }
 
-    const {theme} = useTheme()
-
     return (
         <View style={{flexDirection:'row'}}>
             {
-                starFilledArray.map(() => { return(<GabojaitIcon name="star-filled" size={25} color={theme.colors.primary}/>) })
+                starFilledArray.map(() => { return(<GabojaitIcon name="star-filled" size={size+4} color={theme.colors.primary}/>) })
             }
             {
-                starHalfArray.map(() => { return(<GabojaitIcon name="star-half" size={26} color={theme.colors.primary}/>) })
+                starHalfArray.map(() => { return(<GabojaitIcon name="star-half" size={size+7} color={theme.colors.primary}/>) })
             }
             {
-                starEmptyArray.map(() => { return(<GabojaitIcon name="star-empty" size={20} style={{paddingTop: 2}}/>) })
+                starEmptyArray.map(() => { return(<GabojaitIcon name="star-empty" size={size-1} style={{paddingTop: 3}}/>) })
             }
         </View>
     )

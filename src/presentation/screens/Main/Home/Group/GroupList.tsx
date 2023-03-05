@@ -1,6 +1,6 @@
 import CustomModal from '@/presentation/components/modalContent/CustomModal'
 import FloatingButton from '@/presentation/components/FloatingButton'
-import { BoardStackParamList} from '@/presentation/navigation/types'
+import { BoardStackParamList, BoardStackParamListProps} from '@/presentation/navigation/types'
 import { StackScreenProps } from '@react-navigation/stack'
 import {useTheme} from '@rneui/themed'
 import React, { useEffect, useState } from 'react'
@@ -8,9 +8,7 @@ import { useCookies } from 'react-cookie'
 import {FlatList, Text, TouchableOpacity, View} from 'react-native'
 import GroupListCard, {Part} from '../../../../components/GroupListCard'
 
-export type BoardStackParamListProps = StackScreenProps<BoardStackParamList, 'GroupList'>
-
-const GroupList = ({navigation}:BoardStackParamListProps) => {
+const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
   const {theme} = useTheme() 
   const arr = [
   [new Part('design', 'D', ['KimWash']),
