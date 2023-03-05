@@ -1,4 +1,4 @@
-import {Alert, Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
+import {Alert, ButtonProps, Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import globalStyles from '@/styles'
 import {FilledButton} from '../Button'
 import React from 'react'
@@ -6,32 +6,21 @@ import {useTheme} from '@rneui/themed'
 import {theme} from '@/theme'
 import {PropTypes} from 'mobx-react'
 
-interface CustomModalProps {
+interface BottomSlideModalContentProps {
   title: string
   children?: any
-  upperButtonText: string
-  lowerButtonText: string
-  modalVisible: boolean
-  onModalVisibityChanged: (visibility: boolean) => void
   neverSeeAgainButton?: boolean
-  callback?: any
+  yesButton?: ButtonProps
+  noButton?: ButtonProps
 }
 
-const CustomModal: React.FC<CustomModalProps> = ({
-  neverSeeAgainButton: neverSeeAgain = false,
-  ...props
-}) => {
+const BottomSlideModalContent: React.FC<BottomSlideModalContentProps> = props => {
   const {theme} = useTheme()
 
   return (
     <Modal
       animationType="slide"
       transparent={true}
-      visible={props.modalVisible}
-      onRequestClose={() => {
-        Alert.alert('Modal has been closed.')
-        props.onModalVisibityChanged(!props.modalVisible)
-      }}
       style={{justifyContent: 'center'}}>
       <View
         style={{
@@ -51,24 +40,18 @@ const CustomModal: React.FC<CustomModalProps> = ({
           <View style={style.children}>{props.children}</View>
           <View style={{width: '100%', paddingHorizontal: 20}}>
             <FilledButton
-              title={props.upperButtonText}
               buttonStyle={{backgroundColor: theme.colors.primary, width: '100%'}}
               titleStyle={{color: theme.colors.black}}
-              onPress={() => {
-                props.onModalVisibityChanged(false)
-                props.callback()
-              }}
+              title={props.yesButton?.title}
+              onPress={props.yesButton?.onPress}
             />
             <FilledButton
-              title={props.lowerButtonText}
-              buttonStyle={{backgroundColor: theme.colors.grey0, width: '100%'}}
+              buttonStyle={{backgroundColor: theme.colors.grey3, width: '100%'}}
               titleStyle={{color: theme.colors.black}}
-              onPress={() => {
-                props.onModalVisibityChanged(false)
-              }}
+              title={props.noButton?.title}
+              onPress={props.noButton?.onPress}
             />
           </View>
-          {neverSeeAgain ? <NeverSeeAgain /> : <></>}
         </View>
       </View>
     </Modal>
@@ -109,4 +92,4 @@ const style = StyleSheet.create({
   },
 })
 
-export default CustomModal
+export default BottomSlideModalContent
