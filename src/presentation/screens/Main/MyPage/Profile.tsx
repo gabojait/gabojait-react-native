@@ -256,7 +256,7 @@ const ReviewItem = ({review}: {review: Review}) => {
   </View>
 )}
 
-const ToggleButton = ({
+export const ToggleButton = ({
   title,
   icon,
   onClick,
@@ -284,14 +284,14 @@ const ToggleButton = ({
   )
 }
 
-const IconLabel = ({iconName, label}: {iconName: string; label: string}) => (
+export const IconLabel = ({iconName, label}: {iconName: string; label: string}) => (
   <View style={{flexDirection: 'row'}}>
     <MaterialIcon name={iconName} />
     <Text>{label}</Text>
   </View>
 )
 
-const CustomSlider = ({
+export const CustomSlider = ({
   text,
   value,
   onChangeValue,
