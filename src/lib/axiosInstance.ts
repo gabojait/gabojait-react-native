@@ -84,13 +84,10 @@ client.interceptors.response.use(
       }
     } catch (e: any) {
       return {
-        error: {
-          name: e.name ?? 'UNKNOWN_ERROR',
-          message: e.message ?? '알 수 없는 오류입니다.',
-          stack: Error().stack,
-        } as Error,
-        loading: false,
-      }
+        name: e.name ?? 'UNKNOWN_ERROR',
+        message: e.message ?? '알 수 없는 오류입니다.',
+        stack: Error().stack,
+      } as Error
     }
   },
   error => {

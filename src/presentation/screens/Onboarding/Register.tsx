@@ -195,6 +195,7 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
                 : '이메일 발송에 실패했습니다.\n존재하는 이메일인지 확인해주세요.'
             }
             onOkClick={() => {
+              setRegisterState(state => ({...state, authCode: ''}))
               modal?.hide()
             }}
           />
