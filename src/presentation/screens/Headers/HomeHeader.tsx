@@ -13,7 +13,7 @@ import { Provider, useDispatch } from 'react-redux'
 import boardSwitchReducer from '@/redux/reducers/boardSwitchReducer'
 import { BoardStackParamList } from '@/presentation/navigation/types'
 
-export type BoardStackProps = StackScreenProps<BoardStackParamList, 'Group'> 
+export type BoardStackProps = StackScreenProps<BoardStackParamList, 'GroupList'> 
 
 const Header: React.FC<StackHeaderProps> = ({navigation, route, options, back}) => {
   const title = getHeaderTitle(options, route.name)
@@ -28,7 +28,7 @@ const Header: React.FC<StackHeaderProps> = ({navigation, route, options, back}) 
     }
     else{
       dispatch({type: BoardSwitchActionType.FIND_GROUP_SWITCH})
-      navigation.navigate('Group')
+      navigation.navigate('GroupList')
     }
   }
 

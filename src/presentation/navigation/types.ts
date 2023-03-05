@@ -1,6 +1,7 @@
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs'
 import {CompositeScreenProps, NavigatorScreenParams, ParamListBase} from '@react-navigation/native'
 import {StackScreenProps} from '@react-navigation/stack'
+import ApplyStatus from '../screens/Main/MyPage/ApplyStatus/ApplyStatus'
 import {MainBottomTabNavigationProp} from './MainBottomTabNavigation'
 
 interface WebViewPageProps {
@@ -34,9 +35,26 @@ export type OnboardingScreenProps<T extends keyof OnboardingStackParamList> = St
   OnboardingStackParamList,
   T
 >
+export type MainStackScreenProps<T extends keyof MainStackParamList> = StackScreenProps<
+  MainStackParamList,
+  T
+>
 
 export type MainStackParamList = {
   Profile: undefined
+  ApplyStatus: undefined
+  TeamHistory:undefined
+  TeamReview:undefined
+  BookMark:undefined
+  OfferPage:undefined
+  TeamApplied:undefined
+  GroupDetail: undefined
+  GroupEditor: undefined
+  PositionSelector: undefined
+  Setting:undefined
+  AlarmSetting:undefined
+  Etc:undefined
+  UserModifier:undefined
 }
 
 export type MainBottomTabParamList = {
@@ -50,16 +68,21 @@ export type MainBottomTabNavigationProps<T extends keyof MainBottomTabParamList 
   CompositeScreenProps<
     BottomTabScreenProps<MainBottomTabParamList, T>,
     RootStackScreenProps<keyof RootStackParamList>
-  >
+>
 
 export type BoardStackParamList = {
-  Group: undefined
-  TeamMate: undefined
+  GroupList: undefined
+  TeamMate: undefined,
+  MainNavigation: NavigatorScreenParams<MainStackParamList>
 }
+export type BoardStackParamListProps<T extends keyof BoardStackParamList> =  StackScreenProps<
+BoardStackParamList,
+T
+>
 
-export type GroupStackParamList = {
-  List: undefined
-  Detail: undefined
-  PositionSelector: undefined
-  Editor: undefined
+export type ApplyStatusTabParamList = {
+  Frontend:undefined
+  Backend:undefined
+  Designer:undefined
+  PM:undefined
 }

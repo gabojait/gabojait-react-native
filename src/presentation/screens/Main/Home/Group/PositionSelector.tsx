@@ -50,12 +50,12 @@ const PositionSelector = () => {
 const useStyles = makeStyles((theme)=> ({
   scrollView:{
     backgroundColor: theme.colors.white,
-    paddingHorizontal:20,
     paddingVertical:18
   },
   card:{
     padding:30,
-    marginBottom:10,
+    marginVertical:5,
+    marginHorizontal:20
   },
   container:{
     flexDirection:'row', 

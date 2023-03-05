@@ -9,7 +9,7 @@ export interface CustomInputProps {
   style?: any
   containerStyle?: StyleProp<ViewStyle>
   placeholder?: string
-  size?: 'xs' | 'sm' | 'md' | 'lg'
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl'
   label?: string
   isForPassword?: boolean
 }

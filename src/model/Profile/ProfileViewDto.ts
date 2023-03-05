@@ -1,10 +1,11 @@
+import CompletedTeamDto from './CompletedTeamDto'
 import Education from './Education'
 import Portfolio from './Portfolio'
 import Skill from './Skill'
 import Work from './Work'
 
 export default interface ProfileViewDto {
-  completedTeamIds: string[]
+  completedTeams: CompletedTeamDto[]
   currentTeamId: string
   description: string
   educations: Education[]
