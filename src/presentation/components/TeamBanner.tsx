@@ -6,7 +6,7 @@ import color from '../res/styles/color'
 import CustomIcon from '@/presentation/components/icon/Gabojait'
 import Team from '@/model/Team/Team'
 
-const GroupListCard: React.FC<CardProps & {team: Team}> = ({
+const TeamBanner: React.FC<CardProps & {team: Team}> = ({
   team
 }) => {
   const {theme} = useTheme()
@@ -40,12 +40,12 @@ const GroupListCard: React.FC<CardProps & {team: Team}> = ({
           height: 2,
         },
         borderRadius: 20,
-        paddingBottom:25,
-        paddingStart: 25,
+        // paddingBottom:25,
+        // paddingStart: 25,
         flex:1
       }}>
       <Text style={{justifyContent:'flex-end',fontWeight:theme.fontWeight.bold, fontSize:theme.fontSize.md}}>{team.projectName}</Text>
-      <View style={{padding: 10, flexDirection: 'row', justifyContent: 'center'}}>
+      <View style={{paddingHorizontal: 10, paddingVertical:10, paddingBottom:15, flexDirection: 'row', justifyContent: 'space-around'}}>
           {positions.map( (item) => 
             item[0] > 0
             ?<PartIcon partInitial={item[1].toString()} isRecruitDone={IsRecruitDone(item[1].toString())}/>
@@ -57,7 +57,7 @@ const GroupListCard: React.FC<CardProps & {team: Team}> = ({
             justifyContent: 'center',
             paddingHorizontal:10
           }}>
-          <CustomIcon name="arrow-next" size={30} style={{margin: -10}} color={color.primary}/>
+          <CustomIcon name="arrow-next" size={30} style={{margin: -10}} color={color.primary} />
         </View>
       </View>
     </Card>
@@ -88,4 +88,4 @@ export const PartIcon: React.FC<{partInitial: string; isRecruitDone?: boolean, s
   )
 }
 
-export default GroupListCard
+export default TeamBanner

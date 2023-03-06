@@ -3,7 +3,7 @@ import FloatingButton from '@/presentation/components/FloatingButton'
 import {useTheme} from '@rneui/themed'
 import React, { useEffect, useState} from 'react'
 import {FlatList, Text, TouchableOpacity, View} from 'react-native'
-import GroupListCard from '../../../../components/TeamBanner'
+import TeamBanner from '@/presentation/components/TeamBanner'
 import { ModalContext } from '@/presentation/components/modal/context'
 import { BoardStackParamListProps } from '@/presentation/navigation/types'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
@@ -21,7 +21,7 @@ const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
   const {data,loading,error} = useAppSelector(state => state.teamGetReducer.teamGetResult)
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [contentData, setContentData] = useState<Team[]>(data)
-
+  
   const profileMentionModal = () => {
     modal?.show({
       title:'',
@@ -108,7 +108,7 @@ const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
         data={contentData}
         renderItem={({item}) => 
         <TouchableOpacity onPress={() => navigation.navigate('MainNavigation', {screen: 'GroupDetail', params: {teamId: item.teamId}})}>
-          <GroupListCard
+          <TeamBanner
             team={item}
           />
         </TouchableOpacity>}
