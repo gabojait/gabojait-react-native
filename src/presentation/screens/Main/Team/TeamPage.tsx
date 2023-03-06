@@ -37,9 +37,9 @@ const Detail = () => {
         <View style={{width:'100%', paddingHorizontal:10, flex:1, justifyContent:'space-evenly'}}>
           <Text style={styles.teamname}>3팀</Text>
           <View style={styles.partIcon}>
-              <PositionIcon currentApplicant={1} vancancyNumber={1} textView ={ <Text style={{fontWeight:theme.fontWeight.bold, fontSize:30}}>D</Text>}/>
-              <PositionIcon currentApplicant={2} vancancyNumber={2} textView ={ <Text style={{fontWeight:theme.fontWeight.bold, fontSize:30}}>F</Text>}/>
-              <PositionIcon currentApplicant={1} vancancyNumber={1} textView ={ <Text style={{fontWeight:theme.fontWeight.bold, fontSize:30}}>B</Text>}/>
+              <PositionIcon currentApplicant={1} recruitNumber={1} textView ={ <Text style={{fontWeight:theme.fontWeight.bold, fontSize:30}}>D</Text>}/>
+              <PositionIcon currentApplicant={2} recruitNumber={2} textView ={ <Text style={{fontWeight:theme.fontWeight.bold, fontSize:30}}>F</Text>}/>
+              <PositionIcon currentApplicant={1} recruitNumber={1} textView ={ <Text style={{fontWeight:theme.fontWeight.bold, fontSize:30}}>B</Text>}/>
           </View>
         </View>
       </CardWrapper>
