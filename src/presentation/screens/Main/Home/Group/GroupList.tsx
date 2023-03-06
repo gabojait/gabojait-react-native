@@ -87,6 +87,10 @@ const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
   const requestMoreTeam = () => {
     dispatch( getTeam(teamGetState.pageFrom, teamGetState.pageNum) )
     setTeamGetState( prevState => ({...prevState, pageFrom: teamGetState.pageFrom+1}))
+    if(!loading){
+      setContentData([...data, contentData])
+    }
+    setIsRefreshing(false)
   }
 
   useEffect(() => {
