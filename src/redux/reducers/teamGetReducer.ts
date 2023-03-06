@@ -1,9 +1,9 @@
 import createAsyncThunk from "@/lib/createAsyncThunk";
 import { asyncState, createAsyncReducer} from "@/lib/reducerUtils";
 import * as teamApi from '@/api/team'
-import { createReducer } from "typesafe-actions";
 import { teamGetAsyncAction } from "../action/teamGetAction";
 import { TeamGetActionType, TeamGetState } from "../action_types/teamGetActionType";
+import { createReducer } from "typesafe-actions";
 
 const initialState: TeamGetState = {
     teamGetResult: asyncState.initial()

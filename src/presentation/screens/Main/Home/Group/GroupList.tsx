@@ -19,7 +19,7 @@ const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
   const modal = React.useContext(ModalContext)
   const dispatch = useAppDispatch()
   const [teamGetState, setTeamGetState] = useState({pageFrom: 0, pageNum: 20})
-  const [dataList, setDataList] = useState<Array<Team>>()
+  const [dataList, setDataList] = useState<Array<Team>>(test)
   const {data,loading,error} = useAppSelector(state => state.teamGetReducer.teamGetResult)
   
   const profileMentionModal = () => {
@@ -92,7 +92,6 @@ const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
   useEffect(() => {
     console.log('useEffect 초기 렌더링 실행!')
     dispatch( getTeam(teamGetState.pageFrom, teamGetState.pageNum) )
-    setDataList(data?.data)
     console.log(`data:${data}, loading: ${loading}, error: ${error}`)
   },[])
 
@@ -102,7 +101,7 @@ const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
         keyExtractor={item => item.teamId}
         data={dataList}
         renderItem={({item}) => 
-        <TouchableOpacity onPress={() => navigation.navigate('MainNavigation', {screen: 'GroupDetail'})}>
+        <TouchableOpacity onPress={() => navigation.navigate('MainNavigation', {screen: 'GroupDetail', params: {teamId: item.teamId}})}>
           <GroupListCard
             team={item}
           />
