@@ -1,5 +1,6 @@
 import '@rneui/themed'
 import {Button, ButtonProps, createTheme, Theme} from '@rneui/themed'
+import color from './presentation/res/styles/color'
 
 /**
  * StyleSheet FontWeight Type이에요.
@@ -29,10 +30,22 @@ declare module '@rneui/themed' {
       md: number
       lg: number
       xl: number
+      xxl: number
+    }
+    ratingBarSize:{
+      xs: number
+      sm: number
+      md: number
+      lg: number
+      xl: number
     }
     fontSize: {
       xs: number
       sm: number
+      md: number
+      lg: number
+    }
+    emojiSize: {
       md: number
       lg: number
     }
@@ -47,6 +60,10 @@ declare module '@rneui/themed' {
       radius: number
       elevation: number
       marginVertical: number
+      shadowOffset: {
+        width: number
+        height: number
+      }
     }
   }
 }
@@ -59,8 +76,9 @@ export const theme = createTheme({
     error: '#FC0101',
     warning: '#F06823',
     disabled: '#D9D9D9',
-    grey0: '#6C6C6C',
-    grey1: '#8E8E8E',
+    grey0: '#EEEEEE',
+    grey1: '#6C6C6C',
+    grey2: '#8E8E8E',
   },
   mode: 'light',
   components: {
@@ -89,6 +107,10 @@ export const theme = createTheme({
     md: 17,
     lg: 22,
   },
+  emojiSize: {
+    md: 80,
+    lg: 130,
+  },
   fontWeight: {
     light: '300',
     medium: '500',
@@ -98,14 +120,26 @@ export const theme = createTheme({
   radius: {
     xs: 5,
     sm: 10,
-    md: 14,
+    md: 15,
     lg: 20,
     xl: 20,
+    xxl: 24
+  },
+  ratingBarSize: {
+    xs: 16,
+    sm: 19,
+    md: 22,
+    lg: 26,
+    xl: 30
   },
   shadow: {
-    opacity: 0.25,
-    radius: 3.84,
+    opacity: 1,
+    radius: 20,
     elevation: 5,
     marginVertical: 5,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
   },
 })

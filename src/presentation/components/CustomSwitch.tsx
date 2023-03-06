@@ -1,6 +1,6 @@
-import { Card } from '@rneui/base';
 import { Switch } from '@rneui/themed';
 import React, {useState} from 'react'
+import { View } from 'react-native';
 import color from '../res/styles/color'
 
 export const CustomSwitch =  ({}) => {
@@ -8,12 +8,12 @@ export const CustomSwitch =  ({}) => {
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
     return(
-      <Card>
+      <View>
         <Switch 
         thumbColor={color.white}
         trackColor={{false: color.darkGrey, true: color.primary}}
         onValueChange={toggleSwitch}
         value={isEnabled}/>
-      </Card>
+      </View>
     )
 }

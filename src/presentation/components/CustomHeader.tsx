@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import React from 'react'
 import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
+import color from '../res/styles/color'
 const CustomHeader: React.FC<HeaderProps> = ({
   title,
   canGoBack,
@@ -30,7 +31,7 @@ const CustomHeader: React.FC<HeaderProps> = ({
       <View style={headerStyle.left}>
         {canGoBack ? back : null}
         {leftChildren}
-        <Text h4>{title}</Text>
+        <Text style={{fontWeight:theme.fontWeight.semibold, fontSize:theme.fontSize.lg,textAlign:'center'}}>{title}</Text>
       </View>
       {rightChildren}
     </View>
@@ -39,7 +40,8 @@ const CustomHeader: React.FC<HeaderProps> = ({
 
 const headerGlobalStyle: StyleProp<ViewStyle> = {
   flexDirection: 'row',
-  alignItems: 'center',
+  alignItems:'flex-end',
+  paddingTop:5
 }
 
 // card base components, width /radius 다름, theme에서 하나만

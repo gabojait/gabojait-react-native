@@ -1,5 +1,13 @@
-export const enum RegisterActionType {
-  REGISTER = 'REGISTER',
-  REGISTER_SUCCESS = 'REGISTER_SUCCESS',
-  REGISTER_ERROR = 'REGISTER_ERROR',
+import {AsyncState} from '@/lib/reducerUtils'
+import {User} from '@/model/User'
+import {ActionType} from 'typesafe-actions'
+import * as actions from '@/redux/action/register'
+
+export type RegisterAction = ActionType<typeof actions>
+export type RegisterState = {
+  registerResult: AsyncState<User, Error>
+  usernameDupCheckResult: AsyncState<Boolean, Error>
+  nicknameDupCheckResult: AsyncState<Boolean, Error>
+  sendAuthCodeResult: AsyncState<Boolean, Error>
+  verifyAuthCodeResult: AsyncState<Boolean, Error>
 }

@@ -5,6 +5,37 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Attach to device",
+      "cwd": "${workspaceFolder}",
+      "type": "reactnative",
+      "request": "attach",
+      "sourceMaps": true,
+    },
+    {
+      "name": "Run bundle and attach",
+      "cwd": "${workspaceFolder}",
+      "type": "reactnative",
+      "request": "attach",
+      "sourceMaps": true,
+      "preLaunchTask": "npm: start"
+    },
+    {
+      "name": "Simulator: Debug",
+      "cwd": "${workspaceFolder}",
+      "type": "reactnative",
+      "request": "attach",
+      "sourceMaps": true,
+      "preLaunchTask": "npm: debug:simulator"
+    },
+    {
+      "name": "Device: Debug",
+      "cwd": "${workspaceFolder}",
+      "type": "reactnative",
+      "request": "attach",
+      "sourceMaps": true,
+      "preLaunchTask": "npm: debug:device"
+    },
+    {
       "name": "Debug iOS Hermes - Experimental",
       "request": "launch",
       "type": "reactnativedirect",

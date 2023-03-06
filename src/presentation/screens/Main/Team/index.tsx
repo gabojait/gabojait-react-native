@@ -1,18 +1,19 @@
 import {createStackNavigator} from '@react-navigation/stack'
 import React from 'react'
-import Detail from '@/presentation/screens/Main/Team/Detail'
-import Header from '../../Headers/TitleHeader'
+import TeamPage from '@/presentation/screens/Main/Team/TeamPage'
+import TitleHeader from '../../Headers/TitleHeader'
+
+const TeamStack = createStackNavigator()
 
 const TeamScreen = () => {
-  const TeamStack = createStackNavigator()
   return (
     <TeamStack.Navigator initialRouteName="List">
       <TeamStack.Group
         screenOptions={{
-          header: Header,
+          header: TitleHeader,
           headerTitle: '팀페이지',
         }}>
-        <TeamStack.Screen name="Detail" component={Detail} />
+        <TeamStack.Screen name="TeamPage" component={TeamPage} />
       </TeamStack.Group>
     </TeamStack.Navigator>
   )

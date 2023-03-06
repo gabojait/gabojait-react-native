@@ -31,16 +31,21 @@ const FilledButton: React.FC<FilledButtonProps> = ({
     <Button
       {...props}
       radius={10}
-      titleStyle={{
-        color: 'black',
-        fontWeight: fontWeight,
-        fontSize: theme.fontSize[size],
-
-      }}
-      disabledTitleStyle={{
-        color: 'black',
-      }}
-      containerStyle={styles.buttonContainer}
+      titleStyle={[
+        {
+          color: 'black',
+          fontWeight: fontWeight,
+          fontSize: theme.fontSize[size],
+        },
+        props.titleStyle,
+      ]}
+      disabledTitleStyle={[
+        {
+          color: 'black',
+        },
+        props.disabledTitleStyle,
+      ]}
+      containerStyle={[styles.buttonContainer, props.containerStyle]}
       activeOpacity={1}
     />
   )
@@ -59,7 +64,7 @@ const OutlinedButton: React.FC<OutlinedButtonProps> = ({
   highlighted = false,
   ...props
 }) => {
-  const {theme} = useTheme();
+  const {theme} = useTheme()
   return (
     <Button
       {...props}
@@ -68,18 +73,22 @@ const OutlinedButton: React.FC<OutlinedButtonProps> = ({
         {
           borderRadius: theme.radius[size],
           padding: theme.spacing[size],
-          paddingHorizontal: theme.spacing[size]
+          paddingHorizontal: theme.spacing[size],
         },
+        props.style,
       ]}
       type="outline"
-      titleStyle={{
-        color: theme.colors.primary,
-        fontSize: theme.fontSize[size],
-        margin: 0,
-      }}
-      containerStyle={[shadow ? styles.buttonShadow : null, styles.buttonContainer]}
+      titleStyle={[
+        {
+          color: theme.colors.primary,
+          fontSize: theme.fontSize[size],
+          margin: 0,
+        },
+        props.titleStyle,
+      ]}
+      containerStyle={[shadow ? styles.buttonShadow : null, styles.buttonContainer, props.style]}
       disabledTitleStyle={{
-        color: theme.colors.grey0,
+        color: theme.colors.grey1,
       }}
       activeOpacity={1}
     />

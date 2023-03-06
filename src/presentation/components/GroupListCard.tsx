@@ -1,25 +1,33 @@
 import {CardProps} from '@rneui/base'
 import {Card, Text, useTheme} from '@rneui/themed'
 import React from 'react'
-import {AppRegistry, FlatList, PixelRatio, View} from 'react-native'
-import Icon from 'react-native-vector-icons/MaterialIcons'
+import {PixelRatio, View} from 'react-native'
+import color from '../res/styles/color'
+import CustomIcon from '@/presentation/components/icon/Gabojait'
+import Team from '@/model/Team/Team'
 
-export class Part {
-  id: string
-  name: string
-  members: Array<string>
-  constructor(id: string, name: string, members: Array<string>) {
-    this.id = id
-    this.name = name
-    this.members = members
-  }
-}
-
-const GroupListCard: React.FC<CardProps & {title: string; parts: Array<Part>}> = ({
-  title,
-  parts,
+const GroupListCard: React.FC<CardProps & {team: Team}> = ({
+  team
 }) => {
   const {theme} = useTheme()
+  const positions = [[team.backendTotalRecruitCnt, 'B'], [team.frontendTotalRecruitCnt, 'F'], [team.designerTotalRecruitCnt, 'D'], [team.projectManagerTotalRecruitCnt, 'P']]
+  const IsRecruitDone = (positionInitial:string) => {
+    if (positionInitial == 'B'){
+      if (team.backendTotalRecruitCnt == team.backends.length) return true
+    }
+    if (positionInitial == 'F'){
+      if (team.frontendTotalRecruitCnt == team.frontends.length) return true
+    }
+    if (positionInitial == 'D'){
+      if (team.designerTotalRecruitCnt == team.designers.length) return true
+    }
+    if (positionInitial == 'P'){
+      if (team.projectManagerTotalRecruitCnt == team.projectManagers.length) return true
+    }
+
+    return false
+  }
+
   return (
     <Card
       containerStyle={{
@@ -32,32 +40,32 @@ const GroupListCard: React.FC<CardProps & {title: string; parts: Array<Part>}> =
           height: 2,
         },
         borderRadius: 20,
-        paddingVertical: 25,
+        paddingBottom:25,
         paddingStart: 25,
+        flex:1
       }}>
-      <Text h4>{title}</Text>
+      <Text style={{justifyContent:'flex-end',fontWeight:theme.fontWeight.bold, fontSize:theme.fontSize.md}}>{team.projectName}</Text>
       <View style={{padding: 10, flexDirection: 'row', justifyContent: 'center'}}>
-        {parts.map(part => (
-          <PartIcon key={part.id} partInitial={part.name[0]} />
-        ))}
-      </View>
-
-      <View
-        style={{
-          position: 'absolute',
-          end: 0,
-          display: 'flex',
-          height: '100%',
-          justifyContent: 'center',
-        }}>
-        <Icon name="chevron-right" size={30} style={{margin: -10}} />
+          {positions.map( (item) => 
+            item[0] > 0? <PartIcon partInitial={item[1].toString()} isRecruitDone={IsRecruitDone(item[1].toString())}/>:
+            <></>
+          )}
+          <View
+          style={{
+            height: '100%',
+            justifyContent: 'center',
+            paddingHorizontal:10
+          }}>
+          <CustomIcon name="arrow-next" size={30} style={{margin: -10}} color={color.primary}/>
+        </View>
       </View>
     </Card>
   )
 }
-const PartIcon: React.FC<{partInitial: string; isDone?: boolean}> = ({
+export const PartIcon: React.FC<{partInitial: string; isRecruitDone?: boolean, size?: number}> = ({
   partInitial,
-  isDone = false,
+  isRecruitDone: isDone = false,
+  size = 20
 }) => {
   const {theme} = useTheme()
   return (
@@ -69,12 +77,12 @@ const PartIcon: React.FC<{partInitial: string; isDone?: boolean}> = ({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: PixelRatio.getPixelSizeForLayoutSize(38),
-        width: PixelRatio.getPixelSizeForLayoutSize(20),
-        height: PixelRatio.getPixelSizeForLayoutSize(20),
-        marginHorizontal: PixelRatio.getPixelSizeForLayoutSize(3),
+        width: PixelRatio.getPixelSizeForLayoutSize(size),
+        height: PixelRatio.getPixelSizeForLayoutSize(size),
+        marginHorizontal: PixelRatio.getPixelSizeForLayoutSize(2),
         backgroundColor: isDone ? theme.colors.primary : '',
       }}>
-      {<Text h3>{partInitial}</Text>}
+      {<Text style={{fontWeight:theme.fontWeight.bold, fontSize:30}}>{partInitial}</Text>}
     </View>
   )
 }
