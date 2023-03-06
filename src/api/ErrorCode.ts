@@ -1,7 +1,4 @@
 export default {
-  // @NotBlank, @NotNull
-  FIELD_REQUIRED: {name: 'FIELD_REQUIRED', text: '모든 필수 정보를 입력해주세요.'},
-
   // @Size
   USERNAME_LENGTH_INVALID: {name: 'USERNAME_LENGTH_INVALID', text: '아이디는 5~15자만 가능합니다.'},
   PASSWORD_LENGTH_INVALID: {
@@ -73,7 +70,12 @@ export default {
     name: 'POSITION_FORMAT_INVALID',
     text: '포지션은 designer, backend, frontend, manager 중 하나입니다.',
   },
-
+  /**
+   * 400 UNAUTHORIZED
+   */
+  FIELD_REQUIRED: {name: 'FIELD_REQUIRED', text: '모든 필수 정보를 입력해주세요.'},
+  POSITION_UNSELECTED: {name: 'POSITION_UNSELECTED', text: '본인의 포지션을 먼저 선택해주세요.'},
+  OPENCHATURL_FORMAT_INVALID: {name: 'POSITION_UNSELECTED', text: '오픈채팅 링크는 25~100자만 가능합니다.'},
   /**
    * 401 UNAUTHORIZED
    */
