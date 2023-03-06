@@ -126,7 +126,7 @@
     },
     {
       "uid": "c00b49c7b894f0cd64723bc2677a8f50",
-      "css": "plus",
+      "css": "plus-1",
       "code": 59410,
       "src": "custom_icons",
       "selected": true,
@@ -288,6 +288,34 @@
       },
       "search": [
         "heart-circled"
+      ]
+    },
+    {
+      "uid": "c8dc921a7844fee7874d095e0f18934c",
+      "css": "minus",
+      "code": 59411,
+      "src": "custom_icons",
+      "selected": true,
+      "svg": {
+        "path": "M0 875V125H5000V875H0ZM0 875V125H5000V875H0Z",
+        "width": 5000
+      },
+      "search": [
+        "minus"
+      ]
+    },
+    {
+      "uid": "ed214423134ed80a35ff6a49e59be9d4",
+      "css": "plus",
+      "code": 59401,
+      "src": "custom_icons",
+      "selected": true,
+      "svg": {
+        "path": "M950.8 564.4H564.4V950.8H435.6V564.4H49.2V435.6H435.6V49.2H564.4V435.6H950.8V564.4ZM950.8 564.4H564.4V950.8H435.6V564.4H49.2V435.6H435.6V49.2H564.4V435.6H950.8V564.4Z",
+        "width": 1000
+      },
+      "search": [
+        "plus"
       ]
     }
   ]

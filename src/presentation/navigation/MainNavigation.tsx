@@ -61,8 +61,7 @@ const MainNavigation = () => {
           headerTitle: "포지션 선택"
         }}/>
         <Main.Screen name="GroupEditor" component={GroupEditor} options={{
-          header: TitleHeader,
-          headerTitle: ""
+          headerShown:false
         }}/>
       </Main.Group>
       <Main.Group>

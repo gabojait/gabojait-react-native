@@ -20,18 +20,18 @@ export const PositionMaker = ({
   const [codename, setCodename] = useState('')
   function increase(){
     setCount(count + 1)
-    callback(count, position)
+    callback(count + 1, position)
   }
   function decrease(){
     count > 0 ? setCount(count - 1) : {}
-    callback(count, position)
+    callback(count - 1, position)
   }
   function setImage(position:string){
     setSelected(true)
     if (position == '벡엔드 개발자') setCodename('B')
     if (position == '프론트엔드 개발자') setCodename('F')
     if (position == '디자이너') setCodename('D')
-    if (position == '프로덕트 매니저') setCodename('P')
+    if (position == 'PM') setCodename('P')
   }
     return (
       <View style={{paddingBottom:20}}>
@@ -80,7 +80,6 @@ export const PositionMaker = ({
             boxStyles={{backgroundColor: theme.colors.grey0, borderColor: theme.colors.grey0, marginTop:6, marginLeft:10, width: 200}}
             search={false}
             onSelect={() => {
-              callback(count, position)
               setImage(position)
             }}
             dropdownStyles={{backgroundColor: theme.colors.grey0, borderColor: theme.colors.grey0}}
