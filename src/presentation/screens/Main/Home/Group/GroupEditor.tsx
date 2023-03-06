@@ -6,7 +6,7 @@ import { Text, useTheme, makeStyles } from '@rneui/themed'
 import React, { useEffect, useState } from 'react'
 import { FlatList, KeyboardAvoidingView, ScrollView, TouchableOpacity, View } from 'react-native'
 import CustomIcon from '@/presentation/components/icon/Gabojait'
-import TeamRequestDto from '@/model/TeamRequestDto'
+import TeamRequestDto from '@/model/Team/TeamRequestDto'
 import { CustomInput } from '@/presentation/components/CustomInput'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { createTeam } from '@/redux/reducers/teamCreateReducer'
@@ -36,9 +36,6 @@ const Editor = ({navigation, route}:MainStackScreenProps<'GroupEditor'>) => {
     error: teamCreateError
   } = useAppSelector(state => state.teamCreateReducer.teamCreateResult)
 
-  useEffect(() => {
-    if
-  })
   const [data, setData] = useState([
     {key:'벡엔드 개발자', value:'벡엔드 개발자', disabled:false},
     {key:'프론트엔드 개발자', value:'프론트엔드 개발자', disabled:false},
@@ -55,16 +52,16 @@ const Editor = ({navigation, route}:MainStackScreenProps<'GroupEditor'>) => {
 
   function positionMapper(count:number, position:string) {
     if(position == '벡엔드 개발자') { 
-      setTeamCreateState(prevState => ({...prevState, backendTotalRecruitCnt: count})) 
+      setTeamCreateState(prevState => ({...prevState, backendTotalRecruitCnt: count}))
     } 
     if(position == '프론트엔드 개발자') { 
-      setTeamCreateState(prevState => ({...prevState, frontendTotalRecruitCnt: count})) 
+      setTeamCreateState(prevState => ({...prevState, frontendTotalRecruitCnt: count}))
     } 
     if(position == '디자이너') { 
-      setTeamCreateState(prevState => ({...prevState, designerTotalRecruitCnt: count})) 
+      setTeamCreateState(prevState => ({...prevState, designerTotalRecruitCnt: count}))
     } 
     if(position == 'PM') { 
-      setTeamCreateState(prevState => ({...prevState, projectManagerTotalRecruitCnt: count})) 
+      setTeamCreateState(prevState => ({...prevState, projectManagerTotalRecruitCnt: count}))
     } 
   }
 

@@ -1,5 +1,5 @@
-import Team from "@/model/Team"
-import TeamRequestDto from "@/model/TeamRequestDto"
+import Team from "@/model/Team/Team"
+import TeamRequestDto from "@/model/Team/TeamRequestDto"
 import { createAsyncAction } from "typesafe-actions"
 
 export const TEAM_CREATE = 'TEAM_CREATE'
