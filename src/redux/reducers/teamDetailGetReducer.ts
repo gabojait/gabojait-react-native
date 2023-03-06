@@ -6,22 +6,24 @@ import { TeamDetailGetActionType, TeamDetailGetState } from "../action_types/tea
 import * as teamApi from '@/api/team'
 
 const initialState: TeamDetailGetState = {
-    teamDetailGetResult: asyncState.initial({
-        backendTotalRecruitCnt: 0, 
-        backends: [], 
-        designerTotalRecruitCnt: 0, 
-        designers: [], 
-        expectation: "",
-        frontendTotalRecruitCnt: 0, 
-        frontends: [],
-        leaderUserId: "",
-        openChatUrl: "",
-        projectDescription: "",
-        projectManagerTotalRecruitCnt: 1,
-        projectManagers: [],
-        projectName: "", 
-        teamId: ""
-      })
+    teamDetailGetResult: asyncState.initial(
+    //     {
+    //     backendTotalRecruitCnt: 0, 
+    //     backends: [], 
+    //     designerTotalRecruitCnt: 0, 
+    //     designers: [], 
+    //     expectation: "",
+    //     frontendTotalRecruitCnt: 0, 
+    //     frontends: [],
+    //     leaderUserId: "",
+    //     openChatUrl: "",
+    //     projectDescription: "",
+    //     projectManagerTotalRecruitCnt: 1,
+    //     projectManagers: [],
+    //     projectName: "", 
+    //     teamId: ""
+    //   }
+    )
 }
 
 export const getTeamDetail = createAsyncThunk(teamDetailGetAsyncAction, teamApi.getTeamDetail)
