@@ -9,6 +9,9 @@ import {Slider} from '@miblanchard/react-native-slider'
 
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import {StringOmit} from '@rneui/base'
+import {RatingBar} from '@/presentation/components/RatingBar'
+import Review from '@/model/Profile/Review'
+import { Link } from '@react-navigation/native'
 
 const Profile = () => {
   const {theme} = useTheme()
@@ -61,8 +64,24 @@ const Profile = () => {
         url: 'string',
       },
     ],
+    reviews: [
+      {
+        nickname: '김**',
+        rating: 3.5,
+        content:
+          '대법원은 법률에 저촉되지 아니하는 범위안에서 소송에 관한 절차, 법원의 내부규율과 사무처리에 관한 규칙을 제정할 수 있다. 모든 국민은 그 보호하는 자녀에게 적어도 초등교육과 법률이 정하는 교육을 받게 할 의무를 진다. 대통령은 국민의 보통·평등·직접·비밀선거에 의하여 선출한다. 모든 국민은 신체의 자유를 가진다. 누구든지 법률에 의하지 아니하고는 체포·구속·압수·수색 또는 심문을 받지 아니하며, 법률과 적법한 절차에 의하지 아니하고는 처벌·보안처분 또는 강제노역을 받지 아니한다. 모든 국민은 법률이 정하는 바에 의하여 국방의 의무를 진다. 위원은 탄핵 또는 금고 이상의 형의 선고에 의하지 아니하고는 파면되지 아니한다.',
+        addedAt: '2023-03-05',
+      },
+      {
+        nickname: '최**',
+        rating: 4.0,
+        content:
+          '대법원은 법률에 저촉되지 아니하는 범위안에서 소송에 관한 절차, 법원의 내부규율과 사무처리에 관한 규칙을 제정할 수 있다. 모든 국민은 그 보호하는 자녀에게 적어도 초등교육과 법률이 정하는 교육을 받게 할 의무를 진다. 대통령은 국민의 보통·평등·직접·비밀선거에 의하여 선출한다. 모든 국민은 신체의 자유를 가진다. 누구든지 법률에 의하지 아니하고는 체포·구속·압수·수색 또는 심문을 받지 아니하며, 법률과 적법한 절차에 의하지 아니하고는 처벌·보안처분 또는 강제노역을 받지 아니한다. 모든 국민은 법률이 정하는 바에 의하여 국방의 의무를 진다. 위원은 탄핵 또는 금고 이상의 형의 선고에 의하지 아니하고는 파면되지 아니한다.',
+        addedAt: '2023-03-06',
+      },
+    ],
     position: 'Designer',
-    rating: 0,
+    rating: 3.5,
     schemaVersion: 'string',
     skills: [
       {
@@ -196,10 +215,19 @@ const Profile = () => {
               ))}
               <Text h4>리뷰</Text>
               <View style={{flexDirection: 'row'}}>
-                <Text>{profile.rating}</Text>
+                <Text h2 style={{fontWeight: 'bold', marginEnd: 10}}>
+                  {profile.rating}
+                </Text>
                 <View>
-                  <AirbnbRating isDisabled={true} reviews={[]} count={5} defaultRating={4.5} />
+                  <RatingBar ratingScore={profile.rating} />
+                  <Text>{profile.reviews.length}개 리뷰</Text>
                 </View>
+              </View>
+              <View style={{marginTop: 25}}>
+              {profile.reviews.map(review => (
+                <ReviewItem review={review} />
+              ))}
+              <Link to={''} style={{color: theme.colors.primary, textAlign: 'right'}}>더보기</Link>
               </View>
             </View>
           </>
@@ -213,7 +241,22 @@ const Profile = () => {
   )
 }
 
-const ToggleButton = ({
+const ReviewItem = ({review}: {review: Review}) => {
+  const {theme} = useTheme()
+  return (
+  <View style={{marginBottom: 20}}>
+    <View style={{marginBottom:10, flexDirection: 'row', alignItems: 'center',}}>
+      <Text style={{fontSize: theme.fontSize.md, fontWeight: theme.fontWeight.bold, marginEnd: 10}}>{review.nickname}</Text>
+      <RatingBar ratingScore={review.rating} size={20} />
+    </View>
+    <Text style={{fontWeight: theme.fontWeight.light, color: theme.colors.grey1, lineHeight: 25}} numberOfLines={3} ellipsizeMode="tail">
+      {review.content}
+    </Text>
+    <Text style={{fontWeight: theme.fontWeight.light, color: theme.colors.grey1, lineHeight: 25}}>{review.addedAt}</Text>
+  </View>
+)}
+
+export const ToggleButton = ({
   title,
   icon,
   onClick,
@@ -241,14 +284,14 @@ const ToggleButton = ({
   )
 }
 
-const IconLabel = ({iconName, label}: {iconName: string; label: string}) => (
+export const IconLabel = ({iconName, label}: {iconName: string; label: string}) => (
   <View style={{flexDirection: 'row'}}>
     <MaterialIcon name={iconName} />
     <Text>{label}</Text>
   </View>
 )
 
-const CustomSlider = ({
+export const CustomSlider = ({
   text,
   value,
   onChangeValue,
