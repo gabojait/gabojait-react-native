@@ -40,7 +40,7 @@ const TeamReview = () => {
     ]
 
     return(
-        <KeyboardAvoidingView style={{backgroundColor:'white', flex:1}}>
+        <KeyboardAvoidingView behavior='padding' style={{backgroundColor:'white', flex:1}}>
             <ScrollView style={{flex:1}}>
                 <Text style={{flex:1, fontSize:theme.fontSize.lg, fontWeight:theme.fontWeight.bold, color:'black', paddingLeft:20, paddingVertical:10 }}>1팀</Text>
                 <View>
@@ -67,7 +67,7 @@ const ReviewItem = () => {
         <CardWrapper style={{marginLeft:20, minWidth:300, marginBottom:10, marginTop:2}}>
             <View style={{width:'100%'}}>
                 <View style={{flexDirection:'row',paddingVertical:20, paddingHorizontal: 20}}>
-                    <PartIcon partInitial={'D'} isDone={true}/>
+                    <PartIcon partInitial={'D'} isRecruitDone={true}/>
                     <View style={{paddingHorizontal: 10, justifyContent:'center'}}>
                         <Text style={{fontSize:theme.fontSize.lg, fontWeight: theme.fontWeight.bold, color:'black'}}>이용인</Text>
                         <Text style={{fontSize:theme.fontSize.md, fontWeight:theme.fontWeight.light, color:theme.colors.grey1}}>Designer</Text>
