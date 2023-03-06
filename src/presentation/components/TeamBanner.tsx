@@ -47,8 +47,9 @@ const GroupListCard: React.FC<CardProps & {team: Team}> = ({
       <Text style={{justifyContent:'flex-end',fontWeight:theme.fontWeight.bold, fontSize:theme.fontSize.md}}>{team.projectName}</Text>
       <View style={{padding: 10, flexDirection: 'row', justifyContent: 'center'}}>
           {positions.map( (item) => 
-            item[0] > 0? <PartIcon partInitial={item[1].toString()} isRecruitDone={IsRecruitDone(item[1].toString())}/>:
-            <></>
+            item[0] > 0
+            ?<PartIcon partInitial={item[1].toString()} isRecruitDone={IsRecruitDone(item[1].toString())}/>
+            :<></>
           )}
           <View
           style={{

@@ -1,5 +1,5 @@
 import CardWrapper from '@/presentation/components/CardWrapper'
-import GroupListCard from '@/presentation/components/GroupListCard'
+import GroupListCard from '@/presentation/components/TeamBanner'
 import Gabojait from '@/presentation/components/icon/Gabojait'
 import { RatingBar } from '@/presentation/components/RatingBar'
 import { theme } from '@/theme'

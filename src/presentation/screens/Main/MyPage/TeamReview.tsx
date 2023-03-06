@@ -1,7 +1,7 @@
 import { FilledButton } from '@/presentation/components/Button'
 import CardWrapper from '@/presentation/components/CardWrapper'
 import { CustomInput } from '@/presentation/components/CustomInput'
-import GroupListCard, { Part, PartIcon } from '@/presentation/components/GroupListCard'
+import GroupListCard, { Part, PartIcon } from '@/presentation/components/TeamBanner'
 import { RatingInput } from '@/presentation/components/RatingInput'
 import { MainStackScreenProps } from '@/presentation/navigation/types'
 import { useTheme } from '@rneui/themed'

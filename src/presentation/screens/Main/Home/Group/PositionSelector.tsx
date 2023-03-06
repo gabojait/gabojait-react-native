@@ -1,6 +1,6 @@
 import { FilledButton } from '@/presentation/components/Button'
 import CardWrapper from '@/presentation/components/CardWrapper'
-import { PartIcon } from '@/presentation/components/GroupListCard'
+import { PartIcon } from '@/presentation/components/TeamBanner'
 import PositionIcon from '@/presentation/components/PositionIcon'
 import { GroupStackParamList } from '@/presentation/navigation/types'
 import { StackScreenProps } from '@react-navigation/stack'
@@ -19,7 +19,7 @@ const PositionSelector = () => {
       <CardWrapper style={[styles.card]}>
         <View style={styles.container}>
           <View style={{alignItems:'center'}}>
-            <PositionIcon currentApplicant={2} vancancyNumber={3} textView={<Text style={styles.posiionText}>2/3</Text>}/>
+            <PositionIcon currentApplicant={2} recruitNumber={3} textView={<Text style={styles.posiionText}>2/3</Text>}/>
             <Text style={styles.text}>Ui, Ux 디자이너</Text> 
           </View>
           <FilledButton title="함께하기" size="sm"/>
@@ -28,7 +28,7 @@ const PositionSelector = () => {
       <CardWrapper style={[styles.card]}>
         <View style={[styles.container, {paddingStart:30}]}>
           <View style={{alignItems:'center'}}>
-            <PositionIcon currentApplicant={1} vancancyNumber={1} textView={<Text style={styles.posiionText}>1/1</Text>}/>
+            <PositionIcon currentApplicant={1} recruitNumber={1} textView={<Text style={styles.posiionText}>1/1</Text>}/>
             <Text style={styles.text}>기획자</Text> 
           </View>
           <FilledButton title="모집완료" disabled={true} size="sm"/>
@@ -37,7 +37,7 @@ const PositionSelector = () => {
       <CardWrapper style={[styles.card]}>
         <View style={[styles.container, {paddingStart:30}]}>
           <View style={{alignItems:'center'}}>
-            <PositionIcon currentApplicant={2} vancancyNumber={2} textView={<Text style={styles.posiionText}>2/2</Text>}/>
+            <PositionIcon currentApplicant={2} recruitNumber={2} textView={<Text style={styles.posiionText}>2/2</Text>}/>
             <Text style={styles.text}>백엔드</Text>  
           </View>
           <FilledButton title="모집완료" disabled={true} size="sm"/>
