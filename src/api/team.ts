@@ -11,7 +11,13 @@ export const getTeams = async (pageFrom: number, pageNum: number) => {
     return result
 }
 
-export const getTeamDetail = async (teamId:string) => {
+export const getTeamDetail = async (teamId: string) => {
     const result = await client.get(`team/${teamId}`)
+    return result
+}
+
+export const applyToTeam = async (position: string, teamId: string) => {
+    const body = { position: position }
+    const result = await client.get(`user/team/${teamId}/offer`, body)
     return result
 }

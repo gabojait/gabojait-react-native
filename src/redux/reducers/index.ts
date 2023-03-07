@@ -5,6 +5,8 @@ import { registerReducer } from './registerReducer'
 import { teamCreateReducer } from './teamCreateReducer'
 import { teamGetReducer } from './teamGetReducer'
 import { teamDetailGetReducer } from './teamDetailGetReducer'
+import { applyToTeamReducer } from './applyToTeamReducer'
+
 export interface Result<T> {
   data?: T
   error?: Error
@@ -20,7 +22,8 @@ const rootReducer = combineReducers({
   registerReducer,
   teamCreateReducer,
   teamGetReducer,
-  teamDetailGetReducer
+  teamDetailGetReducer,
+  applyToTeamReducer
 })
 
 // 루트 리듀서를 내보내주세요.
