@@ -37,7 +37,7 @@ const GroupDetail = ({navigation, route}:MainStackScreenProps<'GroupDetail'>) =>
               : <></>
             )}
           </View>
-          <FilledButton title={'함께 하기'} onPress={() => navigation.navigate('PositionSelector')}/>
+          <FilledButton title={'함께 하기'} onPress={() => navigation.navigate('PositionSelector', {teamId: data?.teamId})}/>
         </View>
       </CardWrapper>
       <View style={[styles.card,globalStyles.FlexStartCardWrapper,{minHeight: 243}]}>

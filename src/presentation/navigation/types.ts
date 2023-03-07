@@ -1,8 +1,6 @@
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs'
 import {CompositeScreenProps, NavigatorScreenParams, ParamListBase} from '@react-navigation/native'
 import {StackScreenProps} from '@react-navigation/stack'
-import ApplyStatus from '../screens/Main/MyPage/ApplyStatus/ApplyStatus'
-import {MainBottomTabNavigationProp} from './MainBottomTabNavigation'
 
 interface WebViewPageProps {
   url: string
@@ -50,7 +48,7 @@ export type MainStackParamList = {
   TeamApplied:undefined
   GroupDetail: {teamId: string}
   GroupEditor: undefined
-  PositionSelector: undefined
+  PositionSelector: {teamId: string}
   Setting:undefined
   AlarmSetting:undefined
   Etc:undefined

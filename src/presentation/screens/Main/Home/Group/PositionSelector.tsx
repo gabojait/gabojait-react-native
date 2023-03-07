@@ -2,47 +2,52 @@ import { FilledButton } from '@/presentation/components/Button'
 import CardWrapper from '@/presentation/components/CardWrapper'
 import { PartIcon } from '@/presentation/components/TeamBanner'
 import PositionIcon from '@/presentation/components/PositionIcon'
-import { GroupStackParamList } from '@/presentation/navigation/types'
 import { StackScreenProps } from '@react-navigation/stack'
 import { makeStyles, Text, useTheme } from '@rneui/themed'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { ScrollView, View } from 'react-native'
+import { MainStackParamList, MainStackScreenProps } from '@/presentation/navigation/types'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
+import { getTeamDetail } from '@/redux/reducers/teamDetailGetReducer'
+import Team from '@/model/Team/Team'
 
-export type GroupStackParamListProps = StackScreenProps<GroupStackParamList, 'PositionSelector'>
-
-const PositionSelector = () => {
-  const {theme} = useTheme() 
+const PositionSelector = ({navigation, route}:MainStackScreenProps<'PositionSelector'>) => {
   const styles = useStyles()
-  
+  const dispatch = useAppDispatch()
+  const { data, loading, error } = useAppSelector(state => state.teamDetailGetReducer.teamDetailGetResult)
+  const positions = [
+    [data?.backendTotalRecruitCnt, data?.backends.length]
+    ,[data?.frontendTotalRecruitCnt, data?.frontends.length]
+    ,[data?.designerTotalRecruitCnt, data?.designers.length]
+    ,[data?.projectManagerTotalRecruitCnt, data?.projectManagers.length]
+  ]
+  const positionName = ['벡엔드 개발자', '프론트엔드 개발자', 'UI/UX 디자이너', '프로덕트 매니저']
+  const recruitStatus = ['함께하기', '지원완료', '모집완료']
+
+  useEffect(() => {
+    dispatch( getTeamDetail(route.params.teamId) )
+  }, [])
+
+  const isRecruitDone = (positionTotalRecruitCnt:number, positionApplicantCnt:number) => {
+    if (positionTotalRecruitCnt == positionApplicantCnt) return true
+    else return false
+  }
+
   return (
     <ScrollView style={styles.scrollView}>
-      <CardWrapper style={[styles.card]}>
-        <View style={styles.container}>
-          <View style={{alignItems:'center'}}>
-            <PositionIcon currentApplicant={2} recruitNumber={3} textView={<Text style={styles.posiionText}>2/3</Text>}/>
-            <Text style={styles.text}>Ui, Ux 디자이너</Text> 
-          </View>
-          <FilledButton title="함께하기" size="sm"/>
-        </View>
-      </CardWrapper>
-      <CardWrapper style={[styles.card]}>
-        <View style={[styles.container, {paddingStart:30}]}>
-          <View style={{alignItems:'center'}}>
-            <PositionIcon currentApplicant={1} recruitNumber={1} textView={<Text style={styles.posiionText}>1/1</Text>}/>
-            <Text style={styles.text}>기획자</Text> 
-          </View>
-          <FilledButton title="모집완료" disabled={true} size="sm"/>
-        </View>
-      </CardWrapper>
-      <CardWrapper style={[styles.card]}>
-        <View style={[styles.container, {paddingStart:30}]}>
-          <View style={{alignItems:'center'}}>
-            <PositionIcon currentApplicant={2} recruitNumber={2} textView={<Text style={styles.posiionText}>2/2</Text>}/>
-            <Text style={styles.text}>백엔드</Text>  
-          </View>
-          <FilledButton title="모집완료" disabled={true} size="sm"/>
-        </View>
-      </CardWrapper>
+      {positions.map( (item, index) => 
+              item[0] != undefined && item[0] > 0
+              ? <CardWrapper style={[styles.card]}>
+                  <View style={styles.container}>
+                    <View style={{alignItems:'center'}}>
+                      <PositionIcon currentApplicant={item[1]} recruitNumber={item[0]} textView={<Text style={styles.posiionText}>{item[1]}/{item[0]}</Text>}/>
+                      <Text style={styles.text}>{positionName[index]}</Text> 
+                    </View>
+                    <FilledButton title={isRecruitDone(item[0], item[1])?'모집완료':'함께하기'} size="sm" disabled={isRecruitDone(item[0], item[1])?true:false}/>
+                  </View>
+              </CardWrapper>
+              : <></>
+      )}
     </ScrollView>
   )
 }
