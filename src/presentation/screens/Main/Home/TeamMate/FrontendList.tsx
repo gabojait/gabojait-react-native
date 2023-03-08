@@ -1,40 +1,74 @@
 import CardWrapper from '@/presentation/components/CardWrapper'
-import GroupListCard from '@/presentation/components/TeamBanner'
 import Gabojait from '@/presentation/components/icon/Gabojait'
 import { RatingBar } from '@/presentation/components/RatingBar'
-import { theme } from '@/theme'
 import { makeStyles, useTheme } from '@rneui/themed'
-import React from 'react'
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { FlatList, Text, TouchableOpacity, View } from 'react-native'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
+import UserProfileBriefDto from '@/model/User/UserProfileBriefDto'
+import { findIndividuals } from '@/redux/reducers/individualsFindReducer'
+import { FRONTED, positionWord } from '@/util'
 
 const FrontendList = () => {
-    const arr = ['1','2','3']
     const {theme} = useTheme() 
     const styles = useStyles()
-    
+    const dispatch = useAppDispatch()
+    const {data,loading,error} = useAppSelector(state => state.individualsFindReducer.individualsFindResult)
+    const [contentData, setContentData] = useState<UserProfileBriefDto[]>()
+    const [individualsFindState, setIndividualsFindState] = useState({pageFrom: 0, pageNum: 2})
+
+    const requestMoreTeam = () => {
+        if(data != null && data.length >= individualsFindState.pageNum){
+          dispatch( findIndividuals(individualsFindState.pageFrom, individualsFindState.pageNum, FRONTED) )
+          setIndividualsFindState( prevState => ({...prevState, pageFrom: individualsFindState.pageFrom+1}))
+        }
+      }
+
+    useEffect(() => {
+        console.log(`data 변경 감지`)
+        if (!loading && contentData != null && data != null){
+          setContentData([...contentData, ...data])
+          console.log(`data: ${data}`)
+          console.log(`contentData: ${contentData}`)
+        }
+      },[data, loading, error])
+
+    useEffect(() => {
+        console.log(`첫 렌더링`)
+        dispatch( findIndividuals(individualsFindState.pageFrom, individualsFindState.pageNum, FRONTED) )
+        setIndividualsFindState( prevState => ({...prevState, pageFrom: individualsFindState.pageFrom+1}))
+        if(!loading && data != null){
+          setContentData(data)
+        }
+    },[])
+
     return (
         <View style={{flex: 1, flexGrow:1, backgroundColor: 'white', justifyContent:'flex-end', paddingVertical: 15}}>
             <FlatList
                 showsVerticalScrollIndicator={false}
-                keyExtractor={item => item.toString()}
-                data={arr}
+                keyExtractor={item => item.userId}
+                data={contentData}
                 renderItem={({item}) => 
-                <CardWrapper style={{marginVertical:5, marginHorizontal: 20, borderWidth:1, borderColor:theme.colors.disabled}}>
-                    <View style={{flexDirection:'row', width:'100%', paddingVertical: 32, paddingHorizontal:10, justifyContent: 'space-between', alignContent:'center'}}>
-                        <View>
-                            <Text style={styles.name}>이용인</Text>
-                            <Text style={styles.position}>프론트엔드</Text>
-                            <View style={{flexDirection:'row', paddingBottom: 10}}>
-                                <RatingBar ratingScore={3.5}/>
-                                <Text style={styles.score}>3.5</Text>
+                    <CardWrapper style={{marginVertical:5, marginHorizontal: 20, borderWidth:1, borderColor:theme.colors.disabled}}>
+                        <View style={{flexDirection:'row', width:'100%', paddingVertical: 32, paddingHorizontal:10, justifyContent: 'space-between', alignContent:'center'}}>
+                            <View>
+                                <Text style={styles.name}>{item.nickname}</Text>
+                                <Text style={styles.position}>프론트 개발자</Text>
+                                <View style={{flexDirection:'row', paddingBottom: 10}}>
+                                    <RatingBar ratingScore={item.rating}/>
+                                    <Text style={styles.score}>{item.rating}</Text>
+                                </View>
                             </View>
+                            <TouchableOpacity style={{justifyContent:'center'}}>
+                                <Gabojait name='arrow-next' size={28} color={theme.colors.disabled}/>
+                            </TouchableOpacity>
                         </View>
-                        <TouchableOpacity style={{justifyContent:'center'}}>
-                            <Gabojait name='arrow-next' size={28} color={theme.colors.disabled}/>
-                        </TouchableOpacity>
-                    </View>
-                </CardWrapper>
+                    </CardWrapper>
                 }
+                onEndReached={()=>{
+                    requestMoreTeam()
+                }}
+                onEndReachedThreshold={1}
             />
         </View>
     )

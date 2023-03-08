@@ -6,6 +6,7 @@ import DesignerList from './Designer'
 import PMList from './PMList'
 import { useTheme } from '@rneui/themed'
 import { Dimensions, View } from 'react-native'
+import { MainStackScreenProps } from '@/presentation/navigation/types'
 
 
 const Tab = createMaterialTopTabNavigator()

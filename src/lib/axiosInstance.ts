@@ -68,7 +68,7 @@ client.interceptors.response.use(
           await AsyncStorage.setItem('accessToken', tokens[1])
           await AsyncStorage.setItem('refreshToken', tokens[2])
         }
-        if (!res.data.data || res.status == 204 || res.status == 201) {
+        if (res.data.data == null || res.status == 204 || res.status == 201) {
           // Todo: Handle No Content
           // Todo: 빈 리스트(204?)/201 대응
 

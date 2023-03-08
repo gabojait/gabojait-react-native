@@ -21,3 +21,9 @@ export const applyToTeam = async (position: string, teamId: string) => {
     const result = await client.post(`user/team/${teamId}/offer`, body)
     return result
 }
+
+export const findIndividuals = async (pageFrom: number, pageNum: number, position: string) => {
+    const params = {pageFrom: pageFrom, pageNum: pageNum}
+    const result = await client.get(`user/${position}`, { params: params })
+    return result
+}
