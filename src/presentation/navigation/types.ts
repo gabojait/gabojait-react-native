@@ -41,20 +41,20 @@ export type MainStackScreenProps<T extends keyof MainStackParamList> = StackScre
 >
 
 export type MainStackParamList = {
-  Profile: undefined
+  Profile: NavigatorScreenParams<ProfileStackParamList>
   ApplyStatus: undefined
-  TeamHistory:undefined
-  TeamReview:undefined
-  BookMark:undefined
-  OfferPage:undefined
-  TeamApplied:undefined
+  TeamHistory: undefined
+  TeamReview: undefined
+  BookMark: undefined
+  OfferPage: undefined
+  TeamApplied: undefined
   GroupDetail: undefined
   GroupEditor: undefined
   PositionSelector: undefined
-  Setting:undefined
-  AlarmSetting:undefined
-  Etc:undefined
-  UserModifier:undefined
+  Setting: undefined
+  AlarmSetting: undefined
+  Etc: undefined
+  UserModifier: undefined
 }
 
 export type MainBottomTabParamList = {
@@ -68,21 +68,32 @@ export type MainBottomTabNavigationProps<T extends keyof MainBottomTabParamList 
   CompositeScreenProps<
     BottomTabScreenProps<MainBottomTabParamList, T>,
     RootStackScreenProps<keyof RootStackParamList>
->
+  >
 
 export type BoardStackParamList = {
   GroupList: undefined
-  TeamMate: undefined,
+  TeamMate: undefined
   MainNavigation: NavigatorScreenParams<MainStackParamList>
 }
-export type BoardStackParamListProps<T extends keyof BoardStackParamList> =  StackScreenProps<
-BoardStackParamList,
-T
+export type BoardStackParamListProps<T extends keyof BoardStackParamList> = StackScreenProps<
+  BoardStackParamList,
+  T
 >
 
 export type ApplyStatusTabParamList = {
-  Frontend:undefined
-  Backend:undefined
-  Designer:undefined
-  PM:undefined
+  Frontend: undefined
+  Backend: undefined
+  Designer: undefined
+  PM: undefined
+}
+
+export type ProfileStackParamListProps<T extends keyof ProfileStackParamList> = StackScreenProps<
+  ProfileStackParamList,
+  T
+>
+
+export type ProfileStackParamList = {
+  View: undefined
+  EditMain: undefined
+  EditPortfolio: undefined
 }

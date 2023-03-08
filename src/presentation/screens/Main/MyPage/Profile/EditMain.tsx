@@ -1,11 +1,20 @@
-import {View} from 'react-native'
+import {ScrollView, View} from 'react-native'
 import React from 'react'
 import {ArrowCard, EmptyCard} from '@/presentation/components/GroupListCard'
-import {Input, Text} from '@rneui/themed'
+import {Input, Text, useTheme} from '@rneui/themed'
 import ProfileViewDto from '@/model/Profile/ProfileViewDto'
-import {CustomSlider, IconLabel, ToggleButton} from '../Profile'
+import {
+  CustomSlider,
+  IconLabel,
+  portfolioTypeIconName,
+  sliderColors,
+  ToggleButton,
+} from '../Profile'
+import Icon from 'react-native-vector-icons/MaterialIcons'
+import {ProfileStackParamListProps} from '@/presentation/navigation/types'
+import { FieldType } from '@/model/Profile/Portfolio'
 
-const EditMain = () => {
+const EditMain = ({navigation}: ProfileStackParamListProps<'EditMain'>) => {
   const profile = {
     completedTeams: [
       {
@@ -33,7 +42,7 @@ const EditMain = () => {
       {
         name: '네이버 블로그',
         portfolioId: 'string',
-        portfolioType: 'string',
+        portfolioType: FieldType.Url,
         schemaVersion: 'string',
         url: 'string',
       },
@@ -60,14 +69,14 @@ const EditMain = () => {
     skills: [
       {
         isExperienced: true,
-        level: 'string',
+        level: '3',
         schemaVersion: 'string',
         skillId: 'string',
         skillName: 'XD',
       },
       {
-        isExperienced: true,
-        level: 'string',
+        isExperienced: false,
+        level: '1',
         schemaVersion: 'string',
         skillId: 'string',
         skillName: 'Figma',
@@ -95,18 +104,47 @@ const EditMain = () => {
       },
     ],
   } as ProfileViewDto
+  const {theme} = useTheme()
   return (
-    <View>
-      <ArrowCard title="기본정보">
+    <ScrollView style={{padding: 20, backgroundColor: 'white'}}>
+      <ArrowCard
+        title="기본정보"
+        onArrowPress={() => {
+          navigation.getParent()?.navigate('UserModifier')
+        }}
+        style={{marginBottom: theme.spacing.xl}}>
         <></>
       </ArrowCard>
-      <EmptyCard title="자기소개">
-        <Input></Input>
+      <EmptyCard style={{marginBottom: theme.spacing.xl}}>
+        <Text style={{fontSize: theme.fontSize.md, fontWeight: theme.fontWeight.bold}}>
+          자기소개
+        </Text>
+        <Input
+          placeholder="본인이 프로젝트 중 겪었던 문제 극복 상황에 대해 적어도 좋아요:)"
+          inputContainerStyle={{borderBottomWidth: 0}}
+          placeholderTextColor={theme.colors.disabled}
+          containerStyle={{paddingHorizontal: 0}}
+          multiline
+          numberOfLines={6}
+          inputStyle={{fontWeight: theme.fontWeight.light}}></Input>
       </EmptyCard>
-      <ArrowCard title="포트폴리오">
-        <Text>링크</Text>
+      <ArrowCard
+        title="포트폴리오"
+        style={{marginBottom: theme.spacing.xl}}
+        onArrowPress={() => {
+          navigation.navigate("EditPortfolio")
+        }}>
+        <View style={{flexWrap: 'wrap', flexDirection: 'row'}}>
+          {profile.portfolios.map(portfolio => (
+            <ToggleButton
+              title={portfolio.name}
+              icon={<Icon name={portfolioTypeIconName['pdf']} />}
+              backgroundColor="#FFF"
+            />
+          ))}
+        </View>
       </ArrowCard>
-      <ArrowCard title="학력/경력">
+      <ArrowCard title="학력/경력" style={{marginBottom: theme.spacing.xl}}>
         <IconLabel
           iconName="school"
           label={profile.educations[profile.educations.length - 1].institutionName}
@@ -115,21 +153,23 @@ const EditMain = () => {
           .map(work => <IconLabel iconName="work" label={work.corporationName} />)
           .slice(0, 2)}
       </ArrowCard>
-      <ArrowCard title="기술스택/직무">
-        <ToggleButton title={profile.position} />
-        {profile.skills.map(skill => (
-          <>
-            <Text>희망 기술스택</Text>
-            <CustomSlider
-              text={skill.skillName}
-              value={parseInt(skill.level)}
-              onChangeValue={function (value: number | number[]): void {}}
-              minimumTrackTintColor="#FFDB20"
-            />
-          </>
-        ))}
+      <ArrowCard title="기술스택/직무" style={{marginBottom: theme.spacing.xl}}>
+        <View style={{alignItems: 'flex-start'}}>
+          <ToggleButton title={profile.position} />
+          {profile.skills.map((skill, idx) => (
+            <>
+              <Text>{skill.isExperienced ? '사용' : '희망'} 기술스택</Text>
+              <CustomSlider
+                text={skill.skillName}
+                value={parseInt(skill.level)}
+                onChangeValue={function (value: number | number[]): void {}}
+                minimumTrackTintColor={sliderColors[idx % 3]}
+              />
+            </>
+          ))}
+        </View>
       </ArrowCard>
-    </View>
+    </ScrollView>
   )
 }
 

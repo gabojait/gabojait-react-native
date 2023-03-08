@@ -1,7 +1,7 @@
 import {CardProps} from '@rneui/base'
 import {Card, makeStyles, Text, useTheme} from '@rneui/themed'
 import React from 'react'
-import {PixelRatio, View} from 'react-native'
+import {PixelRatio, StyleProp, View, ViewProps, ViewStyle} from 'react-native'
 import color from '../res/styles/color'
 import CustomIcon from '@/presentation/components/icon/Gabojait'
 
@@ -23,38 +23,54 @@ const GroupListCard: React.FC<CardProps & {title: string; parts: Array<Part>}> =
   const {theme} = useTheme()
   return (
     <ArrowCard title={title} arrowColor={theme.colors.primary}>
-      {parts.map(part => (
-        <PartIcon key={part.id} partInitial={part.name[0]} />
-      ))}
+      <View style={{flexDirection: 'row'}}>
+        {parts.map(part => (
+          <PartIcon key={part.id} partInitial={part.name[0]} />
+        ))}
+      </View>
     </ArrowCard>
   )
 }
-export const EmptyCard = ({title, children}: {title: string; children: React.ReactNode}) => {
+export const EmptyCard = ({
+  children,
+  style,
+}: {
+  children: React.ReactNode
+  style?: StyleProp<ViewStyle>
+}) => {
   const styles = useStyles()
-  return (
-    <Card containerStyle={styles.card}>
-      <Text style={styles.title}>{title}</Text>
-      {children}
-    </Card>
-  )
+  return <View style={[styles.card, style]}>{children}</View>
 }
 
 export const ArrowCard = ({
   title,
   arrowColor = 'black',
   children,
+  onArrowPress,
+  style,
 }: {
   title: string
   arrowColor?: string
   children: React.ReactNode
+  onArrowPress?: () => void
+  style?: StyleProp<ViewStyle>
 }) => {
   const styles = useStyles()
   return (
-    <EmptyCard title={title}>
-      <View style={{padding: 10, flexDirection: 'row', justifyContent: 'center'}}>
-        {children}
-        <View style={styles.iconWrapper}>
-          <CustomIcon name="arrow-next" size={30} style={{margin: -10}} color={arrowColor} />
+    <EmptyCard style={style}>
+      <View style={{flexDirection: 'row', justifyContent: 'center', alignContent: 'center'}}>
+        <View style={{flex: 9}}>
+          <Text style={styles.title}>{title}</Text>
+          {children}
+        </View>
+        <View style={[{flex: 1, alignItems: 'center', justifyContent: 'center'}]}>
+          <CustomIcon
+            name="arrow-next"
+            size={30}
+            style={{height: 30}}
+            color={arrowColor}
+            onPress={onArrowPress}
+          />
         </View>
       </View>
     </EmptyCard>
@@ -89,6 +105,7 @@ const useStyles = makeStyles(theme => ({
   card: {
     borderWidth: 1,
     borderColor: theme.colors.disabled,
+    backgroundColor: 'white',
     shadowColor: 'black',
     shadowOpacity: 0.2,
     shadowOffset: {
@@ -96,18 +113,17 @@ const useStyles = makeStyles(theme => ({
       height: 2,
     },
     borderRadius: 20,
-    paddingBottom: 25,
-    paddingStart: 25,
-    flex: 1,
+    padding: 25,
+    display: 'flex',
   },
   title: {
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
     fontWeight: theme.fontWeight.bold,
     fontSize: theme.fontSize.md,
   },
   iconWrapper: {
-    height: '100%',
     justifyContent: 'center',
+    alignItems: 'center',
     paddingHorizontal: 10,
   },
 }))

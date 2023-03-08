@@ -39,6 +39,10 @@ declare module '@rneui/themed' {
       lg: number
       xl: number
     }
+    sliderSize: {
+     md: number
+     lg: number 
+    }
     fontSize: {
       xs: number
       sm: number
@@ -131,6 +135,10 @@ export const theme = createTheme({
     md: 22,
     lg: 26,
     xl: 30
+  },
+  sliderSize: {
+    md: 20,
+    lg: 30,
   },
   shadow: {
     opacity: 1,
