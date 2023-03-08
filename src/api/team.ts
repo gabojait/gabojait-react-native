@@ -18,6 +18,6 @@ export const getTeamDetail = async (teamId: string) => {
 
 export const applyToTeam = async (position: string, teamId: string) => {
     const body = { position: position }
-    const result = await client.get(`user/team/${teamId}/offer`, body)
+    const result = await client.post(`user/team/${teamId}/offer`, body)
     return result
 }
