@@ -20,7 +20,7 @@ const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
   const [teamGetState, setTeamGetState] = useState({pageFrom: 0, pageNum: 20})
   const {data,loading,error} = useAppSelector(state => state.teamGetReducer.teamGetResult)
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [contentData, setContentData] = useState<Team[]>(data)
+  const [contentData, setContentData] = useState<Team[]>()
   
   const profileMentionModal = () => {
     modal?.show({
@@ -33,14 +33,12 @@ const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
             onPress: () => {
               modal.hide() 
               navigation.navigate('MainNavigation', {screen:'Profile'})
-              console.log('touch, yes')
             },
           }}
           noButton={{
             title: '닫기', 
             onPress: () => {
               modal.hide()
-              console.log('touch, yes')
             }
           }}
         >
@@ -85,19 +83,26 @@ const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
   }
 
   const requestMoreTeam = () => {
-    dispatch( getTeam(teamGetState.pageFrom, teamGetState.pageNum) )
-    setTeamGetState( prevState => ({...prevState, pageFrom: teamGetState.pageFrom+1}))
-    if(!loading){
-      setContentData([...data, contentData])
+    if(data != null && data.length >= teamGetState.pageNum){
+      dispatch( getTeam(teamGetState.pageFrom, teamGetState.pageNum) )
+      setTeamGetState( prevState => ({...prevState, pageFrom: teamGetState.pageFrom+1}))
     }
-    setIsRefreshing(false)
   }
+
+  useEffect(() => {
+    if (!loading && contentData != null && data != null){
+      setContentData([...contentData, ...data])
+      console.log(`data: ${data}`)
+      console.log(`contentData: ${contentData}`)
+    }
+  },[data, loading, error])
 
   useEffect(() => {
     console.log('useEffect 초기 렌더링 실행!')
     dispatch( getTeam(teamGetState.pageFrom, teamGetState.pageNum) )
-    if(!loading){
-      setContentData([...data])
+    setTeamGetState( prevState => ({...prevState, pageFrom: teamGetState.pageFrom+1}))
+    if(!loading&& data != null){
+      setContentData(data)
     }
   },[])
 
@@ -115,9 +120,7 @@ const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
         onEndReached={()=>{
           requestMoreTeam()
         }}
-        onEndReachedThreshold={0.8}
-        refreshing = {isRefreshing}
-        onRefresh = {requestMoreTeam}
+        onEndReachedThreshold={1}
       />
       <View style={{position:'absolute',flex:1, flexDirection:'column-reverse',justifyContent:'flex-start', alignItems:'flex-end', width: '95%', backgroundColor:theme.colors.disabled}}>
         <FloatingButton title='팀 생성' onPress={() => navigation.navigate('MainNavigation', {screen: 'GroupEditor'})}/>
