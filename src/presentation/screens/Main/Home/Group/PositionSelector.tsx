@@ -10,6 +10,7 @@ import { getTeamDetail } from '@/redux/reducers/teamDetailGetReducer'
 import { ModalContext } from '@/presentation/components/modal/context'
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent'
 import { applyToTeam } from '@/redux/reducers/applyToTeamReducer'
+import { positionWord } from '@/util'
 
 const PositionSelector = ({navigation, route}:MainStackScreenProps<'PositionSelector'>) => {
   const {theme} = useTheme()
@@ -69,7 +70,7 @@ const PositionSelector = ({navigation, route}:MainStackScreenProps<'PositionSele
               <FilledButton 
                 title={isRecruitDone(item[0], item[1])?'모집완료':'함께하기'} 
                 size="sm" disabled={isRecruitDone(item[0], item[1])?true:false}
-                onPress={()=> dispatch( applyToTeam(positionName[index], route.params.teamId) )}
+                onPress={()=> dispatch( applyToTeam(positionWord[index], route.params.teamId) )}
               />
             </View>
         </CardWrapper>

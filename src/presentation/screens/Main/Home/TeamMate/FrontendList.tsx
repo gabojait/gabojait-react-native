@@ -15,7 +15,7 @@ const FrontendList = () => {
     const dispatch = useAppDispatch()
     const {data,loading,error} = useAppSelector(state => state.individualsFindReducer.individualsFindResult)
     const [contentData, setContentData] = useState<UserProfileBriefDto[]>()
-    const [individualsFindState, setIndividualsFindState] = useState({pageFrom: 0, pageNum: 2})
+    const [individualsFindState, setIndividualsFindState] = useState({pageFrom: 0, pageNum: 20})
 
     const requestMoreTeam = () => {
         if(data != null && data.length >= individualsFindState.pageNum){

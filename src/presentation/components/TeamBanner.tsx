@@ -46,9 +46,9 @@ const TeamBanner: React.FC<CardProps & {team: Team}> = ({
       }}>
       <Text style={{justifyContent:'flex-end',fontWeight:theme.fontWeight.bold, fontSize:theme.fontSize.md}}>{team.projectName}</Text>
       <View style={{paddingHorizontal: 10, paddingVertical:10, paddingBottom:15, flexDirection: 'row', justifyContent: 'space-around'}}>
-          {positions.map( (item) => 
+          {positions.map( (item, index) => 
             item[0] > 0
-            ?<PartIcon partInitial={item[1].toString()} isRecruitDone={IsRecruitDone(item[1].toString())}/>
+            ?<PartIcon partInitial={item[1].toString()} isRecruitDone={IsRecruitDone(item[1].toString())} key={index}/>
             :<></>
           )}
           <View
