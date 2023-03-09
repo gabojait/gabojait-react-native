@@ -2,6 +2,11 @@ import {combineReducers} from 'redux'
 import boardSwitchReducer from './boardSwitchReducer'
 import {loginReducer} from './loginReducer'
 import { registerReducer } from './registerReducer'
+import { teamCreateReducer } from './teamCreateReducer'
+import { teamGetReducer } from './teamGetReducer'
+import { teamDetailGetReducer } from './teamDetailGetReducer'
+import { applyToTeamReducer } from './applyToTeamReducer'
+import { individualsFindReducer } from './individualsFindReducer'
 
 export interface Result<T> {
   data?: T
@@ -15,7 +20,12 @@ export class Empty {}
 const rootReducer = combineReducers({
   loginReducer,
   boardSwitchReducer,
-  registerReducer
+  registerReducer,
+  teamCreateReducer,
+  teamGetReducer,
+  teamDetailGetReducer,
+  applyToTeamReducer,
+  individualsFindReducer
 })
 
 // 루트 리듀서를 내보내주세요.

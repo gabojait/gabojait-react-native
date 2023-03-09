@@ -1,4 +1,4 @@
-import GroupListCard, { Part } from '@/presentation/components/GroupListCard'
+import GroupListCard, { Part } from '@/presentation/components/TeamBanner'
 import { MainStackScreenProps } from '@/presentation/navigation/types'
 import React from 'react'
 import { FlatList, TouchableOpacity, View } from 'react-native'

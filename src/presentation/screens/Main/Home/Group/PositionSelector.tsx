@@ -1,48 +1,81 @@
 import { FilledButton } from '@/presentation/components/Button'
 import CardWrapper from '@/presentation/components/CardWrapper'
-import { PartIcon } from '@/presentation/components/GroupListCard'
 import PositionIcon from '@/presentation/components/PositionIcon'
-import { GroupStackParamList } from '@/presentation/navigation/types'
-import { StackScreenProps } from '@react-navigation/stack'
 import { makeStyles, Text, useTheme } from '@rneui/themed'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { ScrollView, View } from 'react-native'
+import { MainStackScreenProps } from '@/presentation/navigation/types'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
+import { getTeamDetail } from '@/redux/reducers/teamDetailGetReducer'
+import { ModalContext } from '@/presentation/components/modal/context'
+import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent'
+import { applyToTeam } from '@/redux/reducers/applyToTeamReducer'
+import { positionWord } from '@/util'
 
-export type GroupStackParamListProps = StackScreenProps<GroupStackParamList, 'PositionSelector'>
-
-const PositionSelector = () => {
-  const {theme} = useTheme() 
+const PositionSelector = ({navigation, route}:MainStackScreenProps<'PositionSelector'>) => {
+  const {theme} = useTheme()
   const styles = useStyles()
-  
+  const dispatch = useAppDispatch()
+  const { data:teamDetailGetResult, loading:teamDetailGetLoading, error:teamDetailGetError } = useAppSelector(state => state.teamDetailGetReducer.teamDetailGetResult)
+  const { data:applyToTeamResult, loading:applyToTeamLoading, error:applyToTeamError } = useAppSelector(state => state.applyToTeamReducer.applyToTeamResult)
+  const positions = [
+    [teamDetailGetResult?.backendTotalRecruitCnt, teamDetailGetResult?.backends.length]
+    ,[teamDetailGetResult?.frontendTotalRecruitCnt, teamDetailGetResult?.frontends.length]
+    ,[teamDetailGetResult?.designerTotalRecruitCnt, teamDetailGetResult?.designers.length]
+    ,[teamDetailGetResult?.projectManagerTotalRecruitCnt, teamDetailGetResult?.projectManagers.length]
+  ]
+  const positionName = ['벡엔드 개발자', '프론트엔드 개발자', 'UI/UX 디자이너', '프로덕트 매니저']
+  const modal = React.useContext(ModalContext)
+
+  const isRecruitDone = (positionTotalRecruitCnt:number, positionApplicantCnt:number) => {
+    if (positionTotalRecruitCnt == positionApplicantCnt) return true
+    else return false
+  }
+
+  const applyCompletedModal = () => {
+    modal?.show({
+          title: '',
+          content: (
+            <SymbolModalContent
+              title='지원 완료!'
+              symbol={<Text style={{fontSize: theme.emojiSize.md, textAlign: 'center'}}>👏</Text>}
+              text={'함께하기 요청이 전달되었습니다\n 결과를 기다려주세요'}
+              yesButton={{title:'확인', onPress: () => modal.hide()}}
+            />
+          )
+    })
+  } 
+
+  useEffect(() => {
+    dispatch( getTeamDetail(route.params.teamId) )
+  }, [])
+
+  useEffect(() => {
+    //팀 지원요청 성공 시
+    if(applyToTeamResult && applyToTeamLoading == false && applyToTeamError == null){
+      applyCompletedModal()
+    }
+  }, [applyToTeamResult, applyToTeamLoading, applyToTeamError])
+
   return (
     <ScrollView style={styles.scrollView}>
-      <CardWrapper style={[styles.card]}>
-        <View style={styles.container}>
-          <View style={{alignItems:'center'}}>
-            <PositionIcon currentApplicant={2} vancancyNumber={3} textView={<Text style={styles.posiionText}>2/3</Text>}/>
-            <Text style={styles.text}>Ui, Ux 디자이너</Text> 
-          </View>
-          <FilledButton title="함께하기" size="sm"/>
-        </View>
-      </CardWrapper>
-      <CardWrapper style={[styles.card]}>
-        <View style={[styles.container, {paddingStart:30}]}>
-          <View style={{alignItems:'center'}}>
-            <PositionIcon currentApplicant={1} vancancyNumber={1} textView={<Text style={styles.posiionText}>1/1</Text>}/>
-            <Text style={styles.text}>기획자</Text> 
-          </View>
-          <FilledButton title="모집완료" disabled={true} size="sm"/>
-        </View>
-      </CardWrapper>
-      <CardWrapper style={[styles.card]}>
-        <View style={[styles.container, {paddingStart:30}]}>
-          <View style={{alignItems:'center'}}>
-            <PositionIcon currentApplicant={2} vancancyNumber={2} textView={<Text style={styles.posiionText}>2/2</Text>}/>
-            <Text style={styles.text}>백엔드</Text>  
-          </View>
-          <FilledButton title="모집완료" disabled={true} size="sm"/>
-        </View>
-      </CardWrapper>
+      {positions.map( (item, index) => 
+        item[0] != undefined && item[0] > 0
+        ? <CardWrapper style={[styles.card]}>
+            <View style={styles.container}>
+              <View style={{alignItems:'center'}}>
+                <PositionIcon currentApplicant={item[1]} recruitNumber={item[0]} textView={<Text style={styles.posiionText}>{item[1]}/{item[0]}</Text>}/>
+                <Text style={styles.text}>{positionName[index]}</Text> 
+              </View>
+              <FilledButton 
+                title={isRecruitDone(item[0], item[1])?'모집완료':'함께하기'} 
+                size="sm" disabled={isRecruitDone(item[0], item[1])?true:false}
+                onPress={()=> dispatch( applyToTeam(positionWord[index], route.params.teamId) )}
+              />
+            </View>
+        </CardWrapper>
+        : <></>
+      )}
     </ScrollView>
   )
 }

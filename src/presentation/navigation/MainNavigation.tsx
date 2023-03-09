@@ -5,7 +5,6 @@ import Profile from '../screens/Main/MyPage/Profile'
 import CloseHeader from '../screens/Headers/CloseHeader'
 import BackHeader from '../screens/Headers/TitleWithCloseHeader'
 import PositionSelector from '../screens/Main/Home/Group/PositionSelector'
-import TitleHeader from '../screens/Headers/TitleHeader'
 import GroupEditor from '../screens/Main/Home/Group/GroupEditor'
 import GroupDetail from '../screens/Main/Home/Group/GroupDetail'
 import ApplyStatus from '../screens/Main/MyPage/ApplyStatus/ApplyStatus'
@@ -77,30 +76,17 @@ const MainNavigation = () => {
         />
       </Main.Group>
       <Main.Group>
-        <Main.Screen
-          name="GroupDetail"
-          component={GroupDetail}
-          options={{
-            header: BackHeader,
-            headerTitle: '',
-          }}
-        />
-        <Main.Screen
-          name="PositionSelector"
-          component={PositionSelector}
-          options={{
-            header: TitleWithCloseHeader,
-            headerTitle: '포지션 선택',
-          }}
-        />
-        <Main.Screen
-          name="GroupEditor"
-          component={GroupEditor}
-          options={{
-            header: TitleHeader,
-            headerTitle: '',
-          }}
-        />
+        <Main.Screen name="GroupDetail" component={GroupDetail} options={{
+          header: BackHeader,
+          headerTitle: ""
+        }}/>
+        <Main.Screen name="PositionSelector" component={PositionSelector} options={{
+          header: TitleWithCloseHeader,
+          headerTitle: "포지션 선택"
+        }}/>
+        <Main.Screen name="GroupEditor" component={GroupEditor} options={{
+          headerShown:false
+        }}/>
       </Main.Group>
       <Main.Group>
         <Main.Screen

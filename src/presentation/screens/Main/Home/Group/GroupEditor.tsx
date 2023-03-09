@@ -1,22 +1,47 @@
 import { FilledButton } from '@/presentation/components/Button'
-import { CustomInput } from '@/presentation/components/CustomInput'
 import { PositionMaker } from '@/presentation/components/PositionMaker'
 import { MainStackScreenProps } from '@/presentation/navigation/types'
 import color from '@/presentation/res/styles/color'
-import { StackScreenProps } from '@react-navigation/stack'
 import { Text, useTheme, makeStyles } from '@rneui/themed'
 import React, { useEffect, useState } from 'react'
-import { FlatList, TextInput, TouchableOpacity, View } from 'react-native'
+import { FlatList, KeyboardAvoidingView, ScrollView, TouchableOpacity, View } from 'react-native'
 import CustomIcon from '@/presentation/components/icon/Gabojait'
-import CustomModal from '@/presentation/components/modalContent/CustomModal'
-
+import TeamRequestDto from '@/model/Team/TeamRequestDto'
+import { CustomInput } from '@/presentation/components/CustomInput'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
+import { createTeam } from '@/redux/reducers/teamCreateReducer'
+import { ModalContext } from '@/presentation/components/modal/context'
+import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent'
 
 const Editor = ({navigation, route}:MainStackScreenProps<'GroupEditor'>) => {
   const {theme} = useTheme()
   const styles = useStyles({navigation, route})
+  const dispatch = useAppDispatch()
+  const modal = React.useContext(ModalContext)
   const [array, setArray] = useState([{idex:'0'}])
   const [positionMakerCount, setPositionMakerCount] = useState(1)
-  const [modalOpened, setModalOpened] = useState(false)
+  const [teamCreateState, setTeamCreateState] = useState<TeamRequestDto>({
+    backendTotalRecruitCnt: 0,
+    designerTotalRecruitCnt: 0,
+    expectation: '',
+    frontendTotalRecruitCnt: 0,
+    openChatUrl: '',
+    projectDescription: '',
+    projectManagerTotalRecruitCnt: 0,
+    projectName: '',
+  })
+  const {
+    data: teamCreateResult,
+    loading: teamCreateLoading,
+    error: teamCreateError
+  } = useAppSelector(state => state.teamCreateReducer.teamCreateResult)
+
+  const [data, setData] = useState([
+    {key:'벡엔드 개발자', value:'벡엔드 개발자', disabled:false},
+    {key:'프론트엔드 개발자', value:'프론트엔드 개발자', disabled:false},
+    {key:'디자이너', value:'디자이너', disabled:false},
+    {key:'PM', value:'PM', disabled:false}
+  ])
 
   function addPositionMaker() {
     let newArray = [...array, {idex: (positionMakerCount + 1).toString()}]
@@ -25,30 +50,160 @@ const Editor = ({navigation, route}:MainStackScreenProps<'GroupEditor'>) => {
     console.log(positionMakerCount)
   }
 
- const [data, setData] = useState([
-  {key:'B', value:'벡엔드 개발자', disabled:false},
-  {key:'F', value:'프론트엔드 개발자', disabled:false},
-  {key:'D', value:'디자이너', disabled:false},
-  {key:'P', value:'프로덕트 매니저', disabled:false}
-])
+  function positionMapper(count:number, position:string) {
+    if(position == '벡엔드 개발자') { 
+      setTeamCreateState(prevState => ({...prevState, backendTotalRecruitCnt: count}))
+    } 
+    if(position == '프론트엔드 개발자') { 
+      setTeamCreateState(prevState => ({...prevState, frontendTotalRecruitCnt: count}))
+    } 
+    if(position == '디자이너') { 
+      setTeamCreateState(prevState => ({...prevState, designerTotalRecruitCnt: count}))
+    } 
+    if(position == 'PM') { 
+      setTeamCreateState(prevState => ({...prevState, projectManagerTotalRecruitCnt: count}))
+    } 
+  }
 
+  function isOpenChatUrlValidate(){
+    const pattern = /^https\:\/\/open\.kakao\.com\/.+$/
+    const result = pattern.test(teamCreateState.openChatUrl)
+
+    if (result) return true
+    else throw Error('유효한 카카오톡 오픈채팅 링크가 아닙니다')
+  }
+
+  function isRecruitCntValidate() {
+    const backendCnt = teamCreateState.backendTotalRecruitCnt
+    const frontendCnt = teamCreateState.frontendTotalRecruitCnt
+    const designerCnt = teamCreateState.designerTotalRecruitCnt
+    const projectManagerCnt = teamCreateState.projectManagerTotalRecruitCnt
+
+    if(backendCnt == 0 && frontendCnt == 0 && designerCnt == 0 && projectManagerCnt == 0){
+      throw Error('팀원이 존재하지 않습니다')
+    }
+    else return true
+  }
+
+  function isEmptyInputExisted() {
+    //공백제거하기
+    const projectName = teamCreateState.projectName.replace(/ /gi, "")
+    const projectDescription = teamCreateState.projectDescription.replace(/ /gi, "")
+    const expectation = teamCreateState.expectation.replace(/ /gi, "")
+    const openChatUrl = teamCreateState.openChatUrl.replace(/ /gi, "")
+    
+    if (projectName.length != 0
+        && projectDescription.length != 0
+        && expectation.length != 0
+        && openChatUrl.length != 0
+      ){
+       return true
+      }
+    else throw Error('빈 입력란이 있습니다')
+  }
+
+  function isAllInputValidate() {
+
+    try {
+      isRecruitCntValidate()
+    } catch (error) {
+      RecruitCntValidationWarningModal()
+      return false
+    }
+
+    try {
+      isEmptyInputExisted()
+    } catch (error) {
+      EmptyInputWarningModal()
+      return false
+    }
+
+    try {
+      isOpenChatUrlValidate()
+    } catch (error) {
+      OpenChatValidationWarningModal()
+      return false
+    }
+
+    return true
+  }
+
+  const EmptyInputWarningModal = () => {
+    modal?.show({
+      title: '',
+      content: (
+        <SymbolModalContent
+          title='빈 입력란이 있어요!'
+          symbol={<Text style={{fontSize: theme.emojiSize.md, textAlign: 'center'}}>😚</Text>}
+          text={'최대한 자세히 적어주시면\n 프로젝트 모집에 도움이 될 수 있어요!'}
+          yesButton={{title:'확인', onPress: () => modal.hide()}}
+        />
+      )
+    })
+  }
+
+  const OpenChatValidationWarningModal = () => {
+    modal?.show({
+      title: '',
+      content: (
+        <SymbolModalContent
+          title='알맞은 링크가 아니에요!'
+          symbol={<Text style={{fontSize: theme.emojiSize.md, textAlign: 'center'}}>🧐</Text>}
+          text={'유효한 카카오톡 오픈채팅 링크를 첨부해주세요!'}
+          yesButton={{title:'확인', onPress: () => modal.hide()}}
+        />
+      )
+    })
+  }
+
+  const RecruitCntValidationWarningModal = () => {
+    modal?.show({
+      title: '',
+      content: (
+        <SymbolModalContent
+          title='팀원이 없어요!'
+          symbol={<Text style={{fontSize: theme.emojiSize.md, textAlign: 'center'}}>🫥</Text>}
+          text={'프로젝트를 함께할 팀원들을 알려주세요!'}
+          yesButton={{title:'확인', onPress: () => modal.hide()}}
+        />
+      )
+    })
+  }
 
   return (
-    <>
+    <KeyboardAvoidingView behavior='height' style={{backgroundColor:'white', flex:1}}>
       <FlatList
+        style={{flex:1}}
+        ListHeaderComponentStyle={{paddingTop:29}}
         ListHeaderComponent={<>
           <View style={styles.item}>
             <Text style={styles.text}>프로젝트 이름</Text>
-            <View style={[styles.inputBox, {borderRadius:15}]}>
-              <TextInput style={[styles.input, {height: 50}]} multiline={false} maxLength={30}/>
-            </View>
+            <CustomInput 
+              containerStyle={[styles.inputBox, { minHeight: 50}]}
+              value={teamCreateState?.projectName}
+              onChangeText={(text: string) => {
+                setTeamCreateState(prevState => ({...prevState, projectName:text}))
+              }}
+              multiline={false} 
+              maxLength={20}
+              size='md'
+              placeholder='최대 20자'
+            />
           </View>
 
           <View style={styles.item}>
             <Text style={styles.text}>프로젝트 설명</Text>
-            <View style={[styles.inputBox, {borderRadius:20}]}>
-              <TextInput style={[styles.input, {height: 160}]} multiline={true} maxLength={500}/>
-            </View>
+            <CustomInput 
+              containerStyle={[styles.inputBox, {minHeight: 160}]}
+              value={teamCreateState?.projectDescription}
+              onChangeText={(text: string) => {
+                setTeamCreateState(prevState => ({...prevState, projectDescription:text}))
+              }}
+              multiline={true} 
+              maxLength={500}
+              size='lg'
+              placeholder='최대 500자'
+            />
           </View>
           <Text style={styles.text}>원하는 팀원</Text>
         </>}
@@ -59,6 +214,8 @@ const Editor = ({navigation, route}:MainStackScreenProps<'GroupEditor'>) => {
           <PositionMaker 
             callback={(count:number, position:string)=> {
               /*서버로 보낼 number, position을 바인딩하면 됨*/
+              positionMapper(count, position)
+              setTeamCreateState(prevState => ({...prevState, }))
               setData(prevState => (
                 [...prevState.filter(item => item.value != position), {key:position, value:position, disabled:true}]
               ))
@@ -74,40 +231,50 @@ const Editor = ({navigation, route}:MainStackScreenProps<'GroupEditor'>) => {
           </TouchableOpacity>
           <View style={styles.item}>
             <Text style={styles.text}>바라는 점</Text>
-            <View style={[styles.inputBox, {borderRadius:20}]}>
-              <TextInput style={[styles.input, {height: 95}]} multiline={true} maxLength={200}/>
-            </View>
+            <CustomInput 
+              containerStyle={[styles.inputBox, {minHeight: 95}]}
+              value={teamCreateState?.expectation}
+              onChangeText={(text: string) => {
+                setTeamCreateState(prevState => ({...prevState, expectation:text}))
+              }}
+              multiline={true} 
+              maxLength={200}
+              size='lg'
+              placeholder='최대 200자'
+            />
           </View>
 
           <View style={styles.item}>
             <Text style={styles.text}>오픈채팅 링크</Text>
-            <View style={[styles.inputBox, {borderRadius:20}]}>
-              <TextInput style={[styles.input, {height: 50}]} multiline={true} maxLength={200}/>
-            </View>
+            <CustomInput 
+              containerStyle={[styles.inputBox, {minHeight: 50}]}
+              value={teamCreateState?.openChatUrl}
+              onChangeText={(text: string) => {
+                setTeamCreateState(prevState => ({...prevState, openChatUrl:text}))
+              }}
+              multiline={true} 
+              maxLength={100}
+              size='lg'
+              placeholder='카카오톡 오픈채팅 링크'
+            />
           </View>
 
           <View style={{paddingHorizontal: 30}}>
-            <FilledButton title={'완료'} disabled={false} onPress={() => navigation.goBack()}/>
-            <FilledButton title={'삭제하기'} buttonStyle={{backgroundColor:theme.colors.grey0}} onPress={() => setModalOpened(true)}/>
+            <FilledButton
+              title={'완료'} 
+              disabled={false} 
+              onPress={() => {
+                  if(isAllInputValidate()){
+                    dispatch( createTeam(teamCreateState) )
+                    navigation.goBack()
+                  }
+                }
+              } />
+            <FilledButton title={'삭제하기'} buttonStyle={{backgroundColor:theme.colors.grey0}} onPress={() => {navigation.goBack()}}/>
           </View>
         </>}
       />
-      <CustomModal 
-        title={'글을 삭제하시겠습니까?'}
-        upperButtonText={'삭제하기'} 
-        lowerButtonText={'돌아가기'} 
-        modalVisible={modalOpened} 
-        onModalVisibityChanged={visibility => setModalOpened(visibility)}
-        validCallback={() => navigation.goBack()}
-      >
-        <Text style={{fontSize:theme.fontSize.sm, alignItems:'center'}}>
-          글을 삭제하면
-        </Text>
-        <Text style={{fontSize:theme.fontSize.sm, alignItems:'center'}}>
-          다시 되돌릴 수 없습니다 :()
-        </Text>
-      </CustomModal>
-    </>    
+    </KeyboardAvoidingView>
   )
 }
 const useStyles = makeStyles((theme) => ({

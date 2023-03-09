@@ -1,8 +1,6 @@
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs'
 import {CompositeScreenProps, NavigatorScreenParams, ParamListBase} from '@react-navigation/native'
 import {StackScreenProps} from '@react-navigation/stack'
-import ApplyStatus from '../screens/Main/MyPage/ApplyStatus/ApplyStatus'
-import {MainBottomTabNavigationProp} from './MainBottomTabNavigation'
 
 interface WebViewPageProps {
   url: string
@@ -43,18 +41,18 @@ export type MainStackScreenProps<T extends keyof MainStackParamList> = StackScre
 export type MainStackParamList = {
   Profile: NavigatorScreenParams<ProfileStackParamList>
   ApplyStatus: undefined
-  TeamHistory: undefined
-  TeamReview: undefined
-  BookMark: undefined
-  OfferPage: undefined
-  TeamApplied: undefined
-  GroupDetail: undefined
+  TeamHistory:undefined
+  TeamReview:undefined
+  BookMark:undefined
+  OfferPage:undefined
+  TeamApplied:undefined
+  GroupDetail: {teamId: string}
   GroupEditor: undefined
-  PositionSelector: undefined
-  Setting: undefined
-  AlarmSetting: undefined
-  Etc: undefined
-  UserModifier: undefined
+  PositionSelector: {teamId: string}
+  Setting:undefined
+  AlarmSetting:undefined
+  Etc:undefined
+  UserModifier:undefined
 }
 
 export type MainBottomTabParamList = {

@@ -2,45 +2,56 @@ import { FilledButton } from '@/presentation/components/Button'
 import CardWrapper from '@/presentation/components/CardWrapper'
 import PositionIcon from '@/presentation/components/PositionIcon'
 import { MainStackScreenProps } from '@/presentation/navigation/types'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
+import { getTeamDetail } from '@/redux/reducers/teamDetailGetReducer'
+import globalStyles from '@/styles'
 import { makeStyles, Text, useTheme } from '@rneui/themed'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { ScrollView, View } from 'react-native'
 
-const GroupDetail = ({navigation}:MainStackScreenProps<'GroupDetail'>) => {
-  const {theme} = useTheme() 
+const GroupDetail = ({navigation, route}:MainStackScreenProps<'GroupDetail'>) => {
   const styles = useStyles()
+  const dispatch = useAppDispatch()
+  const { data, loading, error } = useAppSelector(state => state.teamDetailGetReducer.teamDetailGetResult)
+  const positions = [
+    [data?.backendTotalRecruitCnt, data?.backends.length]
+    ,[data?.frontendTotalRecruitCnt, data?.frontends.length]
+    ,[data?.designerTotalRecruitCnt, data?.designers.length]
+    ,[data?.projectManagerTotalRecruitCnt, data?.projectManagers.length]
+  ]
+  const initials = ['B', 'F', 'D', 'P']
 
+  useEffect(() => {
+    dispatch( getTeamDetail(route.params.teamId) )
+  }, [])
+  
   return (
     <ScrollView style={styles.scrollView}>
       <CardWrapper style={[styles.card,{minHeight: 243}]}>
         <View style={{width:'100%', paddingHorizontal:10, flex:1, justifyContent:'space-between'}}>
-          <Text style={styles.teamname}>같이 앱 만들 사람 구해요</Text>
+          <Text style={styles.teamname}>{data?.projectName}</Text>
           <View style={styles.partIcon}>
-              <PositionIcon currentApplicant={1} vancancyNumber={1} textView ={ <Text style={{fontWeight:theme.fontWeight.bold, fontSize:30}}>D</Text>}/>
-              <PositionIcon currentApplicant={1} vancancyNumber={2} textView ={ <Text style={{fontWeight:theme.fontWeight.bold, fontSize:30}}>F</Text>}/>
-              <PositionIcon currentApplicant={1} vancancyNumber={1} textView ={ <Text style={{fontWeight:theme.fontWeight.bold, fontSize:30}}>B</Text>}/>
+            {positions.map( (item, index) => 
+              item[0] != undefined && item[0] > 0
+              ? <PositionIcon currentApplicant={item[1]} recruitNumber={item[0]} textView ={ <Text style={styles.itnitialText}>{initials[index]}</Text>}/>
+              : <></>
+            )}
           </View>
-          <FilledButton title={'함께 하기'} onPress={() => navigation.navigate('PositionSelector')}/>
+          <FilledButton title={'함께 하기'} onPress={() => navigation.navigate('PositionSelector', {teamId: data?.teamId})}/>
         </View>
       </CardWrapper>
-      <CardWrapper style={[styles.card,{minHeight: 200}]}>
+      <View style={[styles.card,globalStyles.FlexStartCardWrapper,{minHeight: 243}]}>
         <View>
         <Text style={styles.title}>프로젝트 설명</Text>
-        <Text style={styles.text}>애플의 신작 스마트워치인 애플워치6와 애플워치SE가 29일 국내에 출시된다.
-            애플은 22일 애플 공식 매장과 공인 리셀러, 통신사를 통해 국내에 애플워치6와 애플워치SE를 오는 29일 정식 출시한다고 밝혔다.
-        </Text>
+        <Text style={styles.text}>{data?.projectDescription}</Text>
         </View>
-      </CardWrapper>
-      <CardWrapper style={[styles.card,{minHeight: 200}]}>
+      </View>
+      <View style={[styles.card,globalStyles.FlexStartCardWrapper,{minHeight: 243}]}>
         <View>
         <Text style={styles.title}>바라는 점</Text>
-        <Text style={styles.text}>
-            사전주문은 23일 오후 3시부터 시작된다. 애플 홈페이지와 애플스토어 앱 등에서 주문 가능하다. 
-            가격은 애플워치6는 53만9000원부터, 애플워치SE는 35만9000원부터 시작된다.
-            이번에 발표된 애플워치6는 기존 심전도체크 기능에 이어 혈중 산소포화도 기능을 탑재했다. 
-         </Text>
+        <Text style={styles.text}>{data?.expectation}</Text>
         </View>
-      </CardWrapper>
+      </View>
     </ScrollView>
   )
 }
@@ -56,6 +67,10 @@ const useStyles = makeStyles((theme)=> ({
     paddingVertical:17,
     marginVertical:5,
     marginHorizontal:20
+  },
+  itnitialText: {
+    fontWeight:theme.fontWeight.bold, 
+    fontSize:30
   },
   teamname:{
     fontSize:theme.fontSize.lg,

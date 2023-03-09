@@ -5,14 +5,14 @@ import Wave from './wave';
 
 export interface waveComponenetProps{
     currentApplicant:number,
-    vancancyNumber:number,
+    recruitNumber:number,
     textView:ReactNode
 }
 
-const PositionIcon= ({currentApplicant=0, vancancyNumber, textView}:waveComponenetProps) => {
+const PositionIcon= ({currentApplicant=0, recruitNumber=1, textView}:waveComponenetProps) => {
     const styles = useStyles()
     //80이 Wave가 꽉 차보이는 최대 높이이다
-    const waveHeight = currentApplicant / vancancyNumber * 80
+    const waveHeight = currentApplicant / recruitNumber * 80
     return (
         <View style={styles.container} >
             <Wave

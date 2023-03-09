@@ -11,10 +11,10 @@
 		0C80B921A6F3F58F76C31292 /* libPods-gabojait.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-gabojait.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		3F5A9970258F44A0A15BE5B1 /* fontello.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C6F14A9E5A33402AA781ADA3 /* fontello.ttf */; };
 		748D0B58297D838D00D52108 /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = D58FC3FF289E1A610083569D /* Fonts */; };
 		7491F128297DA89300CD23E4 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		7699B88040F8A987B510C191 /* libPods-gabojait-gabojaitTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-gabojait-gabojaitTests.a */; };
-		8071BCDCA1A34CB9A5887DCB /* fontello.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 956AE6CC7B6049AAB674EF4C /* fontello.ttf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
@@ -45,7 +45,7 @@
 		5DCACB8F33CDC322A6C60F78 /* libPods-gabojait.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-gabojait.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = gabojait/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-gabojait-gabojaitTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gabojait-gabojaitTests.release.xcconfig"; path = "Target Support Files/Pods-gabojait-gabojaitTests/Pods-gabojait-gabojaitTests.release.xcconfig"; sourceTree = "<group>"; };
-		956AE6CC7B6049AAB674EF4C /* fontello.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = fontello.ttf; path = ../src/assets/fonts/fontello.ttf; sourceTree = "<group>"; };
+		C6F14A9E5A33402AA781ADA3 /* fontello.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = fontello.ttf; path = ../src/assets/fonts/fontello.ttf; sourceTree = "<group>"; };
 		D58FC3FF289E1A610083569D /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fonts; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -146,7 +146,7 @@
 		960EC18ED72C4D5C94936034 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				956AE6CC7B6049AAB674EF4C /* fontello.ttf */,
+				C6F14A9E5A33402AA781ADA3 /* fontello.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -259,7 +259,7 @@
 				7491F128297DA89300CD23E4 /* Images.xcassets in Resources */,
 				748D0B58297D838D00D52108 /* Fonts in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
-				8071BCDCA1A34CB9A5887DCB /* fontello.ttf in Resources */,
+				3F5A9970258F44A0A15BE5B1 /* fontello.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
