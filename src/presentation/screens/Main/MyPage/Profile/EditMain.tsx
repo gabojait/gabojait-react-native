@@ -16,6 +16,27 @@ import {FieldType} from '@/model/Profile/Portfolio'
 import CardWrapper from '@/presentation/components/CardWrapper'
 import globalStyles from '@/styles'
 import useGlobalStyles from '@/styles'
+import CustomHeader from '@/presentation/components/CustomHeader'
+
+export function EditMainHeader() {
+  const {theme} = useTheme()
+  return (
+    <CustomHeader
+      align="center"
+      title="프로필"
+      canGoBack
+      rightChildren={
+        <Text
+          onPress={() => {
+            console.log('완료')
+          }}
+          style={{color: theme.colors.primary}}>
+          완료
+        </Text>
+      }
+    />
+  )
+}
 
 const EditMain = ({navigation}: ProfileStackParamListProps<'EditMain'>) => {
   const profile = {
@@ -108,7 +129,7 @@ const EditMain = ({navigation}: ProfileStackParamListProps<'EditMain'>) => {
     ],
   } as ProfileViewDto
   const {theme} = useTheme()
-  const globalStyles = useGlobalStyles();
+  const globalStyles = useGlobalStyles()
 
   return (
     <ScrollView style={{padding: 20, backgroundColor: 'white'}}>
