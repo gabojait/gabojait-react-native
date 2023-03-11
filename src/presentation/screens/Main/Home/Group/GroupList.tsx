@@ -9,6 +9,7 @@ import { BoardStackParamListProps } from '@/presentation/navigation/types'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { getTeam } from '@/redux/reducers/teamGetReducer'
 import Team from '@/model/Team/Team'
+import { useCookies } from 'react-cookie'
 
 const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
   const test = [{"backendTotalRecruitCnt": 1, "backends": [], "designerTotalRecruitCnt": 2, "designers": [], "expectation": "예쁘면 좋겠다", "frontendTotalRecruitCnt": 1, "frontends": [], "leaderUserId": "64043ff1dcc38841d722826b", "openChatUrl": "https://open.kakao.com/o/test", "projectDescription": "제곧내", "projectManagerTotalRecruitCnt": 1, "projectManagers": [], "projectName": "애플워치 테마 앱", "teamId": "64044048dcc38841d722826c"}, 
@@ -21,7 +22,22 @@ const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
   const {data,loading,error} = useAppSelector(state => state.teamGetReducer.teamGetResult)
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [contentData, setContentData] = useState<Team[]>()
-  
+  const COOKIE_KEY = 'profileMentionModal'               // 쿠키이름세팅 
+  const [appCookies, setAppCookies] = useCookies() // 쿠키이름을 초기값으로 넣어 쿠키세팅
+  const [hasCookie, setHasCookie] = useState(true)
+
+  const getExpiredDate = (days: number) => {
+    const date = new Date();
+    date.setDate(date.getDate() + days);
+    return date;
+  };
+
+  const closeModalUntilExpires = () => {
+    if (!appCookies) return;
+    const expires = getExpiredDate(1);
+    setAppCookies("MODAL_EXPIRES", true, { path: "/", expires });
+  };
+
   const profileMentionModal = () => {
     modal?.show({
       title:'',
@@ -32,6 +48,7 @@ const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
             title: '입력하기', 
             onPress: () => {
               modal.hide() 
+              closeModalUntilExpires()
               navigation.navigate('MainNavigation', {screen:'Profile'})
             },
           }}
@@ -39,6 +56,7 @@ const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
             title: '닫기', 
             onPress: () => {
               modal.hide()
+              closeModalUntilExpires()
             }
           }}
         >
@@ -104,6 +122,10 @@ const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
     if(!loading&& data != null){
       setContentData(data)
     }
+    if (!hasCookie) profileMentionModal()
+    if (appCookies["MODAL_EXPIRES"]) return;
+    console.log(`appCookies:${appCookies["MODAL_EXPIRES"]}`);
+    setHasCookie(false);
   },[])
 
   return (
