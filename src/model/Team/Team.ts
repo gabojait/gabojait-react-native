@@ -1,4 +1,3 @@
-import { User } from "../User"
 import UserProfileBriefDto from "../User/UserProfileBriefDto"
 
 export default interface Team {
