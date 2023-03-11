@@ -1,6 +1,6 @@
 import {ScrollView, View} from 'react-native'
 import React from 'react'
-import {ArrowCard, EmptyCard} from '@/presentation/components/GroupListCard'
+import {ArrowCard} from '@/presentation/components/BaseCard'
 import {Input, Text, useTheme} from '@rneui/themed'
 import ProfileViewDto from '@/model/Profile/ProfileViewDto'
 import {
@@ -12,7 +12,10 @@ import {
 } from '../Profile'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import {ProfileStackParamListProps} from '@/presentation/navigation/types'
-import { FieldType } from '@/model/Profile/Portfolio'
+import {FieldType} from '@/model/Profile/Portfolio'
+import CardWrapper from '@/presentation/components/CardWrapper'
+import globalStyles from '@/styles'
+import useGlobalStyles from '@/styles'
 
 const EditMain = ({navigation}: ProfileStackParamListProps<'EditMain'>) => {
   const profile = {
@@ -105,6 +108,8 @@ const EditMain = ({navigation}: ProfileStackParamListProps<'EditMain'>) => {
     ],
   } as ProfileViewDto
   const {theme} = useTheme()
+  const globalStyles = useGlobalStyles();
+
   return (
     <ScrollView style={{padding: 20, backgroundColor: 'white'}}>
       <ArrowCard
@@ -115,7 +120,7 @@ const EditMain = ({navigation}: ProfileStackParamListProps<'EditMain'>) => {
         style={{marginBottom: theme.spacing.xl}}>
         <></>
       </ArrowCard>
-      <EmptyCard style={{marginBottom: theme.spacing.xl}}>
+      <CardWrapper style={[globalStyles.card, {marginBottom: theme.spacing.xl, padding: 20}]}>
         <Text style={{fontSize: theme.fontSize.md, fontWeight: theme.fontWeight.bold}}>
           자기소개
         </Text>
@@ -127,12 +132,12 @@ const EditMain = ({navigation}: ProfileStackParamListProps<'EditMain'>) => {
           multiline
           numberOfLines={6}
           inputStyle={{fontWeight: theme.fontWeight.light}}></Input>
-      </EmptyCard>
+      </CardWrapper>
       <ArrowCard
         title="포트폴리오"
         style={{marginBottom: theme.spacing.xl}}
         onArrowPress={() => {
-          navigation.navigate("EditPortfolio")
+          navigation.navigate('EditPortfolio')
         }}>
         <View style={{flexWrap: 'wrap', flexDirection: 'row'}}>
           {profile.portfolios.map(portfolio => (

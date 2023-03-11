@@ -17,6 +17,7 @@ import CustomHeader from '@/presentation/components/CustomHeader'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import {StackHeaderProps} from '@react-navigation/stack'
 import { FieldType } from '@/model/Profile/Portfolio'
+import useGlobalStyles from '@/styles'
 
 const Header = ({navigation}: StackHeaderProps) => {
   const {theme} = useTheme()
@@ -151,6 +152,9 @@ const Profile = ({navigation}: ProfileStackParamListProps<'View'>) => {
       },
     ],
   } as ProfileViewDto
+
+  const globalStyles = useGlobalStyles();
+
 
   const PortfolioNotExist = () => (
     <View>

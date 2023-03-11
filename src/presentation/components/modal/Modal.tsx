@@ -1,3 +1,4 @@
+import useGlobalStyles from '@/styles'
 import globalStyles from '@/styles'
 import {Text} from '@rneui/themed'
 import React, {ForwardedRef, forwardRef, useImperativeHandle, useRef, useState} from 'react'
@@ -12,6 +13,7 @@ export type CustomModalRef = {
 
 const CustomModal = () => {
   const modal = React.useContext(ModalContext)
+  const globalStyles = useGlobalStyles();
 
   return (
     <Modal

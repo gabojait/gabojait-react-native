@@ -8,7 +8,7 @@ import {
   RootStackParamList,
 } from '@/presentation/navigation/types'
 import {StackScreenProps} from '@react-navigation/stack'
-import {RegisterInput} from '@/presentation/components/RegisterInput'
+import CustomInput from '@/presentation/components/CustomInput'
 import color from '@/presentation/res/styles/color'
 import {DateDropdown} from '@/presentation/components/DateDropdown'
 import RegisterRequestDto from '@/model/RegisterRequestDto'
@@ -250,7 +250,7 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
       <ScrollView style={styles.view} showsVerticalScrollIndicator={false}>
         <View style={styles.item}>
           <View style={{flex: 5}}>
-            <RegisterInput
+            <CustomInput
               state={isValid(usernameRegex, registerState.username)}
               label="아이디 입력"
               value={registerState.username}
@@ -270,7 +270,7 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
         </View>
         <View style={styles.item}>
           <View style={{flex: 5}}>
-            <RegisterInput
+            <CustomInput
               state={isValid(nicknameRegex, registerState.nickname)}
               label="닉네임 입력"
               value={registerState.nickname}
@@ -289,10 +289,10 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
           />
         </View>
         <View style={styles.item}>
-          <RegisterInput
+          <CustomInput
             state={isValid(passwordRegex, registerState.password)}
             label="비밀번호 입력"
-            isForPassword={true}
+            secureTextEntry
             value={registerState.password}
             onChangeText={(text: string) => {
               setRegisterState(prevState => ({...prevState, password: text}))
@@ -300,7 +300,7 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
           />
         </View>
         <View style={styles.item}>
-          <RegisterInput
+          <CustomInput
             state={
               registerState.passwordReEntered?.length != 0
                 ? registerState.password == registerState.passwordReEntered &&
@@ -310,7 +310,7 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
                 : 'none'
             }
             label="비밀번호 재입력"
-            isForPassword={true}
+            secureTextEntry
             value={registerState.passwordReEntered}
             onChangeText={(text: string) => {
               setRegisterState(prevState => ({...prevState, passwordReEntered: text}))
@@ -320,7 +320,7 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
 
         <View style={styles.item}>
           <View style={{flex: 5}}>
-            <RegisterInput
+            <CustomInput
               state={isValid(emailRegex, registerState.email)}
               label="이메일 입력"
               value={registerState.email}
@@ -342,7 +342,7 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
         {sendAuthCodeResult ? (
           <View style={styles.item}>
             <View style={{flex: 5}}>
-              <RegisterInput
+              <CustomInput
                 state={isValid(authCodeRegex, registerState.authCode)}
                 label="인증번호 입력"
                 value={registerState.authCode}
@@ -368,7 +368,7 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
         ) : null}
 
         <View style={styles.item}>
-          <RegisterInput
+          <CustomInput
             state={isValid(realnameRegex, registerState.legalName)}
             label="이름(실명)"
             value={registerState.legalName}

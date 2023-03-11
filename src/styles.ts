@@ -1,6 +1,23 @@
+import {makeStyles} from '@rneui/themed'
 import {StyleSheet} from 'react-native'
 
-const globalStyles = StyleSheet.create({
+const useGlobalStyles = makeStyles(theme => ({
+  card: {
+    borderWidth: 1,
+    borderColor: theme.colors.disabled,
+    backgroundColor: 'white',
+    shadowColor: 'black',
+    shadowOpacity: 0.2,
+    shadowOffset: {
+      width: 2,
+      height: 2,
+    },
+    borderRadius: 20,
+    padding: 25,
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start'
+  },
   container: {
     flex: 1,
     backgroundColor: 'white',
@@ -68,6 +85,6 @@ const globalStyles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-  }
-})
-export default globalStyles
+  },
+}))
+export default useGlobalStyles

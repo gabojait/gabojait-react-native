@@ -1,5 +1,5 @@
 import Portfolio, {FieldType} from '@/model/Profile/Portfolio'
-import {CustomInput} from '@/presentation/components/CustomInput'
+import CustomInput from '@/presentation/components/CustomInput'
 import {useAppSelector} from '@/redux/hooks'
 import globalStyles from '@/styles'
 import {Input, Text, useTheme} from '@rneui/themed'
@@ -10,6 +10,7 @@ import {ToggleButton} from '../Profile'
 import DocumentPicker from 'react-native-document-picker'
 import {IconProps} from 'react-native-vector-icons/Icon'
 import {ScreenWidth} from '@rneui/base'
+import useGlobalStyles from '@/styles'
 
 const EditPortfolio = () => {
   // Todo: Implement Portfolio Reducer
@@ -91,6 +92,8 @@ const EditPortfolio = () => {
       </>
     )
   }
+
+  const globalStyles = useGlobalStyles();
 
   return (
     <View style={globalStyles.container}>
