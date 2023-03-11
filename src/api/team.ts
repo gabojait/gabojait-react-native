@@ -12,7 +12,7 @@ export const getTeams = async (pageFrom: number, pageNum: number) => {
 }
 
 export const getTeamDetail = async (teamId: string) => {
-    const result = await client.get(`team/${teamId}`)
+    const result = await client.get(`team/find/${teamId}`)
     return result
 }
 
@@ -24,6 +24,6 @@ export const applyToTeam = async (position: string, teamId: string) => {
 
 export const findIndividuals = async (pageFrom: number, pageNum: number, position: string) => {
     const params = {pageFrom: pageFrom, pageNum: pageNum}
-    const result = await client.get(`user/${position}`, { params: params })
+    const result = await client.get(`user/profile/${position}`, { params: params })
     return result
 }
