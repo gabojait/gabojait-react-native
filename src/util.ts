@@ -12,3 +12,11 @@ export const FRONTED = 'frontend'
 export const DESIGNER = 'designer'
 export const PM = 'pm'
 
+export const isInitializable = (loading: any, data: any) => {
+  if(!loading&& data != null) return true
+  else return false
+}
+export const isDataAvailable = (loading: any, data: any, contentData: any) => {
+  if (!loading && contentData != null && data != null) return true
+  else return false
+}
