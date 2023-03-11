@@ -31,7 +31,7 @@ const CustomInput = forwardRef(
     )
 
     return (
-      <View style={{flex: 1, justifyContent: 'flex-end'}}>
+      <View style={{width: '100%', justifyContent: 'flex-end'}}>
         <Input
           {...props}
           containerStyle={[styles.container, props.containerStyle]}
@@ -44,6 +44,7 @@ const CustomInput = forwardRef(
           rightIcon={inputIcon}
           secureTextEntry={props.secureTextEntry ? secure : false}
           labelStyle={styles.label}
+          renderErrorMessage={state != 'none'}
           autoCapitalize="none"
           autoComplete="off"
           autoCorrect={false}
@@ -75,7 +76,7 @@ const useStyles = makeStyles((theme, props: CustomInputProps) => {
       padding: 14,
       flex: 1,
     },
-    container: {height: '70%', paddingHorizontal: 0},
+    container: {paddingHorizontal: 0},
     underlineInputContainer: {
       borderBottomWidth: 1.3,
       borderBottomColor: borderColors[props.state ?? 'none'],

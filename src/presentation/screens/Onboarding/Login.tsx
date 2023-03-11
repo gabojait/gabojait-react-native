@@ -45,8 +45,7 @@ const Login = ({navigation}: OnboardingScreenProps<'Login'>) => {
       }
     }
   }, [data])
-  const globalStyles = useGlobalStyles();
-
+  const globalStyles = useGlobalStyles()
 
   return (
     <View style={[globalStyles.container, {justifyContent: 'space-between'}]}>
@@ -60,6 +59,7 @@ const Login = ({navigation}: OnboardingScreenProps<'Login'>) => {
             setLoginState(prevState => ({...prevState, username: text}))
           }
           value={loginState.username}
+          shape="round"
           containerStyle={{marginBottom: 28}}
         />
         <CustomInput
@@ -67,7 +67,8 @@ const Login = ({navigation}: OnboardingScreenProps<'Login'>) => {
           onChangeText={(text: string) =>
             setLoginState(prevState => ({...prevState, password: text}))
           }
-          secureTextEntry={true}
+          secureTextEntry
+          shape="round"
           value={loginState.password}
           containerStyle={{marginBottom: 28}}
         />
