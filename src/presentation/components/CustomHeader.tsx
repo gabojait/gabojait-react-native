@@ -26,13 +26,24 @@ const CustomHeader: React.FC<HeaderProps> = ({
       }}
     />
   )
+  const Title = (
+    <Text
+      style={{
+        fontWeight: theme.fontWeight.semibold,
+        fontSize: theme.fontSize.lg,
+        textAlign: 'center',
+      }}>
+      {title}
+    </Text>
+  )
   return (
     <View style={[headerStyle.parent, {borderColor: theme.colors.disabled}]}>
       <View style={headerStyle.left}>
         {canGoBack ? back : null}
         {leftChildren}
-        <Text style={{fontWeight:theme.fontWeight.semibold, fontSize:theme.fontSize.lg,textAlign:'center'}}>{title}</Text>
+        {align == 'left' || !align ? Title : null}
       </View>
+      {align == 'center' ? Title : null}
       {rightChildren}
     </View>
   )
@@ -40,8 +51,8 @@ const CustomHeader: React.FC<HeaderProps> = ({
 
 const headerGlobalStyle: StyleProp<ViewStyle> = {
   flexDirection: 'row',
-  alignItems:'flex-end',
-  paddingTop:5
+  alignItems: 'flex-end',
+  paddingTop: 5,
 }
 
 // card base components, width /radius 다름, theme에서 하나만
@@ -54,7 +65,6 @@ const headerStyle = StyleSheet.create({
     borderBottomWidth: 0.8,
     backgroundColor: 'white',
     justifyContent: 'space-between',
-
   },
   left: headerGlobalStyle,
 })

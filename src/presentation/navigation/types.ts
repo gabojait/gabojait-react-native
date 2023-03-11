@@ -41,18 +41,18 @@ export type MainStackScreenProps<T extends keyof MainStackParamList> = StackScre
 export type MainStackParamList = {
   Profile: NavigatorScreenParams<ProfileStackParamList>
   ApplyStatus: undefined
-  TeamHistory:undefined
-  TeamReview:undefined
-  BookMark:undefined
-  OfferPage:undefined
-  TeamApplied:undefined
+  TeamHistory: undefined
+  TeamReview: undefined
+  BookMark: undefined
+  OfferPage: undefined
+  TeamApplied: undefined
   GroupDetail: {teamId: string}
   GroupEditor: undefined
   PositionSelector: {teamId: string}
-  Setting:undefined
-  AlarmSetting:undefined
-  Etc:undefined
-  UserModifier:undefined
+  Setting: undefined
+  AlarmSetting: undefined
+  Etc: undefined
+  UserModifier: undefined
 }
 
 export type MainBottomTabParamList = {
@@ -94,4 +94,5 @@ export type ProfileStackParamList = {
   View: undefined
   EditMain: undefined
   EditPortfolio: undefined
+  EditSchoolAndCareer: undefined
 }

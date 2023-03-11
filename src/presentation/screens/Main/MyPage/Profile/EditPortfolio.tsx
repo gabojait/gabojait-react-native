@@ -3,7 +3,7 @@ import CustomInput from '@/presentation/components/CustomInput'
 import {useAppSelector} from '@/redux/hooks'
 import globalStyles from '@/styles'
 import {Input, Text, useTheme} from '@rneui/themed'
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {StyleProp, View, ViewStyle} from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import {ToggleButton} from '../Profile'
@@ -11,6 +11,7 @@ import DocumentPicker from 'react-native-document-picker'
 import {IconProps} from 'react-native-vector-icons/Icon'
 import {ScreenWidth} from '@rneui/base'
 import useGlobalStyles from '@/styles'
+import {List} from './EditSchoolAndCareer'
 
 const EditPortfolio = () => {
   // Todo: Implement Portfolio Reducer
@@ -32,102 +33,145 @@ const EditPortfolio = () => {
     ] as Portfolio[]
   const [portfolios, setPortfolios] = useState(orgPortfolios)
 
-  const ItemList = ({title, fieldType}: {title: string; fieldType: FieldType}) => {
-    return (
-      <>
-        <Text h4>{title}</Text>
-        {portfolios.map(portfolio => {
-          console.log(portfolio.portfolioType, fieldType)
-          if (portfolio.portfolioType.name == fieldType.name) {
-            let value = portfolio.url ?? ''
-            if (portfolio.url != '' && portfolio.url && portfolio.portfolioType == FieldType.File) {
-              const urls = decodeURI(portfolio.url).split('/')
-              value = urls[urls.length - 1]
-            }
-            return (
-              <EditItem
-                name={portfolio.name}
-                value={value}
-                titleEditable
-                editable={portfolio.portfolioType == FieldType.Url}
-                placeholder={portfolio.portfolioType.placeholder}
-                fieldColor="white"
-                onDeleteItem={value => console.log(value)}
-                onFieldPress={
-                  portfolio.portfolioType == FieldType.File
-                    ? () => {
-                        DocumentPicker.pickSingle().then(res => {
-                          setPortfolios(prevState => {
-                            const idx = prevState.findIndex(
-                              item => item.portfolioId == portfolio.portfolioId,
-                            )
-                            const copied = [...prevState]
-                            if (idx) copied[idx] = {...copied[idx], url: res.uri}
-                            return copied
-                          })
-                        })
-                      }
-                    : undefined
-                }
-              />
-            )
-          }
-        })}
-        <View style={{alignItems: 'center'}}>
-          <SquareIcon
-            name="add"
-            onPress={() => {
-              setPortfolios(prevState => [
-                ...prevState,
-                {
-                  portfolioId: prevState.length.toString(),
-                  portfolioType: fieldType,
-                  name: '',
-                  url: '',
-                } as Portfolio,
-              ])
-            }}
-          />
-        </View>
-      </>
-    )
+  const globalStyles = useGlobalStyles()
+
+  const handleAdd = (portfolio: Portfolio) => {
+    setPortfolios(prevState => [
+      ...prevState,
+      {...portfolio, portfolioId: prevState.length.toString()},
+    ])
+  }
+  const handleDelete = (id: string) => {
+    setPortfolios(prevState => {
+      const idx = prevState.findIndex(item => item.portfolioId == id)
+      prevState.splice(idx, 1)
+      return [...prevState]
+    })
   }
 
-  const globalStyles = useGlobalStyles();
+  const handleEdit = (portfolio: Portfolio) => {
+    setPortfolios(prevState => {
+      const idx = prevState.findIndex(item => item.portfolioId == portfolio.portfolioId)
+      prevState[idx] = portfolio
+      return [...prevState]
+    })
+  }
 
   return (
     <View style={globalStyles.container}>
-      <ItemList title="링크" fieldType={FieldType.Url} />
-      <ItemList title="파일 업로드" fieldType={FieldType.File} />
+      <PortfolioList
+        title="링크"
+        fieldType={FieldType.Url}
+        onAddPortfolio={handleAdd}
+        onChangePortfolio={handleEdit}
+        onDeletePortfolio={handleDelete}
+        portfolios={portfolios.filter(portfolio => portfolio.portfolioType == FieldType.Url)}
+      />
+      <PortfolioList
+        title="파일 업로드"
+        fieldType={FieldType.File}
+        onAddPortfolio={handleAdd}
+        onChangePortfolio={handleEdit}
+        onDeletePortfolio={handleDelete}
+        portfolios={portfolios.filter(portfolio => portfolio.portfolioType == FieldType.File)}
+      />
     </View>
   )
 }
 
-const SquareIcon = ({...props}: IconProps) => (
+export const PortfolioList = ({
+  portfolios,
+  onChangePortfolio,
+  onAddPortfolio,
+  onDeletePortfolio,
+  title,
+  fieldType,
+}: {
+  portfolios: Portfolio[]
+  onChangePortfolio: (portfolio: Portfolio) => void
+  onAddPortfolio: (portfolio: Portfolio) => void
+  onDeletePortfolio: (portfolioId: string) => void
+  title: string
+  fieldType: FieldType
+}) => {
+  const pickDocument = (portfolio: Portfolio) => {
+    DocumentPicker.pickSingle().then(res => {
+      portfolio.url = res.uri
+      onChangePortfolio(portfolio)
+    })
+  }
+
+  return (
+    <>
+      <List
+        datas={portfolios}
+        renderItems={portfolio => {
+          let value = portfolio.url ?? ''
+          if (portfolio.url != '' && portfolio.url && portfolio.portfolioType == FieldType.File) {
+            const urls = decodeURI(portfolio.url).split('/')
+            value = urls[urls.length - 1]
+          }
+          return (
+            <EditItem
+              id={portfolio.portfolioId}
+              name={portfolio.name}
+              titleEditable
+              fieldColor="white"
+              onDeleteItem={itemId => {
+                onDeletePortfolio(itemId)
+              }}
+              onChangeName={text => onChangePortfolio({...portfolio, name: text})}>
+              <CustomInput
+                editable={portfolio.portfolioType == FieldType.Url}
+                placeholder={portfolio.portfolioType.placeholder}
+                onPressOut={
+                  portfolio.portfolioType == FieldType.File
+                    ? () => pickDocument(portfolio)
+                    : undefined
+                }
+                onChangeText={text => onChangePortfolio({...portfolio, url: text})}
+                value={value}
+              />
+            </EditItem>
+          )
+        }}
+        onAdd={() =>
+          onAddPortfolio({
+            portfolioId: portfolios.length.toString(),
+            portfolioType: fieldType,
+            name: '',
+            url: '',
+          } as Portfolio)
+        }
+        title={title}
+      />
+    </>
+  )
+}
+
+export const SquareIcon = ({...props}: IconProps) => (
   <Icon
     size={props.size ?? 20}
     style={[{borderWidth: 1, padding: 2, borderRadius: 8, borderColor: 'black'}, props.style]}
     {...props}
   />
 )
-const EditItem = ({
+export const EditItem = ({
+  id,
   name,
-  value,
-  placeholder,
   fieldColor,
   titleEditable = false,
-  editable = false,
+  onChangeName,
   onDeleteItem,
-  onFieldPress,
+  children,
 }: {
+  id: string
   name: string
-  value: string
-  placeholder: string
   fieldColor?: string
+  onChangeName: (text: string) => void
   titleEditable?: boolean
-  editable?: boolean
   onDeleteItem?: (value: string) => void
-  onFieldPress?: (value: string) => void
+  children: React.ReactNode
 }) => {
   const {theme} = useTheme()
   return (
@@ -145,17 +189,13 @@ const EditItem = ({
           }}
           editable={titleEditable}
           placeholder={name}
+          onChangeText={onChangeName}
         />
         <View style={{alignContent: 'flex-start'}}>
-          {onDeleteItem ? <SquareIcon name="close" onPress={() => onDeleteItem(value)} /> : null}
+          {onDeleteItem ? <SquareIcon name="close" onPress={() => onDeleteItem(id)} /> : null}
         </View>
       </View>
-      <CustomInput
-        editable={editable}
-        placeholder={placeholder}
-        onPressOut={onFieldPress ? () => onFieldPress(value) : undefined}
-        value={value}
-      />
+      {children}
     </View>
   )
 }

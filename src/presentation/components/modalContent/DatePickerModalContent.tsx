@@ -1,18 +1,30 @@
 import globalStyles from '@/styles'
-import {Button, Text} from '@rneui/themed'
+import {Button, CheckBox, Text, useTheme} from '@rneui/themed'
 import {Alert, Modal, StyleSheet, View} from 'react-native'
 import DatePicker from 'react-native-date-picker'
 import {FilledButton} from '../Button'
 import React from 'react'
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
 interface DatePickerModalProps {
   doneButtonText: string
   onModalVisibityChanged: (visibility: boolean) => void
   date: Date
   onDatePicked: (date: Date) => void
+  isCurrent?: boolean
+  setIsCurrent?: (isCurrent: boolean) => void
+  isCurrentCheckable?: boolean
+  maximumDate?: Date
+  minimumDate?: Date
 }
 
-const DatePickerModalContent: React.FC<DatePickerModalProps> = props => {
+const DatePickerModalContent: React.FC<DatePickerModalProps> = ({
+  isCurrent = false,
+  setIsCurrent,
+  isCurrentCheckable = false,
+  ...props
+}) => {
+  const {theme} = useTheme()
   return (
     <View style={{display: 'flex', alignItems: 'center'}}>
       <DatePicker
@@ -20,8 +32,10 @@ const DatePickerModalContent: React.FC<DatePickerModalProps> = props => {
         date={props.date}
         androidVariant="nativeAndroid"
         onDateChange={props.onDatePicked}
-        maximumDate={new Date()}
+        maximumDate={props.maximumDate}
+        minimumDate={props.minimumDate}
       />
+
       <View style={{flexDirection: 'row', display: 'flex'}}>
         <FilledButton
           title={props.doneButtonText}
