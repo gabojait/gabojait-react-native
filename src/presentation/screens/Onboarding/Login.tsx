@@ -1,21 +1,14 @@
-import {StackScreenProps} from '@react-navigation/stack'
 import {FilledButton} from '@/presentation/components/Button'
-import {Image, Text, useTheme} from '@rneui/themed'
-import React, {useEffect, useRef, useState} from 'react'
+import {Text} from '@rneui/themed'
+import React, {useEffect, useState} from 'react'
 import {StyleSheet, TouchableOpacity, View} from 'react-native'
-import {
-  OnboardingScreenProps,
-  OnboardingStackParamList,
-  RootStackParamList,
-} from '@/presentation/navigation/types'
+import {OnboardingScreenProps} from '@/presentation/navigation/types'
 import color from '@/presentation/res/styles/color'
 import CustomInput from '@/presentation/components/CustomInput'
 import Gabojait from '@/presentation/components/icon/Gabojait'
-import {useDispatch, useSelector} from 'react-redux'
 import {login} from '@/redux/reducers/loginReducer'
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
 import LoginRequestDTO from '@/model/LoginRequestDto'
-import globalStyles from '@/styles'
 import {ModalContext} from '@/presentation/components/modal/context'
 import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent'
 import useGlobalStyles from '@/styles'

@@ -16,15 +16,17 @@ const UserModifier = ({navigation}: MainStackScreenProps<'UserModifier'>) => {
   return (
     <View style={{backgroundColor: 'white', flex: 1}}>
       <Text>닉네임 변경</Text>
-      <CustomInput value={nickname} onChangeText={value => setNickname(value)} />
+      <CustomInput shape="round" value={nickname} onChangeText={value => setNickname(value)} />
       <FilledButton title="중복확인" disabled={!nicknameRegex.test(nickname)} />
       <Text>비밀번호 변경</Text>
       <CustomInput
+        shape="round"
         secureTextEntry
         value={passwords[0]}
         onChangeText={value => setPasswords(prevState => [value, prevState[1]])}
       />
       <CustomInput
+        shape="round"
         secureTextEntry
         value={passwords[1]}
         onChangeText={value => setPasswords(prevState => [prevState[0], value])}

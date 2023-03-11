@@ -80,7 +80,6 @@ const useStyles = makeStyles((theme, props: CustomInputProps) => {
     underlineInputContainer: {
       borderBottomWidth: 1.3,
       borderBottomColor: borderColors[props.state ?? 'none'],
-      height: '60%',
       marginEnd: 10,
     },
     underlineInput: {

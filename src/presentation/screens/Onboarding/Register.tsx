@@ -1,16 +1,10 @@
 import {CheckBox, makeStyles, Text, useTheme} from '@rneui/themed'
-import React, {createRef, useEffect, useRef, useState} from 'react'
-import {Alert, Modal, ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native'
+import React, {useEffect, useState} from 'react'
+import {ScrollView, View} from 'react-native'
 import {FilledButton, OutlinedButton} from '@/presentation/components/Button'
-import {
-  OnboardingScreenProps,
-  OnboardingStackParamList,
-  RootStackParamList,
-} from '@/presentation/navigation/types'
-import {StackScreenProps} from '@react-navigation/stack'
+import {OnboardingScreenProps} from '@/presentation/navigation/types'
 import CustomInput from '@/presentation/components/CustomInput'
 import color from '@/presentation/res/styles/color'
-import {DateDropdown} from '@/presentation/components/DateDropdown'
 import RegisterRequestDto from '@/model/RegisterRequestDto'
 import {
   authCodeRegex,
@@ -21,14 +15,10 @@ import {
   usernameRegex,
 } from '@/util'
 import {Gender} from '@/model/Gender'
-import globalStyles from '@/styles'
 import DatePickerModalContent from '@/presentation/components/modalContent/DatePickerModalContent'
-import {Link, useNavigation} from '@react-navigation/native'
 import {ValidatorState} from '@/presentation/components/props/StateProps'
-import Icon from 'react-native-vector-icons/Ionicons'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import AgreementItem, {AgreementState} from '@/presentation/components/Agreement'
-import DropdownWithoutItem from '@/presentation/components/DropdownWithoutItem'
 import DropdownButton from '@/presentation/components/DropdownWithoutItem'
 import {
   checkNicknameDuplicate,
@@ -39,12 +29,8 @@ import {
 } from '@/redux/reducers/registerReducer'
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
 import {ModalContext} from '@/presentation/components/modal/context'
-import DatePicker from 'react-native-date-picker'
-import DefaultDialogModalContent from '@/presentation/components/modalContent/DefaultDialogModalContent'
 import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent'
-import {sendAuthCodeAction} from '@/redux/action/register'
 import ErrorCode from '@/api/ErrorCode'
-import {AxiosError} from 'axios'
 
 const agreementItems = [
   {
