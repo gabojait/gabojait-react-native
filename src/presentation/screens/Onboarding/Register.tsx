@@ -385,6 +385,7 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
                     onDatePicked={date => {
                       setRegisterState(prevState => ({...prevState, birthdate: date.toISOString()}))
                     }}
+                    maximumDate={new Date()}
                   />
                 ),
               })

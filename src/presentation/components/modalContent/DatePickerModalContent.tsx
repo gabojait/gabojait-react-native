@@ -14,6 +14,8 @@ interface DatePickerModalProps {
   isCurrent?: boolean
   setIsCurrent?: (isCurrent: boolean) => void
   isCurrentCheckable?: boolean
+  maximumDate?: Date
+  minimumDate?: Date
 }
 
 const DatePickerModalContent: React.FC<DatePickerModalProps> = ({
@@ -30,19 +32,10 @@ const DatePickerModalContent: React.FC<DatePickerModalProps> = ({
         date={props.date}
         androidVariant="nativeAndroid"
         onDateChange={props.onDatePicked}
-        maximumDate={new Date()}
+        maximumDate={props.maximumDate}
+        minimumDate={props.minimumDate}
       />
-      {isCurrentCheckable ? (
-        <CheckBox
-          checked={isCurrent}
-          onPress={() => setIsCurrent!(!isCurrent)}
-          checkedIcon={<MaterialIcon name="check-box" size={18} color={theme.colors.primary} />}
-          uncheckedIcon={
-            <MaterialIcon name="check-box-outline-blank" size={18} color={theme.colors.grey2} />
-          }
-          title="현재 진행중입니다"
-        />
-      ) : null}
+
       <View style={{flexDirection: 'row', display: 'flex'}}>
         <FilledButton
           title={props.doneButtonText}

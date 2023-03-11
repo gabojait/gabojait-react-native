@@ -170,7 +170,12 @@ const EditMain = ({navigation}: ProfileStackParamListProps<'EditMain'>) => {
           ))}
         </View>
       </ArrowCard>
-      <ArrowCard title="학력/경력" style={{marginBottom: theme.spacing.xl}}>
+      <ArrowCard
+        title="학력/경력"
+        style={{marginBottom: theme.spacing.xl}}
+        onArrowPress={() => {
+          navigation.navigate('EditSchoolAndCareer')
+        }}>
         <IconLabel
           iconName="school"
           label={profile.educations[profile.educations.length - 1].institutionName}

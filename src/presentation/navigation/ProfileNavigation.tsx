@@ -6,6 +6,7 @@ import ProfileView from '@/presentation/screens/Main/MyPage/Profile'
 import CloseHeader from '../screens/Headers/CloseHeader'
 import TitleWithCloseHeader from '../screens/Headers/TitleWithCloseHeader'
 import EditPortfolio from '../screens/Main/MyPage/Profile/EditPortfolio'
+import EditSchoolAndCareer from '../screens/Main/MyPage/Profile/EditSchoolAndCareer'
 
 const Profile = createStackNavigator<ProfileStackParamList>()
 
@@ -23,6 +24,11 @@ const ProfileNavigation = () => {
           name="EditPortfolio"
           options={{header: TitleWithCloseHeader, headerTitle: '포트폴리오'}}
           component={EditPortfolio}
+        />
+        <Profile.Screen
+          name="EditSchoolAndCareer"
+          options={{header: TitleWithCloseHeader, headerTitle: '학력/경력'}}
+          component={EditSchoolAndCareer}
         />
       </Profile.Group>
     </Profile.Navigator>
