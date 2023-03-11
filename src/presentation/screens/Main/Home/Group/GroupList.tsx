@@ -79,7 +79,7 @@ const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
             title: '변경하기', 
             onPress: () => {
               modal.hide() 
-              navigation.navigate('MainNavigation', {screen:'Profile'})
+              navigation.navigate('MainNavigation', {screen: 'Profile'})
               console.log('touch, yes')
             },
           }}

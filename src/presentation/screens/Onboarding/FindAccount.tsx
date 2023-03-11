@@ -1,8 +1,9 @@
 import {FilledButton} from '@/presentation/components/Button'
-import {CustomInput} from '@/presentation/components/CustomInput'
+import CustomInput from '@/presentation/components/CustomInput'
 import {ModalContext} from '@/presentation/components/modal/context'
 import useModal from '@/presentation/components/modal/useModal'
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent'
+import useGlobalStyles from '@/styles'
 import globalStyles from '@/styles'
 import {emailRegex, usernameRegex} from '@/util'
 import {Button, Input, Text, useTheme} from '@rneui/themed'
@@ -47,6 +48,8 @@ const FindAccount = () => {
       ),
     })
   }
+  const globalStyles = useGlobalStyles();
+
 
   return (
     <View style={[globalStyles.container, {padding: 20}]}>

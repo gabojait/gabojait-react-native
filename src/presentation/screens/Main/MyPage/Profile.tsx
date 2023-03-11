@@ -1,6 +1,6 @@
 import React from 'react'
 import globalStyles from '@/styles'
-import {AirbnbRating, CheckBox, makeStyles, Text, useTheme} from '@rneui/themed'
+import {AirbnbRating, CheckBox, Input, makeStyles, Text, useTheme} from '@rneui/themed'
 import {ScrollView, StyleSheet, View} from 'react-native'
 import {FilledButton} from '@/presentation/components/Button'
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
@@ -11,9 +11,36 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import {StringOmit} from '@rneui/base'
 import {RatingBar} from '@/presentation/components/RatingBar'
 import Review from '@/model/Profile/Review'
-import { Link } from '@react-navigation/native'
+import {Link} from '@react-navigation/native'
+import {MainStackScreenProps, ProfileStackParamListProps} from '@/presentation/navigation/types'
+import CustomHeader from '@/presentation/components/CustomHeader'
+import Icon from 'react-native-vector-icons/MaterialIcons'
+import {StackHeaderProps} from '@react-navigation/stack'
+import { FieldType } from '@/model/Profile/Portfolio'
+import useGlobalStyles from '@/styles'
 
-const Profile = () => {
+const Header = ({navigation}: StackHeaderProps) => {
+  const {theme} = useTheme()
+  return (
+    <View style={{flexDirection: 'row', justifyContent: 'space-between', padding: 20}}>
+      <Icon
+        name="chevron-left"
+        size={25}
+        onPress={() => (navigation.canGoBack() ? navigation.goBack() : null)}></Icon>
+      <Link to={'/EditMain'} style={{color: theme.colors.primary}}>
+        수정
+      </Link>
+    </View>
+  )
+}
+
+export const portfolioTypeIconName = {
+  pdf: 'description',
+}
+
+export const sliderColors = ['#FFDB20', '#F06823', '#F04823']
+
+const Profile = ({navigation}: ProfileStackParamListProps<'View'>) => {
   const {theme} = useTheme()
   const styles = useStyles()
   const dispatch = useAppDispatch()
@@ -32,6 +59,10 @@ const Profile = () => {
   console.log(user)
 
   const profileExist = true
+  if (profileExist)
+    navigation.setOptions({
+      header: Header,
+    })
   const profile = {
     completedTeams: [
       {
@@ -59,7 +90,7 @@ const Profile = () => {
       {
         name: '네이버 블로그',
         portfolioId: 'string',
-        portfolioType: 'string',
+        portfolioType: FieldType.Url,
         schemaVersion: 'string',
         url: 'string',
       },
@@ -122,6 +153,9 @@ const Profile = () => {
     ],
   } as ProfileViewDto
 
+  const globalStyles = useGlobalStyles();
+
+
   const PortfolioNotExist = () => (
     <View>
       <Text style={{fontSize: theme.fontSize.md, fontWeight: theme.fontWeight.semibold}}>
@@ -133,10 +167,6 @@ const Profile = () => {
       <FilledButton title="만들기" />
     </View>
   )
-
-  const portfolioTypeIconName = {
-    pdf: 'description',
-  }
 
   return !pageLoading ? (
     <ScrollView style={{flex: 1}}>
@@ -186,14 +216,14 @@ const Profile = () => {
 
               <Text h4>기술스택/직무</Text>
               <ToggleButton title={profile.position} />
-              {profile.skills.map(skill => (
+              {profile.skills.map((skill, idx) => (
                 <>
                   <Text>희망 기술스택</Text>
                   <CustomSlider
                     text={skill.skillName}
                     value={parseInt(skill.level)}
                     onChangeValue={function (value: number | number[]): void {}}
-                    minimumTrackTintColor="#FFDB20"
+                    minimumTrackTintColor={sliderColors[idx % 3]}
                   />
                 </>
               ))}
@@ -224,10 +254,12 @@ const Profile = () => {
                 </View>
               </View>
               <View style={{marginTop: 25}}>
-              {profile.reviews.map(review => (
-                <ReviewItem review={review} />
-              ))}
-              <Link to={''} style={{color: theme.colors.primary, textAlign: 'right'}}>더보기</Link>
+                {profile.reviews.map(review => (
+                  <ReviewItem review={review} />
+                ))}
+                <Link to={''} style={{color: theme.colors.primary, textAlign: 'right'}}>
+                  더보기
+                </Link>
               </View>
             </View>
           </>
@@ -244,17 +276,26 @@ const Profile = () => {
 const ReviewItem = ({review}: {review: Review}) => {
   const {theme} = useTheme()
   return (
-  <View style={{marginBottom: 20}}>
-    <View style={{marginBottom:10, flexDirection: 'row', alignItems: 'center',}}>
-      <Text style={{fontSize: theme.fontSize.md, fontWeight: theme.fontWeight.bold, marginEnd: 10}}>{review.nickname}</Text>
-      <RatingBar ratingScore={review.rating} size={20} />
+    <View style={{marginBottom: 20}}>
+      <View style={{marginBottom: 10, flexDirection: 'row', alignItems: 'center'}}>
+        <Text
+          style={{fontSize: theme.fontSize.md, fontWeight: theme.fontWeight.bold, marginEnd: 10}}>
+          {review.nickname}
+        </Text>
+        <RatingBar ratingScore={review.rating} size={20} />
+      </View>
+      <Text
+        style={{fontWeight: theme.fontWeight.light, color: theme.colors.grey1, lineHeight: 25}}
+        numberOfLines={3}
+        ellipsizeMode="tail">
+        {review.content}
+      </Text>
+      <Text style={{fontWeight: theme.fontWeight.light, color: theme.colors.grey1, lineHeight: 25}}>
+        {review.addedAt}
+      </Text>
     </View>
-    <Text style={{fontWeight: theme.fontWeight.light, color: theme.colors.grey1, lineHeight: 25}} numberOfLines={3} ellipsizeMode="tail">
-      {review.content}
-    </Text>
-    <Text style={{fontWeight: theme.fontWeight.light, color: theme.colors.grey1, lineHeight: 25}}>{review.addedAt}</Text>
-  </View>
-)}
+  )
+}
 
 export const ToggleButton = ({
   title,
@@ -296,41 +337,48 @@ export const CustomSlider = ({
   value,
   onChangeValue,
   minimumTrackTintColor,
+  enabled = false,
+  size = 'md',
 }: {
-  text: string
+  text?: string
   value: number
   onChangeValue: (value: number | number[]) => void
   minimumTrackTintColor: string
+  enabled?: boolean
+  size?: 'md' | 'lg'
 }) => {
+  const {theme} = useTheme()
   return (
     <View style={{width: '100%'}}>
       <Slider
         containerStyle={{
           width: '100%',
           overflow: 'hidden',
-          height: 20,
+          height: theme.sliderSize[size],
           borderWidth: 1,
           borderColor: 'black',
           borderRadius: 7,
         }}
-        trackClickable
+        trackClickable={enabled}
         step={1}
         maximumValue={3}
         trackStyle={{
-          height: 20,
+          height: theme.sliderSize[size],
           borderRadius: 7,
           backgroundColor: 'white',
         }}
         trackMarks={[1, 2]}
         renderTrackMarkComponent={() => (
-          <View style={{width: 1, height: 20, backgroundColor: 'black'}}></View>
+          <View style={{width: 1, height: theme.sliderSize.md, backgroundColor: 'black'}}></View>
         )}
         value={value}
         onValueChange={onChangeValue}
         thumbStyle={{backgroundColor: 'transparent', width: 0, borderWidth: 0}}
         minimumTrackTintColor={minimumTrackTintColor}
       />
-      <Text style={{position: 'absolute', left: 5, top: 2}}>{text}</Text>
+      <View style={{height: '100%', position: 'absolute', left: 5, top: 0, display: 'flex', justifyContent: 'center'}}>
+        <Text>{text}</Text>
+      </View>
     </View>
   )
 }

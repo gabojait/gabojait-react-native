@@ -5,6 +5,7 @@ import React from 'react'
 import {useTheme} from '@rneui/themed'
 import {theme} from '@/theme'
 import {PropTypes} from 'mobx-react'
+import useGlobalStyles from '@/styles'
 
 interface BottomSlideModalContentProps {
   title: string
@@ -16,6 +17,8 @@ interface BottomSlideModalContentProps {
 
 const BottomSlideModalContent: React.FC<BottomSlideModalContentProps> = props => {
   const {theme} = useTheme()
+  const globalStyles = useGlobalStyles();
+
 
   return (
     <Modal
