@@ -270,7 +270,7 @@ const Editor = ({navigation, route}:MainStackScreenProps<'GroupEditor'>) => {
                   }
                 }
               } />
-            <FilledButton title={'삭제하기'} buttonStyle={{backgroundColor:theme.colors.grey0}} onPress={() => {navigation.goBack()}}/>
+            <FilledButton title={'취소하기'} buttonStyle={{backgroundColor:theme.colors.grey0}} onPress={() => {navigation.goBack()}}/>
           </View>
         </>}
       />
