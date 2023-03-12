@@ -8,6 +8,7 @@ import { teamDetailGetReducer } from './teamDetailGetReducer'
 import { applyToTeamReducer } from './applyToTeamReducer'
 import { individualsFindReducer } from './individualsFindReducer'
 import { teamToReviewGetReducer } from './teamToReviewGetReducer'
+import { reviewQuestionsGetReducer } from './reviewQuestionsGetReducer'
 
 export interface Result<T> {
   data?: T
@@ -27,7 +28,8 @@ const rootReducer = combineReducers({
   teamDetailGetReducer,
   applyToTeamReducer,
   individualsFindReducer,
-  teamToReviewGetReducer
+  teamToReviewGetReducer,
+  reviewQuestionsGetReducer
 })
 
 // 루트 리듀서를 내보내주세요.
