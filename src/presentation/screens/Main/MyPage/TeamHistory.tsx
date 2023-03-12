@@ -1,10 +1,8 @@
-import TeamBriefDto from '@/model/Team/TeamBriefDto'
 import CompletedTeamBanner from '@/presentation/components/CompletedTeamBanner'
 import { MainStackScreenProps } from '@/presentation/navigation/types'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { getTeamToReview } from '@/redux/reducers/teamToReviewGetReducer'
-import { isInitializable } from '@/util'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect} from 'react'
 import { FlatList, TouchableOpacity, View } from 'react-native'
 
 const TeamHistory = ({navigation}:MainStackScreenProps<'TeamHistory'>) => {
@@ -30,7 +28,7 @@ const TeamHistory = ({navigation}:MainStackScreenProps<'TeamHistory'>) => {
                 keyExtractor={item => item.toString()}
                 data={test}
                 renderItem={({item}) => 
-                    <TouchableOpacity onPress={() => navigation.navigate('TeamReview')}>
+                    <TouchableOpacity onPress={() => navigation.navigate('TeamReview', {teamId: item.teamId})}>
                         <CompletedTeamBanner team={item} />
                     </TouchableOpacity>
                 }
