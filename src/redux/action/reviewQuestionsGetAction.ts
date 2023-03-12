@@ -1,4 +1,4 @@
-import ReviewQuestions from "@/model/Review/ReviewQuestions"
+import ReviewQuestions from "@/model/Review/ReviewQuestion"
 import { createAsyncAction } from "typesafe-actions"
 
 export const REVIEW_QUESTIONS = 'REVIEW_QUESTION'
