@@ -1,7 +1,7 @@
 import CompletedTeamBanner from '@/presentation/components/CompletedTeamBanner'
 import { MainStackScreenProps } from '@/presentation/navigation/types'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { getTeamToReview } from '@/redux/reducers/teamToReviewGetReducer'
+import { getTeamsToReview } from '@/redux/reducers/teamsToReviewGetReducer'
 import React, { useEffect} from 'react'
 import { FlatList, TouchableOpacity, View } from 'react-native'
 
@@ -15,10 +15,10 @@ const TeamHistory = ({navigation}:MainStackScreenProps<'TeamHistory'>) => {
         teamId: "string"
       }]
     const dispatch = useAppDispatch()
-    const {data, loading, error} = useAppSelector(state => state.teamToReviewGetReducer.teamToReviewGetResult)
+    const {data, loading, error} = useAppSelector(state => state.teamsToReviewGetReducer.teamsToReviewGetResult)
 
     useEffect(() => {
-        dispatch( getTeamToReview() )
+        dispatch( getTeamsToReview() )
     }, [])
 
     return(

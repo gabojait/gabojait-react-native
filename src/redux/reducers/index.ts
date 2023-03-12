@@ -7,7 +7,7 @@ import { teamGetReducer } from './teamGetReducer'
 import { teamDetailGetReducer } from './teamDetailGetReducer'
 import { applyToTeamReducer } from './applyToTeamReducer'
 import { individualsFindReducer } from './individualsFindReducer'
-import { teamToReviewGetReducer } from './teamToReviewGetReducer'
+import { teamsToReviewGetReducer } from './teamsToReviewGetReducer'
 import { reviewQuestionsGetReducer } from './reviewQuestionsGetReducer'
 
 export interface Result<T> {
@@ -28,7 +28,7 @@ const rootReducer = combineReducers({
   teamDetailGetReducer,
   applyToTeamReducer,
   individualsFindReducer,
-  teamToReviewGetReducer,
+  teamsToReviewGetReducer,
   reviewQuestionsGetReducer
 })
 
