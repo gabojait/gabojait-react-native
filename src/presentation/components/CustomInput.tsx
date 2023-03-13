@@ -2,18 +2,17 @@ import {Icon, Input, makeStyles} from '@rneui/themed'
 import React, {forwardRef, useState} from 'react'
 import {View} from 'react-native'
 import color from '../res/styles/color'
-import type {CustomInputProps} from '@/presentation/components/props/StateProps'
+import type {CustomInputProps, ValidatorState} from '@/presentation/components/props/StateProps'
 
 const CustomInput = forwardRef(
   (
-    {size = 'sm', shape = 'underline', placeholder, state = 'none_underline', ...props}: CustomInputProps,
+    {size = 'sm', shape = 'underline', placeholder, state = 'none', ...props}: CustomInputProps,
     ref,
   ) => {
     const [secure, setSecure] = useState(true)
     const styles = useStyles()
     const iconColors = {
-      none_underline: color.transparent,
-      none_round: color.transparent,
+      none: color.transparent,
       valid: color.primary,
       invalid: color.transparent,
     }
@@ -45,7 +44,7 @@ const CustomInput = forwardRef(
           rightIcon={inputIcon}
           secureTextEntry={props.secureTextEntry ? secure : false}
           labelStyle={styles.label}
-          renderErrorMessage={state != 'none_underline'}
+          renderErrorMessage={state != 'none'}
           autoCapitalize="none"
           autoComplete="off"
           autoCorrect={false}
@@ -58,19 +57,24 @@ const CustomInput = forwardRef(
 export default CustomInput
 
 const useStyles = makeStyles((theme, props: CustomInputProps) => {
-  const borderColors = {
-    none_underline: color.lightGrey,
-    none_round: color.grey,
-    valid: color.primary,
-    invalid: color.error,
+  const shapeToColors = {
+    underline: {
+      none: color.lightGrey,
+      valid: color.primary,
+      invalid: color.error,
+    } as {[key in ValidatorState]: string},
+    round: {
+      none: color.grey,
+      valid: color.primary,
+      invalid: color.error,
+    } as {[key in ValidatorState]: string},
   }
-
   return {
     roundInputContainer: {
       borderWidth: 1.3,
       flexDirection: 'row',
       justifyContent: 'space-between',
-      borderColor: borderColors[props.state ?? 'none_round'],
+      borderColor: shapeToColors[props.shape ?? 'underline'][props.state ?? 'none'],
       borderRadius: theme.radius[props.size ?? 'sm'],
       paddingEnd: 10,
     },
@@ -81,7 +85,7 @@ const useStyles = makeStyles((theme, props: CustomInputProps) => {
     container: {paddingHorizontal: 0},
     underlineInputContainer: {
       borderBottomWidth: 1.3,
-      borderBottomColor: borderColors[props.state ?? 'none_underline'],
+      borderBottomColor: shapeToColors[props.shape ?? 'underline'][props.state ?? 'none'],
       marginEnd: 10,
     },
     underlineInput: {
