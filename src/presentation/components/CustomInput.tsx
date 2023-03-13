@@ -6,13 +6,14 @@ import type {CustomInputProps} from '@/presentation/components/props/StateProps'
 
 const CustomInput = forwardRef(
   (
-    {size = 'sm', shape = 'underline', placeholder, state = 'none', ...props}: CustomInputProps,
+    {size = 'sm', shape = 'underline', placeholder, state = 'none_underline', ...props}: CustomInputProps,
     ref,
   ) => {
     const [secure, setSecure] = useState(true)
     const styles = useStyles()
     const iconColors = {
-      none: color.transparent,
+      none_underline: color.transparent,
+      none_round: color.transparent,
       valid: color.primary,
       invalid: color.transparent,
     }
@@ -44,7 +45,7 @@ const CustomInput = forwardRef(
           rightIcon={inputIcon}
           secureTextEntry={props.secureTextEntry ? secure : false}
           labelStyle={styles.label}
-          renderErrorMessage={state != 'none'}
+          renderErrorMessage={state != 'none_underline'}
           autoCapitalize="none"
           autoComplete="off"
           autoCorrect={false}
@@ -58,7 +59,8 @@ export default CustomInput
 
 const useStyles = makeStyles((theme, props: CustomInputProps) => {
   const borderColors = {
-    none: color.lightGrey,
+    none_underline: color.lightGrey,
+    none_round: color.grey,
     valid: color.primary,
     invalid: color.error,
   }
@@ -68,7 +70,7 @@ const useStyles = makeStyles((theme, props: CustomInputProps) => {
       borderWidth: 1.3,
       flexDirection: 'row',
       justifyContent: 'space-between',
-      borderColor: borderColors[props.state ?? 'none'],
+      borderColor: borderColors[props.state ?? 'none_round'],
       borderRadius: theme.radius[props.size ?? 'sm'],
       paddingEnd: 10,
     },
@@ -79,7 +81,7 @@ const useStyles = makeStyles((theme, props: CustomInputProps) => {
     container: {paddingHorizontal: 0},
     underlineInputContainer: {
       borderBottomWidth: 1.3,
-      borderBottomColor: borderColors[props.state ?? 'none'],
+      borderBottomColor: borderColors[props.state ?? 'none_underline'],
       marginEnd: 10,
     },
     underlineInput: {

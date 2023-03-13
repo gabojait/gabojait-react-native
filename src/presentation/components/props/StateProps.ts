@@ -1,7 +1,7 @@
 import React, {Ref, useRef, useState} from 'react'
 import {StyleProp, TextInputProps, View, ViewStyle} from 'react-native'
 
-export type ValidatorState = 'valid' | 'invalid' | 'none'
+export type ValidatorState = 'valid' | 'invalid' | 'none_underline' | 'none_round'
 
 export type InputShape = 'round' | 'underline'
 

@@ -42,7 +42,7 @@ export type MainStackParamList = {
   Profile: NavigatorScreenParams<ProfileStackParamList>
   ApplyStatus: undefined
   TeamHistory: undefined
-  TeamReview: undefined
+  TeamReview: {teamId: string}
   BookMark: undefined
   OfferPage: undefined
   TeamApplied: undefined

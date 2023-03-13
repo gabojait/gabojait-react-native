@@ -9,11 +9,11 @@ import { BoardStackParamListProps } from '@/presentation/navigation/types'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { getTeam } from '@/redux/reducers/teamGetReducer'
 import Team from '@/model/Team/Team'
+import { useCookies } from 'react-cookie'
+import { isDataAvailable, isInitializable } from '@/util'
 
 const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
-  const test = [{"backendTotalRecruitCnt": 1, "backends": [], "designerTotalRecruitCnt": 2, "designers": [], "expectation": "예쁘면 좋겠다", "frontendTotalRecruitCnt": 1, "frontends": [], "leaderUserId": "64043ff1dcc38841d722826b", "openChatUrl": "https://open.kakao.com/o/test", "projectDescription": "제곧내", "projectManagerTotalRecruitCnt": 1, "projectManagers": [], "projectName": "애플워치 테마 앱", "teamId": "64044048dcc38841d722826c"}, 
-  {"backendTotalRecruitCnt": 1, "backends": [], "designerTotalRecruitCnt": 1, "designers": [], "expectation": "끝말잇기 프로젝트에서 바라는 점입니다.", "frontendTotalRecruitCnt": 2, "frontends": [], "leaderUserId": "64043f5ddcc38841d7228269", "openChatUrl": "https://open.kakao.com/o/test", "projectDescription": "끝말잇기 프로젝트 설명입니다.", "projectManagerTotalRecruitCnt": 2, "projectManagers": [], "projectName": "끝말잇기 앱", "teamId": "64043fd5dcc38841d722826a"},
-  {"backendTotalRecruitCnt": 1, "backends": [], "designerTotalRecruitCnt": 1, "designers": [], "expectation": "연락 잘 되는사람이면 좋습니다", "frontendTotalRecruitCnt": 1, "frontends": [], "leaderUserId": "640412f5dcc38841d7228267", "openChatUrl": "https://open.kakao.com/o/test", "projectDescription": "재밌을 거 같아서 해봅니다", "projectManagerTotalRecruitCnt": 0, "projectManagers": [], "projectName": "드론택시 예약시스템", "teamId": "64041fa4dcc38841d7228268"}]
+
   const {theme} = useTheme() 
   const modal = React.useContext(ModalContext)
   const dispatch = useAppDispatch()
@@ -21,7 +21,22 @@ const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
   const {data,loading,error} = useAppSelector(state => state.teamGetReducer.teamGetResult)
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [contentData, setContentData] = useState<Team[]>()
-  
+  const COOKIE_KEY = 'profileMentionModal'               // 쿠키이름세팅 
+  const [appCookies, setAppCookies] = useCookies() // 쿠키이름을 초기값으로 넣어 쿠키세팅
+  const [hasCookie, setHasCookie] = useState(true)
+
+  const getExpiredDate = (days: number) => {
+    const date = new Date();
+    date.setDate(date.getDate() + days);
+    return date;
+  };
+
+  const closeModalUntilExpires = () => {
+    if (!appCookies) return;
+    const expires = getExpiredDate(1);
+    setAppCookies("MODAL_EXPIRES", true, { path: "/", expires });
+  };
+
   const profileMentionModal = () => {
     modal?.show({
       title:'',
@@ -32,6 +47,7 @@ const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
             title: '입력하기', 
             onPress: () => {
               modal.hide() 
+              closeModalUntilExpires()
               navigation.navigate('MainNavigation', {screen:'Profile'})
             },
           }}
@@ -39,6 +55,7 @@ const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
             title: '닫기', 
             onPress: () => {
               modal.hide()
+              closeModalUntilExpires()
             }
           }}
         >
@@ -61,7 +78,7 @@ const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
             title: '변경하기', 
             onPress: () => {
               modal.hide() 
-              navigation.navigate('MainNavigation', {screen:'Profile'})
+              navigation.navigate('MainNavigation', {screen: 'Profile'})
               console.log('touch, yes')
             },
           }}
@@ -90,20 +107,21 @@ const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
   }
 
   useEffect(() => {
-    if (!loading && contentData != null && data != null){
-      setContentData([...contentData, ...data])
-      console.log(`data: ${data}`)
-      console.log(`contentData: ${contentData}`)
-    }
+    isDataAvailable(loading, data, contentData)
+    ? setContentData([...contentData, ...data])
+    :{}
   },[data, loading, error])
 
   useEffect(() => {
     console.log('useEffect 초기 렌더링 실행!')
     dispatch( getTeam(teamGetState.pageFrom, teamGetState.pageNum) )
     setTeamGetState( prevState => ({...prevState, pageFrom: teamGetState.pageFrom+1}))
-    if(!loading&& data != null){
-      setContentData(data)
-    }
+    isInitializable(loading, data)? setContentData(data): {}
+
+    if (!hasCookie) profileMentionModal()
+    if (appCookies["MODAL_EXPIRES"]) return;
+    console.log(`appCookies:${appCookies["MODAL_EXPIRES"]}`);
+    setHasCookie(false);
   },[])
 
   return (
