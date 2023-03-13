@@ -186,6 +186,7 @@ export const EditItem = ({
             fontSize: theme.fontSize.sm,
             fontWeight: theme.fontWeight.medium,
             color: theme.colors.grey2,
+            paddingHorizontal: 10
           }}
           editable={titleEditable}
           placeholder={name}

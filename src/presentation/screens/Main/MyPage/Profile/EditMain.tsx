@@ -165,7 +165,9 @@ const EditMain = ({navigation}: ProfileStackParamListProps<'EditMain'>) => {
             <ToggleButton
               title={portfolio.name}
               icon={<Icon name={portfolioTypeIconName['pdf']} />}
-              backgroundColor="#FFF"
+              style={{
+                backgroundColor: '#FFF',
+              }}
             />
           ))}
         </View>
@@ -184,7 +186,12 @@ const EditMain = ({navigation}: ProfileStackParamListProps<'EditMain'>) => {
           .map(work => <IconLabel iconName="work" label={work.corporationName} />)
           .slice(0, 2)}
       </ArrowCard>
-      <ArrowCard title="기술스택/직무" style={{marginBottom: theme.spacing.xl}}>
+      <ArrowCard
+        title="기술스택/직무"
+        style={{marginBottom: theme.spacing.xl}}
+        onArrowPress={() => {
+          navigation.navigate('EditSkillAndPosition')
+        }}>
         <View style={{alignItems: 'flex-start'}}>
           <ToggleButton title={profile.position} />
           {profile.skills.map((skill, idx) => (

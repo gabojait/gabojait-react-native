@@ -1,7 +1,15 @@
 import React from 'react'
 import globalStyles from '@/styles'
 import {AirbnbRating, CheckBox, Input, makeStyles, Text, useTheme} from '@rneui/themed'
-import {ScrollView, StyleSheet, View} from 'react-native'
+import {
+  ScrollView,
+  StyleProp,
+  StyleSheet,
+  TextStyle,
+  Touchable,
+  View,
+  ViewStyle,
+} from 'react-native'
 import {FilledButton} from '@/presentation/components/Button'
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
 import ProfileViewDto from '@/model/Profile/ProfileViewDto'
@@ -16,8 +24,9 @@ import {MainStackScreenProps, ProfileStackParamListProps} from '@/presentation/n
 import CustomHeader from '@/presentation/components/CustomHeader'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import {StackHeaderProps} from '@react-navigation/stack'
-import { FieldType } from '@/model/Profile/Portfolio'
+import {FieldType} from '@/model/Profile/Portfolio'
 import useGlobalStyles from '@/styles'
+import {TouchableOpacity} from 'react-native-gesture-handler'
 
 const Header = ({navigation}: StackHeaderProps) => {
   const {theme} = useTheme()
@@ -153,8 +162,7 @@ const Profile = ({navigation}: ProfileStackParamListProps<'View'>) => {
     ],
   } as ProfileViewDto
 
-  const globalStyles = useGlobalStyles();
-
+  const globalStyles = useGlobalStyles()
 
   const PortfolioNotExist = () => (
     <View>
@@ -233,7 +241,9 @@ const Profile = ({navigation}: ProfileStackParamListProps<'View'>) => {
                   <ToggleButton
                     title={portfolio.name}
                     icon={<MaterialIcon name={portfolioTypeIconName['pdf']} />}
-                    backgroundColor="#FFF"
+                    style={{
+                      backgroundColor: '#fff',
+                    }}
                   />
                 ))}
               </View>
@@ -299,28 +309,66 @@ const ReviewItem = ({review}: {review: Review}) => {
 
 export const ToggleButton = ({
   title,
+  titleStyle,
   icon,
   onClick,
-  backgroundColor,
+  style,
 }: {
   title: string
   icon?: React.ReactNode
   onClick?: () => void
-  backgroundColor?: string
+  titleStyle?: StyleProp<TextStyle>
+  style?: StyleProp<ViewStyle>
+}) => {
+  const {theme} = useTheme()
+  return (
+    <TouchableOpacity onPress={onClick}>
+      <View
+        style={[
+          {
+            borderWidth: 1,
+            borderColor: 'black',
+            backgroundColor: theme.colors.primary,
+            borderRadius: 10,
+            padding: 6,
+            flexDirection: 'row',
+          },
+          style,
+        ]}>
+        {icon ? <View style={{marginEnd: 3}}>{icon}</View> : null}
+        <Text style={titleStyle}>{title}</Text>
+      </View>
+    </TouchableOpacity>
+  )
+}
+
+export const Chip = ({
+  icon,
+  onClick,
+  style,
+  children,
+}: {
+  icon?: React.ReactNode
+  onClick?: () => void
+  style?: StyleProp<ViewStyle>
+  children: React.ReactNode
 }) => {
   const {theme} = useTheme()
   return (
     <View
-      style={{
-        borderWidth: 1,
-        borderColor: 'black',
-        backgroundColor: backgroundColor ?? theme.colors.primary,
-        borderRadius: 10,
-        padding: 6,
-        flexDirection: 'row',
-      }}>
+      style={[
+        {
+          borderWidth: 1,
+          borderColor: 'black',
+          backgroundColor: theme.colors.primary,
+          borderRadius: 10,
+          padding: 2,
+          flexDirection: 'row',
+        },
+        style,
+      ]}>
       {icon ? <View style={{marginEnd: 3}}>{icon}</View> : null}
-      <Text>{title}</Text>
+      {children}
     </View>
   )
 }
@@ -376,7 +424,15 @@ export const CustomSlider = ({
         thumbStyle={{backgroundColor: 'transparent', width: 0, borderWidth: 0}}
         minimumTrackTintColor={minimumTrackTintColor}
       />
-      <View style={{height: '100%', position: 'absolute', left: 5, top: 0, display: 'flex', justifyContent: 'center'}}>
+      <View
+        style={{
+          height: '100%',
+          position: 'absolute',
+          left: 5,
+          top: 0,
+          display: 'flex',
+          justifyContent: 'center',
+        }}>
         <Text>{text}</Text>
       </View>
     </View>
