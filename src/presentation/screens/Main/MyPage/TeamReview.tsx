@@ -15,6 +15,7 @@ import PagerView from 'react-native-pager-view'
 import ReviewAnswer from '@/model/Review/ReviewAnswer'
 import { ModalContext } from '@/presentation/components/modal/context'
 import SymbolCenteredModalContent from '@/presentation/components/modalContent/SymbolCenteredModalContent'
+import { createReview } from '@/redux/reducers/reviewCreateReducer'
 
 const TeamReview = ({navigation, route}:MainStackScreenProps<'TeamReview'>) => {
     const teamToReviewTest = {backends: [{nickname: "류승룡",position: "backend",rating: 0,reviewCnt: 0,schemaVersion: "string",userId: "string1"}],
@@ -162,6 +163,8 @@ const TeamReview = ({navigation, route}:MainStackScreenProps<'TeamReview'>) => {
                             reviewResultState.map((item)=>{
                                 console.log(`item.answer:${item.answer}, item.questionId:${item.questionId}, item.rate:${item.rate}, item.revieweeUserId:${item.revieweeUserId}`)
                             })
+                            dispatch( createReview({reviews: reviewResultState}, route.params.teamId) )
+                            navigation.goBack()
                         }}
                     />
                     :<FilledButton 
