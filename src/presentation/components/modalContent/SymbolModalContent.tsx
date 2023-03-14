@@ -1,12 +1,10 @@
-import globalStyles from '@/styles'
-import {Button, ButtonProps, Text} from '@rneui/themed'
-import {Alert, Modal, StyleSheet, View} from 'react-native'
-import DatePicker from 'react-native-date-picker'
+import {ButtonProps, Text} from '@rneui/themed'
+import { StyleSheet, View} from 'react-native'
 import {FilledButton} from '../Button'
 import React from 'react'
 
-interface SymbolModalContentProps {
-  title: string
+export interface SymbolModalContentProps {
+  title?: string
   text: string
   symbol: React.ReactNode
   yesButton?: ButtonProps

@@ -50,6 +50,7 @@ declare module '@rneui/themed' {
       lg: number
     }
     emojiSize: {
+      sm: number
       md: number
       lg: number
     }
@@ -112,6 +113,7 @@ export const theme = createTheme({
     lg: 22,
   },
   emojiSize: {
+    sm: 20,
     md: 80,
     lg: 130,
   },
