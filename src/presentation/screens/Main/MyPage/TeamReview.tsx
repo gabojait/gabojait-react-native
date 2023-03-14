@@ -4,16 +4,17 @@ import { PartIcon } from '@/presentation/components/TeamBanner'
 import { RatingInput } from '@/presentation/components/RatingInput'
 import { useTheme } from '@rneui/themed'
 import React, { useEffect, useRef, useState } from 'react'
-import { ScrollView, Text, View, ViewProps } from 'react-native'
+import { ScrollView, Text, View } from 'react-native'
 import CustomInput from '@/presentation/components/CustomInput'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { getReviewQuestions } from '@/redux/reducers/reviewQuestionsGetReducer'
-import ReviewQuestions, { ReviewType } from '@/model/Review/ReviewQuestion'
+import { ReviewType } from '@/model/Review/ReviewQuestion'
 import { MainStackScreenProps } from '@/presentation/navigation/types'
 import { getTeamToReview } from '@/redux/reducers/teamToReviewGetReducer'
-import UserProfileBriefDto from '@/model/User/UserProfileBriefDto'
 import PagerView from 'react-native-pager-view'
 import ReviewAnswer from '@/model/Review/ReviewAnswer'
+import { ModalContext } from '@/presentation/components/modal/context'
+import SymbolCenteredModalContent from '@/presentation/components/modalContent/SymbolCenteredModalContent'
 
 const TeamReview = ({navigation, route}:MainStackScreenProps<'TeamReview'>) => {
     const teamToReviewTest = {backends: [{nickname: "류승룡",position: "backend",rating: 0,reviewCnt: 0,schemaVersion: "string",userId: "string1"}],
@@ -25,6 +26,7 @@ const TeamReview = ({navigation, route}:MainStackScreenProps<'TeamReview'>) => {
     const teammateArrayTest = [...teamToReviewTest.backends, ...teamToReviewTest.designers, ...teamToReviewTest.frontends, ...teamToReviewTest.projectManagers]
 
     const {theme} = useTheme()
+    const modal = React.useContext(ModalContext)
     const dispatch = useAppDispatch()
     const pagerViewRef = useRef(null)
     const {data:reviewQuestions, loading:reviewQuestionsLoading, error:reviewQuestionsError} = useAppSelector(state => state.reviewQuestionsGetReducer.reviewQuestionsResult)
@@ -32,7 +34,8 @@ const TeamReview = ({navigation, route}:MainStackScreenProps<'TeamReview'>) => {
     const teammateArray = [...[teamToReview?.backends], ...[teamToReview?.designers], ...[teamToReview?.frontends], ...[teamToReview?.projectManagers]]
     const [reviewResultState, setReviewResultState] = useState<ReviewAnswer[]>([])
     const [reviewState, setReviewState] = useState<ReviewAnswer[]>([])
-    const [pageCount, setPageCount] = useState<number>(0)
+    const [pageCount, setPageCount] = useState<number>(1)
+    const [buttonDisabled, setButtonDisabled] = useState<boolean>(true)
 
     const updateTextReview = (questionId:string, userId:string, text:string) => {
         const newReview = {answer:text, questionId: questionId, rate:"", revieweeUserId: userId}
@@ -63,6 +66,37 @@ const TeamReview = ({navigation, route}:MainStackScreenProps<'TeamReview'>) => {
         setPageCount(pageCount+1)
     }
 
+    const isLastindex = (index:number) => {
+        if(index == teammateArray.length-1) return true
+        else false
+    }
+
+    const beforeReviewModal = () => {
+        modal?.show({
+            title:'',
+            content:(
+                <SymbolCenteredModalContent 
+                    title='잠깐!'
+                    text={'리뷰는 수정이 어려우니\n 신중하게 선택해주세요'}
+                    symbol={<Text style={{fontSize: theme.emojiSize.sm, textAlign: 'center'}}>🥺</Text>} 
+                    yesButton={{title:'확인', onPress:() => modal.hide(), buttonStyle:{minWidth:189}}}
+                />
+            )
+        })
+    } 
+
+    useEffect(() => {
+        let answeredCount = 0
+        reviewState.map((item) => {
+            //공백 제거
+            const answer = item.answer.replace(/ /gi, "")
+            console.log(`answer: ${item.answer}, rate: ${item.rate}`)
+            if(answer.length != 0 || item.rate != "") {answeredCount += 1}
+        })
+        console.log(`answeredCount: ${answeredCount}`)
+        if( reviewState != null && answeredCount == reviewState.length) setButtonDisabled(false)
+        else setButtonDisabled(true)
+    })
     useEffect(() => {
         reviewQuestions?.map((item, index) => setReviewState(prevState => ([...prevState, {answer:"", questionId:item.questionId, rate:"", revieweeUserId:""}])))
         console.log(`reviewQuestions: ${reviewQuestions}`)
@@ -71,10 +105,10 @@ const TeamReview = ({navigation, route}:MainStackScreenProps<'TeamReview'>) => {
 
     useEffect(() => {
         console.log(`초기렌더링 시작`)
+        beforeReviewModal()
         dispatch( getTeamToReview(route.params.teamId) )
         dispatch( getReviewQuestions() )
         setReviewState([])
-        moveToNextPage(pageCount)
     }, [])
     
     return(
@@ -115,45 +149,39 @@ const TeamReview = ({navigation, route}:MainStackScreenProps<'TeamReview'>) => {
                             </View>
                         </CardWrapper>
                     </ScrollView>
+                    {isLastindex(teamMateIndex)
+                    ?<FilledButton 
+                        title={'완료'} 
+                        buttonStyle={{backgroundColor: theme.colors.primary}} 
+                        containerStyle={{marginHorizontal:70}} 
+                        disabled={buttonDisabled}
+                        onPress={() => {
+                            setReviewResultState(prevState => ([...prevState, ...reviewState]))
+                            setReviewState([])
+                            console.log(`완료 버튼 클릭----------------`)
+                            reviewResultState.map((item)=>{
+                                console.log(`item.answer:${item.answer}, item.questionId:${item.questionId}, item.rate:${item.rate}, item.revieweeUserId:${item.revieweeUserId}`)
+                            })
+                        }}
+                    />
+                    :<FilledButton 
+                        title={'다음'} 
+                        buttonStyle={{backgroundColor: theme.colors.primary}} 
+                        containerStyle={{marginHorizontal:70}} 
+                        disabled={buttonDisabled}
+                        onPress={() => {
+                            setReviewResultState(prevState => ([...prevState, ...reviewState]))
+                            //초기화
+                            reviewQuestions?.map((item, index) => setReviewState(prevState => ([...prevState, {answer:"", questionId:item.questionId, rate:"", revieweeUserId:""}])))
+                            moveToNextPage(pageCount)
+                            setButtonDisabled(true)//초기화
+                        }}
+                    />
+                    }
                 </View>
                 )}
             </PagerView>
-            <FilledButton title={'다음'} buttonStyle={{backgroundColor: theme.colors.primary}} containerStyle={{marginHorizontal:70}} onPress={() => moveToNextPage(pageCount)}/>
         </>
-    )
-}
-
-const ReviewItem: React.FC<ViewProps & {questionArray:ReviewQuestions[], teammate:UserProfileBriefDto}> = ({
-    questionArray, teammate
-}) => {
-    const {theme} = useTheme()
-    const [lastWord, setLastWord] = useState('')
-    const [disabled, setDisabled] = useState<Boolean>(false)
-    return(
-        <ScrollView style={{flex: 1}}>
-            <CardWrapper style={{marginLeft:20, minWidth:300, marginBottom:10, marginTop:2}}>
-                <View style={{width:'100%'}}>
-                    <View style={{flexDirection:'row',paddingVertical:20, paddingHorizontal: 20}}>
-                        <PartIcon partInitial={'D'} isRecruitDone={true}/>
-                        <View style={{paddingHorizontal: 10, justifyContent:'center'}}>
-                            <Text style={{fontSize:theme.fontSize.lg, fontWeight: theme.fontWeight.bold, color:'black'}}>{teammate.nickname}</Text>
-                            <Text style={{fontSize:theme.fontSize.md, fontWeight:theme.fontWeight.light, color:theme.colors.grey1}}>{teammate.position}</Text>
-                        </View>
-                    </View>
-                    {questionArray.map( (item) => 
-                        item.reviewType == ReviewType.RATING
-                        ? <View style={{paddingVertical:20, borderTopWidth:1, borderTopColor: theme.colors.disabled}}>
-                        <Text style={{textAlign:'center', fontSize: theme.fontSize.md, fontWeight:theme.fontWeight.bold, color:'black', paddingBottom:10}}>{item.context}</Text>
-                        <RatingInput updateRatingScore={(score) => {console.log(score)}} size={theme.ratingBarSize.xl}/>
-                        </View>
-                        :<View style={{paddingVertical:20, borderTopWidth:1, borderTopColor: theme.colors.disabled}}>
-                        <Text style={{textAlign:'center', fontSize: theme.fontSize.md, fontWeight:theme.fontWeight.bold, color:'black', paddingBottom:10}}>{item.context}</Text>
-                        <CustomInput shape='round' value={lastWord} onChangeText={(text: string) => setLastWord(text)} containerStyle={{paddingHorizontal:20}} size={'sm'} multiline={true} numberOfLines={4} style={{minHeight: 90}} maxLength={200}/>
-                        </View>
-                    )}
-                </View>
-            </CardWrapper>
-        </ScrollView>
     )
 }
 
