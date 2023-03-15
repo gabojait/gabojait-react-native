@@ -2,16 +2,17 @@ import { FilledButton } from '@/presentation/components/Button'
 import { PositionMaker } from '@/presentation/components/PositionMaker'
 import { MainStackScreenProps } from '@/presentation/navigation/types'
 import color from '@/presentation/res/styles/color'
-import { Text, useTheme, makeStyles } from '@rneui/themed'
+import { Text, useTheme, makeStyles, Input } from '@rneui/themed'
 import React, { useEffect, useState } from 'react'
-import { FlatList, KeyboardAvoidingView, ScrollView, TouchableOpacity, View } from 'react-native'
+import { FlatList, KeyboardAvoidingView, ScrollView, TextInput, TouchableOpacity, View } from 'react-native'
 import CustomIcon from '@/presentation/components/icon/Gabojait'
 import TeamRequestDto from '@/model/Team/TeamRequestDto'
-import { CustomInput } from '@/presentation/components/CustomInput'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { createTeam } from '@/redux/reducers/teamCreateReducer'
 import { ModalContext } from '@/presentation/components/modal/context'
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent'
+import CardWrapper from '@/presentation/components/CardWrapper'
+import useGlobalStyles from '@/styles'
 
 const Editor = ({navigation, route}:MainStackScreenProps<'GroupEditor'>) => {
   const {theme} = useTheme()
@@ -42,7 +43,8 @@ const Editor = ({navigation, route}:MainStackScreenProps<'GroupEditor'>) => {
     {key:'디자이너', value:'디자이너', disabled:false},
     {key:'PM', value:'PM', disabled:false}
   ])
-
+  const globalStyles = useGlobalStyles()
+  
   function addPositionMaker() {
     let newArray = [...array, {idex: (positionMakerCount + 1).toString()}]
     setArray(newArray)
@@ -178,32 +180,31 @@ const Editor = ({navigation, route}:MainStackScreenProps<'GroupEditor'>) => {
         ListHeaderComponent={<>
           <View style={styles.item}>
             <Text style={styles.text}>프로젝트 이름</Text>
-            <CustomInput 
-              containerStyle={[styles.inputBox, { minHeight: 50}]}
-              value={teamCreateState?.projectName}
-              onChangeText={(text: string) => {
-                setTeamCreateState(prevState => ({...prevState, projectName:text}))
-              }}
-              multiline={false} 
-              maxLength={20}
-              size='md'
-              placeholder='최대 20자'
-            />
+            <CardWrapper style={[globalStyles.card, styles.inputBox, {maxHeight: 50}]}>
+              <TextInput 
+                value={teamCreateState?.projectName}
+                onChangeText={(text: string) => {
+                  setTeamCreateState(prevState => ({...prevState, projectName:text}))
+                }}
+                multiline={false} 
+                maxLength={20}
+                placeholder='최대 20자'
+              />
+            </CardWrapper>
           </View>
 
           <View style={styles.item}>
             <Text style={styles.text}>프로젝트 설명</Text>
-            <CustomInput 
-              containerStyle={[styles.inputBox, {minHeight: 160}]}
-              value={teamCreateState?.projectDescription}
-              onChangeText={(text: string) => {
-                setTeamCreateState(prevState => ({...prevState, projectDescription:text}))
-              }}
-              multiline={true} 
-              maxLength={500}
-              size='lg'
-              placeholder='최대 500자'
-            />
+            <CardWrapper style={[globalStyles.card, styles.inputBox,{minHeight: 160}]}>
+              <TextInput 
+                value={teamCreateState?.projectDescription}
+                onChangeText={(text: string) => {
+                  setTeamCreateState(prevState => ({...prevState, projectDescription:text}))
+                }}
+                multiline={true} 
+                maxLength={500}
+              />
+            </CardWrapper>
           </View>
           <Text style={styles.text}>원하는 팀원</Text>
         </>}
@@ -231,32 +232,31 @@ const Editor = ({navigation, route}:MainStackScreenProps<'GroupEditor'>) => {
           </TouchableOpacity>
           <View style={styles.item}>
             <Text style={styles.text}>바라는 점</Text>
-            <CustomInput 
-              containerStyle={[styles.inputBox, {minHeight: 95}]}
-              value={teamCreateState?.expectation}
-              onChangeText={(text: string) => {
-                setTeamCreateState(prevState => ({...prevState, expectation:text}))
-              }}
-              multiline={true} 
-              maxLength={200}
-              size='lg'
-              placeholder='최대 200자'
-            />
+            <CardWrapper style={[globalStyles.card, styles.inputBox, {minHeight: 95}]}>
+              <TextInput
+                value={teamCreateState?.expectation}
+                onChangeText={(text: string) => {
+                  setTeamCreateState(prevState => ({...prevState, expectation:text}))
+                }}
+                multiline={true} 
+                maxLength={200}
+              />
+            </CardWrapper>
           </View>
 
           <View style={styles.item}>
             <Text style={styles.text}>오픈채팅 링크</Text>
-            <CustomInput 
-              containerStyle={[styles.inputBox, {minHeight: 50}]}
-              value={teamCreateState?.openChatUrl}
-              onChangeText={(text: string) => {
-                setTeamCreateState(prevState => ({...prevState, openChatUrl:text}))
-              }}
-              multiline={true} 
-              maxLength={100}
-              size='lg'
-              placeholder='카카오톡 오픈채팅 링크'
-            />
+            <CardWrapper style={[globalStyles.card, styles.inputBox, {maxHeight: 50}]}>
+              <TextInput 
+                value={teamCreateState?.openChatUrl}
+                onChangeText={(text: string) => {
+                  setTeamCreateState(prevState => ({...prevState, openChatUrl:text}))
+                }}
+                multiline={true} 
+                maxLength={100}
+                placeholder='카카오톡 오픈채팅 링크'
+              />
+            </CardWrapper>
           </View>
 
           <View style={{paddingHorizontal: 30}}>
@@ -302,11 +302,6 @@ const useStyles = makeStyles((theme) => ({
     flexDirection:'row',
     borderWidth: 1.3,
     borderColor: theme.colors.disabled,
-    shadowOpacity: theme.shadow.opacity,
-    shadowOffset: theme.shadow.shadowOffset,
-    elevation: theme.shadow.elevation,
-    backgroundColor: theme.colors.white,
-    shadowColor: theme.colors.disabled,
     marginBottom: 20
   },
 }))
