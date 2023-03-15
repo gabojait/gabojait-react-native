@@ -16,14 +16,15 @@ import ReviewAnswer from '@/model/Review/ReviewAnswer'
 import { ModalContext } from '@/presentation/components/modal/context'
 import SymbolCenteredModalContent from '@/presentation/components/modalContent/SymbolCenteredModalContent'
 import { createReview } from '@/redux/reducers/reviewCreateReducer'
+import { changeFirstLetterToCapital, getFirstAlphabet } from '@/util'
 
 const TeamReview = ({navigation, route}:MainStackScreenProps<'TeamReview'>) => {
     const teamToReviewTest = {backends: [{nickname: "류승룡",position: "backend",rating: 0,reviewCnt: 0,schemaVersion: "string",userId: "string1"}],
       designers: [{nickname: "이하늬",position: "designer",rating: 0,reviewCnt: 0,schemaVersion: "string",userId: "string2"}],
       frontends: [{nickname: "진선규",position: "frontend",rating: 0,reviewCnt: 0,schemaVersion: "string",userId: "string3"}],
       projectManagers: [{nickname: "이동휘",position: "projectManager",rating: 0,reviewCnt: 0,schemaVersion: "string",userId: "string4"}],
-      "projectName": "string",
-      "teamId": "string"}
+      projectName: "치킨 배달 앱",
+      teamId: "string"}
     const teammateArrayTest = [...teamToReviewTest.backends, ...teamToReviewTest.designers, ...teamToReviewTest.frontends, ...teamToReviewTest.projectManagers]
 
     const {theme} = useTheme()
@@ -116,28 +117,28 @@ const TeamReview = ({navigation, route}:MainStackScreenProps<'TeamReview'>) => {
         <>
             <Text style={{fontSize:theme.fontSize.lg, fontWeight:theme.fontWeight.bold, color:'black', paddingLeft:20, paddingVertical:10, backgroundColor:"white"}}>치킨배달 앱</Text>
             <PagerView style={{flex:1, backgroundColor:'white'}} orientation='horizontal' initialPage={0} ref={pagerViewRef} collapsable={false} scrollEnabled={false}> 
-                {teammateArrayTest.map((teamMateitem, teamMateIndex) => 
+                {teammateArrayTest.map((teamMateItem, teamMateIndex) => 
                 <View key={teamMateIndex}>
                     <ScrollView style={{flex: 1}}>
                         <CardWrapper style={{marginLeft:20, minWidth:300, marginBottom:10, marginTop:2}}>
                             <View style={{width:'100%'}}>
                                 <View style={{flexDirection:'row',paddingVertical:20, paddingHorizontal: 20}}>
-                                    <PartIcon partInitial={'D'} isRecruitDone={true}/>
+                                    <PartIcon partInitial={getFirstAlphabet(teamMateItem.position).toString()} isRecruitDone={true}/>
                                     <View style={{paddingHorizontal: 10, justifyContent:'center'}}>
-                                        <Text style={{fontSize:theme.fontSize.lg, fontWeight: theme.fontWeight.bold, color:'black'}}>{teamMateitem.nickname}</Text>
-                                        <Text style={{fontSize:theme.fontSize.md, fontWeight:theme.fontWeight.light, color:theme.colors.grey1}}>{teamMateitem.position}</Text>
+                                        <Text style={{fontSize:theme.fontSize.lg, fontWeight: theme.fontWeight.bold, color:'black'}}>{teamMateItem.nickname}</Text>
+                                        <Text style={{fontSize:theme.fontSize.md, fontWeight:theme.fontWeight.light, color:theme.colors.grey1}}>{changeFirstLetterToCapital(teamMateItem.position)}</Text>
                                     </View>
                                 </View>
                                 {reviewQuestions != null && reviewQuestions.map( (item, index) => 
                                     reviewQuestions[index].reviewType == ReviewType.RATING
                                     ? <View style={{paddingVertical:20, borderTopWidth:1, borderTopColor: theme.colors.disabled}}>
                                     <Text style={{textAlign:'center', fontSize: theme.fontSize.md, fontWeight:theme.fontWeight.bold, color:'black', paddingBottom:10}}>{item.context}</Text>
-                                    <RatingInput updateRatingScore={(score) => updateRatingReview(item.questionId, teamMateitem.userId, score.toString())} size={theme.ratingBarSize.xl}/>
+                                    <RatingInput updateRatingScore={(score) => updateRatingReview(item.questionId, teamMateItem.userId, score.toString())} size={theme.ratingBarSize.xl}/>
                                     </View>
                                     :<View style={{paddingVertical:20, borderTopWidth:1, borderTopColor: theme.colors.disabled}}>
                                     <Text style={{textAlign:'center', fontSize: theme.fontSize.md, fontWeight:theme.fontWeight.bold, color:'black', paddingBottom:10}}>{item.context}</Text>
                                     <CustomInput 
-                                        onChangeText={(text:string) => updateTextReview(item.questionId, teamMateitem.userId, text)}
+                                        onChangeText={(text:string) => updateTextReview(item.questionId, teamMateItem.userId, text)}
                                         shape='round'
                                         containerStyle={{paddingHorizontal:20}} 
                                         size={'sm'} multiline={true} 
@@ -189,7 +190,3 @@ const TeamReview = ({navigation, route}:MainStackScreenProps<'TeamReview'>) => {
 }
 
 export default TeamReview
-
-function dispatch(arg0: any) {
-    throw new Error('Function not implemented.')
-}

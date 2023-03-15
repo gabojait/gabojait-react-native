@@ -20,3 +20,13 @@ export const isDataAvailable = (loading: any, data: any, contentData: any) => {
   if (!loading && contentData != null && data != null) return true
   else return false
 }
+
+export const changeFirstLetterToCapital = (text: string) => {
+  const firstLetter = text.charAt(0).toUpperCase()
+  const otherLetters = text.slice(1)
+  return (firstLetter + otherLetters)
+}
+
+export const getFirstAlphabet = (text: string) => {
+  return text.charAt(0).toUpperCase()
+}
