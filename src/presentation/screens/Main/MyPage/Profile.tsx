@@ -1,32 +1,23 @@
-import React from 'react'
-import globalStyles from '@/styles'
-import {AirbnbRating, CheckBox, Input, makeStyles, Text, useTheme} from '@rneui/themed'
-import {
-  ScrollView,
-  StyleProp,
-  StyleSheet,
-  TextStyle,
-  Touchable,
-  View,
-  ViewStyle,
-} from 'react-native'
+import React, {useEffect} from 'react'
+import {CheckBox, makeStyles, Text, useTheme} from '@rneui/themed'
+import {ActivityIndicator, ScrollView, StyleProp, TextStyle, View, ViewStyle} from 'react-native'
 import {FilledButton} from '@/presentation/components/Button'
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
 import ProfileViewDto from '@/model/Profile/ProfileViewDto'
 import {Slider} from '@miblanchard/react-native-slider'
 
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import {StringOmit} from '@rneui/base'
 import {RatingBar} from '@/presentation/components/RatingBar'
 import Review from '@/model/Profile/Review'
 import {Link} from '@react-navigation/native'
-import {MainStackScreenProps, ProfileStackParamListProps} from '@/presentation/navigation/types'
-import CustomHeader from '@/presentation/components/CustomHeader'
+import {ProfileStackParamListProps} from '@/presentation/navigation/types'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import {StackHeaderProps} from '@react-navigation/stack'
-import {FieldType} from '@/model/Profile/Portfolio'
 import useGlobalStyles from '@/styles'
 import {TouchableOpacity} from 'react-native-gesture-handler'
+import {getProfile, setProfileVisibility} from '@/redux/reducers/profileReducer'
+import {Level} from '@/model/Profile/Skill'
+import {calcMonth} from '@/util'
 
 const Header = ({navigation}: StackHeaderProps) => {
   const {theme} = useTheme()
@@ -59,108 +50,23 @@ const Profile = ({navigation}: ProfileStackParamListProps<'View'>) => {
     loading: userLoading,
     error: userError,
   } = useAppSelector(state => state.loginReducer.user)
-  /*   const {
+  const {
     data: profile,
     loading: profileLoading,
     error: profileError,
-  } = useAppSelector(state => state.profileReducer.profile) */
-  const pageLoading = userLoading
+  } = useAppSelector(state => state.profileReducer.userProfile)
+  const pageLoading = profileLoading || userLoading
   console.log(user)
+
+  useEffect(() => {
+    dispatch(getProfile())
+  }, [])
 
   const profileExist = true
   if (profileExist)
     navigation.setOptions({
       header: Header,
     })
-  const profile = {
-    completedTeams: [
-      {
-        position: '디자이너',
-        projectName: '가보자잇',
-        teamId: '234324',
-      },
-    ],
-    currentTeamId: 'string',
-    description: '모든 국민은 종교의 자유를 가진다. 대통령의 임기는 5년으로 하며, 중임할 수 없다.',
-    educations: [
-      {
-        educationId: 'string',
-        endedDate: 'string',
-        institutionName: '인천대학교 디자인학부 재학중',
-        isCurrent: true,
-        schemaVersion: 'string',
-        startedDate: 'string',
-      },
-    ],
-    imageUrl: 'string',
-    isPublic: true,
-    nickname: '대충 닉네임',
-    portfolios: [
-      {
-        name: '네이버 블로그',
-        portfolioId: 'string',
-        portfolioType: FieldType.Url,
-        schemaVersion: 'string',
-        url: 'string',
-      },
-    ],
-    reviews: [
-      {
-        nickname: '김**',
-        rating: 3.5,
-        content:
-          '대법원은 법률에 저촉되지 아니하는 범위안에서 소송에 관한 절차, 법원의 내부규율과 사무처리에 관한 규칙을 제정할 수 있다. 모든 국민은 그 보호하는 자녀에게 적어도 초등교육과 법률이 정하는 교육을 받게 할 의무를 진다. 대통령은 국민의 보통·평등·직접·비밀선거에 의하여 선출한다. 모든 국민은 신체의 자유를 가진다. 누구든지 법률에 의하지 아니하고는 체포·구속·압수·수색 또는 심문을 받지 아니하며, 법률과 적법한 절차에 의하지 아니하고는 처벌·보안처분 또는 강제노역을 받지 아니한다. 모든 국민은 법률이 정하는 바에 의하여 국방의 의무를 진다. 위원은 탄핵 또는 금고 이상의 형의 선고에 의하지 아니하고는 파면되지 아니한다.',
-        addedAt: '2023-03-05',
-      },
-      {
-        nickname: '최**',
-        rating: 4.0,
-        content:
-          '대법원은 법률에 저촉되지 아니하는 범위안에서 소송에 관한 절차, 법원의 내부규율과 사무처리에 관한 규칙을 제정할 수 있다. 모든 국민은 그 보호하는 자녀에게 적어도 초등교육과 법률이 정하는 교육을 받게 할 의무를 진다. 대통령은 국민의 보통·평등·직접·비밀선거에 의하여 선출한다. 모든 국민은 신체의 자유를 가진다. 누구든지 법률에 의하지 아니하고는 체포·구속·압수·수색 또는 심문을 받지 아니하며, 법률과 적법한 절차에 의하지 아니하고는 처벌·보안처분 또는 강제노역을 받지 아니한다. 모든 국민은 법률이 정하는 바에 의하여 국방의 의무를 진다. 위원은 탄핵 또는 금고 이상의 형의 선고에 의하지 아니하고는 파면되지 아니한다.',
-        addedAt: '2023-03-06',
-      },
-    ],
-    position: 'Designer',
-    rating: 3.5,
-    schemaVersion: 'string',
-    skills: [
-      {
-        isExperienced: true,
-        level: 'string',
-        schemaVersion: 'string',
-        skillId: 'string',
-        skillName: 'XD',
-      },
-      {
-        isExperienced: true,
-        level: 'string',
-        schemaVersion: 'string',
-        skillId: 'string',
-        skillName: 'Figma',
-      },
-    ],
-    userId: 'string',
-    works: [
-      {
-        corporationName: '00회사에서 인턴',
-        description: 'string',
-        endedDate: '2022-01-01',
-        isCurrent: true,
-        schemaVersion: 'string',
-        startedDate: '2022-06-01',
-        workId: 'string',
-      },
-      {
-        corporationName: '11회사에서 인턴',
-        description: 'string',
-        endedDate: '2023-02-26',
-        isCurrent: true,
-        schemaVersion: 'string',
-        startedDate: '2022-07-01',
-        workId: 'string',
-      },
-    ],
-  } as ProfileViewDto
 
   const globalStyles = useGlobalStyles()
 
@@ -175,8 +81,11 @@ const Profile = ({navigation}: ProfileStackParamListProps<'View'>) => {
       <FilledButton title="만들기" />
     </View>
   )
-
-  return !pageLoading ? (
+  return pageLoading ? (
+    <View style={globalStyles.container}>
+      <ActivityIndicator />
+    </View>
+  ) : profile && !profileError ? (
     <ScrollView style={{flex: 1}}>
       <View style={{flex: 0.2, backgroundColor: '#f5f5f5', marginBottom: '30%'}} />
       <View style={{flex: 0.8}}>
@@ -202,7 +111,12 @@ const Profile = ({navigation}: ProfileStackParamListProps<'View'>) => {
                 paddingVertical: 50,
               }}>
               <View style={styles.profileContainer}></View>
-              <PortfolioView profile={profile} onProfileVisibilityChanged={isPublic => {}} />
+              <PortfolioView
+                profile={profile}
+                onProfileVisibilityChanged={isPublic => {
+                  dispatch(setProfileVisibility(isPublic))
+                }}
+              />
             </View>
             <View
               style={{
@@ -214,63 +128,90 @@ const Profile = ({navigation}: ProfileStackParamListProps<'View'>) => {
                 marginTop: 20,
               }}>
               <Text h4>학력/경력</Text>
-              <IconLabel
-                iconName="school"
-                label={profile.educations[profile.educations.length - 1].institutionName}
-              />
-              {profile.works
-                .map(work => <IconLabel iconName="work" label={work.corporationName} />)
-                .slice(0, 2)}
+              {profile.educations?.length ?? 0 > 0 ? (
+                <IconLabel
+                  iconName="school"
+                  label={profile.educations[profile.educations.length - 1]?.institutionName ?? ''}
+                />
+              ) : (
+                <Text>아직 학교 정보를 입력하지 않은 것 같아요.</Text>
+              )}
+              {profile.works?.length ?? 0 > 0 ? (
+                profile.works
+                  .map(work => <IconLabel iconName="work" label={work.corporationName} />)
+                  .slice(0, 2)
+              ) : (
+                <Text>아직 경력 정보를 입력하지 않은 것 같아요.</Text>
+              )}
 
               <Text h4>기술스택/직무</Text>
-              <ToggleButton title={profile.position} />
-              {profile.skills.map((skill, idx) => (
+              {profile.position ? (
+                <ToggleButton title={profile.position} />
+              ) : (
+                <Text>아직 직무 정보를 입력하지 않은 것 같아요.</Text>
+              )}
+              {profile.skills?.map((skill, idx) => (
                 <>
                   <Text>희망 기술스택</Text>
                   <CustomSlider
                     text={skill.skillName}
-                    value={parseInt(skill.level)}
+                    value={Level[skill.level]}
                     onChangeValue={function (value: number | number[]): void {}}
                     minimumTrackTintColor={sliderColors[idx % 3]}
                   />
                 </>
               ))}
               <Text h4>포트폴리오</Text>
+
               <View style={{flexWrap: 'wrap', flexDirection: 'row'}}>
-                {profile.portfolios.map(portfolio => (
-                  <ToggleButton
-                    title={portfolio.name}
-                    icon={<MaterialIcon name={portfolioTypeIconName['pdf']} />}
-                    style={{
-                      backgroundColor: '#fff',
-                    }}
-                  />
-                ))}
+                {profile.portfolios?.length ?? 0 > 0 ? (
+                  profile.portfolios.map(portfolio => (
+                    <ToggleButton
+                      title={portfolio.name}
+                      icon={<MaterialIcon name={portfolioTypeIconName['pdf']} />}
+                      style={{
+                        backgroundColor: '#fff',
+                      }}
+                    />
+                  ))
+                ) : (
+                  <Text>아직 포트폴리오 정보를 입력하지 않은 것 같아요.</Text>
+                )}
               </View>
               <Text h4>이전 프로젝트</Text>
-              {profile.completedTeams.map(team => (
-                <Text>
-                  프로젝트 '{team.projectName}' - {team.position}
-                </Text>
-              ))}
+              {profile.completedTeams?.length ?? 0 > 0 ? (
+                profile.completedTeams.map(team => (
+                  <Text>
+                    프로젝트 '{team.projectName}' - {team.position}
+                  </Text>
+                ))
+              ) : (
+                <Text>아직 이전 프로젝트 정보를 입력하지 않은 것 같아요.</Text>
+              )}
               <Text h4>리뷰</Text>
-              <View style={{flexDirection: 'row'}}>
-                <Text h2 style={{fontWeight: 'bold', marginEnd: 10}}>
-                  {profile.rating}
-                </Text>
-                <View>
-                  <RatingBar ratingScore={profile.rating} />
-                  <Text>{profile.reviews.length}개 리뷰</Text>
-                </View>
-              </View>
-              <View style={{marginTop: 25}}>
-                {profile.reviews.map(review => (
-                  <ReviewItem review={review} />
-                ))}
-                <Link to={''} style={{color: theme.colors.primary, textAlign: 'right'}}>
-                  더보기
-                </Link>
-              </View>
+              {profile.reviews?.length ?? 0 > 0 ? (
+                <>
+                  <View style={{flexDirection: 'row'}}>
+                    <Text h2 style={{fontWeight: 'bold', marginEnd: 10}}>
+                      {profile.rating}
+                    </Text>
+                    <View>
+                      <RatingBar ratingScore={profile.rating} />
+                      <Text>{profile.reviews.length}개 리뷰</Text>
+                    </View>
+                  </View>
+                  <View style={{marginTop: 25}}>
+                    {profile.reviews.map(review => (
+                      <ReviewItem review={review} />
+                    ))}
+                    <Link to={''} style={{color: theme.colors.primary, textAlign: 'right'}}>
+                      더보기
+                    </Link>
+                  </View>
+                </>
+              ) : (
+                <Text>아직 리뷰가 작성되지 않은 것 같아요.</Text>
+              )}
             </View>
           </>
         )}
@@ -278,7 +219,7 @@ const Profile = ({navigation}: ProfileStackParamListProps<'View'>) => {
     </ScrollView>
   ) : (
     <View style={globalStyles.container}>
-      <Text>로딩</Text>
+      <Text>{profileError?.message}</Text>
     </View>
   )
 }
@@ -390,7 +331,7 @@ export const CustomSlider = ({
 }: {
   text?: string
   value: number
-  onChangeValue: (value: number | number[]) => void
+  onChangeValue?: (value: number | number[]) => void
   minimumTrackTintColor: string
   enabled?: boolean
   size?: 'md' | 'lg'
@@ -447,6 +388,11 @@ const PortfolioView = ({
   onProfileVisibilityChanged: (visibility: boolean) => void
 }) => {
   const {theme} = useTheme()
+  
+  const careerTime = calcMonth(
+    new Date(profile.works[profile.works.length - 1]?.endedDate ?? ''),
+    new Date(profile.works[0]?.startedDate ?? ''),
+  )
 
   return (
     <View>
@@ -475,19 +421,34 @@ const PortfolioView = ({
           </Text>
         </View>
         <View>
-          <Text style={{textAlign: 'center'}}>리뷰</Text>
-          <Text style={{textAlign: 'center'}}>
-            <MaterialIcon name="star" color={theme.colors.primary} />
-            {profile.rating}({profile.rating})
+          <Text style={{fontWeight: theme.fontWeight.light, textAlign: 'center'}}>리뷰</Text>
+          <Text
+            style={{
+              textAlign: 'center',
+              fontWeight:
+                profile.reviews?.length ?? 0 > 0 ? theme.fontWeight.medium : theme.fontWeight.bold,
+            }}>
+            {profile.reviews?.length ?? 0 > 0 ? (
+              <>
+                <MaterialIcon name="star" color={theme.colors.primary} />
+                {profile.rating}({profile.rating})
+              </>
+            ) : (
+              <Text>없음</Text>
+            )}
           </Text>
         </View>
         <View>
           <Text style={{fontWeight: theme.fontWeight.light, textAlign: 'center'}}>총 경력</Text>
-          <Text style={{fontWeight: theme.fontWeight.bold, textAlign: 'center'}}>
-            {new Date(profile.works[profile.works.length - 1].endedDate).getMilliseconds() -
-              new Date(profile.works[0].startedDate).getMilliseconds()}
-            ms
-          </Text>
+          {
+            <Text style={{fontWeight: theme.fontWeight.bold, textAlign: 'center'}}>
+              {profile.works.length > 0
+                ? careerTime == 0
+                  ? '1개월 미만'
+                  : `${careerTime} 개월`
+                : '없음'}
+            </Text>
+          }
         </View>
       </SolidCard>
     </View>

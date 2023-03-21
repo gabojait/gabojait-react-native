@@ -21,10 +21,19 @@ export function uuidv4() {
   })
 }
 export const isInitializable = (loading: any, data: any) => {
-  if(!loading&& data != null) return true
+  if (!loading && data != null) return true
   else return false
 }
 export const isDataAvailable = (loading: any, data: any, contentData: any) => {
   if (!loading && contentData != null && data != null) return true
   else return false
 }
+
+/**
+ * endDate 부터 startDate 까지의 시간차를 월 단위로 반환합니다.
+ * @param endDate 끝 시간
+ * @param startDate 시작 시간
+ * @returns
+ */
+export const calcMonth = (endDate: Date, startDate: Date) =>
+  Math.floor((endDate.getTime() - startDate.getTime()) / 1000 / 60 / 60 / 24 / 31)

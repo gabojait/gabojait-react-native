@@ -24,7 +24,7 @@ interface CustomInstance extends AxiosInstance {
   }
   getUri(config?: AxiosRequestConfig): string
   request<T>(config: AxiosRequestConfig): Promise<T>
-  get<T>(url: string, params?: RawAxiosRequestConfig, config?: AxiosRequestConfig,): Promise<T>
+  get<T>(url: string, params?: RawAxiosRequestConfig, config?: AxiosRequestConfig): Promise<T>
   delete<T>(url: string, config?: AxiosRequestConfig): Promise<T>
   head<T>(url: string, config?: AxiosRequestConfig): Promise<T>
   options<T>(url: string, config?: AxiosRequestConfig): Promise<T>
@@ -68,11 +68,10 @@ client.interceptors.response.use(
           await AsyncStorage.setItem('accessToken', tokens[1])
           await AsyncStorage.setItem('refreshToken', tokens[2])
         }
-        if (res.data.data == null || res.status == 204 || res.status == 201) {
+        if (!res.data.data || res.status == 204 || res.status == 201) {
           // Todo: Handle No Content
           // Todo: 빈 리스트(204?)/201 대응
-
-          //return []
+          return []
         } else {
           return res.data.data
         }
