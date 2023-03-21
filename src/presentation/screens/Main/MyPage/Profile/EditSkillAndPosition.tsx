@@ -6,55 +6,14 @@ import {ToggleButton, Chip, CustomSlider, sliderColors} from '../Profile'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import {SquareIcon} from './EditPortfolio'
 import {uuidv4} from '@/util'
+import {useAppSelector} from '@/redux/hooks'
+import {Level} from '@/model/Profile/Skill'
 
 const EditSkillAndPosition = () => {
   const [position, setPosition] = useState('PM')
   const positions = ['PM', 'Designer', 'Frontend', 'Backend']
-
-  const orgSkills = [
-    {
-      isExperienced: true,
-      level: 0,
-      schemaVersion: 'string',
-      skillId: '1',
-      skillName: 'XD',
-    },
-    {
-      isExperienced: true,
-      level: 0,
-      schemaVersion: 'string',
-      skillId: '2',
-      skillName: 'Figma',
-    },
-    {
-      isExperienced: true,
-      level: 0,
-      schemaVersion: 'string',
-      skillId: '3',
-      skillName: 'React',
-    },
-    {
-      isExperienced: true,
-      level: 0,
-      schemaVersion: 'string',
-      skillId: '4',
-      skillName: 'Vue',
-    },
-    {
-      isExperienced: true,
-      level: 0,
-      schemaVersion: 'string',
-      skillId: '5',
-      skillName: 'Flutter',
-    },
-    {
-      isExperienced: true,
-      level: 0,
-      schemaVersion: 'string',
-      skillId: '6',
-      skillName: 'React Native',
-    },
-  ]
+  const {data, loading, error} = useAppSelector(state => state.profileReducer.userProfile)
+  const orgSkills = data?.skills ?? []
   const [skills, setSkills] = useState(orgSkills)
 
   const {theme} = useTheme()
@@ -89,7 +48,7 @@ const EditSkillAndPosition = () => {
       {skills.map((skill, idx) => (
         <SliderItem
           sliderColor={sliderColors[idx % 3]}
-          value={skill.level}
+          value={Level[skill.level]}
           title={skill.skillName}
           onTitleChange={title =>
             setSkills(prevState => {
@@ -109,7 +68,9 @@ const EditSkillAndPosition = () => {
           onSliderChange={value => {
             setSkills(prevState => {
               const idx = prevState.findIndex(item => item.skillId == skill.skillId)
-              prevState[idx].level = value
+              prevState[idx].level = Object.entries(Level).find(
+                ([_, lvl]) => lvl == value,
+              )?.[0] as keyof typeof Level
               return [...prevState]
             })
           }}
@@ -130,7 +91,7 @@ const EditSkillAndPosition = () => {
               ...prevState,
               {
                 isExperienced: false,
-                level: 0,
+                level: 'MID',
                 schemaVersion: 'string',
                 skillId: uuidv4(),
                 skillName: '',

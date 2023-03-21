@@ -4,42 +4,16 @@ import CustomInput from '@/presentation/components/CustomInput'
 import DateDropdown from '@/presentation/components/DropdownWithoutItem'
 import {ModalContext} from '@/presentation/components/modal/context'
 import DatePickerModalContent from '@/presentation/components/modalContent/DatePickerModalContent'
+import {useAppSelector} from '@/redux/hooks'
 import {Text} from '@rneui/themed'
 import React, {useState} from 'react'
 import {ScrollView, View} from 'react-native'
 import {EditItem, SquareIcon} from './EditPortfolio'
 
 const EditSchoolAndCareer = ({}) => {
-  const orgCareer = [
-    {
-      corporationName: '00회사에서 인턴',
-      description: 'string',
-      endedDate: '2022-01-01',
-      isCurrent: true,
-      schemaVersion: 'string',
-      startedDate: '2022-06-01',
-      workId: '1',
-    },
-    {
-      corporationName: '11회사에서 인턴',
-      description: 'string',
-      endedDate: '2023-02-26',
-      isCurrent: true,
-      schemaVersion: 'string',
-      startedDate: '2022-07-01',
-      workId: '2',
-    },
-  ]
-  const orgSchool = [
-    {
-      educationId: 'string',
-      endedDate: '2023-01-01',
-      institutionName: '인천대학교 디자인학부 재학중',
-      isCurrent: true,
-      schemaVersion: 'string',
-      startedDate: '2022-07-01',
-    },
-  ]
+  const {data, loading, error} = useAppSelector(state => state.profileReducer.userProfile)
+  const orgCareer = data?.works ?? []
+  const orgSchool = data?.educations ?? []
   const [careers, setCarrers] = useState(orgCareer)
   const [schools, setSchools] = useState(orgSchool)
 
