@@ -11,13 +11,14 @@ import { getTeam } from '@/redux/reducers/teamGetReducer'
 import Team from '@/model/Team/Team'
 import { useCookies } from 'react-cookie'
 import { isDataAvailable, isInitializable } from '@/util'
+import { testTeamArray } from '@/testData'
 
 const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
 
   const {theme} = useTheme() 
   const modal = React.useContext(ModalContext)
   const dispatch = useAppDispatch()
-  const [teamGetState, setTeamGetState] = useState({pageFrom: 0, pageNum: 20})
+  const [teamGetState, setTeamGetState] = useState({pageFrom: 0, pageSize: 4})
   const {data,loading,error} = useAppSelector(state => state.teamGetReducer.teamGetResult)
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [contentData, setContentData] = useState<Team[]>()
@@ -100,10 +101,16 @@ const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
   }
 
   const requestMoreTeam = () => {
-    if(data != null && data.length >= teamGetState.pageNum){
-      dispatch( getTeam(teamGetState.pageFrom, teamGetState.pageNum) )
+    if(data != null && data.length >= teamGetState.pageSize){
+      dispatch( getTeam(teamGetState.pageFrom, teamGetState.pageSize) )
       setTeamGetState( prevState => ({...prevState, pageFrom: teamGetState.pageFrom+1}))
     }
+  }
+  
+  const refreshMoreTeam = () => {
+    setContentData([])
+    requestMoreTeam()
+    setIsRefreshing(false)
   }
 
   useEffect(() => {
@@ -114,14 +121,14 @@ const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
 
   useEffect(() => {
     console.log('useEffect 초기 렌더링 실행!')
-    dispatch( getTeam(teamGetState.pageFrom, teamGetState.pageNum) )
+    dispatch( getTeam(teamGetState.pageFrom, teamGetState.pageSize) )
     setTeamGetState( prevState => ({...prevState, pageFrom: teamGetState.pageFrom+1}))
     isInitializable(loading, data)? setContentData(data): {}
 
-    if (!hasCookie) profileMentionModal()
-    if (appCookies["MODAL_EXPIRES"]) return;
-    console.log(`appCookies:${appCookies["MODAL_EXPIRES"]}`);
-    setHasCookie(false);
+    // if (!hasCookie) profileMentionModal()
+    // if (appCookies["MODAL_EXPIRES"]) return;
+    // console.log(`appCookies:${appCookies["MODAL_EXPIRES"]}`);
+    // setHasCookie(false);
   },[])
 
   return (
@@ -135,10 +142,12 @@ const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
             team={item}
           />
         </TouchableOpacity>}
+        refreshing={isRefreshing}
+        onRefresh={refreshMoreTeam}
         onEndReached={()=>{
           requestMoreTeam()
         }}
-        onEndReachedThreshold={1}
+        onEndReachedThreshold={0.6}
       />
       <View style={{position:'absolute',flex:1, flexDirection:'column-reverse',justifyContent:'flex-start', alignItems:'flex-end', width: '95%', backgroundColor:theme.colors.disabled}}>
         <FloatingButton title='팀 생성' onPress={() => navigation.navigate('MainNavigation', {screen: 'GroupEditor'})}/>

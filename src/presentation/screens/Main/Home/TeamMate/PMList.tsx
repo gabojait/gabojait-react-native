@@ -16,13 +16,20 @@ const PMList = () => {
     const {data,loading,error} = useAppSelector(state => state.individualsFindReducer.individualsFindResult)
     const [contentData, setContentData] = useState<UserProfileBriefDto[]>()
     const [individualsFindState, setIndividualsFindState] = useState({pageFrom: 0, pageNum: 2})
+    const [isRefreshing, setIsRefreshing] = useState(false)
 
     const requestMoreTeam = () => {
         if(data != null && data.length >= individualsFindState.pageNum){
           dispatch( findIndividuals(individualsFindState.pageFrom, individualsFindState.pageNum, PM) )
           setIndividualsFindState( prevState => ({...prevState, pageFrom: individualsFindState.pageFrom+1}))
         }
-      }
+    }
+
+    const refreshMoreTeam = () => {
+        setContentData([])
+        requestMoreTeam()
+        setIsRefreshing(false)
+    }
 
     useEffect(() => {
         console.log(`data 변경 감지`)
@@ -65,6 +72,8 @@ const PMList = () => {
                         </View>
                     </CardWrapper>
                 }
+                refreshing={isRefreshing}
+                onRefresh={refreshMoreTeam}
                 onEndReached={()=>{
                     requestMoreTeam()
                 }}

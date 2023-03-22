@@ -16,6 +16,7 @@ const FrontendList = () => {
     const {data,loading,error} = useAppSelector(state => state.individualsFindReducer.individualsFindResult)
     const [contentData, setContentData] = useState<UserProfileBriefDto[]>()
     const [individualsFindState, setIndividualsFindState] = useState({pageFrom: 0, pageNum: 20})
+    const [isRefreshing, setIsRefreshing] = useState(false)
 
     const requestMoreTeam = () => {
         if(data != null && data.length >= individualsFindState.pageNum){
@@ -23,6 +24,12 @@ const FrontendList = () => {
           setIndividualsFindState( prevState => ({...prevState, pageFrom: individualsFindState.pageFrom+1}))
         }
       }
+    
+    const refreshMoreTeam = () => {
+        setContentData([])
+        requestMoreTeam()
+        setIsRefreshing(false)
+    }
 
     useEffect(() => {
         console.log(`data 변경 감지`)
@@ -65,10 +72,12 @@ const FrontendList = () => {
                         </View>
                     </CardWrapper>
                 }
+                refreshing={isRefreshing}
+                onRefresh={refreshMoreTeam}
                 onEndReached={()=>{
                     requestMoreTeam()
                 }}
-                onEndReachedThreshold={1}
+                onEndReachedThreshold={0.6}
             />
         </View>
     )
