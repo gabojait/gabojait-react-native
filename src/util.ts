@@ -30,3 +30,14 @@ export const changeFirstLetterToCapital = (text: string) => {
 export const getFirstAlphabet = (text: string) => {
   return text.charAt(0).toUpperCase()
 }
+export const chagneToOfficialWord = (text: string | undefined) => {
+  let word =''
+  
+  if (text == 'BACKEND') word = '백엔드'
+  else if (text == 'FRONTEND') word = '프론트엔드'
+  else if (text == 'DESIGNER') word = 'UI/UX 디자이너'
+  else if (text == 'PM') word = 'PM'
+  else word = ''
+
+  return word
+}
