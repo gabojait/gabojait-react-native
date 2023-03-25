@@ -5,12 +5,13 @@ import {Float} from 'react-native/Libraries/Types/CodegenTypes'
 import {useTheme} from '@rneui/themed'
 
 interface RatingProps {
-  ratingScore: Float
+  ratingScore: Float | undefined
   size?: number
 }
 
 export const RatingBar = ({ratingScore, size = 25}: RatingProps) => {
   const {theme} = useTheme()
+  ratingScore == undefined? ratingScore = 0 : {}
   ratingScore = ratingScore > 5 ? 5 : ratingScore
 
   const starFilled = Math.floor(ratingScore)
