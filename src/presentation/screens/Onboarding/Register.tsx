@@ -61,6 +61,9 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
     items: agreementItems,
   })
 
+  const [dupChecked, setDupChecked] = useState(false)
+  const [emailVerified, setEmailVerified] = useState(false)
+
   useEffect(() => {
     if (agreementState.items.filter(item => item.checked).length == agreementState.items.length) {
       setAgreementState(prevState => ({...prevState, checkedAll: true}))
@@ -112,31 +115,26 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
     error: usernameDupError,
   } = useAppSelector(state => state.registerReducer.usernameDupCheckResult)
   useEffect(() => {
-    if (usernameDup && !usernameDupLoading && !usernameDupError) {
+    let message
+    if (!usernameDupLoading) {
+      if (usernameDup && !usernameDupError) {
+        message = '사용할 수 있는 아이디입니다.'
+      } else if (!usernameDup && usernameDupError) {
+        if (usernameDupError.name == ErrorCode.EXISTING_USERNAME.name) {
+          message = '이미 존재하는 아이디입니다.'
+        } else message = ErrorCode[usernameDupError.name as keyof typeof ErrorCode].text
+      }
       modal?.show({
         title: <Text>중복확인</Text>,
         content: (
           <OkDialogModalContent
-            text={
-              !usernameDupError ? '사용할 수 있는 아이디입니다.' : '이미 존재하는 아이디입니다.'
-            }
+            text={message ?? '알 수 없는 오류입니다.'}
             onOkClick={() => {
               modal?.hide()
             }}
           />
         ),
       })
-    } else if (!usernameDupLoading && !usernameDup && usernameDupError) {
-      if (usernameDupError.name == ErrorCode.EXISTING_USERNAME.name)
-        modal?.show({
-          title: <Text>중복확인</Text>,
-          content: (
-            <OkDialogModalContent
-              text="이미 존재하는 아이디입니다."
-              onOkClick={() => modal?.hide()}
-            />
-          ),
-        })
     }
   }, [usernameDup, usernameDupLoading, usernameDupError])
   const {
@@ -146,14 +144,18 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
   } = useAppSelector(state => state.registerReducer.nicknameDupCheckResult)
 
   useEffect(() => {
-    if (nicknameDup && !nicknameDupLoading) {
+    if (!nicknameDupLoading) {
+      let message
+      if (nicknameDup && !nicknameDupError) {
+        message = '사용할 수 있는 닉네임입니다.'
+      } else if (!nicknameDup && nicknameDupError) {
+        message = '이미 존재하는 닉네임입니다.'
+      }
       modal?.show({
         title: <Text>중복확인</Text>,
         content: (
           <OkDialogModalContent
-            text={
-              !nicknameDupError ? '사용할 수 있는 닉네임입니다.' : '이미 존재하는 닉네임입니다.'
-            }
+            text={message ?? '알 수 없는 오류입니다.'}
             onOkClick={() => {
               modal?.hide()
             }}
@@ -499,7 +501,7 @@ const useStyles = makeStyles(theme => ({
   item: {
     flex: 1,
     flexDirection: 'row',
-    alignItems: 'flex-end',
+    alignItems: 'center',
   },
   itemBox: {
     paddingTop: 30,

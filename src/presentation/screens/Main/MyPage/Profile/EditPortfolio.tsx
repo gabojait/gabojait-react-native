@@ -1,4 +1,4 @@
-import Portfolio, {FieldType} from '@/model/Profile/Portfolio'
+import Portfolio, {PortfolioType} from '@/model/Profile/Portfolio'
 import CustomInput from '@/presentation/components/CustomInput'
 import {useAppSelector} from '@/redux/hooks'
 import globalStyles from '@/styles'
@@ -15,9 +15,10 @@ import {List} from './EditSchoolAndCareer'
 
 const EditPortfolio = () => {
   // Todo: Implement Portfolio Reducer
-  const orgPortfolios =
-    /* useAppSelector(state => state) */
-    [
+  const {data, loading, error} = useAppSelector(state => state.profileReducer.userProfile)
+  const orgPortfolios = data?.portfolios ?? []
+  console.log(orgPortfolios)
+  /*     [
       {
         name: 'Github',
         portfolioId: 'github',
@@ -30,7 +31,7 @@ const EditPortfolio = () => {
         portfolioType: FieldType.File,
         url: '',
       },
-    ] as Portfolio[]
+    ] as Portfolio[] */
   const [portfolios, setPortfolios] = useState(orgPortfolios)
 
   const globalStyles = useGlobalStyles()
@@ -57,26 +58,35 @@ const EditPortfolio = () => {
     })
   }
 
+  console.log(portfolios[0].portfolioType, PortfolioType.Url)
+
   return (
-    <View style={globalStyles.container}>
-      <PortfolioList
-        title="링크"
-        fieldType={FieldType.Url}
-        onAddPortfolio={handleAdd}
-        onChangePortfolio={handleEdit}
-        onDeletePortfolio={handleDelete}
-        portfolios={portfolios.filter(portfolio => portfolio.portfolioType == FieldType.Url)}
-      />
-      <PortfolioList
-        title="파일 업로드"
-        fieldType={FieldType.File}
-        onAddPortfolio={handleAdd}
-        onChangePortfolio={handleEdit}
-        onDeletePortfolio={handleDelete}
-        portfolios={portfolios.filter(portfolio => portfolio.portfolioType == FieldType.File)}
-      />
-    </View>
+    portfolios.length > 0 && (
+      <View style={globalStyles.container}>
+        <PortfolioList
+          title="링크"
+          fieldType={PortfolioType.Url}
+          onAddPortfolio={handleAdd}
+          onChangePortfolio={handleEdit}
+          onDeletePortfolio={handleDelete}
+          portfolios={portfolios.filter(portfolio => portfolio.portfolioType == PortfolioType.Url)}
+        />
+        <PortfolioList
+          title="파일 업로드"
+          fieldType={PortfolioType.File}
+          onAddPortfolio={handleAdd}
+          onChangePortfolio={handleEdit}
+          onDeletePortfolio={handleDelete}
+          portfolios={portfolios.filter(portfolio => portfolio.portfolioType == PortfolioType.File)}
+        />
+      </View>
+    )
   )
+}
+
+const placeHolders = {
+  L: 'URL 주소를 입력해주세요!',
+  F: '.jpg, .jpeg, .png, .pdf 포맷만 가능합니다!',
 }
 
 export const PortfolioList = ({
@@ -92,7 +102,7 @@ export const PortfolioList = ({
   onAddPortfolio: (portfolio: Portfolio) => void
   onDeletePortfolio: (portfolioId: string) => void
   title: string
-  fieldType: FieldType
+  fieldType: PortfolioType
 }) => {
   const pickDocument = (portfolio: Portfolio) => {
     DocumentPicker.pickSingle().then(res => {
@@ -107,7 +117,11 @@ export const PortfolioList = ({
         datas={portfolios}
         renderItems={portfolio => {
           let value = portfolio.url ?? ''
-          if (portfolio.url != '' && portfolio.url && portfolio.portfolioType == FieldType.File) {
+          if (
+            portfolio.url != '' &&
+            portfolio.url &&
+            portfolio.portfolioType == PortfolioType.File
+          ) {
             const urls = decodeURI(portfolio.url).split('/')
             value = urls[urls.length - 1]
           }
@@ -122,10 +136,10 @@ export const PortfolioList = ({
               }}
               onChangeName={text => onChangePortfolio({...portfolio, name: text})}>
               <CustomInput
-                editable={portfolio.portfolioType == FieldType.Url}
-                placeholder={portfolio.portfolioType.placeholder}
+                editable={portfolio.portfolioType == PortfolioType.Url}
+                placeholder={placeHolders[portfolio.portfolioType as PortfolioType]}
                 onPressOut={
-                  portfolio.portfolioType == FieldType.File
+                  portfolio.portfolioType == PortfolioType.File
                     ? () => pickDocument(portfolio)
                     : undefined
                 }
@@ -186,6 +200,7 @@ export const EditItem = ({
             fontSize: theme.fontSize.sm,
             fontWeight: theme.fontWeight.medium,
             color: theme.colors.grey2,
+            paddingHorizontal: 10,
           }}
           editable={titleEditable}
           placeholder={name}

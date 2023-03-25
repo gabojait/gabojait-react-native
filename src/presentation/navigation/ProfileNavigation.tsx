@@ -7,6 +7,7 @@ import CloseHeader from '../screens/Headers/CloseHeader'
 import TitleWithCloseHeader from '../screens/Headers/TitleWithCloseHeader'
 import EditPortfolio from '../screens/Main/MyPage/Profile/EditPortfolio'
 import EditSchoolAndCareer from '../screens/Main/MyPage/Profile/EditSchoolAndCareer'
+import EditSkillAndPosition from '../screens/Main/MyPage/Profile/EditSkillAndPosition'
 
 const Profile = createStackNavigator<ProfileStackParamList>()
 
@@ -29,6 +30,11 @@ const ProfileNavigation = () => {
           name="EditSchoolAndCareer"
           options={{header: TitleWithCloseHeader, headerTitle: '학력/경력'}}
           component={EditSchoolAndCareer}
+        />
+        <Profile.Screen
+          name="EditSkillAndPosition"
+          options={{header: TitleWithCloseHeader, headerTitle: '기술스택/직무'}}
+          component={EditSkillAndPosition}
         />
       </Profile.Group>
     </Profile.Navigator>

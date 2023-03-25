@@ -1,10 +1,9 @@
 import {FilledButton} from '@/presentation/components/Button'
 import CustomInput from '@/presentation/components/CustomInput'
 import {ModalContext} from '@/presentation/components/modal/context'
-import useModal from '@/presentation/components/modal/useModal'
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent'
+import {ValidatorState} from '@/presentation/components/props/StateProps'
 import useGlobalStyles from '@/styles'
-import globalStyles from '@/styles'
 import {emailRegex, usernameRegex} from '@/util'
 import {Button, Input, Text, useTheme} from '@rneui/themed'
 import React, {useState} from 'react'
@@ -16,7 +15,7 @@ const FindAccount = () => {
   const modal = React.useContext(ModalContext)
   const {theme} = useTheme()
 
-  const test = (regex: RegExp, text: string) => {
+  const test: (regex: RegExp, text: string) => ValidatorState = (regex: RegExp, text: string) => {
     if (text.length == 0) return 'none'
     return regex.test(text) ? 'valid' : 'invalid'
   }
@@ -48,8 +47,7 @@ const FindAccount = () => {
       ),
     })
   }
-  const globalStyles = useGlobalStyles();
-
+  const globalStyles = useGlobalStyles()
 
   return (
     <View style={[globalStyles.container, {padding: 20}]}>
