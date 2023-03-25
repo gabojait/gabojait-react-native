@@ -21,4 +21,5 @@ export default interface ProfileViewDto {
   skills: Skill[]
   userId: string
   works: Work[]
+  teamMemberStatus: string
 }
