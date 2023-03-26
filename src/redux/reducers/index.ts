@@ -10,9 +10,8 @@ import {individualsFindReducer} from './individualsFindReducer'
 import {teamsToReviewGetReducer} from './teamsToReviewGetReducer'
 import {reviewQuestionsGetReducer} from './reviewQuestionsGetReducer'
 import {profileReducer} from './profileReducer'
-import { teamToReviewGetReducer } from './teamToReviewGetReducer'
-import { reviewCreateReducer } from './reviewCreateReducer' 
-import { profileGetReducer } from './profileGetReducer'
+import {teamToReviewGetReducer} from './teamToReviewGetReducer'
+import {reviewCreateReducer} from './reviewCreateReducer'
 
 export interface Result<T> {
   data?: T
@@ -36,8 +35,6 @@ const rootReducer = combineReducers({
   reviewQuestionsGetReducer,
   teamToReviewGetReducer,
   reviewCreateReducer,
-  profileGetReducer
-  reviewQuestionsGetReducer,
   profileReducer,
 })
 

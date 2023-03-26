@@ -4,18 +4,25 @@ import CustomInput from '@/presentation/components/CustomInput'
 import DateDropdown from '@/presentation/components/DropdownWithoutItem'
 import {ModalContext} from '@/presentation/components/modal/context'
 import DatePickerModalContent from '@/presentation/components/modalContent/DatePickerModalContent'
-import {useAppSelector} from '@/redux/hooks'
+import {ProfileStackParamListProps} from '@/presentation/navigation/types'
+import {useAppDispatch, useAppSelector} from '@/redux/hooks'
 import {Text} from '@rneui/themed'
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {ScrollView, View} from 'react-native'
 import {EditItem, SquareIcon} from './EditPortfolio'
 
-const EditSchoolAndCareer = ({}) => {
+const EditSchoolAndCareer = ({navigation}: ProfileStackParamListProps<'EditSchoolAndCareer'>) => {
   const {data, loading, error} = useAppSelector(state => state.profileReducer.userProfile)
   const orgCareer = data?.works ?? []
   const orgSchool = data?.educations ?? []
   const [careers, setCarrers] = useState(orgCareer)
   const [schools, setSchools] = useState(orgSchool)
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    navigation.addListener('beforeRemove', () => {
+    })
+  }, [])
 
   const handleAddSchool = (school: Education) => {
     setSchools(prevState => [...prevState, {...school, educationId: prevState.length.toString()}])

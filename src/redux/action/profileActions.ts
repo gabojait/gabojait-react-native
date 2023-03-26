@@ -4,7 +4,7 @@ import Education from '@/model/Profile/Education'
 import Portfolio from '@/model/Profile/Portfolio'
 import Skill from '@/model/Profile/Skill'
 import Work from '@/model/Profile/Work'
-import {createAsyncAction} from 'typesafe-actions'
+import {createAction, createAsyncAction} from 'typesafe-actions'
 
 /*------------- Profile View/Edit related --------------*/
 
@@ -94,6 +94,27 @@ export const UPDATE_PORTFOLIO_LINK_ERROR = 'UPDATE_PORTFOLIO_LINK_ERROR'
 export const UPDATE_DESCRIPTION = 'UPDATE_DESCRIPTION'
 export const UPDATE_DESCRIPTION_SUCCESS = 'UPDATE_DESCRIPTION_SUCCESS'
 export const UPDATE_DESCRIPTION_ERROR = 'UPDATE_DESCRIPTION_ERROR'
+
+export const SET_EDUCATION_AND_CAREER = 'SET_EDUCATION_AND_CAREER'
+export const SET_PORTFOLIO = 'SET_PORTFOLIO'
+export const SET_SKILL_AND_POSITION = 'SET_SKILL_AND_POSITION'
+
+export const setEducationAndCareerAction = ({
+  educations,
+  careers,
+}: {
+  educations: Education[]
+  careers: Work[]
+}) => ({type: SET_EDUCATION_AND_CAREER, paylod: {educations, careers}})
+
+export const setPortfolio = (portfolios: Portfolio[]) => ({
+  type: SET_PORTFOLIO,
+  paylod: portfolios,
+})
+export const setSkillAndPosition = ({skills, position}: {skills: Skill[]; position: Position}) => ({
+  type: SET_SKILL_AND_POSITION,
+  paylod: {skills, position},
+})
 
 /*------------- ETC --------------*/
 

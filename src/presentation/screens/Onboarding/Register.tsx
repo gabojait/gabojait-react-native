@@ -115,26 +115,24 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
     error: usernameDupError,
   } = useAppSelector(state => state.registerReducer.usernameDupCheckResult)
   useEffect(() => {
-    let message
     if (!usernameDupLoading) {
-      if (usernameDup && !usernameDupError) {
-        message = '사용할 수 있는 아이디입니다.'
-      } else if (!usernameDup && usernameDupError) {
-        if (usernameDupError.name == ErrorCode.EXISTING_USERNAME.name) {
-          message = '이미 존재하는 아이디입니다.'
-        } else message = ErrorCode[usernameDupError.name as keyof typeof ErrorCode].text
+      if ((usernameDup && !usernameDupError) || (!usernameDup && usernameDupError)) {
+        modal?.show({
+          title: <Text>중복확인</Text>,
+          content: (
+            <OkDialogModalContent
+              text={
+                usernameDup && !usernameDupError
+                  ? '사용할 수 있는 아이디입니다.'
+                  : usernameDupError?.message ?? '알 수 없는 오류입니다.'
+              }
+              onOkClick={() => {
+                modal?.hide()
+              }}
+            />
+          ),
+        })
       }
-      modal?.show({
-        title: <Text>중복확인</Text>,
-        content: (
-          <OkDialogModalContent
-            text={message ?? '알 수 없는 오류입니다.'}
-            onOkClick={() => {
-              modal?.hide()
-            }}
-          />
-        ),
-      })
     }
   }, [usernameDup, usernameDupLoading, usernameDupError])
   const {
@@ -145,23 +143,23 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
 
   useEffect(() => {
     if (!nicknameDupLoading) {
-      let message
-      if (nicknameDup && !nicknameDupError) {
-        message = '사용할 수 있는 닉네임입니다.'
-      } else if (!nicknameDup && nicknameDupError) {
-        message = '이미 존재하는 닉네임입니다.'
+      if ((nicknameDup && !nicknameDupError) || (!nicknameDup && nicknameDupError)) {
+        modal?.show({
+          title: <Text>중복확인</Text>,
+          content: (
+            <OkDialogModalContent
+              text={
+                nicknameDup && !nicknameDupError
+                  ? '사용할 수 있는 닉네임입니다.'
+                  : nicknameDupError?.message ?? '알 수 없는 오류입니다.'
+              }
+              onOkClick={() => {
+                modal?.hide()
+              }}
+            />
+          ),
+        })
       }
-      modal?.show({
-        title: <Text>중복확인</Text>,
-        content: (
-          <OkDialogModalContent
-            text={message ?? '알 수 없는 오류입니다.'}
-            onOkClick={() => {
-              modal?.hide()
-            }}
-          />
-        ),
-      })
     }
   }, [nicknameDup, nicknameDupLoading, nicknameDupError])
 
