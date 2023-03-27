@@ -1,4 +1,4 @@
-import {Part} from '@/model/Part'
+import {Position} from '@/model/Position'
 import ProfileViewDto from '@/model/Profile/CompletedTeamDto'
 import Education from '@/model/Profile/Education'
 import Portfolio from '@/model/Profile/Portfolio'
@@ -197,7 +197,7 @@ export const updatePositionAsyncAction = createAsyncAction(
   UPDATE_POSITION,
   UPDATE_POSITION_SUCCESS,
   UPDATE_POSITION_ERROR,
-)<Part, ProfileViewDto, Error>()
+)<Position, ProfileViewDto, Error>()
 export const deletePortfolioAsyncAction = createAsyncAction(
   DELETE_PORTFOLIO,
   DELETE_PORTFOLIO_SUCCESS,

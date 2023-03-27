@@ -37,7 +37,7 @@ export const setProfileVisibility = createAsyncThunk(
 )
 
 export const profileReducer = createReducer<ProfileState, ProfileAction>(initialState)
-  .handleAction(setEducationAndCareerAction, (state, action) => ({...state}))
+  // .handleAction(setEducationAndCareerAction, (state, action) => ({...state}))
   .handleAction(
     [getProfileAsyncAction.request, getProfileAsyncAction.success, getProfileAsyncAction.failure],
     createAsyncReducer(getProfileAsyncAction, 'userProfile'),
