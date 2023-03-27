@@ -389,7 +389,7 @@ const PortfolioView = ({
 }) => {
   const {theme} = useTheme()
   
-  const careerTime = calcMonth(
+  const workTime = calcMonth(
     new Date(profile.works[profile.works.length - 1]?.endedDate ?? ''),
     new Date(profile.works[0]?.startedDate ?? ''),
   )
@@ -443,9 +443,9 @@ const PortfolioView = ({
           {
             <Text style={{fontWeight: theme.fontWeight.bold, textAlign: 'center'}}>
               {profile.works.length > 0
-                ? careerTime == 0
+                ? workTime == 0
                   ? '1개월 미만'
-                  : `${careerTime} 개월`
+                  : `${workTime} 개월`
                 : '없음'}
             </Text>
           }

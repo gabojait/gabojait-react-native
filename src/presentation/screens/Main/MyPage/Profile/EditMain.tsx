@@ -101,7 +101,7 @@ const EditMain = ({navigation}: ProfileStackParamListProps<'EditMain'>) => {
           title="학력/경력"
           style={{marginBottom: theme.spacing.xl}}
           onArrowPress={() => {
-            navigation.navigate('EditSchoolAndCareer')
+            navigation.navigate('EditSchoolAndWork')
           }}>
           {profile.educations?.length ?? 0 > 0 ? (
             <>

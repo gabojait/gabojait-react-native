@@ -11,7 +11,7 @@ import DocumentPicker from 'react-native-document-picker'
 import {IconProps} from 'react-native-vector-icons/Icon'
 import {ScreenWidth} from '@rneui/base'
 import useGlobalStyles from '@/styles'
-import {List} from './EditSchoolAndCareer'
+import {List} from './EditSchoolAndWork'
 
 const EditPortfolio = () => {
   // Todo: Implement Portfolio Reducer

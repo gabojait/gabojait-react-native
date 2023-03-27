@@ -1,10 +1,11 @@
 import {Position} from '@/model/Position'
-import ProfileViewDto from '@/model/Profile/CompletedTeamDto'
+import ProfileViewDto from '@/model/Profile/ProfileViewDto'
 import Education from '@/model/Profile/Education'
 import Portfolio from '@/model/Profile/Portfolio'
 import Skill from '@/model/Profile/Skill'
-import Work from '@/model/Profile/Work'
+import {createSlice} from '@reduxjs/toolkit'
 import {createAction, createAsyncAction} from 'typesafe-actions'
+import Work from '@/model/Profile/Work'
 
 /*------------- Profile View/Edit related --------------*/
 
@@ -95,25 +96,38 @@ export const UPDATE_DESCRIPTION = 'UPDATE_DESCRIPTION'
 export const UPDATE_DESCRIPTION_SUCCESS = 'UPDATE_DESCRIPTION_SUCCESS'
 export const UPDATE_DESCRIPTION_ERROR = 'UPDATE_DESCRIPTION_ERROR'
 
-export const SET_EDUCATION_AND_CAREER = 'SET_EDUCATION_AND_CAREER'
+export const SET_EDUCATION_AND_WORK = 'SET_EDUCATION_AND_WORK'
+export const SET_EDUCATIONS = 'SET_EDUCATIONS'
+export const SET_WORKS = 'SET_WORKS'
 export const SET_PORTFOLIO = 'SET_PORTFOLIO'
 export const SET_SKILL_AND_POSITION = 'SET_SKILL_AND_POSITION'
 
-export const setEducationAndCareerAction = ({
+export const setEducationAndWorkAction = ({
   educations,
-  careers,
+  works,
 }: {
   educations: Education[]
-  careers: Work[]
-}) => ({type: SET_EDUCATION_AND_CAREER, paylod: {educations, careers}})
+  works: Work[]
+}) => ({
+  type: SET_EDUCATION_AND_WORK,
+  payload: {educations, works},
+})
+export const setEducations = (educations: Education[]) => ({
+  type: SET_EDUCATIONS,
+  payload: educations,
+})
+export const setWorks = (works: Work[]) => ({
+  type: SET_WORKS,
+  payload: works,
+})
 
 export const setPortfolio = (portfolios: Portfolio[]) => ({
   type: SET_PORTFOLIO,
-  paylod: portfolios,
+  payload: portfolios,
 })
 export const setSkillAndPosition = ({skills, position}: {skills: Skill[]; position: Position}) => ({
   type: SET_SKILL_AND_POSITION,
-  paylod: {skills, position},
+  payload: {skills, position},
 })
 
 /*------------- ETC --------------*/

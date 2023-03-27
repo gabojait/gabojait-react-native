@@ -5,77 +5,74 @@ import DateDropdown from '@/presentation/components/DropdownWithoutItem'
 import {ModalContext} from '@/presentation/components/modal/context'
 import DatePickerModalContent from '@/presentation/components/modalContent/DatePickerModalContent'
 import {ProfileStackParamListProps} from '@/presentation/navigation/types'
+import {setEducationAndWorkAction, setEducations, setWorks} from '@/redux/action/profileActions'
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
 import {Text} from '@rneui/themed'
 import React, {useEffect, useState} from 'react'
 import {ScrollView, View} from 'react-native'
 import {EditItem, SquareIcon} from './EditPortfolio'
 
-const EditSchoolAndCareer = ({navigation}: ProfileStackParamListProps<'EditSchoolAndCareer'>) => {
-  const {data, loading, error} = useAppSelector(state => state.profileReducer.userProfile)
-  const orgCareer = data?.works ?? []
-  const orgSchool = data?.educations ?? []
-  const [careers, setCarrers] = useState(orgCareer)
-  const [schools, setSchools] = useState(orgSchool)
-  const dispatch = useAppDispatch();
+const EditSchoolAndWork = ({navigation}: ProfileStackParamListProps<'EditSchoolAndWork'>) => {
+  const works = useAppSelector(state => state.profileReducer.works)
+  const educations = useAppSelector(state => state.profileReducer.educations)
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     navigation.addListener('beforeRemove', () => {
+      console.log('[Go out]', educations, works)
+      dispatch(setEducationAndWorkAction({educations: educations, works}))
     })
   }, [])
 
+  useEffect(() => {
+    console.log('Works Change:', works)
+  }, [works])
+
   const handleAddSchool = (school: Education) => {
-    setSchools(prevState => [...prevState, {...school, educationId: prevState.length.toString()}])
+    dispatch(setEducations([...educations, {...school, educationId: educations.length.toString()}]))
   }
   const handleDeleteSchool = (id: string) => {
-    setSchools(prevState => {
-      const idx = prevState.findIndex(item => item.educationId == id)
-      prevState.splice(idx, 1)
-      return [...prevState]
-    })
+    const idx = educations.findIndex(item => item.educationId == id)
+    educations.splice(idx, 1)
+    dispatch(setEducations([...educations]))
   }
 
   const handleEditSchool = (school: Education) => {
-    setSchools(prevState => {
-      const idx = prevState.findIndex(item => item.educationId == school.educationId)
-      prevState[idx] = school
-      return [...prevState]
-    })
+    const idx = educations.findIndex(item => item.educationId == school.educationId)
+    educations[idx] = school
+    dispatch(setEducations([...educations]))
   }
 
-  const handleAddCarrer = (career: Work) => {
-    setCarrers(prevState => [...prevState, {...career, workId: prevState.length.toString()}])
+  const handleAddCarrer = (work: Work) => {
+    dispatch(setWorks([...works, {...work, workId: works.length.toString()}]))
   }
-  const handleDeleteCareer = (id: string) => {
-    setCarrers(prevState => {
-      const idx = prevState.findIndex(item => item.workId == id)
-      prevState.splice(idx, 1)
-      return [...prevState]
-    })
+  const handleDeleteWork = (id: string) => {
+    const idx = works.findIndex(item => item.workId == id)
+    works.splice(idx, 1)
+    dispatch(setWorks([...works]))
   }
 
-  const handleEditCareer = (career: Work) => {
-    setCarrers(prevState => {
-      const idx = prevState.findIndex(item => item.workId == career.workId)
-      prevState[idx] = career
-      return [...prevState]
-    })
+  const handleEditWork = (work: Work) => {
+    const idx = works.findIndex(item => item.workId == work.workId)
+    const list = [...works]
+    list[idx] = work
+    dispatch(setWorks([...list]))
   }
 
   return (
     <ScrollView style={{padding: 20, backgroundColor: 'white'}}>
       <EducationList
-        datas={schools}
+        datas={educations}
         onAddData={handleAddSchool}
         onChangeData={handleEditSchool}
         onDeleteData={handleDeleteSchool}
         title="학력"
       />
       <WorkList
-        datas={careers}
+        datas={works}
         onAddData={handleAddCarrer}
-        onChangeData={handleEditCareer}
-        onDeleteData={handleDeleteCareer}
+        onChangeData={handleEditWork}
+        onDeleteData={handleDeleteWork}
         title="경력"
       />
     </ScrollView>
@@ -311,4 +308,4 @@ export const List = ({
   )
 }
 
-export default EditSchoolAndCareer
+export default EditSchoolAndWork

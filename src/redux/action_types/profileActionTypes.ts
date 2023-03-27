@@ -9,6 +9,5 @@ export type ProfileAction = ActionType<typeof actions>
 export type ProfileState = {
   userProfile: AsyncState<ProfileViewDto, Error>
   educations: Education[]
-  careers: Work[]
-  
+  works: Work[]
 }

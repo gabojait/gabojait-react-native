@@ -94,6 +94,6 @@ export type ProfileStackParamList = {
   View: undefined
   EditMain: undefined
   EditPortfolio: undefined
-  EditSchoolAndCareer: undefined
+  EditSchoolAndWork: undefined
   EditSkillAndPosition: undefined
 }
