@@ -6,11 +6,10 @@ import CardWrapper from '@/presentation/components/CardWrapper'
 import Gabojait from '@/presentation/components/icon/Gabojait'
 import DivideWrapper from '@/presentation/components/DivideWrapper'
 import {RatingBar} from '@/presentation/components/RatingBar'
-import {useAppDispatch, useAppSelector} from '@/redux/hooks'
-import {useDispatch} from 'react-redux'
-import {chagneToOfficialWord} from '@/util'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
+import { chagneToOfficialWord, isEmptyArray } from '@/util'
 import ProfileViewDto from '@/model/Profile/ProfileViewDto'
-import {getProfile} from '@/redux/reducers/profileReducer'
+import { getProfile } from '@/redux/reducers/profileReducer'
 
 const Main = ({navigation}: MainBottomTabNavigationProps<'MyPage'>) => {
   const {theme} = useTheme()
@@ -24,6 +23,7 @@ const Main = ({navigation}: MainBottomTabNavigationProps<'MyPage'>) => {
 
   useEffect(() => {
     dispatch(getProfile())
+    console.log(`profileData.nickname: ${profileData?.nickname}`)
   }, [])
 
   return (
@@ -119,7 +119,7 @@ const Main = ({navigation}: MainBottomTabNavigationProps<'MyPage'>) => {
         }}>
         나의 리뷰
       </Text>
-      {profileData?.reviews ? <MyReview data={profileData} /> : <NoReview />}
+      {isEmptyArray(profileData?.reviews)? <MyReview data={profileData} /> : <NoReview />}
     </ScrollView>
   )
 }

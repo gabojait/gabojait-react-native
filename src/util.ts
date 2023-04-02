@@ -64,3 +64,8 @@ export const chagneToOfficialWord = (text: string | undefined) => {
 
   return word
 }
+export const isEmptyArray = (array: any[] | undefined) => {
+  if (array == undefined) return false
+  else if (array.length == 0) return true
+  else return false
+}
