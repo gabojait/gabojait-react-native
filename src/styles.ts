@@ -89,5 +89,14 @@ const useGlobalStyles = makeStyles(theme => ({
     fontWeight: theme.fontWeight.bold,
     fontSize: 30,
   },
+  tabBar:{
+    minHeight: 60,
+    paddingVertical: 10
+  },
+  tabBarLabel:{
+    fontSize: 13,
+    fontWeight: theme.fontWeight.semibold,
+    paddingTop: 10
+  }
 }))
 export default useGlobalStyles
