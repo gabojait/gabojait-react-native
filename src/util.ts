@@ -69,3 +69,8 @@ export const isEmptyArray = (array: any[] | undefined) => {
   else if (array.length == 0) return true
   else return false
 }
+
+export const isLeader = (text: string | undefined) => {
+  if (text == 'LEADER') return true
+  else return false
+}

@@ -7,7 +7,7 @@ import Gabojait from '@/presentation/components/icon/Gabojait'
 import DivideWrapper from '@/presentation/components/DivideWrapper'
 import {RatingBar} from '@/presentation/components/RatingBar'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { chagneToOfficialWord, isEmptyArray } from '@/util'
+import { chagneToOfficialWord, isEmptyArray, isLeader } from '@/util'
 import ProfileViewDto from '@/model/Profile/ProfileViewDto'
 import { getProfile } from '@/redux/reducers/profileReducer'
 
@@ -95,7 +95,7 @@ const Main = ({navigation}: MainBottomTabNavigationProps<'MyPage'>) => {
         </CardWrapper>
       </View>
       <View style={styles.divider}>
-        {profileData?.teamMemberStatus == 'LEADER' ? (
+        {isLeader(profileData?.teamMemberStatus)? (
           <LeaderComponent
             onPressApply={() => navigation.navigate('MainNavigation', {screen: 'ApplyStatus'})}
             onPressTeam={() => {}}
