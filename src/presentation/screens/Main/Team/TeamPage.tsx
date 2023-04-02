@@ -8,6 +8,8 @@ import PositionIcon from '@/presentation/components/PositionIcon'
 import useGlobalStyles from '@/styles'
 import { OutlinedButton } from '@/presentation/components/Button'
 import { getProfile } from '@/redux/reducers/profileReducer'
+import { isLeader } from '@/util'
+import { TeamStackScreenProps } from '@/presentation/navigation/types'
 
 const NoProcessingTeam = () => (
   <View style={{
@@ -17,44 +19,53 @@ const NoProcessingTeam = () => (
       alignItems: 'center',
       backgroundColor: 'white',
     }}>
-      <Text h1 h1Style={{fontSize: 100, marginBottom: 20}}>
+      <Text style={{fontSize: 100, alignContent:'center'}}>
         🫥
       </Text>
       <Text h4>현재 진행 중인 팀이 없어요</Text>
   </View>
 )
 
-const LeaderHeader = () => {
+const LeaderHeader = ({onPress}:LeaderComponent) => {
+  const styles = useStyles()
   const {theme} = useTheme()
   return (
-    <View style={{minHeight:41, borderBottomWidth:1, borderBottomColor:theme.colors.disabled}}>
-      <Text style={{fontSize:theme.fontSize.lg, fontWeight:theme.fontWeight.bold, paddingStart:20}}>팀페이지</Text>
-      <TouchableOpacity>
-        <Text>수정</Text>
+    <View style={styles.header}>
+      <Text style={{fontSize:theme.fontSize.lg, fontWeight:theme.fontWeight.bold, textAlignVertical:'center'}}>팀페이지</Text>
+      <TouchableOpacity onPress={()=>onPress()} style={{justifyContent:'center'}}>
+        <Text style={{fontSize:20, color:theme.colors.primary}}>수정</Text>
       </TouchableOpacity>
     </View>
   )
 }
 
 const TeamMateHeader = () => {
+  const styles = useStyles()
   const {theme} = useTheme()
   return (
-    <View style={{minHeight:41, borderBottomWidth:1, borderBottomColor:theme.colors.disabled}}>
-      <Text style={{fontSize:theme.fontSize.lg, fontWeight:theme.fontWeight.bold, paddingStart:20}}>팀페이지</Text>
+    <View style={styles.header}>
+      <Text style={{fontSize:theme.fontSize.lg, fontWeight:theme.fontWeight.bold}}>팀페이지</Text>
     </View>
   )
 }
 
-const LeaderFooter = () => {
+interface LeaderComponent {
+  onPress: () => void
+}
+
+const LeaderFooter = ({onPress}:LeaderComponent) => {
+  const {theme} = useTheme()
   return (
-    <>
-      <OutlinedButton title={'종료하기'} />
-      <OutlinedButton title={'해산하기'}/>
-    </>
+    <View style={{paddingBottom:30}}>
+      <OutlinedButton title={'종료하기'} size={'md'}/>
+      <TouchableOpacity onPress={()=>onPress()} style={{justifyContent:'center', alignContent:'center', flex:1}}>
+        <Text style={{fontSize:theme.fontSize.md, fontWeight:theme.fontWeight.bold, color:theme.colors.disabled, paddingTop:20, textAlign:'center'}}>해산하기</Text>
+      </TouchableOpacity>
+    </View>
   )
 }
 
-const Detail = () => {
+export const TeamPage = ({navigation}:TeamStackScreenProps<'TeamPage'>) => {
   // network
   const {theme} = useTheme() 
   const globalStyles = useGlobalStyles()
@@ -79,73 +90,91 @@ const Detail = () => {
   },[])
 
   return (
-    <ScrollView style={styles.scrollView}>
-      <LeaderHeader/>
-      <CardWrapper style={[styles.teamcard,{minHeight: 190, justifyContent: 'center'}]}>
-        <View style={{width:'100%', paddingHorizontal:10, flex:1, justifyContent:'space-evenly'}}>
-          <Text style={styles.teamname}>{teamDetailData?.projectName}</Text>
-          <View style={styles.partIcon}>
-            {positions.map((item, index) =>
-              item[0] != undefined && item[0] > 0 ? (
-                <PositionIcon
-                  currentApplicant={item[1] ?? 0}
-                  recruitNumber={item[0]}
-                  textView={<Text style={globalStyles.itnitialText}>{initials[index]}</Text>}
-                />
-              ) : (
-                <></>
-              ),
-            )}
-          </View>
-        </View>
-      </CardWrapper>
-      <TouchableOpacity onPress={()=>{}}>
-        <CardWrapper style={[styles.card,{minHeight: 50, backgroundColor:'#FEE500', justifyContent:'center', alignContent:'center'}]}>
-          <View style={{flexDirection:'row', justifyContent:'center', alignContent:'center'}}>
-            <CustomIcon name='kakaotalk-logo' size={30} color={theme.colors.black}/>
-            <Text style={{fontSize:theme.fontSize.md, fontWeight:theme.fontWeight.semibold}}>
-              카카오톡 오픈채팅으로 시작하기
-            </Text>
-          </View>
-        </CardWrapper>
-      </TouchableOpacity>
-      <CardWrapper style={[styles.card,{minHeight: 200}]}>
-        <View>
-        <Text style={styles.title}>프로젝트 설명</Text>
-        <Text style={styles.text}>{teamDetailData?.projectDescription}</Text>
-        </View>
-      </CardWrapper>
-      <CardWrapper style={[styles.card,{minHeight: 200}]}>
-        <View>
-        <Text style={styles.title}>바라는 점</Text>
-        <Text style={styles.text}>
-          {teamDetailData?.expectation}
-        </Text>
-        </View>
-      </CardWrapper>
-    </ScrollView>
+    <>
+      {isLeader(profileData?.teamMemberStatus)?<LeaderHeader onPress={() => navigation.navigate('TeamEditor')}/>:<TeamMateHeader/>}
+      {profileData?.currentTeamId == null? <NoProcessingTeam/>
+      :<View style={styles.scrollView}>
+        <ScrollView style={{paddingTop:10, backgroundColor: theme.colors.white}}>      
+          <CardWrapper style={[styles.teamcard,{minHeight: 190, justifyContent: 'center'}]}>
+            <View style={{width:'100%', paddingHorizontal:10, flex:1, justifyContent:'space-evenly'}}>
+              <Text style={styles.teamname}>{teamDetailData?.projectName}</Text>
+              <View style={styles.partIcon}>
+                {positions.map((item, index) =>
+                  item[0] != undefined && item[0] > 0 ? (
+                    <PositionIcon
+                      currentApplicant={item[1] ?? 0}
+                      recruitNumber={item[0]}
+                      textView={<Text style={globalStyles.itnitialText}>{initials[index]}</Text>}
+                    />
+                  ) : (
+                    <></>
+                  ),
+                )}
+              </View>
+            </View>
+          </CardWrapper>
+          <TouchableOpacity>
+            <CardWrapper style={[styles.card,{minHeight: 50, backgroundColor:'#FEE500', justifyContent:'center', alignContent:'center'}]}>
+              <View style={{flexDirection:'row', justifyContent:'center', alignContent:'center'}}>
+                <CustomIcon name='kakaotalk-logo' size={30} color={theme.colors.black}/>
+                <Text style={{fontSize:theme.fontSize.md, fontWeight:theme.fontWeight.semibold}}>
+                  카카오톡 오픈채팅으로 시작하기
+                </Text>
+              </View>
+            </CardWrapper>
+          </TouchableOpacity>
+          <CardWrapper style={[styles.card,{minHeight: 200}]}>
+            <View>
+              <Text style={styles.title}>프로젝트 설명</Text>
+              <Text style={styles.text}>{teamDetailData?.projectDescription}</Text>
+            </View>
+          </CardWrapper>
+          <CardWrapper style={[styles.card,{minHeight: 200}]}>
+            <View>
+              <Text style={styles.title}>바라는 점</Text>
+              <Text style={styles.text}>
+                {teamDetailData?.expectation}
+              </Text>
+            </View>
+          </CardWrapper>
+          {isLeader(profileData.teamMemberStatus)? <LeaderFooter onPress={() => {}}/>:<></>}
+        </ScrollView>
+      </View>
+      }   
+    </>
   )
 }
 
 const useStyles = makeStyles((theme)=> ({
   scrollView:{
     backgroundColor: theme.colors.white,
-    paddingVertical:18,
     flex:1,
+    paddingHorizontal:20,
   },
   teamcard:{
     paddingHorizontal:13,
     paddingBottom:17,
     marginVertical:5,
-    marginHorizontal:20,
     borderRadius:20
   },
   card:{
     paddingHorizontal:13,
     paddingVertical:17,
     marginVertical:5,
-    marginHorizontal:20,
-    borderRadius:20
+    marginHorizontal: 4,
+    borderRadius:20,
+    alignItems:'flex-start'
+  },
+  header:{
+    paddingHorizontal:20,
+    paddingVertical:10,
+    justifyContent:'space-between',
+    alignContent:'center',
+    flexDirection:'row', 
+    minHeight:41, 
+    borderBottomWidth:1, 
+    borderBottomColor:theme.colors.disabled, 
+    backgroundColor: 'white'
   },
   teamname:{
     fontSize:theme.fontSize.lg,
@@ -167,7 +196,5 @@ const useStyles = makeStyles((theme)=> ({
   },
   partIcon:{
     flexDirection: 'row',
-  }
+  },
 }))
-
-export default Detail
