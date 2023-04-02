@@ -104,7 +104,7 @@ export type TeamStackParamList = {
   TeamEditor: undefined
 }
 
-export type TeamStackScreenProps<T extends keyof TeamStackParamList> = StackScreenProps<
+export type TeamStackParamListProps<T extends keyof TeamStackParamList> = StackScreenProps<
   TeamStackParamList,
   T
 >
