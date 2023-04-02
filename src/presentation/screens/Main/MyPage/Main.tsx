@@ -1,18 +1,15 @@
 import {FlatList, ScrollView, TouchableOpacity, View} from 'react-native'
 import React, { useEffect } from 'react'
 import {Icon, makeStyles, Text, useTheme} from '@rneui/themed'
-import globalStyles from '@/styles'
 import {MainBottomTabNavigationProps} from '@/presentation/navigation/types'
 import CardWrapper from '@/presentation/components/CardWrapper'
 import Gabojait from '@/presentation/components/icon/Gabojait'
 import DivideWrapper from '@/presentation/components/DivideWrapper'
 import {RatingBar} from '@/presentation/components/RatingBar'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { useDispatch } from 'react-redux'
 import { getProfile } from '@/redux/reducers/profileGetReducer'
 import { chagneToOfficialWord } from '@/util'
 import ProfileViewDto from '@/model/Profile/ProfileViewDto'
-import { testProfileData } from '@/testData'
 
 const Main = ({navigation}: MainBottomTabNavigationProps<'MyPage'>) => {
   const {theme} = useTheme()

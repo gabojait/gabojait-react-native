@@ -36,8 +36,7 @@ const rootReducer = combineReducers({
   reviewQuestionsGetReducer,
   teamToReviewGetReducer,
   reviewCreateReducer,
-  profileGetReducer
-  reviewQuestionsGetReducer,
+  profileGetReducer,
   profileReducer,
 })
 
