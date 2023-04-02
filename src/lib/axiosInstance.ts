@@ -57,7 +57,7 @@ client.interceptors.request.use(async req => {
 
 client.interceptors.response.use(
   async res => {
-    console.log(`${res.config.url} Responsed: ${res.status}}\n Response:`, res.data.data)
+    console.log(`${res.config.url} Responsed: ${res.status}}\n Response:`, res.data.responseData.data)
     try {
       if (isSuccess(res.status)) {
         if (res.headers['authorization']) {
@@ -68,12 +68,12 @@ client.interceptors.response.use(
           await AsyncStorage.setItem('accessToken', tokens[1])
           await AsyncStorage.setItem('refreshToken', tokens[2])
         }
-        if (!res.data.data || res.status == 204 || res.status == 201) {
+        if (!res.data.responseData.data || res.status == 204 || res.status == 201) {
           // Todo: Handle No Content
           // Todo: 빈 리스트(204?)/201 대응
           return []
         } else {
-          return res.data.data
+          return res.data.responseData.data
         }
       } else {
         throw {
