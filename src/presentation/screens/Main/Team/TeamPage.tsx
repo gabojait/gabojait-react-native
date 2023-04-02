@@ -1,71 +1,135 @@
-import { FilledButton } from '@/presentation/components/Button'
 import CardWrapper from '@/presentation/components/CardWrapper'
-import PositionIcon from '@/presentation/components/PositionIcon'
 import {makeStyles, Text, useTheme} from '@rneui/themed'
-import React, {ReactNode} from 'react'
-import {ScrollView, View} from 'react-native'
+import React, { useEffect, useState } from 'react'
+import {ScrollView, TouchableOpacity, View} from 'react-native'
+import CustomIcon from '@/presentation/components/icon/Gabojait'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
+import { getProfile } from '@/redux/reducers/profileGetReducer'
+import { getTeamDetail } from '@/redux/reducers/teamDetailGetReducer'
+import PositionIcon from '@/presentation/components/PositionIcon'
+import useGlobalStyles from '@/styles'
+import TitleHeader from '../../Headers/TitleHeader'
+import { StackHeaderInterpolationProps, StackHeaderInterpolatedStyle } from '@react-navigation/stack'
+import { OutlinedButton } from '@/presentation/components/Button'
 
-const Center: React.FC<{children: ReactNode}> = ({children}) => (
-  <View
-    style={{
+const NoProcessingTeam = () => (
+  <View style={{
       flex: 1,
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: 'white',
     }}>
-    {children}
+      <Text h1 h1Style={{fontSize: 100, marginBottom: 20}}>
+        🫥
+      </Text>
+      <Text h4>현재 진행 중인 팀이 없어요</Text>
   </View>
 )
-const NoProcessingTeam = () => (
-  <Center>
-    <Text h1 h1Style={{fontSize: 100, marginBottom: 20}}>
-      🫥
-    </Text>
-    <Text h4>현재 진행 중인 팀이 없어요</Text>
-  </Center>
-)
+
+const LeaderHeader = () => {
+  const {theme} = useTheme()
+  return (
+    <View style={{minHeight:41, borderBottomWidth:1, borderBottomColor:theme.colors.disabled}}>
+      <Text style={{fontSize:theme.fontSize.lg, fontWeight:theme.fontWeight.bold, paddingStart:20}}>팀페이지</Text>
+      <TouchableOpacity>
+        <Text>수정</Text>
+      </TouchableOpacity>
+    </View>
+  )
+}
+
+const TeamMateHeader = () => {
+  const {theme} = useTheme()
+  return (
+    <View style={{minHeight:41, borderBottomWidth:1, borderBottomColor:theme.colors.disabled}}>
+      <Text style={{fontSize:theme.fontSize.lg, fontWeight:theme.fontWeight.bold, paddingStart:20}}>팀페이지</Text>
+    </View>
+  )
+}
+
+const LeaderFooter = () => {
+  return (
+    <>
+      <OutlinedButton title={'종료하기'} />
+      <OutlinedButton title={'해산하기'}/>
+    </>
+  )
+}
 
 const Detail = () => {
   // network
   const {theme} = useTheme() 
+  const globalStyles = useGlobalStyles()
   const styles = useStyles()
+  const dispatch = useAppDispatch()
+  const {data:profileData, loading:profileLoading, error:profileError} = useAppSelector(
+    state => state.profileGetReducer.profileGetResult
+  )
+  const {data:teamDetailData, loading:teamDetailLoading, error:teamDetailError} = useAppSelector(
+    state => state.teamDetailGetReducer.teamDetailGetResult
+  )
+  const positions = [
+    [teamDetailData?.backendTotalRecruitCnt, teamDetailData?.backends.length],
+    [teamDetailData?.frontendTotalRecruitCnt, teamDetailData?.frontends.length],
+    [teamDetailData?.designerTotalRecruitCnt, teamDetailData?.designers.length],
+    [teamDetailData?.projectManagerTotalRecruitCnt, teamDetailData?.projectManagers.length],
+  ]
+  const initials = ['B', 'F', 'D', 'P']
+  
+  useEffect(() => {
+    dispatch(getProfile())
+  },[])
+
+  useEffect(() => {
+    profileData?.currentTeamId != undefined 
+    ? dispatch(getTeamDetail(profileData.currentTeamId))
+    : {}
+  },[profileData])
+
   return (
-    
     <ScrollView style={styles.scrollView}>
+      <LeaderHeader/>
       <CardWrapper style={[styles.teamcard,{minHeight: 190, justifyContent: 'center'}]}>
         <View style={{width:'100%', paddingHorizontal:10, flex:1, justifyContent:'space-evenly'}}>
-          <Text style={styles.teamname}>3팀</Text>
+          <Text style={styles.teamname}>{teamDetailData?.projectName}</Text>
           <View style={styles.partIcon}>
-              <PositionIcon currentApplicant={1} recruitNumber={1} textView ={ <Text style={{fontWeight:theme.fontWeight.bold, fontSize:30}}>D</Text>}/>
-              <PositionIcon currentApplicant={2} recruitNumber={2} textView ={ <Text style={{fontWeight:theme.fontWeight.bold, fontSize:30}}>F</Text>}/>
-              <PositionIcon currentApplicant={1} recruitNumber={1} textView ={ <Text style={{fontWeight:theme.fontWeight.bold, fontSize:30}}>B</Text>}/>
+            {positions.map((item, index) =>
+              item[0] != undefined && item[0] > 0 ? (
+                <PositionIcon
+                  currentApplicant={item[1] ?? 0}
+                  recruitNumber={item[0]}
+                  textView={<Text style={globalStyles.itnitialText}>{initials[index]}</Text>}
+                />
+              ) : (
+                <></>
+              ),
+            )}
           </View>
         </View>
       </CardWrapper>
-      <CardWrapper style={[styles.card,{minHeight: 50}]}>
-        <View>
-        <Text style={styles.text}>
-          카카오톡 오픈채팅 링크
-         </Text>
-        </View>
-      </CardWrapper>
+      <TouchableOpacity onPress={()=>{}}>
+        <CardWrapper style={[styles.card,{minHeight: 50, backgroundColor:'#FEE500', justifyContent:'center', alignContent:'center'}]}>
+          <View style={{flexDirection:'row', justifyContent:'center', alignContent:'center'}}>
+            <CustomIcon name='kakaotalk-logo' size={30} color={theme.colors.black}/>
+            <Text style={{fontSize:theme.fontSize.md, fontWeight:theme.fontWeight.semibold}}>
+              카카오톡 오픈채팅으로 시작하기
+            </Text>
+          </View>
+        </CardWrapper>
+      </TouchableOpacity>
       <CardWrapper style={[styles.card,{minHeight: 200}]}>
         <View>
         <Text style={styles.title}>프로젝트 설명</Text>
-        <Text style={styles.text}>애플의 신작 스마트워치인 애플워치6와 애플워치SE가 29일 국내에 출시된다.
-            애플은 22일 애플 공식 매장과 공인 리셀러, 통신사를 통해 국내에 애플워치6와 애플워치SE를 오는 29일 정식 출시한다고 밝혔다.
-        </Text>
+        <Text style={styles.text}>{teamDetailData?.projectDescription}</Text>
         </View>
       </CardWrapper>
       <CardWrapper style={[styles.card,{minHeight: 200}]}>
         <View>
         <Text style={styles.title}>바라는 점</Text>
         <Text style={styles.text}>
-            사전주문은 23일 오후 3시부터 시작된다. 애플 홈페이지와 애플스토어 앱 등에서 주문 가능하다. 
-            가격은 애플워치6는 53만9000원부터, 애플워치SE는 35만9000원부터 시작된다.
-            이번에 발표된 애플워치6는 기존 심전도체크 기능에 이어 혈중 산소포화도 기능을 탑재했다. 
-         </Text>
+          {teamDetailData?.expectation}
+        </Text>
         </View>
       </CardWrapper>
     </ScrollView>
@@ -101,7 +165,8 @@ const useStyles = makeStyles((theme)=> ({
     fontSize:20,
     fontWeight:theme.fontWeight.semibold,
     paddingBottom: 5,
-    color:theme.colors.black
+    color:theme.colors.black,
+    textAlign:'left'
   },
   text: {
     fontSize:11,
