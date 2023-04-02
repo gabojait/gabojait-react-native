@@ -65,17 +65,16 @@ const TeamBanner: React.FC<CardProps & {team: Team}> = ({team}) => {
         }}>
         {positions?.map(
           (item, index) => (
-            <PartIcon partInitial="ㅎ하이" />
+            item[0] > 0 && item[1] != undefined? (
+              <PartIcon
+                partInitial={item[1].toString()}
+                isRecruitDone={IsRecruitDone(item[1].toString())}
+                key={index}
+              />
+            ) : (
+              <></>
+            )
           ),
-          /* item[0] > 0 ? (
-            <PartIcon
-              partInitial={item[1].toString()}
-              isRecruitDone={IsRecruitDone(item[1].toString())}
-              key={index}
-            />
-          ) : (
-            <></>
-          ), */
         )}
         <View
           style={{
