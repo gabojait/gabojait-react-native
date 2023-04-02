@@ -5,8 +5,8 @@ export const createTeam = async (dto: TeamRequestDto) => {
     return result
 }
 
-export const getTeams = async (pageFrom: number, pageNum: number) => {
-    const params = {pageFrom: pageFrom, pageNum: pageNum}
+export const getTeams = async (pageFrom: number, pageSize: number) => {
+    const params = {pageFrom: pageFrom, pageSize: pageSize}
     const result = await client.get('team/find', { params: params })
     return result
 }
