@@ -6,25 +6,28 @@ import color from '../res/styles/color'
 import CustomIcon from '@/presentation/components/icon/Gabojait'
 import Team from '@/model/Team/Team'
 
-const TeamBanner: React.FC<CardProps & {team: Team}> = ({
-  team
-}) => {
+const TeamBanner: React.FC<CardProps & {team: Team}> = ({team}) => {
   const {theme} = useTheme()
-  const positions = [[team.backendTotalRecruitCnt, 'B'], [team.frontendTotalRecruitCnt, 'F'], [team.designerTotalRecruitCnt, 'D'], [team.projectManagerTotalRecruitCnt, 'P']]
-  const IsRecruitDone = (positionInitial:string) => {
-    if (positionInitial == 'B'){
+  // Todo: Team Position 별로 분기처리 하는 예쁜 방법 고안
+  const positions = [
+    [team.backendTotalRecruitCnt, 'B'],
+    [team.frontendTotalRecruitCnt, 'F'],
+    [team.designerTotalRecruitCnt, 'D'],
+    [team.projectManagerTotalRecruitCnt, 'P'],
+  ]
+  const IsRecruitDone = (positionInitial: string) => {
+    if (positionInitial == 'B') {
       if (team.backendTotalRecruitCnt == team.backends.length) return true
     }
-    if (positionInitial == 'F'){
+    if (positionInitial == 'F') {
       if (team.frontendTotalRecruitCnt == team.frontends.length) return true
     }
-    if (positionInitial == 'D'){
+    if (positionInitial == 'D') {
       if (team.designerTotalRecruitCnt == team.designers.length) return true
     }
-    if (positionInitial == 'P'){
+    if (positionInitial == 'P') {
       if (team.projectManagerTotalRecruitCnt == team.projectManagers.length) return true
     }
-
     return false
   }
 
@@ -42,20 +45,43 @@ const TeamBanner: React.FC<CardProps & {team: Team}> = ({
         borderRadius: 20,
         // paddingBottom:25,
         // paddingStart: 25,
-        flex:1
+        flex: 1,
       }}>
-      <Text style={{justifyContent:'flex-end',fontWeight:theme.fontWeight.bold, fontSize:theme.fontSize.md}}>{team.projectName}</Text>
-      <View style={{paddingHorizontal: 10, paddingVertical:10, paddingBottom:15, flexDirection: 'row', justifyContent: 'space-around'}}>
-          {positions.map( (item, index) => 
-            item[0] > 0
-            ?<PartIcon partInitial={item[1].toString()} isRecruitDone={IsRecruitDone(item[1].toString())} key={index}/>
-            :<></>
-          )}
-          <View
+      <Text
+        style={{
+          justifyContent: 'flex-end',
+          fontWeight: theme.fontWeight.bold,
+          fontSize: theme.fontSize.md,
+        }}>
+        {team.projectName}
+      </Text>
+      <View
+        style={{
+          paddingHorizontal: 10,
+          paddingVertical: 10,
+          paddingBottom: 15,
+          flexDirection: 'row',
+          justifyContent: 'space-around',
+        }}>
+        {positions?.map(
+          (item, index) => (
+            <PartIcon partInitial="ㅎ하이" />
+          ),
+          /* item[0] > 0 ? (
+            <PartIcon
+              partInitial={item[1].toString()}
+              isRecruitDone={IsRecruitDone(item[1].toString())}
+              key={index}
+            />
+          ) : (
+            <></>
+          ), */
+        )}
+        <View
           style={{
             height: '100%',
             justifyContent: 'center',
-            paddingHorizontal:10
+            paddingHorizontal: 10,
           }}>
           <CustomIcon name="arrow-next" size={30} style={{margin: -10}} color={color.primary} />
         </View>
@@ -63,10 +89,10 @@ const TeamBanner: React.FC<CardProps & {team: Team}> = ({
     </Card>
   )
 }
-export const PartIcon: React.FC<{partInitial: string; isRecruitDone?: boolean, size?: number}> = ({
+export const PartIcon: React.FC<{partInitial: string; isRecruitDone?: boolean; size?: number}> = ({
   partInitial,
   isRecruitDone: isDone = false,
-  size = 20
+  size = 20,
 }) => {
   const {theme} = useTheme()
   return (
@@ -83,7 +109,7 @@ export const PartIcon: React.FC<{partInitial: string; isRecruitDone?: boolean, s
         marginHorizontal: PixelRatio.getPixelSizeForLayoutSize(2),
         backgroundColor: isDone ? theme.colors.primary : '',
       }}>
-      {<Text style={{fontWeight:theme.fontWeight.bold, fontSize:30}}>{partInitial}</Text>}
+      {<Text style={{fontWeight: theme.fontWeight.bold, fontSize: 30}}>{partInitial}</Text>}
     </View>
   )
 }

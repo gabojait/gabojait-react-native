@@ -11,27 +11,14 @@ import DocumentPicker from 'react-native-document-picker'
 import {IconProps} from 'react-native-vector-icons/Icon'
 import {ScreenWidth} from '@rneui/base'
 import useGlobalStyles from '@/styles'
-import {List} from './EditSchoolAndCareer'
+import {List} from './EditSchoolAndWork'
 
 const EditPortfolio = () => {
   // Todo: Implement Portfolio Reducer
   const {data, loading, error} = useAppSelector(state => state.profileReducer.userProfile)
   const orgPortfolios = data?.portfolios ?? []
   console.log(orgPortfolios)
-  /*     [
-      {
-        name: 'Github',
-        portfolioId: 'github',
-        portfolioType: FieldType.Url,
-        url: 'https://github.com/KimWash',
-      },
-      {
-        name: '파일',
-        portfolioId: 'blog',
-        portfolioType: FieldType.File,
-        url: '',
-      },
-    ] as Portfolio[] */
+
   const [portfolios, setPortfolios] = useState(orgPortfolios)
 
   const globalStyles = useGlobalStyles()
@@ -58,29 +45,25 @@ const EditPortfolio = () => {
     })
   }
 
-  console.log(portfolios[0].portfolioType, PortfolioType.Url)
-
   return (
-    portfolios.length > 0 && (
-      <View style={globalStyles.container}>
-        <PortfolioList
-          title="링크"
-          fieldType={PortfolioType.Url}
-          onAddPortfolio={handleAdd}
-          onChangePortfolio={handleEdit}
-          onDeletePortfolio={handleDelete}
-          portfolios={portfolios.filter(portfolio => portfolio.portfolioType == PortfolioType.Url)}
-        />
-        <PortfolioList
-          title="파일 업로드"
-          fieldType={PortfolioType.File}
-          onAddPortfolio={handleAdd}
-          onChangePortfolio={handleEdit}
-          onDeletePortfolio={handleDelete}
-          portfolios={portfolios.filter(portfolio => portfolio.portfolioType == PortfolioType.File)}
-        />
-      </View>
-    )
+    <View style={globalStyles.container}>
+      <PortfolioList
+        title="링크"
+        fieldType={PortfolioType.Url}
+        onAddPortfolio={handleAdd}
+        onChangePortfolio={handleEdit}
+        onDeletePortfolio={handleDelete}
+        portfolios={portfolios.filter(portfolio => portfolio.portfolioType == PortfolioType.Url)}
+      />
+      <PortfolioList
+        title="파일 업로드"
+        fieldType={PortfolioType.File}
+        onAddPortfolio={handleAdd}
+        onChangePortfolio={handleEdit}
+        onDeletePortfolio={handleDelete}
+        portfolios={portfolios.filter(portfolio => portfolio.portfolioType == PortfolioType.File)}
+      />
+    </View>
   )
 }
 
@@ -136,6 +119,8 @@ export const PortfolioList = ({
               }}
               onChangeName={text => onChangePortfolio({...portfolio, name: text})}>
               <CustomInput
+                textContentType={fieldType == PortfolioType.Url ? 'URL' : undefined}
+                keyboardType={fieldType == PortfolioType.Url ? 'url' : undefined}
                 editable={portfolio.portfolioType == PortfolioType.Url}
                 placeholder={placeHolders[portfolio.portfolioType as PortfolioType]}
                 onPressOut={

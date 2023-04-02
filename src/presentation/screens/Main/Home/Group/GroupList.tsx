@@ -1,25 +1,24 @@
 import BottomSlideModalContent from '@/presentation/components/modalContent/BottomSlideModalContent'
 import FloatingButton from '@/presentation/components/FloatingButton'
 import {useTheme} from '@rneui/themed'
-import React, { useEffect, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {FlatList, Text, TouchableOpacity, View} from 'react-native'
 import TeamBanner from '@/presentation/components/TeamBanner'
-import { ModalContext } from '@/presentation/components/modal/context'
-import { BoardStackParamListProps } from '@/presentation/navigation/types'
-import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { getTeam } from '@/redux/reducers/teamGetReducer'
+import {ModalContext} from '@/presentation/components/modal/context'
+import {BoardStackParamListProps} from '@/presentation/navigation/types'
+import {useAppDispatch, useAppSelector} from '@/redux/hooks'
+import {getTeam} from '@/redux/reducers/teamGetReducer'
 import Team from '@/model/Team/Team'
 import { isDataAvailable, isInitializable } from '@/util'
 import { testTeamArray } from '@/testData'
 
-const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
-
-  const {theme} = useTheme() 
+const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
+  const {theme} = useTheme()
   const modal = React.useContext(ModalContext)
   const dispatch = useAppDispatch()
   const [teamGetState, setTeamGetState] = useState({pageFrom: 0, pageSize: 4})
-  const {data,loading,error} = useAppSelector(state => state.teamGetReducer.teamGetResult)
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  const {data, loading, error} = useAppSelector(state => state.teamGetReducer.teamGetResult)
+  const [isRefreshing, setIsRefreshing] = useState(false)
   const [contentData, setContentData] = useState<Team[]>()
   const ProfileMetionModal = 'profileMentionModal'               // 쿠키이름세팅
   //const [appCookies, setAppCookies] = useCookies(['profileMention']) // 쿠키이름을 초기값으로 넣어 쿠키세팅
@@ -76,42 +75,44 @@ const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
   // }
   const changeTeamFindingModeModal = () => {
     modal?.show({
-      title:'',
+      title: '',
       content: (
         <BottomSlideModalContent
-          title='팀 찾기 모드로 변경하시겠어요?'
+          title="팀 찾기 모드로 변경하시겠어요?"
           yesButton={{
-            title: '변경하기', 
+            title: '변경하기',
             onPress: () => {
-              modal.hide() 
-              navigation.navigate('MainNavigation', {screen: 'Profile'})
+              modal.hide()
+              navigation.navigate('MainNavigation', {
+                screen: 'Profile',
+                params: {screen: 'EditMain'},
+              })
               console.log('touch, yes')
             },
           }}
           noButton={{
-            title: '나중에 하기', 
+            title: '나중에 하기',
             onPress: () => {
               modal.hide()
               console.log('touch, yes')
-            }
-          }}
-        >
+            },
+          }}>
           <View>
-            <Text style={{textAlign:'center'}}>팀 찾기 모드로 변경하면</Text>
-            <Text style={{textAlign:'center'}}>원하는 팀을 찾아서 함께할 수 있습니다!</Text>
+            <Text style={{textAlign: 'center'}}>팀 찾기 모드로 변경하면</Text>
+            <Text style={{textAlign: 'center'}}>원하는 팀을 찾아서 함께할 수 있습니다!</Text>
           </View>
         </BottomSlideModalContent>
-      )
+      ),
     })
   }
 
   const requestMoreTeam = () => {
-    if(data != null && data.length >= teamGetState.pageSize){
-      dispatch( getTeam(teamGetState.pageFrom, teamGetState.pageSize) )
-      setTeamGetState( prevState => ({...prevState, pageFrom: teamGetState.pageFrom+1}))
+    if (data != null && data.length >= teamGetState.pageSize) {
+      dispatch(getTeam(teamGetState.pageFrom, teamGetState.pageSize))
+      setTeamGetState(prevState => ({...prevState, pageFrom: teamGetState.pageFrom + 1}))
     }
   }
-  
+
   const refreshMoreTeam = () => {
     setContentData([])
     requestMoreTeam()
@@ -119,16 +120,14 @@ const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
   }
 
   useEffect(() => {
-    isDataAvailable(loading, data, contentData)
-    ? setContentData([...contentData, ...data])
-    :{}
-  },[data, loading, error])
+    // isDataAvailable(loading, data, contentData) ? setContentData([...contentData, ...data]) : {}
+  }, [data, loading, error])
 
   useEffect(() => {
     console.log('useEffect 초기 렌더링 실행!')
-    dispatch( getTeam(teamGetState.pageFrom, teamGetState.pageSize) )
-    setTeamGetState( prevState => ({...prevState, pageFrom: teamGetState.pageFrom+1}))
-    isInitializable(loading, data)? setContentData(data): {}
+    dispatch(getTeam(teamGetState.pageFrom, teamGetState.pageSize))
+    setTeamGetState(prevState => ({...prevState, pageFrom: teamGetState.pageFrom + 1}))
+    // isInitializable(loading, data) ? setContentData(data) : {}
 
     // console.log(`useEffect------------appCookies:${appCookies.profileMention}`)
     // if (!appCookies.profileMention) profileMentionModal()
@@ -136,7 +135,14 @@ const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
   },[])
 
   return (
-    <View style={{flex: 1, flexGrow:1, backgroundColor: 'white', justifyContent:'flex-end', position:'relative'}}>
+    <View
+      style={{
+        flex: 1,
+        flexGrow: 1,
+        backgroundColor: 'white',
+        justifyContent: 'flex-end',
+        position: 'relative',
+      }}>
       <FlatList
         keyExtractor={item => item.teamId}
         data={data}
@@ -148,13 +154,25 @@ const GroupList = ({navigation}:BoardStackParamListProps<'GroupList'>) => {
         </TouchableOpacity>}
         refreshing={isRefreshing}
         onRefresh={refreshMoreTeam}
-        onEndReached={()=>{
+        onEndReached={() => {
           requestMoreTeam()
         }}
         onEndReachedThreshold={0.6}
       />
-      <View style={{position:'absolute',flex:1, flexDirection:'column-reverse',justifyContent:'flex-start', alignItems:'flex-end', width: '95%', backgroundColor:theme.colors.disabled}}>
-        <FloatingButton title='팀 생성' onPress={() => navigation.navigate('MainNavigation', {screen: 'GroupEditor'})}/>
+      <View
+        style={{
+          position: 'absolute',
+          flex: 1,
+          flexDirection: 'column-reverse',
+          justifyContent: 'flex-start',
+          alignItems: 'flex-end',
+          width: '95%',
+          backgroundColor: theme.colors.disabled,
+        }}>
+        <FloatingButton
+          title="팀 생성"
+          onPress={() => navigation.navigate('MainNavigation', {screen: 'GroupEditor'})}
+        />
       </View>
     </View>
   )

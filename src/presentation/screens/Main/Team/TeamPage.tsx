@@ -1,16 +1,13 @@
 import CardWrapper from '@/presentation/components/CardWrapper'
 import {makeStyles, Text, useTheme} from '@rneui/themed'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect} from 'react'
 import {ScrollView, TouchableOpacity, View} from 'react-native'
 import CustomIcon from '@/presentation/components/icon/Gabojait'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { getProfile } from '@/redux/reducers/profileGetReducer'
-import { getTeamDetail } from '@/redux/reducers/teamDetailGetReducer'
 import PositionIcon from '@/presentation/components/PositionIcon'
 import useGlobalStyles from '@/styles'
-import TitleHeader from '../../Headers/TitleHeader'
-import { StackHeaderInterpolationProps, StackHeaderInterpolatedStyle } from '@react-navigation/stack'
 import { OutlinedButton } from '@/presentation/components/Button'
+import { getProfile } from '@/redux/reducers/profileReducer'
 
 const NoProcessingTeam = () => (
   <View style={{
@@ -64,7 +61,7 @@ const Detail = () => {
   const styles = useStyles()
   const dispatch = useAppDispatch()
   const {data:profileData, loading:profileLoading, error:profileError} = useAppSelector(
-    state => state.profileGetReducer.profileGetResult
+    state => state.profileReducer.userProfile
   )
   const {data:teamDetailData, loading:teamDetailLoading, error:teamDetailError} = useAppSelector(
     state => state.teamDetailGetReducer.teamDetailGetResult
@@ -80,12 +77,6 @@ const Detail = () => {
   useEffect(() => {
     dispatch(getProfile())
   },[])
-
-  useEffect(() => {
-    profileData?.currentTeamId != undefined 
-    ? dispatch(getTeamDetail(profileData.currentTeamId))
-    : {}
-  },[profileData])
 
   return (
     <ScrollView style={styles.scrollView}>

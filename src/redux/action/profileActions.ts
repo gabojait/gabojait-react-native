@@ -1,10 +1,11 @@
-import {Part} from '@/model/Part'
-import ProfileViewDto from '@/model/Profile/CompletedTeamDto'
+import {Position} from '@/model/Position'
+import ProfileViewDto from '@/model/Profile/ProfileViewDto'
 import Education from '@/model/Profile/Education'
 import Portfolio from '@/model/Profile/Portfolio'
 import Skill from '@/model/Profile/Skill'
+import {createSlice} from '@reduxjs/toolkit'
+import {createAction, createAsyncAction} from 'typesafe-actions'
 import Work from '@/model/Profile/Work'
-import {createAsyncAction} from 'typesafe-actions'
 
 /*------------- Profile View/Edit related --------------*/
 
@@ -95,6 +96,40 @@ export const UPDATE_DESCRIPTION = 'UPDATE_DESCRIPTION'
 export const UPDATE_DESCRIPTION_SUCCESS = 'UPDATE_DESCRIPTION_SUCCESS'
 export const UPDATE_DESCRIPTION_ERROR = 'UPDATE_DESCRIPTION_ERROR'
 
+export const SET_EDUCATION_AND_WORK = 'SET_EDUCATION_AND_WORK'
+export const SET_EDUCATIONS = 'SET_EDUCATIONS'
+export const SET_WORKS = 'SET_WORKS'
+export const SET_PORTFOLIO = 'SET_PORTFOLIO'
+export const SET_SKILL_AND_POSITION = 'SET_SKILL_AND_POSITION'
+
+export const setEducationAndWorkAction = ({
+  educations,
+  works,
+}: {
+  educations: Education[]
+  works: Work[]
+}) => ({
+  type: SET_EDUCATION_AND_WORK,
+  payload: {educations, works},
+})
+export const setEducations = (educations: Education[]) => ({
+  type: SET_EDUCATIONS,
+  payload: educations,
+})
+export const setWorks = (works: Work[]) => ({
+  type: SET_WORKS,
+  payload: works,
+})
+
+export const setPortfolio = (portfolios: Portfolio[]) => ({
+  type: SET_PORTFOLIO,
+  payload: portfolios,
+})
+export const setSkillAndPosition = ({skills, position}: {skills: Skill[]; position: Position}) => ({
+  type: SET_SKILL_AND_POSITION,
+  payload: {skills, position},
+})
+
 /*------------- ETC --------------*/
 
 export const FETCH_USERS_PROFILE_VISIBLE = 'FETCH_USERS_PROFILE_VISIBLE'
@@ -176,7 +211,7 @@ export const updatePositionAsyncAction = createAsyncAction(
   UPDATE_POSITION,
   UPDATE_POSITION_SUCCESS,
   UPDATE_POSITION_ERROR,
-)<Part, ProfileViewDto, Error>()
+)<Position, ProfileViewDto, Error>()
 export const deletePortfolioAsyncAction = createAsyncAction(
   DELETE_PORTFOLIO,
   DELETE_PORTFOLIO_SUCCESS,

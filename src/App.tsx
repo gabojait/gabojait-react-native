@@ -8,7 +8,7 @@ import {createStore, applyMiddleware} from 'redux'
 import allReducers from '@/redux/reducers'
 import ReduxThunk from 'redux-thunk'
 import CustomModal, {CustomModalRef} from './presentation/components/modal/Modal'
-import { ModalProvider } from './presentation/components/modal/context'
+import {ModalProvider} from './presentation/components/modal/context'
 
 const App = () => {
   const backgroundStyle = {
@@ -20,11 +20,11 @@ const App = () => {
   return (
     <Provider store={store}>
       <ThemeProvider theme={theme}>
-          <ModalProvider>
-            <SafeAreaView style={backgroundStyle}>
-              <RootNavigation />
-            </SafeAreaView>
-          </ModalProvider>
+        <ModalProvider>
+          <SafeAreaView style={backgroundStyle}>
+            <RootNavigation />
+          </SafeAreaView>
+        </ModalProvider>
       </ThemeProvider>
     </Provider>
   )

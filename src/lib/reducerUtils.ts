@@ -31,10 +31,11 @@ export const asyncState = {
   }),
 }
 
-type AnyAsyncActionCreator = AsyncActionCreatorBuilder<any, any, any>
+export type AnyAsyncActionCreator = AsyncActionCreatorBuilder<any, any, any>
 export function createAsyncReducer<S, AC extends AnyAsyncActionCreator, K extends keyof S>(
   asyncActionCreator: AC,
   key: K,
+  successAction: ((state: S, action: AnyAction) => S) | undefined = undefined,
 ) {
   return (state: S, action: AnyAction) => {
     // 각 액션 생성함수의 type 을 추출해줍니다.
@@ -50,10 +51,12 @@ export function createAsyncReducer<S, AC extends AnyAsyncActionCreator, K extend
           [key]: asyncState.loading(),
         }
       case success:
-        return {
-          ...state,
-          [key]: asyncState.success(action.payload),
-        }
+        return successAction
+          ? successAction(state, action)
+          : {
+              ...state,
+              [key]: asyncState.success(action.payload),
+            }
       case failure:
         return {
           ...state,

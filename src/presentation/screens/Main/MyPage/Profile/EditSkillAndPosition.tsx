@@ -10,10 +10,10 @@ import {useAppSelector} from '@/redux/hooks'
 import {Level} from '@/model/Profile/Skill'
 
 const EditSkillAndPosition = () => {
-  const [position, setPosition] = useState('PM')
   const positions = ['PM', 'Designer', 'Frontend', 'Backend']
   const {data, loading, error} = useAppSelector(state => state.profileReducer.userProfile)
   const orgSkills = data?.skills ?? []
+  const [position, setPosition] = useState(data?.position)
   const [skills, setSkills] = useState(orgSkills)
 
   const {theme} = useTheme()

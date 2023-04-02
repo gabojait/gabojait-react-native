@@ -52,7 +52,6 @@ const EditMain = ({navigation}: ProfileStackParamListProps<'EditMain'>) => {
   const [desc, setDesc] = useState(profile?.description ?? '')
   const dispatch = useAppDispatch()
 
-
   if (profile && !profileLoading && !profileError)
     return (
       <ScrollView style={{padding: 20, backgroundColor: 'white'}}>
@@ -102,17 +101,21 @@ const EditMain = ({navigation}: ProfileStackParamListProps<'EditMain'>) => {
           title="학력/경력"
           style={{marginBottom: theme.spacing.xl}}
           onArrowPress={() => {
-            navigation.navigate('EditSchoolAndCareer')
+            navigation.navigate('EditSchoolAndWork')
           }}>
-          <IconLabel
-            iconName="school"
-            label={profile.educations[profile.educations.length - 1].institutionName}
-          />
-          {profile.works
-            .map(work => (
-              <IconLabel key={work.workId} iconName="work" label={work.corporationName} />
-            ))
-            .slice(0, 2)}
+          {profile.educations?.length ?? 0 > 0 ? (
+            <>
+              <IconLabel
+                iconName="school"
+                label={profile.educations[profile.educations.length - 1].institutionName}
+              />
+              {profile.works
+                .map(work => (
+                  <IconLabel key={work.workId} iconName="work" label={work.corporationName} />
+                ))
+                .slice(0, 2)}
+            </>
+          ) : null}
         </ArrowCard>
         <ArrowCard
           title="기술스택/직무"

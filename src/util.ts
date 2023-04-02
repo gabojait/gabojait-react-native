@@ -1,3 +1,8 @@
+import {CombinedState} from '@reduxjs/toolkit'
+import {TypedUseSelectorHook} from 'react-redux'
+import {useAppSelector} from './redux/hooks'
+import {RootState} from './redux/store'
+
 export const usernameRegex = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{5,15}$/ //5~15자 영문, 숫자 조합
 export const passwordRegex =
   /^(?=.*\d{1,50})(?=.*[~`!@#$%\^&*()-+=]{1,50})(?=.*[a-z]{2,50}).{0,50}$/ //영문, 숫자 조합 10~30자
@@ -29,6 +34,7 @@ export const isDataAvailable = (loading: any, data: any, contentData: any) => {
   else return false
 }
 
+
 /**
  * endDate 부터 startDate 까지의 시간차를 월 단위로 반환합니다.
  * @param endDate 끝 시간
@@ -38,19 +44,18 @@ export const isDataAvailable = (loading: any, data: any, contentData: any) => {
 export const calcMonth = (endDate: Date, startDate: Date) =>
   Math.floor((endDate.getTime() - startDate.getTime()) / 1000 / 60 / 60 / 24 / 31)
 
-
 export const changeFirstLetterToCapital = (text: string) => {
   const firstLetter = text.charAt(0).toUpperCase()
   const otherLetters = text.slice(1)
-  return (firstLetter + otherLetters)
+  return firstLetter + otherLetters
 }
 
 export const getFirstAlphabet = (text: string) => {
   return text.charAt(0).toUpperCase()
 }
 export const chagneToOfficialWord = (text: string | undefined) => {
-  let word =''
-  
+  let word = ''
+
   if (text == 'BACKEND') word = '백엔드'
   else if (text == 'FRONTEND') word = '프론트엔드'
   else if (text == 'DESIGNER') word = 'UI/UX 디자이너'
