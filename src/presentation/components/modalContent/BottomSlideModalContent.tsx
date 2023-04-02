@@ -1,10 +1,7 @@
-import {Alert, ButtonProps, Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
-import globalStyles from '@/styles'
+import {ButtonProps, Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import {FilledButton} from '../Button'
 import React from 'react'
 import {useTheme} from '@rneui/themed'
-import {theme} from '@/theme'
-import {PropTypes} from 'mobx-react'
 import useGlobalStyles from '@/styles'
 
 interface BottomSlideModalContentProps {
@@ -21,16 +18,7 @@ const BottomSlideModalContent: React.FC<BottomSlideModalContentProps> = props =>
 
 
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      style={{justifyContent: 'center'}}>
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'flex-end',
-          backgroundColor: globalStyles.modalDim.backgroundColor,
-        }}>
+    <View>
         <View style={style.modal}>
           <Text
             style={{
@@ -49,15 +37,14 @@ const BottomSlideModalContent: React.FC<BottomSlideModalContentProps> = props =>
               onPress={props.yesButton?.onPress}
             />
             <FilledButton
-              buttonStyle={{backgroundColor: theme.colors.grey3, width: '100%'}}
+              buttonStyle={{backgroundColor: theme.colors.disabled, width: '100%'}}
               titleStyle={{color: theme.colors.black}}
               title={props.noButton?.title}
               onPress={props.noButton?.onPress}
             />
           </View>
         </View>
-      </View>
-    </Modal>
+    </View>
   )
 }
 

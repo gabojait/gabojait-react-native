@@ -1,9 +1,6 @@
 import {createStackNavigator} from '@react-navigation/stack'
 import React from 'react'
 import {MainStackParamList} from './types'
-import Profile from '../screens/Main/MyPage/Profile'
-import CloseHeader from '../screens/Headers/CloseHeader'
-import BackHeader from '../screens/Headers/TitleWithCloseHeader'
 import PositionSelector from '../screens/Main/Home/Group/PositionSelector'
 import GroupEditor from '../screens/Main/Home/Group/GroupEditor'
 import GroupDetail from '../screens/Main/Home/Group/GroupDetail'
@@ -19,6 +16,7 @@ import AlarmSetting from '../screens/Main/MyPage/Setting/AlarmSetting'
 import UserModifier from '../screens/Main/MyPage/Setting/UserModifier'
 import Etc from '../screens/Main/MyPage/Setting/Etc'
 import ProfileNavigation from './ProfileNavigation'
+import BookMarkHeader from '../screens/Headers/BookmarkHeader'
 
 const Main = createStackNavigator<MainStackParamList>()
 
@@ -77,7 +75,7 @@ const MainNavigation = () => {
       </Main.Group>
       <Main.Group>
         <Main.Screen name="GroupDetail" component={GroupDetail} options={{
-          header: BackHeader,
+          header: BookMarkHeader,
           headerTitle: ""
         }}/>
         <Main.Screen name="PositionSelector" component={PositionSelector} options={{

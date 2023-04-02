@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import React from 'react'
 import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
-import color from '../res/styles/color'
+import CustomIcon from '@/presentation/components/icon/Gabojait'
 const CustomHeader: React.FC<HeaderProps> = ({
   title,
   canGoBack,
@@ -15,8 +15,8 @@ const CustomHeader: React.FC<HeaderProps> = ({
   const navigation = useNavigation()
   const {theme} = useTheme()
   const back = (
-    <Icon
-      name="angle-left"
+    <CustomIcon
+      name="arrow-back"
       size={30}
       onPress={() => {
         if (navigation.canGoBack()) navigation.goBack()

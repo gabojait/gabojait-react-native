@@ -1,17 +1,20 @@
 import {FilledButton} from '@/presentation/components/Button'
 import CardWrapper from '@/presentation/components/CardWrapper'
+import { ModalContext } from '@/presentation/components/modal/context'
 import PositionIcon from '@/presentation/components/PositionIcon'
 import {MainStackScreenProps} from '@/presentation/navigation/types'
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
 import {getTeamDetail} from '@/redux/reducers/teamDetailGetReducer'
 import useGlobalStyles from '@/styles'
-import globalStyles from '@/styles'
 import {makeStyles, Text, useTheme} from '@rneui/themed'
 import React, {useEffect, useState} from 'react'
 import {ScrollView, View} from 'react-native'
 
 const GroupDetail = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) => {
+
   const styles = useStyles()
+  const globalStyles = useGlobalStyles()
+  const modal = React.useContext(ModalContext)
   const dispatch = useAppDispatch()
   const {data, loading, error} = useAppSelector(
     state => state.teamDetailGetReducer.teamDetailGetResult,
@@ -28,8 +31,6 @@ const GroupDetail = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) =
     dispatch(getTeamDetail(route.params.teamId))
   }, [])
 
-  const globalStyles = useGlobalStyles()
-
   return (
     <ScrollView style={styles.scrollView}>
       <CardWrapper style={[styles.card, {minHeight: 243}]}>
@@ -42,7 +43,7 @@ const GroupDetail = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) =
                 <PositionIcon
                   currentApplicant={item[1] ?? 0}
                   recruitNumber={item[0]}
-                  textView={<Text style={styles.itnitialText}>{initials[index]}</Text>}
+                  textView={<Text style={globalStyles.itnitialText}>{initials[index]}</Text>}
                 />
               ) : (
                 <></>
@@ -82,10 +83,6 @@ const useStyles = makeStyles(theme => ({
     paddingVertical: 17,
     marginVertical: 5,
     marginHorizontal: 20,
-  },
-  itnitialText: {
-    fontWeight: theme.fontWeight.bold,
-    fontSize: 30,
   },
   teamname: {
     fontSize: theme.fontSize.lg,

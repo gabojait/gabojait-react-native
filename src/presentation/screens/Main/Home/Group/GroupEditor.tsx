@@ -13,6 +13,7 @@ import { ModalContext } from '@/presentation/components/modal/context'
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent'
 import CardWrapper from '@/presentation/components/CardWrapper'
 import useGlobalStyles from '@/styles'
+import BottomSlideModalContent from '@/presentation/components/modalContent/BottomSlideModalContent'
 
 const Editor = ({navigation, route}:MainStackScreenProps<'GroupEditor'>) => {
   const {theme} = useTheme()
@@ -172,6 +173,35 @@ const Editor = ({navigation, route}:MainStackScreenProps<'GroupEditor'>) => {
     })
   }
 
+  const DeleteConfirmModal = () => {
+    modal?.show({
+      title:'',
+      content: (
+        <BottomSlideModalContent
+          title='글을 입력하시겠어요?'
+          yesButton={{
+            title: '삭제하기', 
+            onPress: () => {
+              modal.hide() 
+              navigation.goBack()
+            },
+          }}
+          noButton={{
+            title: '돌아가기', 
+            onPress: () => {
+              modal.hide()
+            }
+          }}
+        >
+          <View>
+            <Text style={{textAlign:'center'}}>글을 삭제하면</Text>
+            <Text style={{textAlign:'center'}}>다시 되돌릴 수 없습니다</Text>
+          </View>
+        </BottomSlideModalContent>
+      )
+    })
+  }
+
   return (
     <KeyboardAvoidingView behavior='height' style={{backgroundColor:'white', flex:1}}>
       <FlatList
@@ -270,7 +300,7 @@ const Editor = ({navigation, route}:MainStackScreenProps<'GroupEditor'>) => {
                   }
                 }
               } />
-            <FilledButton title={'취소하기'} buttonStyle={{backgroundColor:theme.colors.grey0}} onPress={() => {navigation.goBack()}}/>
+            <FilledButton title={'삭제하기'} buttonStyle={{backgroundColor:theme.colors.grey0}} onPress={() => {DeleteConfirmModal()}}/>
           </View>
         </>}
       />

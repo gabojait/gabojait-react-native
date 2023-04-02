@@ -50,13 +50,12 @@ const useGlobalStyles = makeStyles(theme => ({
   },
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     paddingTop: 22,
     backgroundColor: 'white',
   },
   modal: {
-    margin: 20,
     backgroundColor: 'white',
     borderRadius: 20,
     paddingTop: 30,
@@ -85,6 +84,10 @@ const useGlobalStyles = makeStyles(theme => ({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+  },
+  itnitialText: {
+    fontWeight: theme.fontWeight.bold,
+    fontSize: 30,
   },
 }))
 export default useGlobalStyles
