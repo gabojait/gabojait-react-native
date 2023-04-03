@@ -11,9 +11,6 @@ import {useTheme} from '@rneui/themed'
 import TeamScreen from '../screens/Main/Team'
 import useGlobalStyles from '@/styles'
 
-export type MainBottomTabNavigationProp<T extends keyof MainBottomTabParamList = 'Home'> =
-  BottomTabNavigationProp<MainBottomTabParamList, T>
-
 const MainBottomTab = createBottomTabNavigator<MainBottomTabParamList>()
 
 // 바텀네비게이션

@@ -9,7 +9,8 @@ import useGlobalStyles from '@/styles'
 import { OutlinedButton } from '@/presentation/components/Button'
 import { getProfile } from '@/redux/reducers/profileReducer'
 import { isLeader } from '@/util'
-import { TeamStackScreenProps } from '@/presentation/navigation/types'
+import { TeamStackParamListProps } from '@/presentation/navigation/types'
+import { getTeamDetail } from '@/redux/reducers/teamDetailGetReducer'
 
 const NoProcessingTeam = () => (
   <View style={{
@@ -65,7 +66,7 @@ const LeaderFooter = ({onPress}:LeaderComponent) => {
   )
 }
 
-export const TeamPage = ({navigation}:TeamStackScreenProps<'TeamPage'>) => {
+export const TeamPage = ({navigation}:TeamStackParamListProps<'TeamPage'>) => {
   // network
   const {theme} = useTheme() 
   const globalStyles = useGlobalStyles()
