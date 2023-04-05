@@ -8,8 +8,8 @@ import MyPage from '@/presentation/screens/Main/MyPage/Main'
 import {MainBottomTabParamList} from './types'
 import CustomIcon from '@/presentation/components/icon/Gabojait'
 import {useTheme} from '@rneui/themed'
-import TeamScreen from '../screens/Main/Team'
 import useGlobalStyles from '@/styles'
+import { TeamPage } from '../screens/Main/Team/TeamPage'
 
 const MainBottomTab = createBottomTabNavigator<MainBottomTabParamList>()
 
@@ -36,7 +36,7 @@ const MainBottomTabNavigation = () => {
         />
         <MainBottomTab.Screen
           name="Team"
-          component={TeamScreen}
+          component={TeamPage}
           options={{
             tabBarIcon: ({size, color}) => <CustomIcon name="people" size={size} color={color} />,
           }}

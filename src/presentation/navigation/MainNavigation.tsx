@@ -17,6 +17,9 @@ import UserModifier from '../screens/Main/MyPage/Setting/UserModifier'
 import Etc from '../screens/Main/MyPage/Setting/Etc'
 import ProfileNavigation from './ProfileNavigation'
 import BookMarkHeader from '../screens/Headers/BookmarkHeader'
+import { TeamEditor } from '../screens/Main/Team/TeamEditor'
+import { TeamComplete } from '../screens/Main/Team/TeamComplete'
+import { CompleteSuccess } from '../screens/Main/Team/CompleteSuccess'
 
 const Main = createStackNavigator<MainStackParamList>()
 
@@ -118,6 +121,31 @@ const MainNavigation = () => {
             header: TitleWithCloseHeader,
             headerTitle: '기타',
           }}
+        />
+      </Main.Group>
+      <Main.Group>
+        <Main.Screen
+          name="TeamEditor"
+          options={{
+              headerShown:false
+          }}
+          component={TeamEditor}
+        />
+        <Main.Screen
+          name="TeamComplete"
+          options={{
+              header:TitleWithCloseHeader,
+              headerTitle: '팀관리'
+          }}
+          component={TeamComplete}
+        />
+        <Main.Screen
+          name="CompleteSuccess"
+          options={{
+              header:TitleWithCloseHeader,
+              headerTitle: '팀관리'
+          }}
+          component={CompleteSuccess}
         />
       </Main.Group>
     </Main.Navigator>

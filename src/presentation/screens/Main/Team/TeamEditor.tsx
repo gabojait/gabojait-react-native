@@ -1,7 +1,6 @@
 import React, { useState } from "react"
 import { makeStyles, Text, useTheme} from "@rneui/themed"
 import { FlatList, KeyboardAvoidingView, TextInput, TouchableOpacity, View } from "react-native";
-import { TeamStackScreenProps } from "@/presentation/navigation/types";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import TeamRequestDto from "@/model/Team/TeamRequestDto";
 import useGlobalStyles from "@/styles";
@@ -13,8 +12,9 @@ import { PositionMaker } from "@/presentation/components/PositionMaker";
 import { FilledButton } from "@/presentation/components/Button";
 import { createTeam } from "@/redux/reducers/teamCreateReducer";
 import CustomIcon from '@/presentation/components/icon/Gabojait'
+import { MainStackParamList, MainStackScreenProps } from "@/presentation/navigation/types";
 
-export const TeamEditor = ({navigation}:TeamStackScreenProps<'TeamPage'>) => {
+export const TeamEditor = ({navigation}:MainStackScreenProps<'TeamEditor'>) => {
   const {theme} = useTheme()
   const styles = useStyles({navigation})
   const modal = React.useContext(ModalContext)

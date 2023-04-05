@@ -53,12 +53,14 @@ export type MainStackParamList = {
   AlarmSetting: undefined
   Etc: undefined
   UserModifier: undefined
+  TeamEditor: undefined
+  TeamComplete: undefined
+  CompleteSuccess: undefined
 }
 
 export type MainBottomTabParamList = {
   Home: undefined
   Team: undefined
-  TeamEditor: NavigatorScreenParams<TeamStackParamList>
   MyPage: undefined
   Notification: undefined
 }
@@ -98,13 +100,3 @@ export type ProfileStackParamList = {
   EditSchoolAndWork: undefined
   EditSkillAndPosition: undefined
 }
-
-export type TeamStackParamList = {
-  TeamPage: undefined
-  TeamEditor: undefined
-}
-
-export type TeamStackParamListProps<T extends keyof TeamStackParamList> = StackScreenProps<
-  TeamStackParamList,
-  T
->

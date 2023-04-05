@@ -9,8 +9,16 @@ import useGlobalStyles from '@/styles'
 import { OutlinedButton } from '@/presentation/components/Button'
 import { getProfile } from '@/redux/reducers/profileReducer'
 import { isLeader } from '@/util'
-import { TeamStackParamListProps } from '@/presentation/navigation/types'
-import { getTeamDetail } from '@/redux/reducers/teamDetailGetReducer'
+import { MainBottomTabNavigationProps} from '@/presentation/navigation/types'
+
+interface LeaderHeaderParams {
+  onPressEditor: () => void
+}
+
+interface LeaderFooterParams {
+  onPressComplete: () => void
+  onPressDelete: () => void
+}
 
 const NoProcessingTeam = () => (
   <View style={{
@@ -27,13 +35,13 @@ const NoProcessingTeam = () => (
   </View>
 )
 
-const LeaderHeader = ({onPress}:LeaderComponent) => {
+const LeaderHeader = ({onPressEditor}:LeaderHeaderParams) => {
   const styles = useStyles()
   const {theme} = useTheme()
   return (
     <View style={styles.header}>
       <Text style={{fontSize:theme.fontSize.lg, fontWeight:theme.fontWeight.bold, textAlignVertical:'center'}}>팀페이지</Text>
-      <TouchableOpacity onPress={()=>onPress()} style={{justifyContent:'center'}}>
+      <TouchableOpacity onPress={()=>onPressEditor()} style={{justifyContent:'center'}}>
         <Text style={{fontSize:20, color:theme.colors.primary}}>수정</Text>
       </TouchableOpacity>
     </View>
@@ -50,23 +58,19 @@ const TeamMateHeader = () => {
   )
 }
 
-interface LeaderComponent {
-  onPress: () => void
-}
-
-const LeaderFooter = ({onPress}:LeaderComponent) => {
+const LeaderFooter = ({onPressComplete, onPressDelete}:LeaderFooterParams) => {
   const {theme} = useTheme()
   return (
     <View style={{paddingBottom:30}}>
-      <OutlinedButton title={'종료하기'} size={'md'}/>
-      <TouchableOpacity onPress={()=>onPress()} style={{justifyContent:'center', alignContent:'center', flex:1}}>
+      <OutlinedButton onPress={()=>onPressComplete()}title={'종료하기'} size={'md'}/>
+      <TouchableOpacity onPress={()=>onPressDelete()} style={{justifyContent:'center', alignContent:'center', flex:1}}>
         <Text style={{fontSize:theme.fontSize.md, fontWeight:theme.fontWeight.bold, color:theme.colors.disabled, paddingTop:20, textAlign:'center'}}>해산하기</Text>
       </TouchableOpacity>
     </View>
   )
 }
 
-export const TeamPage = ({navigation}:TeamStackParamListProps<'TeamPage'>) => {
+export const TeamPage = ({navigation}:MainBottomTabNavigationProps<'Team'>) => {
   // network
   const {theme} = useTheme() 
   const globalStyles = useGlobalStyles()
@@ -92,7 +96,10 @@ export const TeamPage = ({navigation}:TeamStackParamListProps<'TeamPage'>) => {
 
   return (
     <>
-      {isLeader(profileData?.teamMemberStatus)?<LeaderHeader onPress={() => navigation.navigate('TeamEditor')}/>:<TeamMateHeader/>}
+      {isLeader(profileData?.teamMemberStatus)
+      ?<LeaderHeader onPressEditor={() => navigation.navigate('MainNavigation',{screen:'TeamEditor'})}/>
+      :<TeamMateHeader/>
+      }
       {profileData?.currentTeamId == null? <NoProcessingTeam/>
       :<View style={styles.scrollView}>
         <ScrollView style={{paddingTop:10, backgroundColor: theme.colors.white}}>      
@@ -138,7 +145,13 @@ export const TeamPage = ({navigation}:TeamStackParamListProps<'TeamPage'>) => {
               </Text>
             </View>
           </CardWrapper>
-          {isLeader(profileData.teamMemberStatus)? <LeaderFooter onPress={() => {}}/>:<></>}
+          {isLeader(profileData.teamMemberStatus)
+          ? <LeaderFooter 
+              onPressComplete={() => {navigation.navigate('MainNavigation', {screen:'TeamComplete'})}}
+              onPressDelete={() => {}}
+            />
+          :<></>
+          }
         </ScrollView>
       </View>
       }   
