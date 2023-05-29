@@ -44,3 +44,15 @@ export const verifyAuthCode = async (request: EmailVerifyDto) => {
   console.log(result)
   return result
 }
+
+export const findUserName = async (request: {email: string}) => {
+  const result = await client.post('user/username', request)
+  console.log(result)
+  return result
+}
+
+export const findPassword = async (request: FindPasswordDto) => {
+  const result = await client.post('user/password', request)
+  console.log(result)
+  return result
+}

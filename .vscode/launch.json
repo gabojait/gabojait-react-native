@@ -41,7 +41,7 @@
       "type": "reactnativedirect",
       "cwd": "${workspaceFolder}",
       "platform": "ios",
-      "runArguments": ["--simulator", "iPhone 14 Pro"]
+      "runArguments": ["--simulator", "iPhone 14 Pro Max"]
       // "react-native.ios.runArguments.simulator": ["--simulator", "iPhone 14 Pro"]
     }
   ]

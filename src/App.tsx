@@ -9,6 +9,10 @@ import allReducers from '@/redux/reducers'
 import ReduxThunk from 'redux-thunk'
 import CustomModal, {CustomModalRef} from './presentation/components/modal/Modal'
 import {ModalProvider} from './presentation/components/modal/context'
+import { QueryClient, QueryClientProvider, useQuery } from 'react-query'
+
+const queryClient = new QueryClient()
+
 
 const App = () => {
   const backgroundStyle = {
@@ -19,13 +23,15 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <ModalProvider>
-          <SafeAreaView style={backgroundStyle}>
-            <RootNavigation />
-          </SafeAreaView>
-        </ModalProvider>
-      </ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider theme={theme}>
+          <ModalProvider>
+            <SafeAreaView style={backgroundStyle}>
+              <RootNavigation />
+            </SafeAreaView>
+          </ModalProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
     </Provider>
   )
 }

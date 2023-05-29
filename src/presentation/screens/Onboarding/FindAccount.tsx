@@ -1,3 +1,4 @@
+import {findPassword, findUserName} from '@/api/accounts'
 import {FilledButton} from '@/presentation/components/Button'
 import CustomInput from '@/presentation/components/CustomInput'
 import {ModalContext} from '@/presentation/components/modal/context'
@@ -8,6 +9,7 @@ import {emailRegex, usernameRegex} from '@/util'
 import {Button, Input, Text, useTheme} from '@rneui/themed'
 import React, {useState} from 'react'
 import {View} from 'react-native'
+import {useMutation} from 'react-query'
 const FindAccount = () => {
   const [userName, setuserName] = useState('')
   const [userEmail, setUserEmail] = useState('')
@@ -15,38 +17,43 @@ const FindAccount = () => {
   const modal = React.useContext(ModalContext)
   const {theme} = useTheme()
 
+  const findUserNameMutation = useMutation(findUserName, {
+    onSuccess(data, variables, context) {
+      modal?.show({
+        title: '',
+        content: (
+          <SymbolModalContent
+            title="아이디 전달 완료!"
+            text={`아이디를 이메일로 전달했습니다!\n이메일을 확인해주세요`}
+            symbol={<Text style={{fontSize: theme.emojiSize.md, textAlign: 'center'}}>✉️</Text>}
+            yesButton={{title: '확인', onPress: () => modal.hide()}}
+          />
+        ),
+      })
+    },
+  })
+
+  const findPasswordMutation = useMutation(findPassword, {
+    onSuccess(data, variables, context) {
+      modal?.show({
+        title: '',
+        content: (
+          <SymbolModalContent
+            title="임시 비밀번호 전달 완료!"
+            text={`임시 비밀번호를 이메일로 보냈습니다!\n이메일을 확인해주세요`}
+            symbol={<Text style={{fontSize: theme.emojiSize.md, textAlign: 'center'}}>✉️</Text>}
+            yesButton={{title: '확인', onPress: () => modal.hide()}}
+          />
+        ),
+      })
+    },
+  })
+
   const test: (regex: RegExp, text: string) => ValidatorState = (regex: RegExp, text: string) => {
     if (text.length == 0) return 'none'
     return regex.test(text) ? 'valid' : 'invalid'
   }
 
-  const findUserName = () => {
-    modal?.show({
-      title: '',
-      content: (
-        <SymbolModalContent
-          title="아이디 전달 완료!"
-          text={`아이디를 이메일로 전달했습니다!\n이메일을 확인해주세요`}
-          symbol={<Text style={{fontSize: theme.emojiSize.md, textAlign: 'center'}}>✉️</Text>}
-          yesButton={{title: '확인', onPress: () => modal.hide()}}
-        />
-      ),
-    })
-  }
-
-  const findPassword = () => {
-    modal?.show({
-      title: '',
-      content: (
-        <SymbolModalContent
-          title="임시 비밀번호 전달 완료!"
-          text={`임시 비밀번호를 이메일로 보냈습니다!\n이메일을 확인해주세요`}
-          symbol={<Text style={{fontSize: theme.emojiSize.md, textAlign: 'center'}}>✉️</Text>}
-          yesButton={{title: '확인', onPress: () => modal.hide()}}
-        />
-      ),
-    })
-  }
   const globalStyles = useGlobalStyles()
 
   return (
@@ -66,7 +73,7 @@ const FindAccount = () => {
         title="완료"
         disabled={!emailRegex.test(userEmail)}
         containerStyle={{paddingVertical: 20}}
-        onPress={() => findUserName()}
+        onPress={() => findUserNameMutation.mutate({email: userEmail})}
       />
 
       <Text h4 style={{marginVertical: 20, marginTop: 30}}>
@@ -91,6 +98,7 @@ const FindAccount = () => {
       <FilledButton
         title="완료"
         disabled={!emailRegex.test(userEmail) || !usernameRegex.test(userName)}
+        onPress={() => findPasswordMutation.mutate({email: userEmail, username: userName})}
         containerStyle={{paddingVertical: 20}}
       />
     </View>
