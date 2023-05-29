@@ -13,7 +13,7 @@ import axios, {
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const axiosConfig: AxiosRequestConfig = {
-  baseURL: 'https://gabojait-dev.nogamsung.com/api/',
+  baseURL: 'https://gabojait-dev.nogamsung.com/api/v1',
   headers: {} as AxiosRequestHeaders,
 }
 
@@ -57,7 +57,10 @@ client.interceptors.request.use(async req => {
 
 client.interceptors.response.use(
   async res => {
-    console.log(`${res.config.url} Responsed: ${res.status}}\n Response:`, res.data.responseData.data)
+    console.log(
+      `${res.config.url} Responsed: ${res.status}}\n Response:`,
+      res.data.responseData.data,
+    )
     try {
       if (isSuccess(res.status)) {
         if (res.headers['authorization']) {
@@ -93,7 +96,15 @@ client.interceptors.response.use(
   error => {
     const e = error as AxiosError
     console.log(
-      `Path: ${e.config?.url} | StatusCode: ${e.response?.status}\nResponse:`,
+      `Path:`,
+      e.config?.url,
+      `StatusCode:`,
+      e.response?.status,
+      `AccessToken: `,
+      e.config?.headers['Authorization'],
+      `RefreshToken: `,
+      e.config?.headers['Refresh-Token'],
+      `Response:`,
       e.response?.data,
     )
     if (e.response?.status == 403) {
