@@ -5,6 +5,6 @@ export default interface TeamRequestDto {
     frontendTotalRecruitCnt: number
     openChatUrl: string
     projectDescription: string
-    projectManagerTotalRecruitCnt: number
+    managerTotalRecruitCnt: number
     projectName: string
 }

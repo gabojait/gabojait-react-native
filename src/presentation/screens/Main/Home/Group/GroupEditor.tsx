@@ -29,7 +29,7 @@ const Editor = ({navigation, route}:MainStackScreenProps<'GroupEditor'>) => {
     frontendTotalRecruitCnt: 0,
     openChatUrl: '',
     projectDescription: '',
-    projectManagerTotalRecruitCnt: 0,
+    managerTotalRecruitCnt: 0,
     projectName: '',
   })
   const {
@@ -80,7 +80,7 @@ const Editor = ({navigation, route}:MainStackScreenProps<'GroupEditor'>) => {
     const backendCnt = teamCreateState.backendTotalRecruitCnt
     const frontendCnt = teamCreateState.frontendTotalRecruitCnt
     const designerCnt = teamCreateState.designerTotalRecruitCnt
-    const projectManagerCnt = teamCreateState.projectManagerTotalRecruitCnt
+    const projectManagerCnt = teamCreateState.managerTotalRecruitCnt
 
     if(backendCnt == 0 && frontendCnt == 0 && designerCnt == 0 && projectManagerCnt == 0){
       throw Error('팀원이 존재하지 않습니다')

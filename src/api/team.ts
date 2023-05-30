@@ -1,7 +1,7 @@
 import client from "@/lib/axiosInstance";
 import TeamRequestDto from "@/model/Team/TeamRequestDto";
 export const createTeam = async (dto: TeamRequestDto) => {
-    const result = await client.post('team', dto)
+    const result = await client.post('v1/team', dto)
     return result
 }
 
