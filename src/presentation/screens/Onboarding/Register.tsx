@@ -98,7 +98,7 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
           title: '오류',
           content: (
             <OkDialogModalContent
-              text={'회원가입에 실패했어요.'}
+              text={registerError.message ?? "회원가입에 실패했어요."}
               onOkClick={() => {
                 modal.hide()
               }}

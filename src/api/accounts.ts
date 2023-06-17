@@ -16,13 +16,13 @@ export const getUser = async () => {
 }
 
 export const checkUsernameDuplicate = async (username: string) => {
-  const result = await client.get(`user/username/duplicate/${username}`)
+  const result = await client.get(`user/username?username=${username}`)
   console.log(result)
   return result
 }
 
 export const checkNicknameDuplicate = async (nickname: string) => {
-  const result = await client.get(`user/nickname/duplicate/${nickname}`)
+  const result = await client.get(`user/nickname?nickname=${nickname}`)
   console.log(result)
   return result
 }
