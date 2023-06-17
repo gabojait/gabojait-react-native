@@ -5,28 +5,28 @@ import {PixelRatio, View} from 'react-native'
 import color from '../res/styles/color'
 import CustomIcon from '@/presentation/components/icon/Gabojait'
 import Team from '@/model/Team/Team'
+import TeamModel from '../model/Team'
 
-const TeamBanner: React.FC<CardProps & {team: Team}> = ({team}) => {
+const TeamBanner: React.FC<CardProps & {team: TeamModel}> = ({team}) => {
   const {theme} = useTheme()
-  // Todo: Team Position 별로 분기처리 하는 예쁜 방법 고안
   const positions = [
     [team.backendTotalRecruitCnt, 'B'],
     [team.frontendTotalRecruitCnt, 'F'],
     [team.designerTotalRecruitCnt, 'D'],
-    [team.projectManagerTotalRecruitCnt, 'P'],
+    [team.managerTotalRecruitCnt, 'M'],
   ]
   const IsRecruitDone = (positionInitial: string) => {
     if (positionInitial == 'B') {
-      if (team.backendTotalRecruitCnt == team.backends.length) return true
+      if (team.backendTotalRecruitCnt == team.backendCurrentCnt) return true
     }
     if (positionInitial == 'F') {
-      if (team.frontendTotalRecruitCnt == team.frontends.length) return true
+      if (team.frontendTotalRecruitCnt == team.frontendCurrentCnt) return true
     }
     if (positionInitial == 'D') {
-      if (team.designerTotalRecruitCnt == team.designers.length) return true
+      if (team.designerTotalRecruitCnt == team.frontendCurrentCnt) return true
     }
-    if (positionInitial == 'P') {
-      if (team.projectManagerTotalRecruitCnt == team.projectManagers.length) return true
+    if (positionInitial == 'M') {
+      if (team.managerTotalRecruitCnt == team.managerCurrentCnt) return true
     }
     return false
   }
@@ -43,8 +43,6 @@ const TeamBanner: React.FC<CardProps & {team: Team}> = ({team}) => {
           height: 2,
         },
         borderRadius: 20,
-        // paddingBottom:25,
-        // paddingStart: 25,
         flex: 1,
       }}>
       <Text
@@ -63,17 +61,15 @@ const TeamBanner: React.FC<CardProps & {team: Team}> = ({team}) => {
           flexDirection: 'row',
           justifyContent: 'space-around',
         }}>
-        {positions?.map(
-          (item, index) => (
-            item[0] > 0 && item[1] != undefined? (
-              <PartIcon
-                partInitial={item[1].toString()}
-                isRecruitDone={IsRecruitDone(item[1].toString())}
-                key={index}
-              />
-            ) : (
-              <></>
-            )
+        {positions?.map((item, index) =>
+          item[0] && item[1] ? (
+            <PartIcon
+              partInitial={item[1].toString()}
+              isRecruitDone={IsRecruitDone(item[1].toString())}
+              key={index}
+            />
+          ) : (
+            <></>
           ),
         )}
         <View
