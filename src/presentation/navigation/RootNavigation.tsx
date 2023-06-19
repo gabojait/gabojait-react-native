@@ -31,7 +31,7 @@ export const RootNavigation = () => {
           <RootStack.Screen name="OnboardingNavigation" component={OnboardingNavigation} />
           <RootStack.Screen name="SplashScreen" component={SplashScreen} />
           <RootStack.Screen name="MainNavigation" component={MainNavigation} />
-          <RootStack.Screen name="MainBottomTabNavigation" component={MainBottomTabNavigation} />
+          <RootStack.Screen name="MainBottomTabNavigation" component={MainBottomTabNavigation} options={{gestureEnabled: false}} />
         </RootStack.Group>
       </RootStack.Navigator>
     </NavigationContainer>

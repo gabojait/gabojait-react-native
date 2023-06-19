@@ -1,7 +1,4 @@
-import {
-  BottomTabNavigationProp,
-  createBottomTabNavigator,
-} from '@react-navigation/bottom-tabs'
+import {BottomTabNavigationProp, createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import React from 'react'
 import Home from '@/presentation/navigation/HomeNavigation'
 import MyPage from '@/presentation/screens/Main/MyPage/Main'
@@ -9,7 +6,7 @@ import {MainBottomTabParamList} from './types'
 import CustomIcon from '@/presentation/components/icon/Gabojait'
 import {useTheme} from '@rneui/themed'
 import useGlobalStyles from '@/styles'
-import { TeamPage } from '../screens/Main/Team/TeamPage'
+import {TeamPage} from '../screens/Main/Team/TeamPage'
 
 const MainBottomTab = createBottomTabNavigator<MainBottomTabParamList>()
 

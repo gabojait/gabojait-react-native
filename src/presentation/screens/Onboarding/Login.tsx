@@ -12,6 +12,7 @@ import LoginRequestDTO from '@/model/LoginRequestDto'
 import {ModalContext} from '@/presentation/components/modal/context'
 import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent'
 import useGlobalStyles from '@/styles'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const Login = ({navigation}: OnboardingScreenProps<'Login'>) => {
   const [loginState, setLoginState] = useState({username: '', password: ''} as LoginRequestDTO)
@@ -69,9 +70,10 @@ const Login = ({navigation}: OnboardingScreenProps<'Login'>) => {
         <FilledButton
           size="sm"
           title="로그인"
-          onPress={() => {
+          onPress={async () => {
             console.log(loginState.username, loginState.password)
-            dispatch(login({username: loginState.username, password: loginState.password}))
+            await AsyncStorage.setItem('accessToken', '')
+            dispatch(login({username: loginState.username, password: loginState.password, fcmToken: "testToken"}))
           }}
           containerStyle={{marginBottom: 10}}
         />
