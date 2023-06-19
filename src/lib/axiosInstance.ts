@@ -44,7 +44,7 @@ interface CustomResponseInterceptorManager
   ): number
 }
 
-const isSuccess = (statusCode: number) => statusCode <= 200 && statusCode < 300
+const isSuccess = (statusCode: number) =>  200 <= statusCode && statusCode < 300
 
 const client: CustomInstance = axios.create(axiosConfig)
 client.interceptors.request.use(async req => {
@@ -64,19 +64,20 @@ client.interceptors.response.use(
     try {
       if (isSuccess(res.status)) {
         if (res.headers['authorization']) {
-          // authorization: [access-token: ]
-          const headerRegex = /\[access-token: (.+?), refresh-token: (.+?)\]/g
-          const tokens = headerRegex.exec(res.headers.authorization)!
-          console.log(`Login Success! setting tokens: ${tokens[1]} ${tokens[2]}`)
-          await AsyncStorage.setItem('accessToken', tokens[1])
-          await AsyncStorage.setItem('refreshToken', tokens[2])
+          await AsyncStorage.setItem('accessToken', res.headers['authorization'])
+        }
+        if (res.headers['refreshToken']) {
+          await AsyncStorage.setItem('refreshToken', res.headers['refreshToken'])
         }
         if (!res.data.responseData.data || res.status == 204 || res.status == 201) {
           // Todo: Handle No Content
           // Todo: 빈 리스트(204?)/201 대응
           return []
         } else {
-          return res.data.responseData.data
+          return {
+            ...res.data.responseData.data,
+            headers: res.headers,
+          }
         }
       } else {
         throw {
@@ -112,7 +113,10 @@ client.interceptors.response.use(
       AsyncStorage.setItem('accessToken', '')
       AsyncStorage.setItem('refreshToken', '')
     }
-    const response = e.response?.data as ResponseWrapper<undefined>
+    const response = {
+      ...(e.response?.data as ResponseWrapper<undefined>),
+      headers: e.response?.headers,
+    }
     throw {
       name: response.responseCode ?? 'UNKNOWN_ERROR',
       message: response.responseMessage ?? '알 수 없는 오류입니다.',

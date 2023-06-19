@@ -51,6 +51,7 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
   const [registerState, setRegisterState] = useState<RegisterRequestDto>({
     gender: Gender.Female,
     birthdate: new Date().toISOString(),
+    fcmToken: "testToken!",
   })
   const {theme} = useTheme()
   const dispatch = useAppDispatch()

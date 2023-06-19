@@ -1,3 +1,5 @@
+import { AxiosResponseHeaders } from "axios"
+
 export type ResponseWrapper<T = any> = {
   responseCode?: string
   responseMessage?: string
@@ -5,4 +7,5 @@ export type ResponseWrapper<T = any> = {
     data?: T,
     size?: number
   }
+  headers?: AxiosResponseHeaders
 }
