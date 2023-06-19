@@ -1,4 +1,3 @@
-import BottomSlideModalContent from '@/presentation/components/modalContent/BottomSlideModalContent'
 import FloatingButton from '@/presentation/components/FloatingButton'
 import {useTheme} from '@rneui/themed'
 import React, {useEffect, useState} from 'react'
@@ -6,133 +5,92 @@ import {FlatList, Text, TouchableOpacity, View} from 'react-native'
 import TeamBanner from '@/presentation/components/TeamBanner'
 import {ModalContext} from '@/presentation/components/modal/context'
 import {BoardStackParamListProps} from '@/presentation/navigation/types'
-import {useAppDispatch, useAppSelector} from '@/redux/hooks'
+import {useAppDispatch} from '@/redux/hooks'
 import {getTeam} from '@/redux/reducers/teamGetReducer'
-import Team from '@/model/Team/Team'
-import { isDataAvailable, isInitializable } from '@/util'
-import { testTeamArray } from '@/testData'
+import {getRecruiting, GetRecruitingProps} from '@/api/team'
+import {UseInfiniteQueryResult, UseQueryResult, useInfiniteQuery, useQuery} from 'react-query'
+import TeamBriefResponseDto from '@/model/Team/TeamBriefResponseDto'
 
 const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
   const {theme} = useTheme()
   const modal = React.useContext(ModalContext)
   const dispatch = useAppDispatch()
-  const [teamGetState, setTeamGetState] = useState({pageFrom: 0, pageSize: 4})
-  const {data, loading, error} = useAppSelector(state => state.teamGetReducer.teamGetResult)
+  const [teamGetState, setTeamGetState] = useState<GetRecruitingProps>({
+    pageFrom: 0,
+    pageSize: 20,
+    position: 'none',
+    teamOrder: 'created',
+  })
   const [isRefreshing, setIsRefreshing] = useState(false)
-  const [contentData, setContentData] = useState<Team[]>()
-  const ProfileMetionModal = 'profileMentionModal'               // 쿠키이름세팅
-  //const [appCookies, setAppCookies] = useCookies(['profileMention']) // 쿠키이름을 초기값으로 넣어 쿠키세팅
-  const [hasCookie, setHasCookie] = useState(false)
+  const [contentData, setContentData] = useState<TeamBriefResponseDto[]>()
+  const {
+    data,
+    isLoading,
+    error,
+    fetchNextPage,
+    refetch,
+  }: UseInfiniteQueryResult<TeamBriefResponseDto[], Error> = useInfiniteQuery(
+    [
+      'recruiting',
+      teamGetState.pageFrom,
+      teamGetState.pageSize,
+      teamGetState.position,
+      teamGetState.teamOrder,
+    ],
+    async ({pageParam = 0}) => {
+      setTeamGetState(prevState => ({...prevState, pageFrom: pageParam}))
+      const result = await getRecruiting(teamGetState)
+      return result
+    },
+    {
+      staleTime: 200000,
+      getNextPageParam: lastPage => {
+        if (lastPage.length >= teamGetState.pageSize) {
+          return teamGetState.pageFrom + 1
+        } else {
+          return undefined
+        }
+      },
+      onSuccess: newData => {
+        // 새로운 데이터를 합치기 위해 이전 데이터에 추가합니다.
+        setContentData(prevData => [...prevData, newData.pages])
+      },
+    },
+  )
 
-  const getExpiredDate = (days: number) => {
-    const date = new Date()
-    date.setDate(date.getDate() + days)
-    console.log(`getExpireDate:${date}`)
-    return date
-  };
-
-  const isExpiredDate = () => {
-    const current_date = new Date()
+  if (isLoading && !data) {
+    return <Text>로딩 중</Text>
   }
 
-  // const closeModalUntilExpires = () => {
-  //   if (!appCookies) return;
-  //   const expires = getExpiredDate(1)
-  //   setAppCookies('profileMention', expires, { path: "/" })
-  //   console.log(`closeModalUntilExpires-----appCookies:${appCookies.profileMention}`)
-  // };
-
-  // const profileMentionModal = () => {
-  //   modal?.show({
-  //     title:'',
-  //     content: (
-  //       <BottomSlideModalContent
-  //         title='프로필을 입력하시겠어요?'
-  //         yesButton={{
-  //           title: '입력하기', 
-  //           onPress: () => {
-  //             modal.hide() 
-  //             closeModalUntilExpires()
-  //             navigation.navigate('MainNavigation', {screen:'Profile'})
-  //           },
-  //         }}
-  //         noButton={{
-  //           title: '닫기', 
-  //           onPress: () => {
-  //             modal.hide()
-  //             closeModalUntilExpires()
-  //           }
-  //         }}
-  //       >
-  //         <View>
-  //           <Text style={{textAlign:'center'}}>프로필을 작성하면</Text>
-  //           <Text style={{textAlign:'center'}}>바로 팀매칭을</Text>
-  //           <Text style={{textAlign:'center'}}>시작할 수 있습니다!</Text>
-  //         </View>
-  //       </BottomSlideModalContent>
-  //     )
-  //   })
-  // }
-  const changeTeamFindingModeModal = () => {
-    modal?.show({
-      title: '',
-      content: (
-        <BottomSlideModalContent
-          title="팀 찾기 모드로 변경하시겠어요?"
-          yesButton={{
-            title: '변경하기',
-            onPress: () => {
-              modal.hide()
-              navigation.navigate('MainNavigation', {
-                screen: 'Profile',
-                params: {screen: 'EditMain'},
-              })
-              console.log('touch, yes')
-            },
-          }}
-          noButton={{
-            title: '나중에 하기',
-            onPress: () => {
-              modal.hide()
-              console.log('touch, yes')
-            },
-          }}>
-          <View>
-            <Text style={{textAlign: 'center'}}>팀 찾기 모드로 변경하면</Text>
-            <Text style={{textAlign: 'center'}}>원하는 팀을 찾아서 함께할 수 있습니다!</Text>
-          </View>
-        </BottomSlideModalContent>
-      ),
-    })
+  if (error) {
+    return <Text>에러 발생</Text>
   }
 
-  const requestMoreTeam = () => {
-    if (data != null && data.length >= teamGetState.pageSize) {
-      dispatch(getTeam(teamGetState.pageFrom, teamGetState.pageSize))
-      setTeamGetState(prevState => ({...prevState, pageFrom: teamGetState.pageFrom + 1}))
-    }
+  if (!data) {
+    return null
   }
 
-  const refreshMoreTeam = () => {
+  function handleMoreTeam() {
+    fetchNextPage()
+  }
+
+  function handleRefresh() {
     setContentData([])
-    requestMoreTeam()
+    handleMoreTeam()
     setIsRefreshing(false)
+    refetch()
   }
 
   useEffect(() => {
     // isDataAvailable(loading, data, contentData) ? setContentData([...contentData, ...data]) : {}
-  }, [data, loading, error])
+  }, [data, isLoading, error])
 
   useEffect(() => {
     console.log('useEffect 초기 렌더링 실행!')
     dispatch(getTeam(teamGetState.pageFrom, teamGetState.pageSize))
     setTeamGetState(prevState => ({...prevState, pageFrom: teamGetState.pageFrom + 1}))
     // isInitializable(loading, data) ? setContentData(data) : {}
-
-    // console.log(`useEffect------------appCookies:${appCookies.profileMention}`)
-    // if (!appCookies.profileMention) profileMentionModal()
-    // else return;
-  },[])
+  }, [])
 
   return (
     <View
@@ -145,17 +103,22 @@ const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
       }}>
       <FlatList
         keyExtractor={item => item.teamId}
-        data={data}
-        renderItem={({item}) => 
-        <TouchableOpacity onPress={() => navigation.navigate('MainNavigation', {screen: 'GroupDetail', params: {teamId: item.teamId}})}>
-          <TeamBanner
-            team={item}
-          />
-        </TouchableOpacity>}
+        data={contentData}
+        renderItem={({item}) => (
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('MainNavigation', {
+                screen: 'GroupDetail',
+                params: {teamId: item.teamId},
+              })
+            }>
+            <TeamBanner team={item} />
+          </TouchableOpacity>
+        )}
         refreshing={isRefreshing}
-        onRefresh={refreshMoreTeam}
+        onRefresh={handleRefresh}
         onEndReached={() => {
-          requestMoreTeam()
+          handleMoreTeam()
         }}
         onEndReachedThreshold={0.6}
       />
