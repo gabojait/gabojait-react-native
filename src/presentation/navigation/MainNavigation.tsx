@@ -17,9 +17,10 @@ import UserModifier from '../screens/Main/MyPage/Setting/UserModifier'
 import Etc from '../screens/Main/MyPage/Setting/Etc'
 import ProfileNavigation from './ProfileNavigation'
 import BookMarkHeader from '../screens/Headers/BookmarkHeader'
-import { TeamEditor } from '../screens/Main/Team/TeamEditor'
-import { TeamComplete } from '../screens/Main/Team/TeamComplete'
-import { CompleteSuccess } from '../screens/Main/Team/CompleteSuccess'
+import {TeamEditor} from '../screens/Main/Team/TeamEditor'
+import {TeamComplete} from '../screens/Main/Team/TeamComplete'
+import {CompleteSuccess} from '../screens/Main/Team/CompleteSuccess'
+import OpenSourceLicense from '../screens/Main/MyPage/Setting/OpenSourceLicense'
 
 const Main = createStackNavigator<MainStackParamList>()
 
@@ -77,17 +78,29 @@ const MainNavigation = () => {
         />
       </Main.Group>
       <Main.Group>
-        <Main.Screen name="GroupDetail" component={GroupDetail} options={{
-          header: BookMarkHeader,
-          headerTitle: ""
-        }}/>
-        <Main.Screen name="PositionSelector" component={PositionSelector} options={{
-          header: TitleWithCloseHeader,
-          headerTitle: "포지션 선택"
-        }}/>
-        <Main.Screen name="GroupEditor" component={GroupEditor} options={{
-          headerShown:false
-        }}/>
+        <Main.Screen
+          name="GroupDetail"
+          component={GroupDetail}
+          options={{
+            header: BookMarkHeader,
+            headerTitle: '',
+          }}
+        />
+        <Main.Screen
+          name="PositionSelector"
+          component={PositionSelector}
+          options={{
+            header: TitleWithCloseHeader,
+            headerTitle: '포지션 선택',
+          }}
+        />
+        <Main.Screen
+          name="GroupEditor"
+          component={GroupEditor}
+          options={{
+            headerShown: false,
+          }}
+        />
       </Main.Group>
       <Main.Group>
         <Main.Screen
@@ -122,28 +135,36 @@ const MainNavigation = () => {
             headerTitle: '기타',
           }}
         />
+        <Main.Screen
+          name="OpenSourcePage"
+          component={OpenSourceLicense}
+          options={{
+            header: TitleWithCloseHeader,
+            headerTitle: '오픈소스',
+          }}
+        />
       </Main.Group>
       <Main.Group>
         <Main.Screen
           name="TeamEditor"
           options={{
-              headerShown:false
+            headerShown: false,
           }}
           component={TeamEditor}
         />
         <Main.Screen
           name="TeamComplete"
           options={{
-              header:TitleWithCloseHeader,
-              headerTitle: '팀관리'
+            header: TitleWithCloseHeader,
+            headerTitle: '팀관리',
           }}
           component={TeamComplete}
         />
         <Main.Screen
           name="CompleteSuccess"
           options={{
-              header:TitleWithCloseHeader,
-              headerTitle: '팀관리'
+            header: TitleWithCloseHeader,
+            headerTitle: '팀관리',
           }}
           component={CompleteSuccess}
         />
