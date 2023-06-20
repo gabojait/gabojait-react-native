@@ -9,4 +9,5 @@ export default interface RegisterRequestDto {
   password?: string
   passwordReEntered?: string
   username?: string
+  fcmToken?: string
 }

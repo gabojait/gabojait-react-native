@@ -52,6 +52,9 @@ export type MainStackParamList = {
   Setting: undefined
   AlarmSetting: undefined
   Etc: undefined
+  
+  OpenSourcePage: undefined
+
   UserModifier: undefined
   TeamEditor: undefined
   TeamComplete: undefined
