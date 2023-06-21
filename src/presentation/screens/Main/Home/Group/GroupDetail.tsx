@@ -22,7 +22,7 @@ const GroupDetail = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) =
     [data?.backendTotalRecruitCnt, data?.backends?.length ?? 0],
     [data?.frontendTotalRecruitCnt, data?.frontends?.length ?? 0],
     [data?.designerTotalRecruitCnt, data?.designers?.length ?? 0],
-    [data?.projectManagerTotalRecruitCnt, data?.projectManagers?.length ?? 0],
+    [data?.managerTotalRecruitCnt, data?.managers?.length ?? 0],
   ]
   const initials = ['B', 'F', 'D', 'P']
 
