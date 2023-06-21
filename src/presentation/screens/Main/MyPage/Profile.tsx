@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useMemo} from 'react'
 import {CheckBox, makeStyles, Text, useTheme} from '@rneui/themed'
 import {ActivityIndicator, ScrollView, StyleProp, TextStyle, View, ViewStyle} from 'react-native'
 import {FilledButton} from '@/presentation/components/Button'
@@ -62,7 +62,7 @@ const Profile = ({navigation}: ProfileStackParamListProps<'View'>) => {
     dispatch(getProfile())
   }, [])
 
-  const profileExist = true
+  const profileExist = useMemo(() => profile != null, [profile]);
   if (profileExist)
     navigation.setOptions({
       header: Header,
@@ -388,7 +388,7 @@ const PortfolioView = ({
   onProfileVisibilityChanged: (visibility: boolean) => void
 }) => {
   const {theme} = useTheme()
-  
+
   const workTime = calcMonth(
     new Date(profile.works[profile.works.length - 1]?.endedDate ?? ''),
     new Date(profile.works[0]?.startedDate ?? ''),

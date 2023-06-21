@@ -1,18 +1,18 @@
 import UserProfileBriefDto from "../User/UserProfileBriefDto"
 
 export default interface Team {
-    backendTotalRecruitCnt?: number
-    backends: Array<UserProfileBriefDto>
-    designerTotalRecruitCnt?: number
-    designers: Array<UserProfileBriefDto>
-    expectation?: string
-    frontendTotalRecruitCnt?: number
-    frontends: Array<UserProfileBriefDto>
-    leaderUserId?: string
-    openChatUrl?: string
-    projectDescription?: string
-    projectManagerTotalRecruitCnt?: number
-    projectManagers: Array<UserProfileBriefDto>
-    projectName: string
     teamId: string
+    projectName: string
+    designerTotalRecruitCnt?: number
+    backendTotalRecruitCnt?: number
+    frontendTotalRecruitCnt?: number
+    managerTotalRecruitCnt?: number
+    projectDescription?: string
+    openChatUrl?: string
+    expectation?: string
+    leaderUserId?: string
+    backends: Array<UserProfileBriefDto>
+    designers: Array<UserProfileBriefDto>
+    frontends: Array<UserProfileBriefDto>
+    managers: Array<UserProfileBriefDto>
 }

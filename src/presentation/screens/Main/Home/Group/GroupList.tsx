@@ -10,6 +10,7 @@ import {getTeam} from '@/redux/reducers/teamGetReducer'
 import {getRecruiting, GetRecruitingProps} from '@/api/team'
 import {UseInfiniteQueryResult, UseQueryResult, useInfiniteQuery, useQuery} from 'react-query'
 import TeamBriefResponseDto from '@/model/Team/TeamBriefResponseDto'
+import TeamBriefDto from '@/model/Team/TeamBriefDto'
 
 const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
   const {theme} = useTheme()
@@ -22,7 +23,6 @@ const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
     teamOrder: 'created',
   })
   const [isRefreshing, setIsRefreshing] = useState(false)
-  const [contentData, setContentData] = useState<TeamBriefResponseDto[]>()
   const {
     data,
     isLoading,
@@ -38,26 +38,40 @@ const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
       teamGetState.teamOrder,
     ],
     async ({pageParam = 0}) => {
-      setTeamGetState(prevState => ({...prevState, pageFrom: pageParam}))
-      const result = await getRecruiting(teamGetState)
-      return result
+      // setTeamGetState(prevState => ({...prevState, pageFrom: pageParam}))
+      const res = (await getRecruiting(teamGetState));
+      setIsRefreshing(false)
+      console.log(res);
+      return res ?? []
     },
     {
       staleTime: 200000,
-      getNextPageParam: lastPage => {
+      getNextPageParam: (lastPage: TeamBriefResponseDto[]) => {
         if (lastPage.length >= teamGetState.pageSize) {
           return teamGetState.pageFrom + 1
         } else {
           return undefined
         }
       },
-      onSuccess: newData => {
-        // 새로운 데이터를 합치기 위해 이전 데이터에 추가합니다.
-        setContentData(prevData => [...prevData, newData.pages])
-      },
     },
   )
 
+  useEffect(() => {
+    console.log('useEffect 초기 렌더링 실행!')
+    // dispatch(getTeam(teamGetState.pageFrom, teamGetState.pageSize))
+    // setTeamGetState(prevState => ({...prevState, pageFrom: teamGetState.pageFrom + 1}))
+    // isInitializable(loading, data) ? setContentData(data) : {}
+  }, [])
+
+
+  function handleRefresh() {
+    setIsRefreshing(true)
+    refetch()
+  }
+
+
+
+  /** 조건부 렌더링 구문은 항상 모든 훅의 아래에 배치해주세요!  */
   if (isLoading && !data) {
     return <Text>로딩 중</Text>
   }
@@ -70,27 +84,7 @@ const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
     return null
   }
 
-  function handleMoreTeam() {
-    fetchNextPage()
-  }
 
-  function handleRefresh() {
-    setContentData([])
-    handleMoreTeam()
-    setIsRefreshing(false)
-    refetch()
-  }
-
-  useEffect(() => {
-    // isDataAvailable(loading, data, contentData) ? setContentData([...contentData, ...data]) : {}
-  }, [data, isLoading, error])
-
-  useEffect(() => {
-    console.log('useEffect 초기 렌더링 실행!')
-    dispatch(getTeam(teamGetState.pageFrom, teamGetState.pageSize))
-    setTeamGetState(prevState => ({...prevState, pageFrom: teamGetState.pageFrom + 1}))
-    // isInitializable(loading, data) ? setContentData(data) : {}
-  }, [])
 
   return (
     <View
@@ -101,27 +95,30 @@ const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
         justifyContent: 'flex-end',
         position: 'relative',
       }}>
-      <FlatList
-        keyExtractor={item => item.teamId}
-        data={contentData}
-        renderItem={({item}) => (
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate('MainNavigation', {
-                screen: 'GroupDetail',
-                params: {teamId: item.teamId},
-              })
-            }>
-            <TeamBanner team={item} />
-          </TouchableOpacity>
-        )}
-        refreshing={isRefreshing}
-        onRefresh={handleRefresh}
-        onEndReached={() => {
-          handleMoreTeam()
-        }}
-        onEndReachedThreshold={0.6}
-      />
+      {data && (
+        <FlatList
+          keyExtractor={item => item.teamId}
+          data={data?.pages.flat()}
+          renderItem={({item}) => (
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('MainNavigation', {
+                  screen: 'GroupDetail',
+                  params: {teamId: item.teamId},
+                })
+              }>
+              <TeamBanner team={item} />
+            </TouchableOpacity>
+          )}
+          refreshing={isRefreshing}
+          onRefresh={handleRefresh}
+          onEndReached={() => {
+            fetchNextPage()
+          }}
+          onEndReachedThreshold={0.6}
+        />
+      )}
+
       <View
         style={{
           position: 'absolute',

@@ -22,7 +22,7 @@ const PositionSelector = ({navigation, route}:MainStackScreenProps<'PositionSele
     [teamDetailGetResult?.backendTotalRecruitCnt, teamDetailGetResult?.backends.length]
     ,[teamDetailGetResult?.frontendTotalRecruitCnt, teamDetailGetResult?.frontends.length]
     ,[teamDetailGetResult?.designerTotalRecruitCnt, teamDetailGetResult?.designers.length]
-    ,[teamDetailGetResult?.projectManagerTotalRecruitCnt, teamDetailGetResult?.projectManagers.length]
+    ,[teamDetailGetResult?.managerTotalRecruitCnt, teamDetailGetResult?.managers.length]
   ]
   const positionName = ['벡엔드 개발자', '프론트엔드 개발자', 'UI/UX 디자이너', '프로덕트 매니저']
   const modal = React.useContext(ModalContext)

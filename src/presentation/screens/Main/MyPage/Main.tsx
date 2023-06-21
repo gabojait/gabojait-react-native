@@ -119,7 +119,7 @@ const Main = ({navigation}: MainBottomTabNavigationProps<'MyPage'>) => {
         }}>
         나의 리뷰
       </Text>
-      {isEmptyArray(profileData?.reviews)?  <NoReview /> :<MyReview data={profileData} />}
+      {isEmptyArray(profileData?.reviews)?  <NoReview /> :<MyReview data={profileData!} />}
     </ScrollView>
   )
 }
