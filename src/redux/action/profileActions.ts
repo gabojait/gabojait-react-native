@@ -1,4 +1,4 @@
-import {Position} from '@/model/Position'
+import {Position} from '@/model/type/Position'
 import ProfileViewDto from '@/model/Profile/ProfileViewDto'
 import Education from '@/model/Profile/Education'
 import Portfolio from '@/model/Profile/Portfolio'

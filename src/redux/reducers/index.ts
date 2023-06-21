@@ -2,7 +2,6 @@ import {combineReducers} from 'redux'
 import boardSwitchReducer from './boardSwitchReducer'
 import {loginReducer} from './loginReducer'
 import {registerReducer} from './registerReducer'
-import {teamCreateReducer} from './teamCreateReducer'
 import {teamGetReducer} from './teamGetReducer'
 import {teamDetailGetReducer} from './teamDetailGetReducer'
 import {applyToTeamReducer} from './applyToTeamReducer'
@@ -26,7 +25,6 @@ const rootReducer = combineReducers({
   loginReducer,
   boardSwitchReducer,
   registerReducer,
-  teamCreateReducer,
   teamGetReducer,
   teamDetailGetReducer,
   applyToTeamReducer,
