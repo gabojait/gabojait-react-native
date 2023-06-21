@@ -10,7 +10,7 @@ export type GetRecruitingProps = {
   teamOrder: TeamOrder
 }
 export const createTeam = async (dto: TeamRequestDto) => {
-  const result = await client.post('v1/team', dto)
+  const result = await client.post('team', dto)
   return result
 }
 
