@@ -23,7 +23,7 @@ import BottomSlideModalContent from '@/presentation/components/modalContent/Bott
 import {UseMutationResult, useMutation} from 'react-query'
 import {createTeam} from '@/api/team'
 
-const Editor = ({navigation, route}: MainStackScreenProps<'GroupEditor'>) => {
+const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupEditor'>) => {
   const {theme} = useTheme()
   const styles = useStyles({navigation, route})
   const modal = React.useContext(ModalContext)
@@ -352,4 +352,4 @@ const useStyles = makeStyles(theme => ({
     marginBottom: 20,
   },
 }))
-export default Editor
+export default GroupCreator

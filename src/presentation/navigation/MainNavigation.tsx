@@ -2,7 +2,6 @@ import {createStackNavigator} from '@react-navigation/stack'
 import React from 'react'
 import {MainStackParamList} from './types'
 import PositionSelector from '../screens/Main/Home/Group/PositionSelector'
-import GroupEditor from '../screens/Main/Home/Group/GroupEditor'
 import GroupDetail from '../screens/Main/Home/Group/GroupDetail'
 import ApplyStatus from '../screens/Main/MyPage/ApplyStatus/ApplyStatus'
 import TeamHistory from '../screens/Main/MyPage/TeamHistory'
@@ -21,6 +20,7 @@ import {TeamEditor} from '../screens/Main/Team/TeamEditor'
 import {TeamComplete} from '../screens/Main/Team/TeamComplete'
 import {CompleteSuccess} from '../screens/Main/Team/CompleteSuccess'
 import OpenSourceLicense from '../screens/Main/MyPage/Setting/OpenSourceLicense'
+import GroupCreator from '../screens/Main/Home/Group/GroupCreator'
 
 const Main = createStackNavigator<MainStackParamList>()
 
@@ -96,7 +96,7 @@ const MainNavigation = () => {
         />
         <Main.Screen
           name="GroupEditor"
-          component={GroupEditor}
+          component={GroupCreator}
           options={{
             headerShown: false,
           }}
