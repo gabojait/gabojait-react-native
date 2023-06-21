@@ -44,13 +44,15 @@ interface CustomResponseInterceptorManager
   ): number
 }
 
-const isSuccess = (statusCode: number) =>  200 <= statusCode && statusCode < 300
+const isSuccess = (statusCode: number) => 200 <= statusCode && statusCode < 300
 
 const client: CustomInstance = axios.create(axiosConfig)
 client.interceptors.request.use(async req => {
   // Todo: 재시도 구현
   const accessToken = await AsyncStorage.getItem('accessToken')
-  if (accessToken) req.headers.Authorization = `Bearer ${await AsyncStorage.getItem('accessToken')}`
+  const refreshToken = await AsyncStorage.getItem('refreshToken')
+  if (accessToken) req.headers.Authorization = `Bearer ${accessToken}`
+  if (refreshToken) req.headers['Refresh-Token'] = `Bearer ${refreshToken}`
   console.log(`'${req.url}'\nHeader:`, req.headers, req)
   return req
 })
@@ -74,10 +76,7 @@ client.interceptors.response.use(
           // Todo: 빈 리스트(204?)/201 대응
           return []
         } else {
-          return {
-            ...res.data.responseData.data,
-            headers: res.headers,
-          }
+          return res.data.responseData.data
         }
       } else {
         throw {
@@ -113,10 +112,7 @@ client.interceptors.response.use(
       AsyncStorage.setItem('accessToken', '')
       AsyncStorage.setItem('refreshToken', '')
     }
-    const response = {
-      ...(e.response?.data as ResponseWrapper<undefined>),
-      headers: e.response?.headers,
-    }
+    const response = e.response?.data as ResponseWrapper<undefined>
     throw {
       name: response.responseCode ?? 'UNKNOWN_ERROR',
       message: response.responseMessage ?? '알 수 없는 오류입니다.',
