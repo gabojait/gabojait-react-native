@@ -305,7 +305,7 @@ const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupEditor'>) 
                 disabled={false}
                 onPress={() => {
                   if (isAllInputValidate()) {
-                    dispatch(createTeam(teamCreateState))
+                    handleCreateTeam
                     navigation.goBack()
                   }
                 }}
