@@ -15,13 +15,13 @@ import {
 import CustomIcon from '@/presentation/components/icon/Gabojait'
 import TeamRequestDto from '@/model/Team/TeamRequestDto'
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
-import {createTeam} from '@/redux/reducers/teamCreateReducer'
 import {ModalContext} from '@/presentation/components/modal/context'
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent'
 import CardWrapper from '@/presentation/components/CardWrapper'
 import useGlobalStyles from '@/styles'
 import BottomSlideModalContent from '@/presentation/components/modalContent/BottomSlideModalContent'
 import {UseMutationResult, useMutation} from 'react-query'
+import {createTeam} from '@/api/team'
 
 const Editor = ({navigation, route}: MainStackScreenProps<'GroupEditor'>) => {
   const {theme} = useTheme()
@@ -39,7 +39,7 @@ const Editor = ({navigation, route}: MainStackScreenProps<'GroupEditor'>) => {
     managerTotalRecruitCnt: 0,
     projectName: '',
   })
-  const {mutate, isLoading, isError, error, isSuccess} = useMutation(createTeam(teamCreateState))
+  const {mutateAsync, isLoading, isError, error, isSuccess} = useMutation(createTeam)
   const [positionState, setPositionState] = useState([
     {key: '벡엔드 개발자', value: '벡엔드 개발자', disabled: false},
     {key: '프론트엔드 개발자', value: '프론트엔드 개발자', disabled: false},
@@ -49,7 +49,7 @@ const Editor = ({navigation, route}: MainStackScreenProps<'GroupEditor'>) => {
   const globalStyles = useGlobalStyles()
 
   function handleCreateTeam() {
-    mutate(teamCreateState)
+    mutateAsync(teamCreateState)
   }
 
   function addPositionMaker() {
