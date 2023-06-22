@@ -14,7 +14,11 @@ type ModalContextType = {
     title,
     content,
     ...modalProps
-  }: {title: React.ReactNode; content: React.ReactNode} & CustomModalProps) => void
+  }: {
+    title: React.ReactNode
+    content: React.ReactNode
+    modalProps: CustomModalProps
+  }) => void
   hide: () => void
   title: React.ReactNode
   modal: boolean
@@ -32,7 +36,7 @@ const {Provider} = (ModalContext = React.createContext<ModalContextType | undefi
 }))
 
 const ModalProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
-  const {modal, show, hide, title, content, ...modalProps} = useModal()
+  const {modal, show, hide, title, content, modalProps} = useModal()
   return (
     <Provider
       value={{
@@ -41,7 +45,7 @@ const ModalProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
         hide,
         title,
         content,
-        modalProps: {animationType: 'slide', justifying: 'center'},
+        modalProps,
       }}>
       <CustomModal />
       {children}

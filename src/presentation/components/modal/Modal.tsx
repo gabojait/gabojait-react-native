@@ -1,9 +1,7 @@
 import useGlobalStyles from '@/styles'
-import globalStyles from '@/styles'
 import {Text} from '@rneui/themed'
-import React, {ForwardedRef, forwardRef, useImperativeHandle, useRef, useState} from 'react'
-import {Alert, Modal, ModalProps, StyleSheet, View} from 'react-native'
-import {FilledButton} from '../Button'
+import React from 'react'
+import {Alert, Modal, StyleSheet, View} from 'react-native'
 import {ModalContext} from './context'
 
 export type CustomModalRef = {
@@ -37,20 +35,5 @@ const CustomModal = () => {
     </Modal>
   )
 }
-
-const style = StyleSheet.create({
-  buttonStyle: {
-    borderRadius: 20,
-    borderTopStartRadius: 0,
-    borderTopEndRadius: 0,
-    paddingVertical: 25,
-  },
-  buttonContainerStyle: {
-    padding: 0,
-    width: '100%',
-    borderTopStartRadius: 0,
-    borderTopEndRadius: 0,
-  },
-})
 
 export default CustomModal
