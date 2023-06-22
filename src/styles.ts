@@ -16,7 +16,7 @@ const useGlobalStyles = makeStyles(theme => ({
     padding: 25,
     display: 'flex',
     justifyContent: 'flex-start',
-    alignItems: 'flex-start'
+    alignItems: 'flex-start',
   },
   container: {
     flex: 1,
@@ -49,6 +49,14 @@ const useGlobalStyles = makeStyles(theme => ({
     textAlign: 'center',
   },
   centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 22,
+    backgroundColor: 'white',
+    borderRadius: 20,
+  },
+  bottomView: {
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
@@ -89,14 +97,14 @@ const useGlobalStyles = makeStyles(theme => ({
     fontWeight: theme.fontWeight.bold,
     fontSize: 30,
   },
-  tabBar:{
+  tabBar: {
     minHeight: 60,
-    paddingVertical: 10
+    paddingVertical: 10,
   },
-  tabBarLabel:{
+  tabBarLabel: {
     fontSize: 13,
     fontWeight: theme.fontWeight.semibold,
-    paddingTop: 10
-  }
+    paddingTop: 10,
+  },
 }))
 export default useGlobalStyles
