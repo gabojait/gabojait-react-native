@@ -10,7 +10,7 @@ interface BottomSlideModalContentProps {
   neverSeeAgainButton?: boolean
   yesButton?: ButtonProps
   noButton?: ButtonProps
-  handleNeverSeeAgain: () => {}
+  handleNeverSeeAgain?: () => {}
 }
 
 const BottomModalContent: React.FC<BottomSlideModalContentProps> = props => {
