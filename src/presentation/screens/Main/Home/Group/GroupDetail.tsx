@@ -1,23 +1,22 @@
+import {getTeam} from '@/api/team'
+import TeamDetailDto from '@/model/Team/TeamDetailDto'
 import {FilledButton} from '@/presentation/components/Button'
 import CardWrapper from '@/presentation/components/CardWrapper'
-import {ModalContext} from '@/presentation/components/modal/context'
 import PositionIcon from '@/presentation/components/PositionIcon'
 import {MainStackScreenProps} from '@/presentation/navigation/types'
-import {useAppDispatch, useAppSelector} from '@/redux/hooks'
-import {getTeamDetail} from '@/redux/reducers/teamDetailGetReducer'
 import useGlobalStyles from '@/styles'
-import {makeStyles, Text, useTheme} from '@rneui/themed'
-import React, {useEffect, useState} from 'react'
+import {makeStyles, Text} from '@rneui/themed'
+import React from 'react'
 import {ScrollView, View} from 'react-native'
+import {useQuery, UseQueryResult} from 'react-query'
 
 const GroupDetail = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) => {
   const styles = useStyles()
   const globalStyles = useGlobalStyles()
-  const modal = React.useContext(ModalContext)
-  const dispatch = useAppDispatch()
-  const {data, loading, error} = useAppSelector(
-    state => state.teamDetailGetReducer.teamDetailGetResult,
+  const {data, isLoading, error}: UseQueryResult<TeamDetailDto> = useQuery(['data'], () =>
+    getTeam(route.params.teamId),
   )
+
   const positions = [
     [data?.backendTotalRecruitCnt, data?.backends?.length ?? 0],
     [data?.frontendTotalRecruitCnt, data?.frontends?.length ?? 0],
@@ -26,9 +25,17 @@ const GroupDetail = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) =
   ]
   const initials = ['B', 'F', 'D', 'P']
 
-  useEffect(() => {
-    dispatch(getTeamDetail(route.params.teamId))
-  }, [])
+  if (isLoading && !data) {
+    return <Text>로딩 중</Text>
+  }
+
+  if (error) {
+    return <Text>에러 발생</Text>
+  }
+
+  if (!data) {
+    return null
+  }
 
   return (
     <ScrollView style={styles.scrollView}>
