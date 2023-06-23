@@ -1,21 +1,20 @@
 import FloatingButton from '@/presentation/components/FloatingButton'
-import {useTheme} from '@rneui/themed'
+import {makeStyles, useTheme} from '@rneui/themed'
 import React, {useEffect, useState} from 'react'
 import {FlatList, Text, TouchableOpacity, View} from 'react-native'
 import TeamBanner from '@/presentation/components/TeamBanner'
 import {ModalContext} from '@/presentation/components/modal/context'
 import {BoardStackParamListProps} from '@/presentation/navigation/types'
-import {useAppDispatch} from '@/redux/hooks'
-import {getTeam} from '@/redux/reducers/teamGetReducer'
 import {getRecruiting, GetRecruitingProps} from '@/api/team'
-import {UseInfiniteQueryResult, UseQueryResult, useInfiniteQuery, useQuery} from 'react-query'
+import {UseInfiniteQueryResult, useInfiniteQuery} from 'react-query'
 import TeamBriefResponseDto from '@/model/Team/TeamBriefResponseDto'
-import TeamBriefDto from '@/model/Team/TeamBriefDto'
+import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
   const {theme} = useTheme()
+  const styles = useStyles(theme)
   const modal = React.useContext(ModalContext)
-  const dispatch = useAppDispatch()
   const [teamGetState, setTeamGetState] = useState<GetRecruitingProps>({
     pageFrom: 0,
     pageSize: 20,
@@ -23,6 +22,28 @@ const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
     teamOrder: 'created',
   })
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const GUIDE_MODE_MODAL_KEY = 'guideModeModalKey'
+  const GUIDE_MODE_MODAL_VALUE = 'guideModeModalValue'
+
+  async function getGuideModeModalKey() {
+    try {
+      const value = await AsyncStorage.getItem(GUIDE_MODE_MODAL_KEY)
+      return value
+    } catch (error) {
+      console.log(`GUIDE_MODE_MODAL_KEY 저장실패`)
+    }
+  }
+  async function saveGuideModeModalKey() {
+    try {
+      await AsyncStorage.setItem(GUIDE_MODE_MODAL_KEY, JSON.stringify(GUIDE_MODE_MODAL_VALUE))
+      console.log(`저장한 데이터:${JSON.stringify(GUIDE_MODE_MODAL_VALUE)}`)
+    } catch (error) {
+      console.log(`GUIDE_MODE_MODAL_KEY 저장실패`)
+    }
+    const value = getGuideModeModalKey()
+    console.log(`GUIDE_MODE_MODAL_KEY 값 확인: ${value}`)
+  }
+
   const {
     data,
     isLoading,
@@ -38,10 +59,10 @@ const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
       teamGetState.teamOrder,
     ],
     async ({pageParam = 0}) => {
-      // setTeamGetState(prevState => ({...prevState, pageFrom: pageParam}))
-      const res = (await getRecruiting(teamGetState));
+      setTeamGetState(prevState => ({...prevState, pageFrom: pageParam}))
+      const res = await getRecruiting(teamGetState)
       setIsRefreshing(false)
-      console.log(res);
+      console.log(res)
       return res ?? []
     },
     {
@@ -56,22 +77,55 @@ const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
     },
   )
 
-  useEffect(() => {
-    console.log('useEffect 초기 렌더링 실행!')
-    // dispatch(getTeam(teamGetState.pageFrom, teamGetState.pageSize))
-    // setTeamGetState(prevState => ({...prevState, pageFrom: teamGetState.pageFrom + 1}))
-    // isInitializable(loading, data) ? setContentData(data) : {}
-  }, [])
-
+  const handleBottomSlideModal = () => {
+    getGuideModeModalKey().then(result => {
+      console.log(`result 값 확인: ${result}`)
+      if (!result) {
+        modal?.show({
+          title: '',
+          content: (
+            <BottomModalContent
+              title="팀 찾기 모드로 변경하시겠어요?"
+              children={
+                <View>
+                  <Text style={styles.text}>팀 찾기 모드로 변경하면</Text>
+                  <Text style={styles.text}> 원하는 팀을 찾아서 함께할 수 있습니다!</Text>
+                </View>
+              }
+              yesButton={{
+                title: '변경하기',
+                onPress: () => {
+                  navigation.navigate('TeamMate')
+                  modal.hide()
+                },
+              }}
+              noButton={{
+                title: '나중에 하기',
+                onPress: () => {
+                  modal.hide()
+                },
+              }}
+              neverSeeAgainButton={true}
+              handleNeverSeeAgain={() => {
+                return saveGuideModeModalKey()
+              }}
+            />
+          ),
+          modalProps: {animationType: 'slide', justifying: 'bottom'},
+        })
+      }
+    })
+  }
 
   function handleRefresh() {
     setIsRefreshing(true)
     refetch()
   }
 
+  useEffect(() => {
+    handleBottomSlideModal()
+  }, [])
 
-
-  /** 조건부 렌더링 구문은 항상 모든 훅의 아래에 배치해주세요!  */
   if (isLoading && !data) {
     return <Text>로딩 중</Text>
   }
@@ -83,8 +137,6 @@ const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
   if (!data) {
     return null
   }
-
-
 
   return (
     <View
@@ -137,5 +189,12 @@ const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
     </View>
   )
 }
-
+const useStyles = makeStyles(theme => ({
+  text: {
+    textAlign: 'center',
+    fontSize: theme.fontSize.sm,
+    fontWeight: theme.fontWeight.medium,
+    color: 'black',
+  },
+}))
 export default GroupList

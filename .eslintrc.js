@@ -27,7 +27,7 @@ module.exports = {
   plugins: ['react', 'react-hooks', '@typescript-eslint', 'prettier'],
   rules: {
     indent: ['error', 'tab'],
-    'linebreak-style': ['error', 'windows'],
+    'linebreak-style': ['error', 'unix'],
     quotes: ['error', 'single'],
     semi: ['error', 'never'],
     'no-empty-function': 'off',
