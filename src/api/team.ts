@@ -33,9 +33,8 @@ export async function getRecruiting(props: GetRecruitingProps) {
   return (await client.get('team/recruiting', {params})) as TeamBriefResponseDto[]
 }
 
-export const getTeamDetail = async (teamId: string) => {
-  const result = await client.get(`team/${teamId}`)
-  return result
+export const getTeam = async (teamId: string) => {
+  return await client.get(`team/1`)
 }
 
 export const applyToTeam = async (position: string, teamId: string) => {
