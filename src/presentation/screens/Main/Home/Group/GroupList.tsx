@@ -183,7 +183,7 @@ const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
         }}>
         <FloatingButton
           title="팀 생성"
-          onPress={() => navigation.navigate('MainNavigation', {screen: 'GroupEditor'})}
+          onPress={() => navigation.navigate('MainNavigation', {screen: 'GroupCreator'})}
         />
       </View>
     </View>

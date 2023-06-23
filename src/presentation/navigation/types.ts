@@ -47,12 +47,12 @@ export type MainStackParamList = {
   OfferPage: undefined
   TeamApplied: undefined
   GroupDetail: {teamId: string}
-  GroupEditor: undefined
+  GroupCreator: undefined
   PositionSelector: {teamId: string}
   Setting: undefined
   AlarmSetting: undefined
   Etc: undefined
-  
+
   OpenSourcePage: undefined
 
   UserModifier: undefined

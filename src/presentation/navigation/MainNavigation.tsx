@@ -16,7 +16,6 @@ import UserModifier from '../screens/Main/MyPage/Setting/UserModifier'
 import Etc from '../screens/Main/MyPage/Setting/Etc'
 import ProfileNavigation from './ProfileNavigation'
 import BookMarkHeader from '../screens/Headers/BookmarkHeader'
-import {TeamEditor} from '../screens/Main/Team/TeamEditor'
 import {TeamComplete} from '../screens/Main/Team/TeamComplete'
 import {CompleteSuccess} from '../screens/Main/Team/CompleteSuccess'
 import OpenSourceLicense from '../screens/Main/MyPage/Setting/OpenSourceLicense'
@@ -95,7 +94,7 @@ const MainNavigation = () => {
           }}
         />
         <Main.Screen
-          name="GroupEditor"
+          name="GroupCreator"
           component={GroupCreator}
           options={{
             headerShown: false,
@@ -145,13 +144,13 @@ const MainNavigation = () => {
         />
       </Main.Group>
       <Main.Group>
-        <Main.Screen
+        {/* <Main.Screen
           name="TeamEditor"
           options={{
             headerShown: false,
           }}
           component={TeamEditor}
-        />
+        /> */}
         <Main.Screen
           name="TeamComplete"
           options={{

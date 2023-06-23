@@ -4,26 +4,18 @@ import {MainStackScreenProps} from '@/presentation/navigation/types'
 import color from '@/presentation/res/styles/color'
 import {Text, useTheme, makeStyles, Input} from '@rneui/themed'
 import React, {useEffect, useState} from 'react'
-import {
-  FlatList,
-  KeyboardAvoidingView,
-  ScrollView,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import {FlatList, KeyboardAvoidingView, TextInput, TouchableOpacity, View} from 'react-native'
 import CustomIcon from '@/presentation/components/icon/Gabojait'
 import TeamRequestDto from '@/model/Team/TeamRequestDto'
-import {useAppDispatch, useAppSelector} from '@/redux/hooks'
 import {ModalContext} from '@/presentation/components/modal/context'
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent'
 import CardWrapper from '@/presentation/components/CardWrapper'
 import useGlobalStyles from '@/styles'
-import BottomSlideModalContent from '@/presentation/components/modalContent/BottomSlideModalContent'
-import {UseMutationResult, useMutation} from 'react-query'
+import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent'
+import {useMutation} from 'react-query'
 import {createTeam} from '@/api/team'
 
-const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupEditor'>) => {
+const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupCreator'>) => {
   const {theme} = useTheme()
   const styles = useStyles({navigation, route})
   const modal = React.useContext(ModalContext)
@@ -146,6 +138,7 @@ const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupEditor'>) 
           yesButton={{title: '확인', onPress: () => modal.hide()}}
         />
       ),
+      modalProps: {animationType: 'none', justifying: 'center'},
     })
   }
 
@@ -160,6 +153,7 @@ const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupEditor'>) 
           yesButton={{title: '확인', onPress: () => modal.hide()}}
         />
       ),
+      modalProps: {animationType: 'none', justifying: 'center'},
     })
   }
 
@@ -174,6 +168,7 @@ const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupEditor'>) 
           yesButton={{title: '확인', onPress: () => modal.hide()}}
         />
       ),
+      modalProps: {animationType: 'none', justifying: 'center'},
     })
   }
 
@@ -181,7 +176,7 @@ const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupEditor'>) 
     modal?.show({
       title: '',
       content: (
-        <BottomSlideModalContent
+        <BottomModalContent
           title="글을 입력하시겠어요?"
           yesButton={{
             title: '삭제하기',
@@ -200,8 +195,9 @@ const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupEditor'>) 
             <Text style={{textAlign: 'center'}}>글을 삭제하면</Text>
             <Text style={{textAlign: 'center'}}>다시 되돌릴 수 없습니다</Text>
           </View>
-        </BottomSlideModalContent>
+        </BottomModalContent>
       ),
+      modalProps: {animationType: 'slide', justifying: 'bottom'},
     })
   }
 
@@ -214,7 +210,7 @@ const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupEditor'>) 
           <>
             <View style={styles.item}>
               <Text style={styles.text}>프로젝트 이름</Text>
-              <CardWrapper style={[globalStyles.card, styles.inputBox, {maxHeight: 50}]}>
+              <CardWrapper style={[styles.inputBox, {maxHeight: 90}]}>
                 <TextInput
                   value={teamCreateState?.projectName}
                   onChangeText={(text: string) => {
@@ -286,7 +282,7 @@ const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupEditor'>) 
 
             <View style={styles.item}>
               <Text style={styles.text}>오픈채팅 링크</Text>
-              <CardWrapper style={[globalStyles.card, styles.inputBox, {maxHeight: 50}]}>
+              <CardWrapper style={[styles.inputBox, {maxHeight: 50}]}>
                 <TextInput
                   value={teamCreateState?.openChatUrl}
                   onChangeText={(text: string) => {
@@ -350,6 +346,8 @@ const useStyles = makeStyles(theme => ({
     borderWidth: 1.3,
     borderColor: theme.colors.disabled,
     marginBottom: 20,
+    borderRadius: 15,
+    paddingHorizontal: 25,
   },
 }))
 export default GroupCreator
