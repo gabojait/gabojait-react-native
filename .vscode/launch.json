@@ -1,48 +1,27 @@
 {
-  // Use IntelliSense to learn about possible attributes.
-  // Hover to view descriptions of existing attributes.
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Attach to device",
-      "cwd": "${workspaceFolder}",
-      "type": "reactnative",
-      "request": "attach",
-      "sourceMaps": true,
-    },
-    {
-      "name": "Run bundle and attach",
-      "cwd": "${workspaceFolder}",
-      "type": "reactnative",
-      "request": "attach",
-      "sourceMaps": true,
-      "preLaunchTask": "npm: start"
-    },
-    {
-      "name": "Simulator: Debug",
-      "cwd": "${workspaceFolder}",
-      "type": "reactnative",
-      "request": "attach",
-      "sourceMaps": true,
-      "preLaunchTask": "npm: debug:simulator"
-    },
-    {
-      "name": "Device: Debug",
-      "cwd": "${workspaceFolder}",
-      "type": "reactnative",
-      "request": "attach",
-      "sourceMaps": true,
-      "preLaunchTask": "npm: debug:device"
-    },
-    {
-      "name": "Debug iOS Hermes - Experimental",
+      "command": "npx react-native run-ios --simulator \"iPhone 14 Pro\"",
+      "name": "Start",
       "request": "launch",
-      "type": "reactnativedirect",
+      "type": "node-terminal"
+    },
+    {
+      "name": "Debug Android",
+      "request": "launch",
+      "type": "reactnative",
+      "cwd": "${workspaceFolder}",
+      "platform": "android"
+    },
+    {
+      "name": "Debug iOS",
+      "request": "launch",
+      "type": "reactnative",
       "cwd": "${workspaceFolder}",
       "platform": "ios",
-      "runArguments": ["--simulator", "iPhone 14 Pro Max"]
-      // "react-native.ios.runArguments.simulator": ["--simulator", "iPhone 14 Pro"]
+      "target": "B08E5B6A-2B47-44DC-AF3F-C4902686377B",
+      "trace": "log"
     }
   ]
 }

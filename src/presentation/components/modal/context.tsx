@@ -17,7 +17,7 @@ type ModalContextType = {
   }: {
     title: React.ReactNode
     content: React.ReactNode
-    modalProps: CustomModalProps
+    modalProps?: CustomModalProps
   }) => void
   hide: () => void
   title: React.ReactNode

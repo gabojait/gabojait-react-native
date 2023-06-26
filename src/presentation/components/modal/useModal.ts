@@ -17,7 +17,7 @@ export default () => {
   }: {
     title: React.ReactNode
     content: React.ReactNode
-    modalProps: CustomModalProps
+    modalProps?: CustomModalProps
   }) => void = ({content, title, modalProps}) => {
     setModal(!modal)
     if (content) {
@@ -25,8 +25,8 @@ export default () => {
       setTitle(title)
       setModalProps(prevState => ({
         ...prevState,
-        animationType: modalProps.animationType,
-        justifying: modalProps.justifying,
+        animationType: modalProps?.animationType,
+        justifying: modalProps?.justifying,
       }))
     }
   }

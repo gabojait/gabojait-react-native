@@ -4,10 +4,9 @@ import React from 'react'
 import {PixelRatio, View} from 'react-native'
 import color from '../res/styles/color'
 import CustomIcon from '@/presentation/components/icon/Gabojait'
-import Team from '@/model/Team/Team'
-import TeamModel from '../model/Team'
+import Team from '../model/Team'
 
-const TeamBanner: React.FC<CardProps & {team: TeamModel}> = ({team}) => {
+const TeamBanner: React.FC<CardProps & {team: Team}> = ({team}) => {
   const {theme} = useTheme()
   const positions = [
     [team.backendTotalRecruitCnt, 'B'],

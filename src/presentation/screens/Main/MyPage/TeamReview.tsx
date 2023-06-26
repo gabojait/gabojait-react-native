@@ -30,7 +30,7 @@ const TeamReview = ({navigation, route}:MainStackScreenProps<'TeamReview'>) => {
     const {theme} = useTheme()
     const modal = React.useContext(ModalContext)
     const dispatch = useAppDispatch()
-    const pagerViewRef = useRef(null)
+    const pagerViewRef = useRef<PagerView>(null)
     const {data:reviewQuestions, loading:reviewQuestionsLoading, error:reviewQuestionsError} = useAppSelector(state => state.reviewQuestionsGetReducer.reviewQuestionsResult)
     const {data:teamToReview, loading:teamToReviewLoading, error:teamToReviewError} = useAppSelector(state => state.teamToReviewGetReducer.teamToReviewGetResult)
     const teammateArray = [...[teamToReview?.backends], ...[teamToReview?.designers], ...[teamToReview?.frontends], ...[teamToReview?.projectManagers]]

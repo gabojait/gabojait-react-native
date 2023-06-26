@@ -2,19 +2,19 @@ import TeamBanner from '@/presentation/components/TeamBanner'
 import {MainStackScreenProps} from '@/presentation/navigation/types'
 import React from 'react'
 import {FlatList, TouchableOpacity, View} from 'react-native'
-import Team from '@/model/Team/Team'
+import Team from '@/presentation/model/Team'
 
 const BookMark = ({navigation}: MainStackScreenProps<'BookMark'>) => {
-  const arr = [
+  const arr: Team[] = [
     {
       teamId: 'fasdfsf',
       projectName: '가보자잇',
       designers: [],
       backends: [],
       frontends: [],
-      projectManagers: [],
+      managers: [],
     },
-  ] as Team[]
+  ]
   return (
     <View style={{backgroundColor: 'white', flex: 1}}>
       <FlatList

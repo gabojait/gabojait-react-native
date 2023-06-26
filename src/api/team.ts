@@ -11,6 +11,7 @@ export type GetRecruitingProps = {
   position: Position
   teamOrder: TeamOrder
 }
+
 export const createTeam = async (dto: TeamRequestDto) => {
   const result = await client.post('team', dto)
   return result

@@ -19,8 +19,6 @@
 
 #import <react/config/ReactNativeConfig.h>
 
-
-
 static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 
 @interface AppDelegate () <RCTCxxBridgeDelegate, RCTTurboModuleManagerDelegate> {
@@ -33,6 +31,8 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 #endif
 
 @implementation AppDelegate
+
+
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -148,4 +148,6 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 
 #endif
 
+
 @end
+

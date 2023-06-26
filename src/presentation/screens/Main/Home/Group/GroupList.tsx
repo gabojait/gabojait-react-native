@@ -10,6 +10,7 @@ import {UseInfiniteQueryResult, useInfiniteQuery} from 'react-query'
 import TeamBriefResponseDto from '@/model/Team/TeamBriefResponseDto'
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import {useTeamList} from './useTeamList'
 
 const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
   const {theme} = useTheme()
@@ -21,7 +22,7 @@ const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
     position: 'none',
     teamOrder: 'created',
   })
-  const [isRefreshing, setIsRefreshing] = useState(false)
+
   const GUIDE_MODE_MODAL_KEY = 'guideModeModalKey'
   const GUIDE_MODE_MODAL_VALUE = 'guideModeModalValue'
 
@@ -44,38 +45,51 @@ const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
     console.log(`GUIDE_MODE_MODAL_KEY 값 확인: ${value}`)
   }
 
-  const {
-    data,
-    isLoading,
-    error,
-    fetchNextPage,
-    refetch,
-  }: UseInfiniteQueryResult<TeamBriefResponseDto[], Error> = useInfiniteQuery(
-    [
-      'recruiting',
-      teamGetState.pageFrom,
-      teamGetState.pageSize,
-      teamGetState.position,
-      teamGetState.teamOrder,
-    ],
-    async ({pageParam = 0}) => {
-      setTeamGetState(prevState => ({...prevState, pageFrom: pageParam}))
-      const res = await getRecruiting(teamGetState)
-      setIsRefreshing(false)
-      console.log(res)
-      return res ?? []
+  const {data, isLoading, error, fetchNextPage, refetch, param, isRefreshing} = useTeamList<
+    GetRecruitingProps,
+    TeamBriefResponseDto
+  >({
+    initialParam: {pageFrom: 0, pageSize: 20, position: 'none', teamOrder: 'created'},
+    key: 'recruiting',
+    fetcher: async ({pageParam}) => {
+      console.log('fetch!!')
+      console.log('pageParam:', pageParam)
+      return await getRecruiting(pageParam!)
     },
-    {
-      staleTime: 200000,
-      getNextPageParam: (lastPage: TeamBriefResponseDto[]) => {
-        if (lastPage.length >= teamGetState.pageSize) {
-          return teamGetState.pageFrom + 1
-        } else {
-          return undefined
-        }
-      },
-    },
-  )
+  })
+
+  // const {
+  //   data,
+  //   isLoading,
+  //   error,
+  //   fetchNextPage,
+  //   refetch,
+  // }: UseInfiniteQueryResult<TeamBriefResponseDto[], Error> = useInfiniteQuery(
+  //   [
+  //     'recruiting',
+  //     teamGetState.pageFrom,
+  //     teamGetState.pageSize,
+  //     teamGetState.position,
+  //     teamGetState.teamOrder,
+  //   ],
+  //   async ({pageParam = 0}) => {
+  //     setTeamGetState(prevState => ({...prevState, pageFrom: pageParam}))
+  //     const res = await getRecruiting(teamGetState)
+  //     setIsRefreshing(false)
+  //     console.log(res)
+  //     return res ?? []
+  //   },
+  //   {
+  //     staleTime: 200000,
+  //     getNextPageParam: (lastPage: TeamBriefResponseDto[]) => {
+  //       if (lastPage.length >= teamGetState.pageSize) {
+  //         return teamGetState.pageFrom + 1
+  //       } else {
+  //         return undefined
+  //       }
+  //     },
+  //   },
+  // )
 
   const handleBottomSlideModal = () => {
     getGuideModeModalKey().then(result => {
@@ -115,11 +129,6 @@ const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
         })
       }
     })
-  }
-
-  function handleRefresh() {
-    setIsRefreshing(true)
-    refetch()
   }
 
   useEffect(() => {
@@ -163,7 +172,7 @@ const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
             </TouchableOpacity>
           )}
           refreshing={isRefreshing}
-          onRefresh={handleRefresh}
+          onRefresh={refetch}
           onEndReached={() => {
             fetchNextPage()
           }}

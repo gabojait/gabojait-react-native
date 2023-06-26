@@ -1,3 +1,5 @@
+import UserProfileBriefDto from '@/model/User/UserProfileBriefDto'
+
 export default interface TeamModel {
   backendCurrentCnt: number
   backendTotalRecruitCnt: number
@@ -9,4 +11,8 @@ export default interface TeamModel {
   managerTotalRecruitCnt: number
   projectName: string
   teamId: string
+  backends: Array<UserProfileBriefDto>
+  designers: Array<UserProfileBriefDto>
+  frontends: Array<UserProfileBriefDto>
+  managers: Array<UserProfileBriefDto>
 }

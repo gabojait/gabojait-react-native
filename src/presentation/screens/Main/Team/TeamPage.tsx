@@ -83,10 +83,10 @@ export const TeamPage = ({navigation}:MainBottomTabNavigationProps<'Team'>) => {
     state => state.teamDetailGetReducer.teamDetailGetResult
   )
   const positions = [
-    [teamDetailData?.backendTotalRecruitCnt, teamDetailData?.backends.length],
-    [teamDetailData?.frontendTotalRecruitCnt, teamDetailData?.frontends.length],
-    [teamDetailData?.designerTotalRecruitCnt, teamDetailData?.designers.length],
-    [teamDetailData?.projectManagerTotalRecruitCnt, teamDetailData?.projectManagers.length],
+    [teamDetailData?.backendTotalRecruitCnt, teamDetailData?.backends?.length ?? 0],
+    [teamDetailData?.frontendTotalRecruitCnt, teamDetailData?.frontends?.length ?? 0],
+    [teamDetailData?.designerTotalRecruitCnt, teamDetailData?.designers?.length ?? 0],
+    [teamDetailData?.managerTotalRecruitCnt, teamDetailData?.managers?.length ?? 0],
   ]
   const initials = ['B', 'F', 'D', 'P']
   
