@@ -5,29 +5,34 @@ import {PixelRatio, View} from 'react-native'
 import color from '../res/styles/color'
 import CustomIcon from '@/presentation/components/icon/Gabojait'
 import Team from '../model/Team'
+import TeamListDto from '@/model/Team/TeamListDto'
+import {Position} from '@/model/type/Position'
 
-const TeamBanner: React.FC<CardProps & {team: Team}> = ({team}) => {
+const TeamBanner: React.FC<CardProps & {team: TeamListDto}> = ({team}) => {
   const {theme} = useTheme()
-  const positions = [
-    [team.backendTotalRecruitCnt, 'B'],
-    [team.frontendTotalRecruitCnt, 'F'],
-    [team.designerTotalRecruitCnt, 'D'],
-    [team.managerTotalRecruitCnt, 'M'],
-  ]
-  const IsRecruitDone = (positionInitial: string) => {
-    if (positionInitial == 'B') {
-      if (team.backendTotalRecruitCnt == team.backendCurrentCnt) return true
-    }
-    if (positionInitial == 'F') {
-      if (team.frontendTotalRecruitCnt == team.frontendCurrentCnt) return true
-    }
-    if (positionInitial == 'D') {
-      if (team.designerTotalRecruitCnt == team.frontendCurrentCnt) return true
-    }
-    if (positionInitial == 'M') {
-      if (team.managerTotalRecruitCnt == team.managerCurrentCnt) return true
-    }
-    return false
+  const teamMemberRecruitCnts = team.teamMemberRecruitCnts
+
+  /**
+   * 포지션별 총 모집 인원 배열과 현재 소속된 팀원 배열을 이용해 모집이 완료됐는지 검사합니다.
+   * @param positionInitial
+   */
+  const IsRecruitDone = (positionInitial: Position) => {
+    const positionTotalCount =
+      teamMemberRecruitCnts.find(position => position.position === positionInitial)
+        ?.totalRecruitCnt ?? 0
+    const positionCount = team.teamMembers.filter(
+      member => member.position === positionInitial,
+    ).length
+    console.log(
+      positionInitial,
+      ' 포지션 총 ',
+      positionTotalCount,
+      '명 중 ',
+      positionCount,
+      ' 명 찼음',
+      positionTotalCount == positionCount,
+    )
+    return positionTotalCount === positionCount
   }
 
   return (
@@ -60,17 +65,13 @@ const TeamBanner: React.FC<CardProps & {team: Team}> = ({team}) => {
           flexDirection: 'row',
           justifyContent: 'space-around',
         }}>
-        {positions?.map((item, index) =>
-          item[0] && item[1] ? (
-            <PartIcon
-              partInitial={item[1].toString()}
-              isRecruitDone={IsRecruitDone(item[1].toString())}
-              key={index}
-            />
-          ) : (
-            <></>
-          ),
-        )}
+        {teamMemberRecruitCnts?.map((item, index) => (
+          <PartIcon
+            partInitial={item.position.charAt(0).toUpperCase()}
+            isRecruitDone={IsRecruitDone(item.position)}
+            key={index}
+          />
+        ))}
         <View
           style={{
             height: '100%',
@@ -101,7 +102,7 @@ export const PartIcon: React.FC<{partInitial: string; isRecruitDone?: boolean; s
         width: PixelRatio.getPixelSizeForLayoutSize(size),
         height: PixelRatio.getPixelSizeForLayoutSize(size),
         marginHorizontal: PixelRatio.getPixelSizeForLayoutSize(2),
-        backgroundColor: isDone ? theme.colors.primary : '',
+        backgroundColor: isDone ? theme.colors.primary : 'white',
       }}>
       {<Text style={{fontWeight: theme.fontWeight.bold, fontSize: 30}}>{partInitial}</Text>}
     </View>

@@ -46,7 +46,7 @@ export type MainStackParamList = {
   BookMark: undefined
   OfferPage: undefined
   TeamApplied: undefined
-  GroupDetail: {teamId: string}
+  GroupDetail: {teamId: number}
   GroupCreator: undefined
   PositionSelector: {teamId: string}
   Setting: undefined

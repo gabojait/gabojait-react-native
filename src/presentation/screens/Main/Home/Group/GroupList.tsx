@@ -11,6 +11,7 @@ import TeamBriefResponseDto from '@/model/Team/TeamBriefResponseDto'
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import {useTeamList} from './useTeamList'
+import TeamListDto from '@/model/Team/TeamListDto'
 
 const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
   const {theme} = useTheme()
@@ -47,7 +48,7 @@ const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
 
   const {data, isLoading, error, fetchNextPage, refetch, param, isRefreshing} = useTeamList<
     GetRecruitingProps,
-    TeamBriefResponseDto
+    TeamListDto
   >({
     initialParam: {pageFrom: 0, pageSize: 20, position: 'none', teamOrder: 'created'},
     key: 'recruiting',
@@ -158,7 +159,7 @@ const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
       }}>
       {data && (
         <FlatList
-          keyExtractor={item => item.teamId}
+          keyExtractor={item => item.teamId.toString()}
           data={data?.pages.flat()}
           renderItem={({item}) => (
             <TouchableOpacity
