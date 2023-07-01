@@ -1,10 +1,10 @@
+import {Position} from '../type/Position'
+import PositionCountDto from './PostionCountDto'
+
 export default interface TeamRequestDto {
-  backendTotalRecruitCnt: number
-  designerTotalRecruitCnt: number
   expectation: string
-  frontendTotalRecruitCnt: number
   openChatUrl: string
   projectDescription: string
-  managerTotalRecruitCnt: number
   projectName: string
+  teamMemberRecruitCnts: PositionCountDto[]
 }
