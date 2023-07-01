@@ -1,28 +1,20 @@
 import FloatingButton from '@/presentation/components/FloatingButton'
 import {makeStyles, useTheme} from '@rneui/themed'
-import React, {useEffect, useState} from 'react'
+import React, {useEffect} from 'react'
 import {FlatList, Text, TouchableOpacity, View} from 'react-native'
 import TeamBanner from '@/presentation/components/TeamBanner'
 import {ModalContext} from '@/presentation/components/modal/context'
 import {BoardStackParamListProps} from '@/presentation/navigation/types'
 import {getRecruiting, GetRecruitingProps} from '@/api/team'
-import {UseInfiniteQueryResult, useInfiniteQuery} from 'react-query'
-import TeamBriefResponseDto from '@/model/Team/TeamBriefResponseDto'
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import {useTeamList} from './useTeamList'
+import {useTeamList} from '../../../../../reactQuery/useTeamList'
 import TeamListDto from '@/model/Team/TeamListDto'
 
 const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
   const {theme} = useTheme()
   const styles = useStyles(theme)
   const modal = React.useContext(ModalContext)
-  const [teamGetState, setTeamGetState] = useState<GetRecruitingProps>({
-    pageFrom: 0,
-    pageSize: 20,
-    position: 'none',
-    teamOrder: 'created',
-  })
 
   const GUIDE_MODE_MODAL_KEY = 'guideModeModalKey'
   const GUIDE_MODE_MODAL_VALUE = 'guideModeModalValue'
@@ -58,39 +50,6 @@ const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
       return await getRecruiting(pageParam!)
     },
   })
-
-  // const {
-  //   data,
-  //   isLoading,
-  //   error,
-  //   fetchNextPage,
-  //   refetch,
-  // }: UseInfiniteQueryResult<TeamBriefResponseDto[], Error> = useInfiniteQuery(
-  //   [
-  //     'recruiting',
-  //     teamGetState.pageFrom,
-  //     teamGetState.pageSize,
-  //     teamGetState.position,
-  //     teamGetState.teamOrder,
-  //   ],
-  //   async ({pageParam = 0}) => {
-  //     setTeamGetState(prevState => ({...prevState, pageFrom: pageParam}))
-  //     const res = await getRecruiting(teamGetState)
-  //     setIsRefreshing(false)
-  //     console.log(res)
-  //     return res ?? []
-  //   },
-  //   {
-  //     staleTime: 200000,
-  //     getNextPageParam: (lastPage: TeamBriefResponseDto[]) => {
-  //       if (lastPage.length >= teamGetState.pageSize) {
-  //         return teamGetState.pageFrom + 1
-  //       } else {
-  //         return undefined
-  //       }
-  //     },
-  //   },
-  // )
 
   const handleBottomSlideModal = () => {
     getGuideModeModalKey().then(result => {
