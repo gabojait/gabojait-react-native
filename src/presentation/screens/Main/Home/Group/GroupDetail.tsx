@@ -1,5 +1,8 @@
 import {getTeam} from '@/api/team'
+import BriefProfileDto from '@/model/Profile/BriefProfileDto'
+import PositionCountDto from '@/model/Team/PostionCountDto'
 import TeamDetailDto from '@/model/Team/TeamDetailDto'
+import {Position} from '@/model/type/Position'
 import {FilledButton} from '@/presentation/components/Button'
 import CardWrapper from '@/presentation/components/CardWrapper'
 import PositionIcon from '@/presentation/components/PositionIcon'
@@ -8,22 +11,32 @@ import useGlobalStyles from '@/styles'
 import {makeStyles, Text} from '@rneui/themed'
 import React from 'react'
 import {ScrollView, View} from 'react-native'
-import {useQuery, UseQueryResult} from 'react-query'
+import {useQueries, useQuery, UseQueryResult} from 'react-query'
+
+interface PositionIconProp extends PositionCountDto {
+  index: number
+  currentMemberCnt: number
+}
 
 const GroupDetail = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) => {
   const styles = useStyles()
   const globalStyles = useGlobalStyles()
-  const {data, isLoading, error}: UseQueryResult<TeamDetailDto> = useQuery(['data'], () =>
-    getTeam(route.params.teamId),
+  const {data, isLoading, error}: UseQueryResult<TeamDetailDto> = useQuery(
+    ['GroupDetail', route.params.teamId],
+    () => getTeam(route.params.teamId),
   )
+  //TODO:포지션 아이콘 컴포넌트에 들어갈 데이터 전처리(일단 api 수정결과 보고 작업하기로)
+  // const positions: Array<PositionIconProp> = mapToPositionIconProp(
+  //   data?.teamMemberRecruitCnts || [],
+  //   data?.teamMembers || [],
+  // )
+  // const initials = ['B', 'F', 'D', 'P']
 
-  const positions = [
-    [data?.backendTotalRecruitCnt, data?.backends?.length ?? 0],
-    [data?.frontendTotalRecruitCnt, data?.frontends?.length ?? 0],
-    [data?.designerTotalRecruitCnt, data?.designers?.length ?? 0],
-    [data?.managerTotalRecruitCnt, data?.managers?.length ?? 0],
-  ]
-  const initials = ['B', 'F', 'D', 'P']
+  // function mapToPositionIconProp(
+  //   recruitArray: Array<PositionCountDto>,
+  //   memberArray: Array<BriefProfileDto>,
+  // ) {
+  // }
 
   if (isLoading && !data) {
     return <Text>로딩 중</Text>
@@ -44,17 +57,13 @@ const GroupDetail = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) =
           style={{width: '100%', paddingHorizontal: 10, flex: 1, justifyContent: 'space-between'}}>
           <Text style={styles.teamname}>{data?.projectName}</Text>
           <View style={styles.partIcon}>
-            {positions.map((item, index) =>
-              item[0] != undefined && item[0] > 0 ? (
-                <PositionIcon
-                  currentApplicant={item[1] ?? 0}
-                  recruitNumber={item[0]}
-                  textView={<Text style={globalStyles.itnitialText}>{initials[index]}</Text>}
-                />
-              ) : (
-                <></>
-              ),
-            )}
+            {/* {positions.map((item, index) => (
+              <PositionIcon
+                currentApplicant={0}
+                recruitNumber={item.totalRecruitCnt}
+                textView={<Text style={globalStyles.itnitialText}>{initials[index]}</Text>}
+              />
+            ))} */}
           </View>
           <FilledButton
             title={'함께 하기'}
