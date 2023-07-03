@@ -1,3 +1,4 @@
+import {postFavoriteTeam} from '@/api/favorite'
 import {getTeam} from '@/api/team'
 import BriefProfileDto from '@/model/Profile/BriefProfileDto'
 import PositionCountDto from '@/model/Team/PostionCountDto'
@@ -5,13 +6,16 @@ import TeamDetailDto from '@/model/Team/TeamDetailDto'
 import {Position} from '@/model/type/Position'
 import {FilledButton} from '@/presentation/components/Button'
 import CardWrapper from '@/presentation/components/CardWrapper'
+import CustomHeader from '@/presentation/components/CustomHeader'
 import PositionIcon from '@/presentation/components/PositionIcon'
+import CustomIcon from '@/presentation/components/icon/Gabojait'
 import {MainStackScreenProps} from '@/presentation/navigation/types'
 import useGlobalStyles from '@/styles'
+import {theme} from '@/theme'
 import {makeStyles, Text} from '@rneui/themed'
 import React from 'react'
-import {ScrollView, View} from 'react-native'
-import {useQueries, useQuery, UseQueryResult} from 'react-query'
+import {ScrollView, TouchableOpacity, View} from 'react-native'
+import {useMutation, useQueries, useQuery, UseQueryResult} from 'react-query'
 
 interface PositionIconProp extends PositionCountDto {
   index: number
@@ -25,6 +29,17 @@ const GroupDetail = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) =
     ['GroupDetail', route.params.teamId],
     () => getTeam(route.params.teamId),
   )
+  //TODO: 응답받고 200, 201에 따라 버튼 색 분기하기
+  const {
+    data: dataFavorite,
+    isLoading: isLoadingFavorite,
+    mutate: mutateFavorite,
+    error: errorFavorite,
+  } = useMutation({
+    mutationKey: ['postFavorite'],
+    mutationFn: (teamId: number) => postFavoriteTeam(teamId),
+  })
+
   //TODO:포지션 아이콘 컴포넌트에 들어갈 데이터 전처리(일단 api 수정결과 보고 작업하기로)
   // const positions: Array<PositionIconProp> = mapToPositionIconProp(
   //   data?.teamMemberRecruitCnts || [],
@@ -38,6 +53,17 @@ const GroupDetail = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) =
   // ) {
   // }
 
+  function isFavorite() {
+    if (data?.isFavorite) {
+      return theme.lightColors?.primary
+    }
+    return 'black'
+  }
+
+  function handleFavoriteTeam() {
+    mutateFavorite(route.params.teamId)
+  }
+
   if (isLoading && !data) {
     return <Text>로딩 중</Text>
   }
@@ -50,40 +76,57 @@ const GroupDetail = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) =
     return null
   }
 
+  //TODO: BookMarkHeader로 묶어서 팀원찾기/프로필미리보기 에서 사용하기
   return (
-    <ScrollView style={styles.scrollView}>
-      <CardWrapper style={[styles.card, {minHeight: 243}]}>
-        <View
-          style={{width: '100%', paddingHorizontal: 10, flex: 1, justifyContent: 'space-between'}}>
-          <Text style={styles.teamname}>{data?.projectName}</Text>
-          <View style={styles.partIcon}>
-            {/* {positions.map((item, index) => (
+    <>
+      <CustomHeader
+        title={''}
+        canGoBack={true}
+        rightChildren={
+          <TouchableOpacity onPress={handleFavoriteTeam}>
+            <CustomIcon name="heart" size={30} color={isFavorite()} />
+          </TouchableOpacity>
+        }
+      />
+      <ScrollView style={styles.scrollView}>
+        <CardWrapper style={[styles.card, {minHeight: 243}]}>
+          <View
+            style={{
+              width: '100%',
+              paddingHorizontal: 10,
+              flex: 1,
+              justifyContent: 'space-between',
+            }}>
+            <Text style={styles.teamname}>{data?.projectName}</Text>
+            <View style={styles.partIcon}>
+              {/* {positions.map((item, index) => (
               <PositionIcon
                 currentApplicant={0}
                 recruitNumber={item.totalRecruitCnt}
                 textView={<Text style={globalStyles.itnitialText}>{initials[index]}</Text>}
               />
             ))} */}
+            </View>
+            <FilledButton
+              title={'함께 하기'}
+              onPress={() => navigation.navigate('PositionSelector', {teamId: data?.teamId ?? ''})}
+            />
           </View>
-          <FilledButton
-            title={'함께 하기'}
-            onPress={() => navigation.navigate('PositionSelector', {teamId: data?.teamId ?? ''})}
-          />
+        </CardWrapper>
+        <View style={[styles.card, globalStyles.FlexStartCardWrapper, {minHeight: 243}]}>
+          <View>
+            <Text style={styles.title}>프로젝트 설명</Text>
+            <Text style={styles.text}>{data?.projectDescription}</Text>
+          </View>
         </View>
-      </CardWrapper>
-      <View style={[styles.card, globalStyles.FlexStartCardWrapper, {minHeight: 243}]}>
-        <View>
-          <Text style={styles.title}>프로젝트 설명</Text>
-          <Text style={styles.text}>{data?.projectDescription}</Text>
+        <View style={[styles.card, globalStyles.FlexStartCardWrapper, {minHeight: 243}]}>
+          <View>
+            <Text style={styles.title}>바라는 점</Text>
+            <Text style={styles.text}>{data?.expectation}</Text>
+          </View>
         </View>
-      </View>
-      <View style={[styles.card, globalStyles.FlexStartCardWrapper, {minHeight: 243}]}>
-        <View>
-          <Text style={styles.title}>바라는 점</Text>
-          <Text style={styles.text}>{data?.expectation}</Text>
-        </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </>
   )
 }
 

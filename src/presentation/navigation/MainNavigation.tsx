@@ -81,8 +81,7 @@ const MainNavigation = () => {
           name="GroupDetail"
           component={GroupDetail}
           options={{
-            header: BookMarkHeader,
-            headerTitle: '',
+            headerShown: false,
           }}
         />
         <Main.Screen

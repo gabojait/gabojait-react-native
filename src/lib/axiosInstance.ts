@@ -72,8 +72,8 @@ client.interceptors.response.use(
           await AsyncStorage.setItem('refreshToken', res.headers['refreshToken'])
         }
         if (!res.data.responseData.data || res.status == 204 || res.status == 201) {
-          // Todo: Handle No Content
-          // Todo: 빈 리스트(204?)/201 대응
+          //Todo: Handle No Content
+          //Todo: 빈 리스트(204?)/201 대응
           return []
         } else {
           return res.data.responseData.data
