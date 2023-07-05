@@ -1,8 +1,4 @@
-import globalStyles from '@/styles'
-import {Button, ButtonProps, Text} from '@rneui/themed'
 import {Alert, Modal, StyleSheet, View} from 'react-native'
-import DatePicker from 'react-native-date-picker'
-import {FilledButton} from '../Button'
 import React from 'react'
 import DefaultDialogModalContent from './DefaultDialogModalContent'
 

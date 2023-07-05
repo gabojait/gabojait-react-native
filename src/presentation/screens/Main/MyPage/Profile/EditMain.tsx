@@ -13,11 +13,10 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import {ProfileStackParamListProps} from '@/presentation/navigation/types'
 import CardWrapper from '@/presentation/components/CardWrapper'
-import globalStyles from '@/styles'
-import useGlobalStyles from '@/styles'
 import CustomHeader from '@/presentation/components/CustomHeader'
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
 import {Level} from '@/data/model/Profile/Skill'
+import useGlobalStyles from '@/presentation/styles'
 
 export function EditMainHeader() {
   const {theme} = useTheme()

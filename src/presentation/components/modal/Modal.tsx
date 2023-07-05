@@ -1,8 +1,8 @@
-import useGlobalStyles from '@/styles'
 import {Text} from '@rneui/themed'
 import React from 'react'
 import {Alert, Modal, StyleSheet, View} from 'react-native'
 import {ModalContext} from './context'
+import useGlobalStyles from '@/presentation/styles'
 
 export type CustomModalRef = {
   show: () => void

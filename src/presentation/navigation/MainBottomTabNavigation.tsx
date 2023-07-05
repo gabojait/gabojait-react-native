@@ -5,8 +5,8 @@ import MyPage from '@/presentation/screens/Main/MyPage/Main'
 import {MainBottomTabParamList} from './types'
 import CustomIcon from '@/presentation/components/icon/Gabojait'
 import {useTheme} from '@rneui/themed'
-import useGlobalStyles from '@/styles'
 import {TeamPage} from '../screens/Main/Team/TeamPage'
+import useGlobalStyles from '../styles'
 
 const MainBottomTab = createBottomTabNavigator<MainBottomTabParamList>()
 

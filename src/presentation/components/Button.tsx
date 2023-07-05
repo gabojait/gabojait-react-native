@@ -1,8 +1,7 @@
-import useGlobalStyles from '@/styles'
-import styles from '@/styles'
-import {FontWeight, theme} from '@/theme'
 import {Button, useTheme, ButtonProps} from '@rneui/themed'
 import React from 'react'
+import {FontWeight, theme} from '../theme'
+import useGlobalStyles from '../styles'
 
 const sizeToRadius = (size: string) => (size == 'sm' || size == 'md' ? 'sm' : 'lg')
 

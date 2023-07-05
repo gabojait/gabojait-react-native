@@ -5,11 +5,11 @@ import {ScrollView, TouchableOpacity, View} from 'react-native'
 import CustomIcon from '@/presentation/components/icon/Gabojait'
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
 import PositionIcon from '@/presentation/components/PositionWaveIcon'
-import useGlobalStyles from '@/styles'
 import {OutlinedButton} from '@/presentation/components/Button'
 import {getProfile} from '@/redux/reducers/profileReducer'
-import {isLeader} from '@/util'
+import {isLeader} from '@/presentation/util'
 import {MainBottomTabNavigationProps} from '@/presentation/navigation/types'
+import useGlobalStyles from '@/presentation/styles'
 
 interface LeaderHeaderParams {
   onPressEditor: () => void

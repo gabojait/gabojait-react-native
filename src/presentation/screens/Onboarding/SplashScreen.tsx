@@ -1,12 +1,6 @@
-import {
-  OnboardingScreenProps,
-  RootStackParamList,
-  RootStackScreenProps,
-} from '@/presentation/navigation/types'
+import {RootStackScreenProps} from '@/presentation/navigation/types'
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
-import {getUser, loginReducer} from '@/redux/reducers/loginReducer'
-import globalStyles from '@/styles'
-import {StackNavigationProp, StackScreenProps} from '@react-navigation/stack'
+import {getUser} from '@/redux/reducers/loginReducer'
 import React, {useEffect} from 'react'
 import {View} from 'react-native'
 import Splash from 'react-native-splash-screen'

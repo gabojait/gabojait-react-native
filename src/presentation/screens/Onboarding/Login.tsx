@@ -11,8 +11,8 @@ import {useAppDispatch, useAppSelector} from '@/redux/hooks'
 import LoginRequestDTO from '@/data/model/LoginRequestDto'
 import {ModalContext} from '@/presentation/components/modal/context'
 import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent'
-import useGlobalStyles from '@/styles'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import useGlobalStyles from '@/presentation/styles'
 
 const Login = ({navigation}: OnboardingScreenProps<'Login'>) => {
   const [loginState, setLoginState] = useState({username: '', password: ''} as LoginRequestDTO)

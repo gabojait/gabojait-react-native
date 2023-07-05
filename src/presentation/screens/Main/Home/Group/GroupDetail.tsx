@@ -9,12 +9,12 @@ import PositionIcon from '@/presentation/components/PositionWaveIcon'
 import CustomIcon from '@/presentation/components/icon/Gabojait'
 import PositionRecruiting from '@/presentation/model/PositionRecruitng'
 import {MainStackScreenProps} from '@/presentation/navigation/types'
-import useGlobalStyles from '@/styles'
-import {theme} from '@/theme'
 import {makeStyles, Text} from '@rneui/themed'
 import React, {useState} from 'react'
 import {ScrollView, TouchableOpacity, View} from 'react-native'
 import {useMutation, useQuery, UseQueryResult} from 'react-query'
+import useGlobalStyles from '@/presentation/styles'
+import {theme} from '@/presentation/theme'
 
 const GroupDetail = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) => {
   const styles = useStyles()

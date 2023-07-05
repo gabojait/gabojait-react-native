@@ -13,11 +13,11 @@ import {Link} from '@react-navigation/native'
 import {ProfileStackParamListProps} from '@/presentation/navigation/types'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import {StackHeaderProps} from '@react-navigation/stack'
-import useGlobalStyles from '@/styles'
 import {TouchableOpacity} from 'react-native-gesture-handler'
 import {getProfile, setProfileVisibility} from '@/redux/reducers/profileReducer'
 import {Level} from '@/data/model/Profile/Skill'
-import {calcMonth} from '@/util'
+import useGlobalStyles from '@/presentation/styles'
+import {calcMonth} from '@/presentation/util'
 
 const Header = ({navigation}: StackHeaderProps) => {
   const {theme} = useTheme()

@@ -13,7 +13,7 @@ import {
   passwordRegex,
   realnameRegex,
   usernameRegex,
-} from '@/util'
+} from '@/presentation/util'
 import {Gender} from '@/data/model/Gender'
 import DatePickerModalContent from '@/presentation/components/modalContent/DatePickerModalContent'
 import {ValidatorState} from '@/presentation/components/props/StateProps'

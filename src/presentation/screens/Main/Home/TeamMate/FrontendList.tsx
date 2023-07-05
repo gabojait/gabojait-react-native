@@ -7,7 +7,7 @@ import {FlatList, Text, TouchableOpacity, View} from 'react-native'
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
 import UserProfileBriefDto from '@/data/model/User/UserProfileBriefDto'
 import {findIndividuals} from '@/redux/reducers/individualsFindReducer'
-import {FRONTED, positionWord} from '@/util'
+import {FRONTED} from '@/presentation/util'
 
 const FrontendList = () => {
   const {theme} = useTheme()

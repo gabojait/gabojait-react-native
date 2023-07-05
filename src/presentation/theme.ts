@@ -1,6 +1,5 @@
 import '@rneui/themed'
 import {Button, ButtonProps, createTheme, Theme} from '@rneui/themed'
-import color from './presentation/res/styles/color'
 
 /**
  * StyleSheet FontWeight Type이에요.
@@ -32,7 +31,7 @@ declare module '@rneui/themed' {
       xl: number
       xxl: number
     }
-    ratingBarSize:{
+    ratingBarSize: {
       xs: number
       sm: number
       md: number
@@ -40,8 +39,8 @@ declare module '@rneui/themed' {
       xl: number
     }
     sliderSize: {
-     md: number
-     lg: number 
+      md: number
+      lg: number
     }
     fontSize: {
       xs: number
@@ -129,14 +128,14 @@ export const theme = createTheme({
     md: 15,
     lg: 20,
     xl: 20,
-    xxl: 24
+    xxl: 24,
   },
   ratingBarSize: {
     xs: 16,
     sm: 19,
     md: 22,
     lg: 26,
-    xl: 30
+    xl: 30,
   },
   sliderSize: {
     md: 20,

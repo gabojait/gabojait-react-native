@@ -8,12 +8,12 @@ import TeamRequestDto from '@/data/model/Team/TeamRequestDto'
 import {ModalContext} from '@/presentation/components/modal/context'
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent'
 import CardWrapper from '@/presentation/components/CardWrapper'
-import useGlobalStyles from '@/styles'
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent'
 import {ScrollView} from 'react-native-gesture-handler'
 import {PositionDropdownMaker} from '@/presentation/components/PositionDropdownMaker'
 import PositionCountDto from '@/data/model/Team/PostionCountDto'
 import {useCreateTeam} from '@/reactQuery/useCreateTeam'
+import useGlobalStyles from '@/presentation/styles'
 
 const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupCreator'>) => {
   const {theme} = useTheme()

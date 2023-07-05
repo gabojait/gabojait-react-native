@@ -5,9 +5,9 @@ import {ScrollView, View} from 'react-native'
 import {ToggleButton, Chip, CustomSlider, sliderColors} from '../Profile'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import {SquareIcon} from './EditPortfolio'
-import {uuidv4} from '@/util'
 import {useAppSelector} from '@/redux/hooks'
 import {Level} from '@/data/model/Profile/Skill'
+import {uuidv4} from '@/presentation/util'
 
 const EditSkillAndPosition = () => {
   const positions = ['PM', 'Designer', 'Frontend', 'Backend']
