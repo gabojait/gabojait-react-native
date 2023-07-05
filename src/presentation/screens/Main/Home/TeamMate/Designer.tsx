@@ -1,63 +1,26 @@
+import {GetProfileProps, getUserSeekingTeam} from '@/data/api/profile'
 import UserProfileBriefDto from '@/data/model/User/UserProfileBriefDto'
 import CardWrapper from '@/presentation/components/CardWrapper'
 import Gabojait from '@/presentation/components/icon/Gabojait'
 import {RatingBar} from '@/presentation/components/RatingBar'
-import {DESIGNER} from '@/presentation/util'
-import {useAppDispatch, useAppSelector} from '@/redux/hooks'
-import {findIndividuals} from '@/redux/reducers/individualsFindReducer'
+import {useModelList} from '@/reactQuery/useModelList'
 import {makeStyles, Text, useTheme} from '@rneui/themed'
-import React, {useEffect, useState} from 'react'
+import React from 'react'
 import {FlatList, TouchableOpacity, View} from 'react-native'
 
 const DesignerList = () => {
   const {theme} = useTheme()
   const styles = useStyles()
-  const dispatch = useAppDispatch()
-  const {data, loading, error} = useAppSelector(
-    state => state.individualsFindReducer.individualsFindResult,
-  )
-  const [contentData, setContentData] = useState<UserProfileBriefDto[]>()
-  const [individualsFindState, setIndividualsFindState] = useState({pageFrom: 0, pageNum: 2})
-  const [isRefreshing, setIsRefreshing] = useState(false)
-
-  const requestMoreTeam = () => {
-    if (data != null && data.length >= individualsFindState.pageNum) {
-      dispatch(
-        findIndividuals(individualsFindState.pageFrom, individualsFindState.pageNum, DESIGNER),
-      )
-      setIndividualsFindState(prevState => ({
-        ...prevState,
-        pageFrom: individualsFindState.pageFrom + 1,
-      }))
-    }
-  }
-
-  const refreshMoreTeam = () => {
-    setContentData([])
-    requestMoreTeam()
-    setIsRefreshing(false)
-  }
-
-  useEffect(() => {
-    console.log(`data 변경 감지`)
-    if (!loading && contentData != null && data != null) {
-      setContentData([...contentData, ...data])
-      console.log(`data: ${data}`)
-      console.log(`contentData: ${contentData}`)
-    }
-  }, [data, loading, error])
-
-  useEffect(() => {
-    console.log(`첫 렌더링`)
-    dispatch(findIndividuals(individualsFindState.pageFrom, individualsFindState.pageNum, DESIGNER))
-    setIndividualsFindState(prevState => ({
-      ...prevState,
-      pageFrom: individualsFindState.pageFrom + 1,
-    }))
-    if (!loading && data != null) {
-      setContentData(data)
-    }
-  }, [])
+  const {data, isLoading, error, fetchNextPage, refetch, param, isRefreshing} = useModelList<
+    GetProfileProps,
+    UserProfileBriefDto
+  >({
+    initialParam: {pageFrom: 0, pageSize: 20, position: 'designer', profileOrder: 'active'},
+    key: 'designerList',
+    fetcher: async ({pageParam}) => {
+      return await getUserSeekingTeam(pageParam!)
+    },
+  })
 
   return (
     <View
@@ -70,8 +33,8 @@ const DesignerList = () => {
       }}>
       <FlatList
         showsVerticalScrollIndicator={false}
-        keyExtractor={item => item.userId}
-        data={contentData}
+        keyExtractor={item => item.userId.toString()}
+        data={data?.pages.flat()}
         renderItem={({item}) => (
           <CardWrapper
             style={{
@@ -104,11 +67,11 @@ const DesignerList = () => {
           </CardWrapper>
         )}
         refreshing={isRefreshing}
-        onRefresh={refreshMoreTeam}
+        onRefresh={refetch}
         onEndReached={() => {
-          requestMoreTeam()
+          fetchNextPage()
         }}
-        onEndReachedThreshold={1}
+        onEndReachedThreshold={0.6}
       />
     </View>
   )

@@ -1,8 +1,13 @@
+import BriefOfferDto from '../Offer/BriefOfferDto'
+import {Position} from '../type/Position'
+
 export default interface UserProfileBriefDto {
-    nickname: string
-    position: string
-    rating: number
-    reviewCnt: number
-    schemaVersion: string
-    userId: string
+  createdAt: string
+  nickname: string
+  offers: BriefOfferDto[]
+  position: Position
+  rating: number
+  reviewCnt: number
+  schemaVersion: string
+  userId: number
 }

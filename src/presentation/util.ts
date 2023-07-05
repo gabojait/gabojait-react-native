@@ -12,12 +12,6 @@ export const emailRegex =
 export const authCodeRegex = /[a-zA-z0-9]{6}/
 export const realnameRegex = /^.{2,5}$/ //2~5자
 
-export const positionWord = ['backend', 'frontend', 'designer', 'pm']
-export const BACKEND = 'backend'
-export const FRONTED = 'frontend'
-export const DESIGNER = 'designer'
-export const PM = 'pm'
-
 export function uuidv4() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     var r = (Math.random() * 16) | 0,
@@ -33,7 +27,6 @@ export const isDataAvailable = (loading: any, data: any, contentData: any) => {
   if (!loading && contentData != null && data != null) return true
   else return false
 }
-
 
 /**
  * endDate 부터 startDate 까지의 시간차를 월 단위로 반환합니다.
