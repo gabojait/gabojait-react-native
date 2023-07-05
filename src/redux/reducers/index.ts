@@ -4,7 +4,6 @@ import {loginReducer} from './loginReducer'
 import {registerReducer} from './registerReducer'
 import {teamGetReducer} from './teamGetReducer'
 import {teamDetailGetReducer} from './teamDetailGetReducer'
-import {applyToTeamReducer} from './applyToTeamReducer'
 import {individualsFindReducer} from './individualsFindReducer'
 import {teamsToReviewGetReducer} from './teamsToReviewGetReducer'
 import {reviewQuestionsGetReducer} from './reviewQuestionsGetReducer'
@@ -27,7 +26,6 @@ const rootReducer = combineReducers({
   registerReducer,
   teamGetReducer,
   teamDetailGetReducer,
-  applyToTeamReducer,
   individualsFindReducer,
   teamsToReviewGetReducer,
   reviewQuestionsGetReducer,
