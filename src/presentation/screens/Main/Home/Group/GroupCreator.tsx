@@ -10,8 +10,6 @@ import SymbolModalContent from '@/presentation/components/modalContent/SymbolMod
 import CardWrapper from '@/presentation/components/CardWrapper'
 import useGlobalStyles from '@/styles'
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent'
-import {useMutation} from 'react-query'
-import {createTeam} from '@/api/team'
 import {ScrollView} from 'react-native-gesture-handler'
 import {PositionDropdownMaker} from '@/presentation/components/PositionDropdownMaker'
 import PositionCountDto from '@/model/Team/PostionCountDto'

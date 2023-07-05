@@ -8,7 +8,7 @@ import SymbolModalContent from '@/presentation/components/modalContent/SymbolMod
 import {ModalContext} from '@/presentation/components/modal/context'
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent'
 import CardWrapper from '@/presentation/components/CardWrapper'
-import {PositionMaker} from '@/presentation/components/PositionMaker'
+import {PositionDropdown} from '@/presentation/components/PositionDropdown'
 import {FilledButton} from '@/presentation/components/Button'
 import CustomIcon from '@/presentation/components/icon/Gabojait'
 import {MainStackParamList, MainStackScreenProps} from '@/presentation/navigation/types'
