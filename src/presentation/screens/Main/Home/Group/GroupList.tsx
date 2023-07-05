@@ -15,9 +15,20 @@ const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
   const {theme} = useTheme()
   const styles = useStyles(theme)
   const modal = React.useContext(ModalContext)
-
   const GUIDE_MODE_MODAL_KEY = 'guideModeModalKey'
   const GUIDE_MODE_MODAL_VALUE = 'guideModeModalValue'
+  const {data, isLoading, error, fetchNextPage, refetch, param, isRefreshing} = useTeamList<
+    GetRecruitingProps,
+    TeamListDto
+  >({
+    initialParam: {pageFrom: 0, pageSize: 20, position: 'none', teamOrder: 'created'},
+    key: 'recruiting',
+    fetcher: async ({pageParam}) => {
+      console.log('fetch!!')
+      console.log('pageParam:', pageParam)
+      return await getRecruiting(pageParam!)
+    },
+  })
 
   async function getGuideModeModalKey() {
     try {
@@ -37,19 +48,6 @@ const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
     const value = getGuideModeModalKey()
     console.log(`GUIDE_MODE_MODAL_KEY 값 확인: ${value}`)
   }
-
-  const {data, isLoading, error, fetchNextPage, refetch, param, isRefreshing} = useTeamList<
-    GetRecruitingProps,
-    TeamListDto
-  >({
-    initialParam: {pageFrom: 0, pageSize: 20, position: 'none', teamOrder: 'created'},
-    key: 'recruiting',
-    fetcher: async ({pageParam}) => {
-      console.log('fetch!!')
-      console.log('pageParam:', pageParam)
-      return await getRecruiting(pageParam!)
-    },
-  })
 
   const handleBottomSlideModal = () => {
     getGuideModeModalKey().then(result => {
@@ -107,6 +105,8 @@ const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
     return null
   }
 
+  //TODO: api 수정 반영하기
+
   return (
     <View
       style={{
@@ -128,7 +128,7 @@ const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
                   params: {teamId: item.teamId},
                 })
               }>
-              <TeamBanner team={item} />
+              <TeamBanner teamMembersCnt={item.teamMemberCnts} teamName={item.projectName} />
             </TouchableOpacity>
           )}
           refreshing={isRefreshing}

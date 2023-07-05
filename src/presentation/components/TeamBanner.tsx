@@ -4,35 +4,16 @@ import React from 'react'
 import {PixelRatio, View} from 'react-native'
 import color from '../res/styles/color'
 import CustomIcon from '@/presentation/components/icon/Gabojait'
-import Team from '../model/Team'
-import TeamListDto from '@/model/Team/TeamListDto'
-import {Position} from '@/model/type/Position'
+import PositionRecruiting from '../model/PositionRecruitng'
 
-const TeamBanner: React.FC<CardProps & {team: TeamListDto}> = ({team}) => {
+const TeamBanner: React.FC<
+  CardProps & {teamMembersCnt: PositionRecruiting[]; teamName: String}
+> = ({teamMembersCnt: teamMembers, teamName}) => {
   const {theme} = useTheme()
-  const teamMemberRecruitCnts = team.teamMemberRecruitCnts
 
-  /**
-   * 포지션별 총 모집 인원 배열과 현재 소속된 팀원 배열을 이용해 모집이 완료됐는지 검사합니다.
-   * @param positionInitial
-   */
-  const IsRecruitDone = (positionInitial: Position) => {
-    const positionTotalCount =
-      teamMemberRecruitCnts.find(position => position.position === positionInitial)
-        ?.totalRecruitCnt ?? 0
-    const positionCount = team.teamMembers.filter(
-      member => member.position === positionInitial,
-    ).length
-    console.log(
-      positionInitial,
-      ' 포지션 총 ',
-      positionTotalCount,
-      '명 중 ',
-      positionCount,
-      ' 명 찼음',
-      positionTotalCount == positionCount,
-    )
-    return positionTotalCount === positionCount
+  const IsRecruitDone = (item: PositionRecruiting) => {
+    console.log(`teamMembers:${teamMembers}`)
+    return item.currentCnt == item.recruitCnt
   }
 
   return (
@@ -55,7 +36,7 @@ const TeamBanner: React.FC<CardProps & {team: TeamListDto}> = ({team}) => {
           fontWeight: theme.fontWeight.bold,
           fontSize: theme.fontSize.md,
         }}>
-        {team.projectName}
+        {teamName}
       </Text>
       <View
         style={{
@@ -65,10 +46,10 @@ const TeamBanner: React.FC<CardProps & {team: TeamListDto}> = ({team}) => {
           flexDirection: 'row',
           justifyContent: 'space-around',
         }}>
-        {teamMemberRecruitCnts?.map((item, index) => (
+        {teamMembers?.map((item, index) => (
           <PartIcon
             partInitial={item.position.charAt(0).toUpperCase()}
-            isRecruitDone={IsRecruitDone(item.position)}
+            isRecruitDone={IsRecruitDone(item)}
             key={index}
           />
         ))}

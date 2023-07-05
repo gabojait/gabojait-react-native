@@ -1,26 +1,20 @@
 import {postFavoriteTeam} from '@/api/favorite'
 import {getTeam} from '@/api/team'
-import BriefProfileDto from '@/model/Profile/BriefProfileDto'
-import PositionCountDto from '@/model/Team/PostionCountDto'
+import FavoriteUpdateDto from '@/model/Favorite/favoriteUpdateDto'
 import TeamDetailDto from '@/model/Team/TeamDetailDto'
-import {Position} from '@/model/type/Position'
 import {FilledButton} from '@/presentation/components/Button'
 import CardWrapper from '@/presentation/components/CardWrapper'
 import CustomHeader from '@/presentation/components/CustomHeader'
-import PositionIcon from '@/presentation/components/PositionIcon'
+import PositionIcon from '@/presentation/components/PositionWaveIcon'
 import CustomIcon from '@/presentation/components/icon/Gabojait'
+import PositionRecruiting from '@/presentation/model/PositionRecruitng'
 import {MainStackScreenProps} from '@/presentation/navigation/types'
 import useGlobalStyles from '@/styles'
 import {theme} from '@/theme'
 import {makeStyles, Text} from '@rneui/themed'
-import React from 'react'
+import React, {useState} from 'react'
 import {ScrollView, TouchableOpacity, View} from 'react-native'
-import {useMutation, useQueries, useQuery, UseQueryResult} from 'react-query'
-
-interface PositionIconProp extends PositionCountDto {
-  index: number
-  currentMemberCnt: number
-}
+import {useMutation, useQuery, UseQueryResult} from 'react-query'
 
 const GroupDetail = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) => {
   const styles = useStyles()
@@ -29,29 +23,16 @@ const GroupDetail = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) =
     ['GroupDetail', route.params.teamId],
     () => getTeam(route.params.teamId),
   )
-  //TODO: 응답받고 200, 201에 따라 버튼 색 분기하기
-  const {
-    data: dataFavorite,
-    isLoading: isLoadingFavorite,
-    mutate: mutateFavorite,
-    error: errorFavorite,
-  } = useMutation({
-    mutationKey: ['postFavorite'],
-    mutationFn: (teamId: number) => postFavoriteTeam(teamId),
+  const {mutate: mutateFavorite} = useMutation(
+    'postFavorite',
+    (args: [number, FavoriteUpdateDto]) => postFavoriteTeam(...args),
+  )
+  const [favoriteState, setFavoriteState] = useState<FavoriteUpdateDto>({
+    isAddFavorite: data?.isFavorite || false,
   })
-
   //TODO:포지션 아이콘 컴포넌트에 들어갈 데이터 전처리(일단 api 수정결과 보고 작업하기로)
-  // const positions: Array<PositionIconProp> = mapToPositionIconProp(
-  //   data?.teamMemberRecruitCnts || [],
-  //   data?.teamMembers || [],
-  // )
-  // const initials = ['B', 'F', 'D', 'P']
-
-  // function mapToPositionIconProp(
-  //   recruitArray: Array<PositionCountDto>,
-  //   memberArray: Array<BriefProfileDto>,
-  // ) {
-  // }
+  const positions: Array<PositionRecruiting> = data?.teamMemberCnts || []
+  const initials = ['B', 'F', 'D', 'P']
 
   function isFavorite() {
     if (data?.isFavorite) {
@@ -59,9 +40,13 @@ const GroupDetail = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) =
     }
     return 'black'
   }
-
+  //TODO: 200,201 결과로 찜 아이콘 색 분기하기
   function handleFavoriteTeam() {
-    mutateFavorite(route.params.teamId)
+    if (data?.isFavorite) {
+      mutateFavorite([route.params.teamId, {isAddFavorite: !favoriteState.isAddFavorite}])
+    } else {
+      mutateFavorite([route.params.teamId, {isAddFavorite: !favoriteState.isAddFavorite}])
+    }
   }
 
   if (isLoading && !data) {
@@ -99,17 +84,17 @@ const GroupDetail = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) =
             }}>
             <Text style={styles.teamname}>{data?.projectName}</Text>
             <View style={styles.partIcon}>
-              {/* {positions.map((item, index) => (
-              <PositionIcon
-                currentApplicant={0}
-                recruitNumber={item.totalRecruitCnt}
-                textView={<Text style={globalStyles.itnitialText}>{initials[index]}</Text>}
-              />
-            ))} */}
+              {positions.map((item, index) => (
+                <PositionIcon
+                  currentCnt={item.currentCnt}
+                  recruitNumber={item.recruitCnt}
+                  textView={<Text style={globalStyles.itnitialText}>{initials[index]}</Text>}
+                />
+              ))}
             </View>
             <FilledButton
               title={'함께 하기'}
-              onPress={() => navigation.navigate('PositionSelector', {teamId: data?.teamId ?? ''})}
+              onPress={() => navigation.navigate('PositionSelector', {teamId: route.params.teamId})}
             />
           </View>
         </CardWrapper>

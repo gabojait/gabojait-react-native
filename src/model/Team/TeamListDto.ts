@@ -1,11 +1,12 @@
-import {Position} from '../type/Position'
-import {TeamMemberStatus} from '../type/TeamMemberStatus'
+import PositionRecruiting from '@/presentation/model/PositionRecruitng'
+import BriefProfileDto from '../Profile/BriefProfileDto'
+import BriefOfferDto from '../Offer/BriefOfferDto'
 
 export default interface TeamListDto {
   createdAt: string
   projectName: string
   teamId: number
-  teamMemberRecruitCnts: {totalRecruitCnt: number; position: Position}[]
-  teamMembers: {nickname: string; position: Position; teamMemberStatus: TeamMemberStatus}[]
+  teamMemberCnts: PositionRecruiting[]
+  teamMembers: BriefProfileDto[]
   updatedAt: string
 }

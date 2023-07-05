@@ -1,15 +1,17 @@
+import PositionRecruiting from '@/presentation/model/PositionRecruitng'
 import BriefProfileDto from '../Profile/BriefProfileDto'
-import PositionCountDto from './PostionCountDto'
+import BriefOfferDto from '../Offer/BriefOfferDto'
 
 export default interface TeamDetailDto {
   createdAt: string
   expectation: string
   isFavorite: boolean
+  offers: BriefOfferDto[]
   openChatUrl?: string
   projectDescription?: string
   projectName: string
   teamId: string
-  teamMemberRecruitCnts: Array<PositionCountDto>
+  teamMemberCnts: Array<PositionRecruiting>
   teamMembers: Array<BriefProfileDto>
   updatedAt: string
 }

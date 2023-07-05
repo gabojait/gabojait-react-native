@@ -39,12 +39,6 @@ export const getTeam = async (teamId: number) => {
   return await client.get(`team/${teamId}`)
 }
 
-export const applyToTeam = async (position: string, teamId: string) => {
-  const body = {position: position}
-  const result = await client.post(`user/team/${teamId}/offer`, body)
-  return result
-}
-
 export const findIndividuals = async (pageFrom: number, pageNum: number, position: string) => {
   const params = {pageFrom: pageFrom, pageNum: pageNum}
   const result = await client.get(`user/profile/${position}`, {params: params})
