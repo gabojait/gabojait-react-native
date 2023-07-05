@@ -1,4 +1,4 @@
-import Portfolio, {PortfolioType} from '@/model/Profile/Portfolio'
+import Portfolio, {PortfolioType} from '@/data/model/Profile/Portfolio'
 import CustomInput from '@/presentation/components/CustomInput'
 import {useAppSelector} from '@/redux/hooks'
 import globalStyles from '@/styles'

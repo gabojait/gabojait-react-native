@@ -7,7 +7,7 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import {SquareIcon} from './EditPortfolio'
 import {uuidv4} from '@/util'
 import {useAppSelector} from '@/redux/hooks'
-import {Level} from '@/model/Profile/Skill'
+import {Level} from '@/data/model/Profile/Skill'
 
 const EditSkillAndPosition = () => {
   const positions = ['PM', 'Designer', 'Frontend', 'Backend']

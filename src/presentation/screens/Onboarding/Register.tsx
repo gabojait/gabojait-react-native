@@ -5,7 +5,7 @@ import {FilledButton, OutlinedButton} from '@/presentation/components/Button'
 import {OnboardingScreenProps} from '@/presentation/navigation/types'
 import CustomInput from '@/presentation/components/CustomInput'
 import color from '@/presentation/res/styles/color'
-import RegisterRequestDto from '@/model/RegisterRequestDto'
+import RegisterRequestDto from '@/data/model/RegisterRequestDto'
 import {
   authCodeRegex,
   emailRegex,
@@ -14,7 +14,7 @@ import {
   realnameRegex,
   usernameRegex,
 } from '@/util'
-import {Gender} from '@/model/Gender'
+import {Gender} from '@/data/model/Gender'
 import DatePickerModalContent from '@/presentation/components/modalContent/DatePickerModalContent'
 import {ValidatorState} from '@/presentation/components/props/StateProps'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
@@ -30,7 +30,7 @@ import {
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
 import {ModalContext} from '@/presentation/components/modal/context'
 import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent'
-import ErrorCode from '@/api/ErrorCode'
+import ErrorCode from '@/data/api/ErrorCode'
 
 const agreementItems = [
   {
@@ -51,7 +51,7 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
   const [registerState, setRegisterState] = useState<RegisterRequestDto>({
     gender: Gender.Female,
     birthdate: new Date().toISOString(),
-    fcmToken: "testToken!",
+    fcmToken: 'testToken!',
   })
   const {theme} = useTheme()
   const dispatch = useAppDispatch()
@@ -99,7 +99,7 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
           title: '오류',
           content: (
             <OkDialogModalContent
-              text={registerError.message ?? "회원가입에 실패했어요."}
+              text={registerError.message ?? '회원가입에 실패했어요.'}
               onOkClick={() => {
                 modal.hide()
               }}

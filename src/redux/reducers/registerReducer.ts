@@ -2,7 +2,7 @@ import {loginAsyncAction} from '../action/login'
 
 import createAsyncThunk from '@/lib/createAsyncThunk'
 import {LoginAction} from '@/redux/action_types/login'
-import * as accountApi from '@/api/accounts'
+import * as accountApi from '@/data/api/accounts'
 import {asyncState, createAsyncReducer} from '@/lib/reducerUtils'
 import {createReducer} from 'typesafe-actions'
 import {RegisterAction, RegisterState} from '../action_types/register'

@@ -1,7 +1,7 @@
 import client from '@/lib/axiosInstance'
-import EmailVerifyDto from '@/model/EmailVerifyDto'
-import LoginRequestDTO from '@/model/LoginRequestDto'
-import RegisterRequestDto from '@/model/RegisterRequestDto'
+import EmailVerifyDto from '@/data/model/EmailVerifyDto'
+import LoginRequestDTO from '@/data/model/LoginRequestDto'
+import RegisterRequestDto from '@/data/model/RegisterRequestDto'
 
 export const login = async (dto: LoginRequestDTO) => {
   const result = await client.post('user/login', dto)

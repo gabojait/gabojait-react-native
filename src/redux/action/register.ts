@@ -1,5 +1,5 @@
-import RegisterRequestDto from '@/model/RegisterRequestDto'
-import {User} from '@/model/User'
+import RegisterRequestDto from '@/data/model/RegisterRequestDto'
+import {User} from '@/data/model/User'
 import {createAsyncAction} from 'typesafe-actions'
 
 export const REGISTER = 'REGISTER'

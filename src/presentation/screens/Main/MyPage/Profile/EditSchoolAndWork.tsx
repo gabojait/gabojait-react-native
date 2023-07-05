@@ -1,5 +1,5 @@
-import Education from '@/model/Profile/Education'
-import Work from '@/model/Profile/Work'
+import Education from '@/data/model/Profile/Education'
+import Work from '@/data/model/Profile/Work'
 import CustomInput from '@/presentation/components/CustomInput'
 import DateDropdown from '@/presentation/components/DropdownWithoutItem'
 import {ModalContext} from '@/presentation/components/modal/context'

@@ -1,4 +1,4 @@
-import UserProfileBriefDto from '@/model/User/UserProfileBriefDto'
+import UserProfileBriefDto from '@/data/model/User/UserProfileBriefDto'
 
 export default interface TeamModel {
   backendCurrentCnt: number

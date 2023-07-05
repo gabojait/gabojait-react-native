@@ -1,4 +1,4 @@
-import {findPassword, findUserName} from '@/api/accounts'
+import {findPassword, findUserName} from '@/data/api/accounts'
 import {FilledButton} from '@/presentation/components/Button'
 import CustomInput from '@/presentation/components/CustomInput'
 import {ModalContext} from '@/presentation/components/modal/context'

@@ -1,10 +1,10 @@
 import client from '@/lib/axiosInstance'
-import {ResponseWrapper} from '@/model/ResponseWrapper'
-import TeamBriefResponseDto from '@/model/Team/TeamBriefResponseDto'
-import TeamListDto from '@/model/Team/TeamListDto'
-import TeamRequestDto from '@/model/Team/TeamRequestDto'
-import {Position} from '@/model/type/Position'
-import {TeamOrder} from '@/model/type/TeamOrder'
+import {ResponseWrapper} from '@/data/model/ResponseWrapper'
+import TeamBriefResponseDto from '@/data/model/Team/TeamBriefResponseDto'
+import TeamListDto from '@/data/model/Team/TeamListDto'
+import TeamRequestDto from '@/data/model/Team/TeamRequestDto'
+import {Position} from '@/data/model/type/Position'
+import {TeamOrder} from '@/data/model/type/TeamOrder'
 
 export type GetRecruitingProps = {
   pageFrom: number

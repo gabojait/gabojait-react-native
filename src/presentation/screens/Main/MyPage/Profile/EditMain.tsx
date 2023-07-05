@@ -2,7 +2,7 @@ import {ScrollView, View} from 'react-native'
 import React, {useEffect, useState} from 'react'
 import {ArrowCard} from '@/presentation/components/BaseCard'
 import {Input, Text, useTheme} from '@rneui/themed'
-import ProfileViewDto from '@/model/Profile/ProfileViewDto'
+import ProfileViewDto from '@/data/model/Profile/ProfileViewDto'
 import {
   CustomSlider,
   IconLabel,
@@ -17,7 +17,7 @@ import globalStyles from '@/styles'
 import useGlobalStyles from '@/styles'
 import CustomHeader from '@/presentation/components/CustomHeader'
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
-import {Level} from '@/model/Profile/Skill'
+import {Level} from '@/data/model/Profile/Skill'
 
 export function EditMainHeader() {
   const {theme} = useTheme()

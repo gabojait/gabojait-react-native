@@ -1,4 +1,4 @@
-import {Position} from '@/model/type/Position'
+import {Position} from '@/data/model/type/Position'
 
 export default interface PositionRecruiting {
   currentCnt: number

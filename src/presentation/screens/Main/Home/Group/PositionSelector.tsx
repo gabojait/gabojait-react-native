@@ -8,12 +8,12 @@ import {MainStackScreenProps} from '@/presentation/navigation/types'
 import {ModalContext} from '@/presentation/components/modal/context'
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent'
 import {useMutation, useQuery, UseQueryResult} from 'react-query'
-import TeamDetailDto from '@/model/Team/TeamDetailDto'
-import {getTeam} from '@/api/team'
+import TeamDetailDto from '@/data/model/Team/TeamDetailDto'
+import {getTeam} from '@/data/api/team'
 import PositionRecruiting from '@/presentation/model/PositionRecruitng'
-import BriefOfferDto from '@/model/Offer/BriefOfferDto'
-import {Position} from '@/model/type/Position'
-import {applyToTeam} from '@/api/offer'
+import BriefOfferDto from '@/data/model/Offer/BriefOfferDto'
+import {Position} from '@/data/model/type/Position'
+import {applyToTeam} from '@/data/api/offer'
 
 interface ApplyPositionCardProps {
   data: PositionRecruiting

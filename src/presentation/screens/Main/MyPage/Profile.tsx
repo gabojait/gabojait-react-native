@@ -3,12 +3,12 @@ import {CheckBox, makeStyles, Text, useTheme} from '@rneui/themed'
 import {ActivityIndicator, ScrollView, StyleProp, TextStyle, View, ViewStyle} from 'react-native'
 import {FilledButton} from '@/presentation/components/Button'
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
-import ProfileViewDto from '@/model/Profile/ProfileViewDto'
+import ProfileViewDto from '@/data/model/Profile/ProfileViewDto'
 import {Slider} from '@miblanchard/react-native-slider'
 
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import {RatingBar} from '@/presentation/components/RatingBar'
-import Review from '@/model/Profile/Review'
+import Review from '@/data/model/Profile/Review'
 import {Link} from '@react-navigation/native'
 import {ProfileStackParamListProps} from '@/presentation/navigation/types'
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -16,7 +16,7 @@ import {StackHeaderProps} from '@react-navigation/stack'
 import useGlobalStyles from '@/styles'
 import {TouchableOpacity} from 'react-native-gesture-handler'
 import {getProfile, setProfileVisibility} from '@/redux/reducers/profileReducer'
-import {Level} from '@/model/Profile/Skill'
+import {Level} from '@/data/model/Profile/Skill'
 import {calcMonth} from '@/util'
 
 const Header = ({navigation}: StackHeaderProps) => {
@@ -62,7 +62,7 @@ const Profile = ({navigation}: ProfileStackParamListProps<'View'>) => {
     dispatch(getProfile())
   }, [])
 
-  const profileExist = useMemo(() => profile != null, [profile]);
+  const profileExist = useMemo(() => profile != null, [profile])
   if (profileExist)
     navigation.setOptions({
       header: Header,

@@ -2,17 +2,16 @@ import React, {useRef} from 'react'
 import {SafeAreaView} from 'react-native'
 import {ThemeProvider} from '@rneui/themed'
 import {theme} from '@/theme'
-import {RootNavigation} from './presentation/navigation/RootNavigation'
+import {RootNavigation} from './navigation/RootNavigation'
 import {Provider} from 'react-redux'
 import {createStore, applyMiddleware} from 'redux'
 import allReducers from '@/redux/reducers'
 import ReduxThunk from 'redux-thunk'
-import CustomModal, {CustomModalRef} from './presentation/components/modal/Modal'
-import {ModalProvider} from './presentation/components/modal/context'
-import { QueryClient, QueryClientProvider, useQuery } from 'react-query'
+import CustomModal, {CustomModalRef} from './components/modal/Modal'
+import {ModalProvider} from './components/modal/context'
+import {QueryClient, QueryClientProvider, useQuery} from 'react-query'
 
 const queryClient = new QueryClient()
-
 
 const App = () => {
   const backgroundStyle = {

@@ -1,4 +1,4 @@
-import {ResponseWrapper} from '@/model/ResponseWrapper'
+import {ResponseWrapper} from '@/data/model/ResponseWrapper'
 import {Result} from '@/redux/reducers'
 import axios, {
   AxiosRequestConfig,

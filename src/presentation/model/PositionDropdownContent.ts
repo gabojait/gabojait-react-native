@@ -1,4 +1,4 @@
-import {Position} from './Position'
+import {Position} from '../../data/model/type/Position'
 import {PositionTextName} from './PositionTextName'
 
 export default interface PositionDropdownContent {

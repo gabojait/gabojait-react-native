@@ -3,10 +3,10 @@ import React, {useEffect, useState} from 'react'
 import {PixelRatio, Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import {SelectList} from 'react-native-dropdown-select-list'
 import Gabojait from '@/presentation/components/icon/Gabojait'
-import PositionCountDto from '@/model/Team/PostionCountDto'
-import {Position} from '@/model/type/Position'
-import {PositionTextName} from '@/model/type/PositionTextName'
-import PositionDropdownContent from '@/model/type/PositionDropdownContent'
+import PositionCountDto from '@/data/model/Team/PostionCountDto'
+import {Position} from '@/data/model/type/Position'
+import {PositionTextName} from '@/presentation/model/PositionTextName'
+import PositionDropdownContent from '@/presentation/model/PositionDropdownContent'
 
 interface positionDropdownProps {
   onCloseClick: () => void

@@ -5,11 +5,11 @@ import {FlatList, Text, TouchableOpacity, View} from 'react-native'
 import TeamBanner from '@/presentation/components/TeamBanner'
 import {ModalContext} from '@/presentation/components/modal/context'
 import {BoardStackParamListProps} from '@/presentation/navigation/types'
-import {getRecruiting, GetRecruitingProps} from '@/api/team'
+import {getRecruiting, GetRecruitingProps} from '@/data/api/team'
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import {useTeamList} from '../../../../../reactQuery/useTeamList'
-import TeamListDto from '@/model/Team/TeamListDto'
+import TeamListDto from '@/data/model/Team/TeamListDto'
 
 const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
   const {theme} = useTheme()

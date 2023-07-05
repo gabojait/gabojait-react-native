@@ -1,5 +1,5 @@
 import client from '@/lib/axiosInstance'
-import {Position} from '@/model/type/Position'
+import {Position} from '@/data/model/type/Position'
 
 export const applyToTeam = async (position: string, teamId: number) => {
   const body = {position: position}
