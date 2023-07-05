@@ -8,7 +8,7 @@ import {BoardStackParamListProps} from '@/presentation/navigation/types'
 import {getRecruiting, GetRecruitingProps} from '@/data/api/team'
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import {useTeamList} from '../../../../../reactQuery/useTeamList'
+import {useModelList} from '../../../../../reactQuery/useModelList'
 import TeamListDto from '@/data/model/Team/TeamListDto'
 
 const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
@@ -17,7 +17,7 @@ const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
   const modal = React.useContext(ModalContext)
   const GUIDE_MODE_MODAL_KEY = 'guideModeModalKey'
   const GUIDE_MODE_MODAL_VALUE = 'guideModeModalValue'
-  const {data, isLoading, error, fetchNextPage, refetch, param, isRefreshing} = useTeamList<
+  const {data, isLoading, error, fetchNextPage, refetch, param, isRefreshing} = useModelList<
     GetRecruitingProps,
     TeamListDto
   >({

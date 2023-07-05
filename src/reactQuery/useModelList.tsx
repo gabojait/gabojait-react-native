@@ -6,7 +6,7 @@ export interface PageReqeust {
   pageSize: number
 }
 
-export function useTeamList<P extends PageReqeust & {[key: string]: string | number}, R>({
+export function useModelList<P extends PageReqeust & {[key: string]: string | number}, R>({
   initialParam,
   key,
   fetcher,
@@ -22,7 +22,7 @@ export function useTeamList<P extends PageReqeust & {[key: string]: string | num
   const {data, isLoading, error, fetchNextPage, refetch} = useInfiniteQuery(
     [key, ...Object.values(initialParam)],
     async p => {
-      const res = await fetcher({...p, pageParam: param});
+      const res = await fetcher({...p, pageParam: param})
       setIsRefreshing(false)
       return res ?? []
     },
