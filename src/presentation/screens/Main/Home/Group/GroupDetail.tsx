@@ -1,6 +1,5 @@
 import {postFavoriteTeam} from '@/data/api/favorite'
 import {getTeam} from '@/data/api/team'
-import FavoriteUpdateDto from '@/model/Favorite/favoriteUpdateDto'
 import TeamDetailDto from '@/data/model/Team/TeamDetailDto'
 import {FilledButton} from '@/presentation/components/Button'
 import CardWrapper from '@/presentation/components/CardWrapper'
@@ -15,6 +14,8 @@ import {ScrollView, TouchableOpacity, View} from 'react-native'
 import {useMutation, useQuery, UseQueryResult} from 'react-query'
 import useGlobalStyles from '@/presentation/styles'
 import {theme} from '@/presentation/theme'
+import {initials} from '@/presentation/util'
+import FavoriteUpdateDto from '@/data/model/Favorite/FavoriteUpdateDto'
 
 const GroupDetail = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) => {
   const styles = useStyles()
@@ -30,9 +31,7 @@ const GroupDetail = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) =
   const [favoriteState, setFavoriteState] = useState<FavoriteUpdateDto>({
     isAddFavorite: data?.isFavorite || false,
   })
-  //TODO:포지션 아이콘 컴포넌트에 들어갈 데이터 전처리(일단 api 수정결과 보고 작업하기로)
   const positions: Array<PositionRecruiting> = data?.teamMemberCnts || []
-  const initials = ['B', 'F', 'D', 'P']
 
   function isFavorite() {
     if (data?.isFavorite) {

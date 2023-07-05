@@ -21,7 +21,6 @@ interface ApplyPositionCardProps {
   onApplyButtonPressed: (position: Position) => void
 }
 
-//TODO: presentation type 폴더로 옮기기
 type RecruitStatusType = '함께하기' | '모집완료' | '지원완료'
 type PositionTextNameType = '디자이너' | '기획자' | '프론트엔드' | '백엔드'
 

@@ -11,7 +11,6 @@ import {FlatList, TouchableOpacity, View} from 'react-native'
 const BackendList = () => {
   const {theme} = useTheme()
   const styles = useStyles()
-
   const {data, isLoading, error, fetchNextPage, refetch, param, isRefreshing} = useModelList<
     GetProfileProps,
     UserProfileBriefDto

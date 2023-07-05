@@ -105,8 +105,6 @@ const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
     return null
   }
 
-  //TODO: api 수정 반영하기
-
   return (
     <View
       style={{

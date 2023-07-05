@@ -67,3 +67,5 @@ export const isLeader = (text: string | undefined) => {
   if (text == 'LEADER') return true
   else return false
 }
+
+export const initials = ['B', 'F', 'D', 'P']
