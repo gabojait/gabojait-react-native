@@ -10,6 +10,7 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.config.ReactFeatureFlags;
 import com.facebook.soloader.SoLoader;
 import com.gabojait.newarchitecture.MainApplicationReactNativeHost;
+import com.burnweb.rnsendintent.RNSendIntentPackage; 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 

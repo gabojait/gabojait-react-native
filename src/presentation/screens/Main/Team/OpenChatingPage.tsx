@@ -15,21 +15,10 @@ export const OpenChatingPage = ({navigation, route}: MainStackScreenProps<'OpenC
       originWhitelist={['intent://*']}
       onShouldStartLoadWithRequest={event => {
         if (Platform.OS === 'android' && event.url.startsWith('intent:')) {
-          const intents = event.url.split('#Intent;')
-          const path = intents[0] || ''
-          const query = intents[1] || ''
-          const params: Record<string, string> = {}
-          query.split(';').map(item => {
-            const pairs = item.split('=')
-            params[pairs[0]] = pairs[0]
-          })
-          const scheme = params?.scheme
-          const packageName = params?.package
-          const data = path.replace('intent://', `${scheme}://`)
           SendIntentAndroid.openChromeIntent(event.url)
             .then(isOpened => {
               if (!isOpened) {
-                console.log('앱 실행에 실패했습니다.')
+                //TODO: 카카오톡 구글플레이스토어로 보내기
               }
               return false
             })
