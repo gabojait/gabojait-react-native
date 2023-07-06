@@ -35,6 +35,7 @@ module.exports = {
     'prettier/prettier': 'error',
     'react/display-name': 'off',
     'react/prop-types': 'off',
+    'no-unused-vars': 'warn',
   },
   settings: {
     react: {
