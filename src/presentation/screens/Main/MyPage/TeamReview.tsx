@@ -206,10 +206,7 @@ const TeamReview = ({navigation, route}: MainStackScreenProps<'TeamReview'>) => 
               <CardWrapper style={{marginLeft: 20, minWidth: 300, marginBottom: 10, marginTop: 2}}>
                 <View style={{width: '100%'}}>
                   <View style={{flexDirection: 'row', paddingVertical: 20, paddingHorizontal: 20}}>
-                    <PartIcon
-                      partInitial={getFirstAlphabet(teamMateItem.position).toString()}
-                      isRecruitDone={true}
-                    />
+                    <PartIcon position={teamMateItem.position} isRecruitDone={true} />
                     <View style={{paddingHorizontal: 10, justifyContent: 'center'}}>
                       <Text
                         style={{

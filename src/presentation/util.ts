@@ -1,7 +1,4 @@
-import {CombinedState} from '@reduxjs/toolkit'
-import {TypedUseSelectorHook} from 'react-redux'
-import {useAppSelector} from './redux/hooks'
-import {RootState} from './redux/store'
+import {Position} from '@/data/model/type/Position'
 
 export const usernameRegex = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{5,15}$/ //5~15자 영문, 숫자 조합
 export const passwordRegex =
@@ -46,6 +43,8 @@ export const changeFirstLetterToCapital = (text: string) => {
 export const getFirstAlphabet = (text: string) => {
   return text.charAt(0).toUpperCase()
 }
+
+//TODO: positionSelector페이지에 적용 + text 바꾸기
 export const chagneToOfficialWord = (text: string | undefined) => {
   let word = ''
 
@@ -57,15 +56,21 @@ export const chagneToOfficialWord = (text: string | undefined) => {
 
   return word
 }
+
+export function mapToInitial(position: Position) {
+  if (position == Position.backend) return 'B'
+  else if (position == Position.designer) return 'D'
+  else if (position == Position.frontend) return 'F'
+  else if (position == Position.manager) return 'P'
+}
+
 export const isEmptyArray = (array: any[] | undefined) => {
   if (array == undefined) return false
   else if (array.length == 0) return true
   else return false
 }
 
-export const isLeader = (text: string | undefined) => {
-  if (text == 'LEADER') return true
+export const isLeader = (isLeader: boolean) => {
+  if (isLeader) return true
   else return false
 }
-
-export const initials = ['B', 'F', 'D', 'P']

@@ -5,6 +5,8 @@ import {PixelRatio, View} from 'react-native'
 import color from '../res/styles/color'
 import CustomIcon from '@/presentation/components/icon/Gabojait'
 import PositionRecruiting from '../model/PositionRecruitng'
+import {Position} from '@/data/model/type/Position'
+import {mapToInitial} from '../util'
 
 const TeamBanner: React.FC<
   CardProps & {teamMembersCnt: PositionRecruiting[]; teamName: String}
@@ -47,11 +49,7 @@ const TeamBanner: React.FC<
           justifyContent: 'space-around',
         }}>
         {teamMembers?.map((item, index) => (
-          <PartIcon
-            partInitial={item.position.charAt(0).toUpperCase()}
-            isRecruitDone={IsRecruitDone(item)}
-            key={index}
-          />
+          <PartIcon position={item.position} isRecruitDone={IsRecruitDone(item)} key={index} />
         ))}
         <View
           style={{
@@ -65,8 +63,8 @@ const TeamBanner: React.FC<
     </Card>
   )
 }
-export const PartIcon: React.FC<{partInitial: string; isRecruitDone?: boolean; size?: number}> = ({
-  partInitial,
+export const PartIcon: React.FC<{position: Position; isRecruitDone?: boolean; size?: number}> = ({
+  position,
   isRecruitDone: isDone = false,
   size = 20,
 }) => {
@@ -85,7 +83,11 @@ export const PartIcon: React.FC<{partInitial: string; isRecruitDone?: boolean; s
         marginHorizontal: PixelRatio.getPixelSizeForLayoutSize(2),
         backgroundColor: isDone ? theme.colors.primary : 'white',
       }}>
-      {<Text style={{fontWeight: theme.fontWeight.bold, fontSize: 30}}>{partInitial}</Text>}
+      {
+        <Text style={{fontWeight: theme.fontWeight.bold, fontSize: 30}}>
+          {mapToInitial(position)}
+        </Text>
+      }
     </View>
   )
 }

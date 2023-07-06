@@ -135,6 +135,7 @@ const ApplyPositionCard = ({data, offers, onApplyButtonPressed}: ApplyPositionCa
                 {data.currentCnt}/{data.recruitCnt}
               </Text>
             }
+            key={data.position}
           />
           <Text style={styles.text}>{data.position}</Text>
         </View>

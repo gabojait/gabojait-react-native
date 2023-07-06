@@ -14,7 +14,7 @@ import {ScrollView, TouchableOpacity, View} from 'react-native'
 import {useMutation, useQuery, UseQueryResult} from 'react-query'
 import useGlobalStyles from '@/presentation/styles'
 import {theme} from '@/presentation/theme'
-import {initials} from '@/presentation/util'
+import {initials, mapToInitial} from '@/presentation/util'
 import FavoriteUpdateDto from '@/data/model/Favorite/FavoriteUpdateDto'
 
 const GroupDetail = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) => {
@@ -87,7 +87,10 @@ const GroupDetail = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) =
                 <PositionIcon
                   currentCnt={item.currentCnt}
                   recruitNumber={item.recruitCnt}
-                  textView={<Text style={globalStyles.itnitialText}>{initials[index]}</Text>}
+                  textView={
+                    <Text style={globalStyles.itnitialText}>{mapToInitial(item.position)}</Text>
+                  }
+                  key={item.position}
                 />
               ))}
             </View>
