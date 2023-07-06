@@ -2,9 +2,6 @@ import {combineReducers} from 'redux'
 import boardSwitchReducer from './boardSwitchReducer'
 import {loginReducer} from './loginReducer'
 import {registerReducer} from './registerReducer'
-import {teamGetReducer} from './teamGetReducer'
-import {teamDetailGetReducer} from './teamDetailGetReducer'
-import {individualsFindReducer} from './individualsFindReducer'
 import {teamsToReviewGetReducer} from './teamsToReviewGetReducer'
 import {reviewQuestionsGetReducer} from './reviewQuestionsGetReducer'
 import {profileReducer} from './profileReducer'
@@ -24,9 +21,6 @@ const rootReducer = combineReducers({
   loginReducer,
   boardSwitchReducer,
   registerReducer,
-  teamGetReducer,
-  teamDetailGetReducer,
-  individualsFindReducer,
   teamsToReviewGetReducer,
   reviewQuestionsGetReducer,
   teamToReviewGetReducer,
