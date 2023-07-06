@@ -1,15 +1,16 @@
 import CardWrapper from '@/presentation/components/CardWrapper'
 import {makeStyles, Text, useTheme} from '@rneui/themed'
-import React, {useEffect} from 'react'
-import {ScrollView, TouchableOpacity, View} from 'react-native'
+import React from 'react'
+import {Platform, ScrollView, TouchableOpacity, View} from 'react-native'
 import CustomIcon from '@/presentation/components/icon/Gabojait'
-import {useAppDispatch, useAppSelector} from '@/redux/hooks'
 import PositionIcon from '@/presentation/components/PositionWaveIcon'
 import {OutlinedButton} from '@/presentation/components/Button'
-import {getProfile} from '@/redux/reducers/profileReducer'
-import {isLeader} from '@/presentation/util'
+import {isLeader, mapToInitial} from '@/presentation/util'
 import {MainBottomTabNavigationProps} from '@/presentation/navigation/types'
 import useGlobalStyles from '@/presentation/styles'
+import {useQuery, UseQueryResult} from 'react-query'
+import TeamDto from '@/data/model/Team/TeamDto'
+import {getMyTeam} from '@/data/api/team'
 
 interface LeaderHeaderParams {
   onPressEditor: () => void
@@ -20,6 +21,7 @@ interface LeaderFooterParams {
   onPressDelete: () => void
 }
 
+//TODO: 에러처리 결과 404로 보여줘야 됨
 const NoProcessingTeam = () => (
   <View
     style={{
@@ -88,105 +90,99 @@ const LeaderFooter = ({onPressComplete, onPressDelete}: LeaderFooterParams) => {
 }
 
 export const TeamPage = ({navigation}: MainBottomTabNavigationProps<'Team'>) => {
-  // network
   const {theme} = useTheme()
   const globalStyles = useGlobalStyles()
   const styles = useStyles()
-  const dispatch = useAppDispatch()
   const {
-    data: profileData,
-    loading: profileLoading,
-    error: profileError,
-  } = useAppSelector(state => state.profileReducer.userProfile)
-  const {
-    data: teamDetailData,
-    loading: teamDetailLoading,
-    error: teamDetailError,
-  } = useAppSelector(state => state.teamDetailGetReducer.teamDetailGetResult)
-  const positions = [
-    [teamDetailData?.backendTotalRecruitCnt, teamDetailData?.backends?.length ?? 0],
-    [teamDetailData?.frontendTotalRecruitCnt, teamDetailData?.frontends?.length ?? 0],
-    [teamDetailData?.designerTotalRecruitCnt, teamDetailData?.designers?.length ?? 0],
-    [teamDetailData?.managerTotalRecruitCnt, teamDetailData?.managers?.length ?? 0],
-  ]
-  const initials = ['B', 'F', 'D', 'P']
-
-  useEffect(() => {
-    dispatch(getProfile())
-  }, [])
+    data: teamData,
+    isLoading: isTeamDataLoading,
+    error: teamDataError,
+  }: UseQueryResult<TeamDto> = useQuery(['TeamPage'], () => getMyTeam())
+  //TODO: Profile 모델 커밋받으면 하기
+  // const {data:dataUser, isLoading:isLoadingData, error:errorData}: UseQueryResult<> = useQuery(
+  //   ['getMyProfile'],
+  //   () => getProfile()
+  // )
 
   return (
     <>
-      {isLeader(profileData?.teamMemberStatus) ? (
+      {isLeader(false) ? (
         <LeaderHeader
           onPressEditor={() => navigation.navigate('MainNavigation', {screen: 'TeamEditor'})}
         />
       ) : (
         <TeamMateHeader />
       )}
-      {profileData?.currentTeamId == null ? (
-        <NoProcessingTeam />
-      ) : (
-        <View style={styles.scrollView}>
-          <ScrollView style={{paddingTop: 10, backgroundColor: theme.colors.white}}>
-            <CardWrapper style={[styles.teamcard, {minHeight: 190, justifyContent: 'center'}]}>
-              <View
-                style={{
-                  width: '100%',
-                  paddingHorizontal: 10,
-                  flex: 1,
-                  justifyContent: 'space-evenly',
-                }}>
-                <Text style={styles.teamname}>{teamDetailData?.projectName}</Text>
-                <View style={styles.partIcon}>
-                  {positions.map((item, index) =>
-                    item[0] != undefined && item[0] > 0 ? (
-                      <PositionIcon
-                        currentCnt={item[1] ?? 0}
-                        recruitNumber={item[0]}
-                        textView={<Text style={globalStyles.itnitialText}>{initials[index]}</Text>}
-                      />
-                    ) : (
-                      <></>
-                    ),
-                  )}
-                </View>
+      <View style={styles.scrollView}>
+        <ScrollView style={{paddingTop: 10, backgroundColor: theme.colors.white}}>
+          <CardWrapper
+            style={[styles.card, {minHeight: 190, justifyContent: 'center', marginBottom: 16}]}>
+            <View
+              style={{
+                width: '100%',
+                paddingHorizontal: 10,
+                flex: 1,
+                justifyContent: 'space-evenly',
+              }}>
+              <Text style={styles.teamname}>{teamData?.projectName}</Text>
+              <View style={styles.partIcon}>
+                {teamData?.teamMemberCnts.map(item => (
+                  <PositionIcon
+                    currentCnt={item.currentCnt}
+                    recruitNumber={item.recruitCnt}
+                    textView={
+                      <Text style={globalStyles.itnitialText}>{mapToInitial(item.position)}</Text>
+                    }
+                    key={item.position}
+                  />
+                ))}
               </View>
-            </CardWrapper>
-            <TouchableOpacity>
-              <CardWrapper
-                style={[
-                  styles.card,
-                  {
-                    minHeight: 50,
-                    backgroundColor: '#FEE500',
-                    justifyContent: 'center',
-                    alignContent: 'center',
+            </View>
+          </CardWrapper>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('MainNavigation', {
+                screen: 'OpenChatingPage',
+                params: {uri: 'https://open.kakao.com/o/s1rB9Okf'},
+              })
+            }}
+            style={[
+              styles.kakaoCard,
+              {
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignContent: 'center',
+                backgroundColor: '#FEE500',
+                marginBottom: 16,
+              },
+            ]}>
+            <Text
+              style={{
+                fontSize: theme.fontSize.md,
+                fontWeight: theme.fontWeight.semibold,
+                ...Platform.select({
+                  ios: {
+                    alignItems: 'center',
                   },
-                ]}>
-                <View
-                  style={{flexDirection: 'row', justifyContent: 'center', alignContent: 'center'}}>
-                  <CustomIcon name="kakaotalk-logo" size={30} color={theme.colors.black} />
-                  <Text
-                    style={{fontSize: theme.fontSize.md, fontWeight: theme.fontWeight.semibold}}>
-                    카카오톡 오픈채팅으로 시작하기
-                  </Text>
-                </View>
-              </CardWrapper>
-            </TouchableOpacity>
-            <CardWrapper style={[styles.card, {minHeight: 200}]}>
-              <View>
-                <Text style={styles.title}>프로젝트 설명</Text>
-                <Text style={styles.text}>{teamDetailData?.projectDescription}</Text>
-              </View>
-            </CardWrapper>
-            <CardWrapper style={[styles.card, {minHeight: 200}]}>
-              <View>
-                <Text style={styles.title}>바라는 점</Text>
-                <Text style={styles.text}>{teamDetailData?.expectation}</Text>
-              </View>
-            </CardWrapper>
-            {isLeader(profileData.teamMemberStatus) ? (
+                  android: {textAlignVertical: 'center'},
+                }),
+              }}>
+              카카오톡 오픈채팅으로 시작하기
+            </Text>
+          </TouchableOpacity>
+          <CardWrapper style={[globalStyles.card, {minHeight: 200, marginBottom: 16}]}>
+            <View>
+              <Text style={styles.title}>프로젝트 설명</Text>
+              <Text style={styles.text}>{teamData?.projectDescription}</Text>
+            </View>
+          </CardWrapper>
+          <CardWrapper style={[globalStyles.card, {minHeight: 200, marginBottom: 16}]}>
+            <View>
+              <Text style={styles.title}>바라는 점</Text>
+              <Text style={styles.text}>{teamData?.expectation}</Text>
+            </View>
+          </CardWrapper>
+          {/* {isLeader(profileData.teamMemberStatus) ? (
               <LeaderFooter
                 onPressComplete={() => {
                   navigation.navigate('MainNavigation', {screen: 'TeamComplete'})
@@ -195,10 +191,9 @@ export const TeamPage = ({navigation}: MainBottomTabNavigationProps<'Team'>) => 
               />
             ) : (
               <></>
-            )}
-          </ScrollView>
-        </View>
-      )}
+            )} */}
+        </ScrollView>
+      </View>
     </>
   )
 }
@@ -218,7 +213,7 @@ const useStyles = makeStyles(theme => ({
   card: {
     paddingHorizontal: 13,
     paddingVertical: 17,
-    marginVertical: 5,
+    marginVertical: 16,
     marginHorizontal: 4,
     borderRadius: 20,
     alignItems: 'flex-start',
@@ -254,5 +249,9 @@ const useStyles = makeStyles(theme => ({
   },
   partIcon: {
     flexDirection: 'row',
+  },
+  kakaoCard: {
+    borderRadius: 20,
+    height: 50,
   },
 }))

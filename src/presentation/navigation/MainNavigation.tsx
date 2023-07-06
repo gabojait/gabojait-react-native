@@ -15,11 +15,12 @@ import AlarmSetting from '../screens/Main/MyPage/Setting/AlarmSetting'
 import UserModifier from '../screens/Main/MyPage/Setting/UserModifier'
 import Etc from '../screens/Main/MyPage/Setting/Etc'
 import ProfileNavigation from './ProfileNavigation'
-import BookMarkHeader from '../screens/Headers/BookmarkHeader'
 import {TeamComplete} from '../screens/Main/Team/TeamComplete'
 import {CompleteSuccess} from '../screens/Main/Team/CompleteSuccess'
 import OpenSourceLicense from '../screens/Main/MyPage/Setting/OpenSourceLicense'
 import GroupCreator from '../screens/Main/Home/Group/GroupCreator'
+import Header from '../screens/Headers/CloseHeader'
+import {OpenChatingPage} from '../screens/Main/Team/OpenChatingPage'
 
 const Main = createStackNavigator<MainStackParamList>()
 
@@ -150,6 +151,13 @@ const MainNavigation = () => {
           }}
           component={TeamEditor}
         /> */}
+        <Main.Screen
+          name="OpenChatingPage"
+          component={OpenChatingPage}
+          options={{
+            header: Header,
+          }}
+        />
         <Main.Screen
           name="TeamComplete"
           options={{

@@ -17,13 +17,6 @@ export const createTeam = async (dto: TeamRequestDto) => {
   const result = await client.post('team', dto)
   return result
 }
-
-export const getTeams = async (pageFrom: number, pageSize: number) => {
-  const params = {pageFrom: pageFrom, pageSize: pageSize}
-  const result = await client.get('team/find', {params: params})
-  return result
-}
-
 export async function getRecruiting(props: GetRecruitingProps) {
   const {pageFrom, pageSize, position, teamOrder} = props
   let params = {
@@ -39,8 +32,6 @@ export const getTeam = async (teamId: number) => {
   return await client.get(`team/${teamId}`)
 }
 
-export const findIndividuals = async (pageFrom: number, pageNum: number, position: string) => {
-  const params = {pageFrom: pageFrom, pageNum: pageNum}
-  const result = await client.get(`user/profile/${position}`, {params: params})
-  return result
+export const getMyTeam = async () => {
+  return await client.get(`user/team`)
 }

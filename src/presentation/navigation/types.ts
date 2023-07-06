@@ -48,13 +48,12 @@ export type MainStackParamList = {
   TeamApplied: undefined
   GroupDetail: {teamId: number}
   GroupCreator: undefined
+  OpenChatingPage: {uri: string}
   PositionSelector: {teamId: number}
   Setting: undefined
   AlarmSetting: undefined
   Etc: undefined
-
   OpenSourcePage: undefined
-
   UserModifier: undefined
   TeamEditor: undefined
   TeamComplete: undefined
