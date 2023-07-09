@@ -18,9 +18,63 @@ import useGlobalStyles from '@/styles'
 import CustomHeader from '@/presentation/components/CustomHeader'
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
 import {Level} from '@/model/Profile/Skill'
+import {Position} from '@/model/type/Position'
+import {DiffUtil} from '@/util'
+import Work from '@/model/Profile/Work'
+
+const useUpdateProfile = ({
+  prevProfile,
+  profileToUpdate,
+}: {
+  prevProfile: ProfileViewDto
+  profileToUpdate: ProfileViewDto
+}) => {
+  return {
+    update: () => {
+      // Todo: value의 type이 배열인 것들 찾기
+      // Todo: 배열에 대해 업데이트 전후 비교
+      // Todo: 생성/삭제/수정된 요소들을 분기시켜서 서버에 반영
+      // Todo: 단순한 value들은 그냥 삽입
+      console.debug(
+        DiffUtil.map(
+          {
+            ...prevProfile,
+            works: [
+              {
+                workId: 1,
+                startedDate: '2022-07-02',
+                endedDate: '2022-12-01',
+                corporationName: '회사명',
+              } as Work,
+            ],
+          } as ProfileViewDto,
+          {
+            ...profileToUpdate,
+            userId: 9999,
+            position: Position.frontend,
+            works: [
+              {
+                startedDate: '2022-12-10',
+                corporationName: '회사명2',
+              } as Work,
+            ],
+          } as ProfileViewDto,
+        ),
+      )
+    },
+  }
+}
 
 export function EditMainHeader() {
   const {theme} = useTheme()
+  const {
+    data: profile,
+    loading: profileLoading,
+    error: profileError,
+  } = useAppSelector(state => state.profileReducer.userProfile)
+
+  const {update} = useUpdateProfile({prevProfile: profile!, profileToUpdate: profile!})
+
   return (
     <CustomHeader
       align="center"
@@ -29,7 +83,7 @@ export function EditMainHeader() {
       rightChildren={
         <Text
           onPress={() => {
-            console.log('완료')
+            update()
           }}
           style={{color: theme.colors.primary}}>
           완료
@@ -49,7 +103,7 @@ const EditMain = ({navigation}: ProfileStackParamListProps<'EditMain'>) => {
   } = useAppSelector(state => state.profileReducer.userProfile)
   const {theme} = useTheme()
   const globalStyles = useGlobalStyles()
-  const [desc, setDesc] = useState(profile?.description ?? '')
+  const [desc, setDesc] = useState(profile?.profileDescription ?? '')
   const dispatch = useAppDispatch()
 
   if (profile && !profileLoading && !profileError)
@@ -124,7 +178,7 @@ const EditMain = ({navigation}: ProfileStackParamListProps<'EditMain'>) => {
             navigation.navigate('EditSkillAndPosition')
           }}>
           <View style={{alignItems: 'flex-start'}}>
-            {profile.position && <ToggleButton title={profile.position} />}
+            {profile.position != Position.none && <ToggleButton title={profile.position} />}
             {profile.skills.map((skill, idx) => (
               <>
                 <Text>{skill.isExperienced ? '사용' : '희망'} 기술스택</Text>

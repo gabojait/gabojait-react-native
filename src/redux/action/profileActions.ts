@@ -6,6 +6,7 @@ import Skill from '@/model/Profile/Skill'
 import {createSlice} from '@reduxjs/toolkit'
 import {createAction, createAsyncAction} from 'typesafe-actions'
 import Work from '@/model/Profile/Work'
+import UpdateSkillPostionDto from '@/model/Profile/UpdateSkillPositionDto'
 
 /*------------- Profile View/Edit related --------------*/
 
@@ -148,23 +149,11 @@ export const setProfileVisibilityAsyncAction = createAsyncAction(
   SET_PROFILE_VISIBILITY_ERROR,
 )<boolean, ProfileViewDto, Error>()
 
-export const addSkillAsyncAction = createAsyncAction(ADD_SKILL, ADD_SKILL_SUCCESS, ADD_SKILL_ERROR)<
-  Skill,
-  ProfileViewDto,
-  Error
->()
-
-export const deleteSkillAsync = createAsyncAction(
-  DELETE_SKILL,
-  DELETE_SKILL_SUCCESS,
-  DELETE_SKILL_ERROR,
-)<void, ProfileViewDto, Error>()
-
 export const updateSkillAsync = createAsyncAction(
   UPDATE_SKILL,
   UPDATE_SKILL_SUCCESS,
   UPDATE_SKILL_ERROR,
-)<void, ProfileViewDto, Error>()
+)<void, UpdateSkillPostionDto, Error>()
 
 export const addWorkAsync = createAsyncAction(ADD_WORK, ADD_WORK_SUCCESS, ADD_WORK_ERROR)<
   void,

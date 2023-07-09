@@ -8,7 +8,7 @@ import Work from './Work'
 export default interface ProfileViewDto {
   completedTeams: CompletedTeamDto[]
   currentTeamId: string
-  description: string
+  profileDescription: string
   educations: Education[]
   imageUrl: string
   isPublic: boolean
@@ -19,7 +19,9 @@ export default interface ProfileViewDto {
   rating: number
   schemaVersion: string
   skills: Skill[]
-  userId: string
+  userId: number
   works: Work[]
   teamMemberStatus: string
 }
+
+export type Identifier = number

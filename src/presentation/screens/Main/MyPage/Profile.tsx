@@ -18,6 +18,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler'
 import {getProfile, setProfileVisibility} from '@/redux/reducers/profileReducer'
 import {Level} from '@/model/Profile/Skill'
 import {calcMonth} from '@/util'
+import {isProfileExist} from './ProfileUtils'
 
 const Header = ({navigation}: StackHeaderProps) => {
   const {theme} = useTheme()
@@ -57,12 +58,14 @@ const Profile = ({navigation}: ProfileStackParamListProps<'View'>) => {
   } = useAppSelector(state => state.profileReducer.userProfile)
   const pageLoading = profileLoading || userLoading
   console.log(user)
+  console.log(profile)
 
   useEffect(() => {
     dispatch(getProfile())
   }, [])
 
-  const profileExist = useMemo(() => profile != null, [profile]);
+  const profileExist = useMemo(() => isProfileExist(profile), [profile])
+
   if (profileExist)
     navigation.setOptions({
       header: Header,
@@ -78,7 +81,7 @@ const Profile = ({navigation}: ProfileStackParamListProps<'View'>) => {
       <Text style={{fontSize: theme.emojiSize.lg, textAlign: 'center'}}>🕺</Text>
       <Text style={styles.textStyle}>아직 프로필이 작성되지 않았어요</Text>
       <Text style={[styles.textStyle, {marginBottom: 30}]}>프로필을 작성하러 가볼까요?</Text>
-      <FilledButton title="만들기" />
+      <FilledButton title="만들기" onPress={() => navigation.navigate('EditMain')} />
     </View>
   )
   return pageLoading ? (
@@ -376,6 +379,7 @@ export const CustomSlider = ({
         }}>
         <Text>{text}</Text>
       </View>
+      fdsfsf
     </View>
   )
 }
@@ -412,7 +416,7 @@ const PortfolioView = ({
         />
       </View>
       <Text style={{fontSize: theme.fontSize.md}}>{profile.position}</Text>
-      <Text style={{fontSize: theme.fontSize.md}}>{profile.description}</Text>
+      <Text style={{fontSize: theme.fontSize.md}}>{profile.profileDescription}</Text>
       <SolidCard>
         <View>
           <Text style={{fontWeight: theme.fontWeight.light, textAlign: 'center'}}>팀 매칭</Text>

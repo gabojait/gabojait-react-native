@@ -6,10 +6,8 @@ import {
   addEducationAsync,
   addPortfolioFile,
   addPortfolioLink,
-  addSkillAsyncAction,
   addWorkAsync,
   deleteEducationAsync,
-  deleteSkillAsync,
   deleteWorkAsync,
   getProfileAsyncAction,
   setProfileVisibilityAsyncAction,
@@ -81,16 +79,8 @@ export const profileReducer = createReducer<ProfileState, ProfileAction>(initial
     createAsyncReducer(deleteEducationAsync, 'userProfile'),
   )
   .handleAction(
-    [addSkillAsyncAction.request, addSkillAsyncAction.success, addSkillAsyncAction.failure],
-    createAsyncReducer(updateEducationAsync, 'userProfile'),
-  )
-  .handleAction(
     [updateSkillAsync.request, updateSkillAsync.success, updateSkillAsync.failure],
     createAsyncReducer(updateSkillAsync, 'userProfile'),
-  )
-  .handleAction(
-    [deleteSkillAsync.request, deleteSkillAsync.success, deleteSkillAsync.failure],
-    createAsyncReducer(deleteSkillAsync, 'userProfile'),
   )
   .handleAction(
     [addWorkAsync.request, addWorkAsync.success, addWorkAsync.failure],

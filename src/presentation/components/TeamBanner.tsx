@@ -23,15 +23,6 @@ const TeamBanner: React.FC<CardProps & {team: TeamListDto}> = ({team}) => {
     const positionCount = team.teamMembers.filter(
       member => member.position === positionInitial,
     ).length
-    console.log(
-      positionInitial,
-      ' 포지션 총 ',
-      positionTotalCount,
-      '명 중 ',
-      positionCount,
-      ' 명 찼음',
-      positionTotalCount == positionCount,
-    )
     return positionTotalCount === positionCount
   }
 

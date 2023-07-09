@@ -1,0 +1,18 @@
+/**
+ * 프로필에 관련된 비즈니스 로직을 
+ */
+import ProfileViewDto from '@/model/Profile/ProfileViewDto'
+import {Position} from '@/model/type/Position'
+
+export function isProfileExist(profile?: ProfileViewDto | null) {
+  return (
+    profile &&
+    (profile.reviews.length > 0 ||
+      profile.skills.length > 0 ||
+      profile.portfolios.length > 0 ||
+      profile.profileDescription ||
+      profile.position != Position.none ||
+      profile.imageUrl != null ||
+      profile.works.length > 0)
+  )
+}

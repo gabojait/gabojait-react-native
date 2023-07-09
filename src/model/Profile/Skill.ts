@@ -7,7 +7,6 @@ export const Level = {
 export default interface Skill {
   isExperienced: boolean
   level: keyof typeof Level
-  schemaVersion: string
-  skillId: string
+  skillId?: string
   skillName: string
 }

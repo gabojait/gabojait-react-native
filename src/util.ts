@@ -2,6 +2,7 @@ import {CombinedState} from '@reduxjs/toolkit'
 import {TypedUseSelectorHook} from 'react-redux'
 import {useAppSelector} from './redux/hooks'
 import {RootState} from './redux/store'
+import {Ellipse} from 'react-native-svg'
 
 export const usernameRegex = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{5,15}$/ //5~15자 영문, 숫자 조합
 export const passwordRegex =
@@ -33,7 +34,6 @@ export const isDataAvailable = (loading: any, data: any, contentData: any) => {
   if (!loading && contentData != null && data != null) return true
   else return false
 }
-
 
 /**
  * endDate 부터 startDate 까지의 시간차를 월 단위로 반환합니다.
@@ -74,3 +74,142 @@ export const isLeader = (text: string | undefined) => {
   if (text == 'LEADER') return true
   else return false
 }
+
+export const DiffType = {
+  VALUE_CREATED: 'created',
+  VALUE_UPDATED: 'updated',
+  VALUE_DELETED: 'deleted',
+  VALUE_UNCHANGED: 'unchanged',
+} as const
+export type DiffType = typeof DiffType[keyof typeof DiffType]
+
+type Diff<T> = {
+  [key in keyof T]: {type: DiffType; data: any} | {type: DiffType; data: any}[] | Diff<any>
+}
+type SingleDiff = {type: DiffType; data: any}
+
+export var DiffUtil = (function <T extends {}>() {
+  return {
+    /**
+     * Detect differences over two objects recursiveley.
+     */
+    map: function (obj1: any, obj2: any) {
+      if (this.isFunction(obj1) || this.isFunction(obj2)) {
+        throw 'Invalid argument. Function given, object expected.'
+      }
+      if (this.isValue(obj1) || this.isValue(obj2)) {
+        return {
+          type: this.compareValues(obj1, obj2),
+          data: obj2,
+        }
+      }
+
+      var diff: Diff<typeof obj1 & typeof obj2> = {} as Diff<typeof obj1 & typeof obj2>
+      for (const k of Object.keys(obj1)) {
+        const key = k as keyof typeof obj1
+
+        if (this.isFunction(obj1[key])) {
+          continue
+        }
+
+        console.debug(obj1[key], obj2[key], this.isArray(obj1[key]))
+        if (this.isArray(obj1[key])) {
+          console.debug('array: ', this.mapArray(obj1[key], obj2[key]))
+          diff[key as keyof T] = this.mapArray(obj1[key], obj2[key])
+        } else if (this.isObject(obj1[key])) {
+          console.debug('object: ', this.map(obj1[key], obj2[key]))
+
+          diff[key as keyof T] = this.map(obj1[key], obj2[key])
+        } else {
+          var value: any = undefined
+          if (obj2[key] !== undefined) {
+            value = obj2[key]
+          }
+
+          diff[key as keyof T] = {
+            type: this.compareValues(obj1[key], value),
+            data: value,
+          }
+        }
+      }
+      for (const k of Object.keys(obj2)) {
+        const key = k as keyof typeof obj2
+        if (this.isFunction(obj2[key]) || diff[key as keyof T] !== undefined) {
+          continue
+        }
+
+        diff[key as keyof T] = this.map({} as any, obj2[key])
+      }
+
+      return diff
+    },
+    compareValues: function (value1: any, value2: any) {
+      if (value1 === value2) {
+        return DiffType.VALUE_UNCHANGED
+      }
+      if (this.isDate(value1) && this.isDate(value2) && value1.getTime() === value2.getTime()) {
+        return DiffType.VALUE_UNCHANGED
+      }
+      if (value1 === undefined) {
+        return DiffType.VALUE_CREATED
+      }
+      if (value2 === undefined) {
+        return DiffType.VALUE_DELETED
+      }
+      return DiffType.VALUE_UPDATED
+    },
+    isFunction: function (x: any) {
+      return Object.prototype.toString.call(x) === '[object Function]'
+    },
+    isArray: function (x: any) {
+      return Boolean(Object.prototype.toString.call(x) === '[object Array]')
+    },
+    isDate: function (x: any) {
+      return Object.prototype.toString.call(x) === '[object Date]'
+    },
+    isObject: function (x: any) {
+      return Object.prototype.toString.call(x) === '[object Object]'
+    },
+    isValue: function (x: any) {
+      return !this.isObject(x) && !this.isArray(x)
+    },
+    mapArray: function (arr1: any[], arr2: any[]) {
+      var diff: SingleDiff[] = []
+      const maxLength = Math.max(arr1.length, arr2.length)
+      console.debug(arr1, arr2)
+      for (let i = 0; i < maxLength; i++) {
+        if (i < arr1.length && i < arr2.length) {
+          if (this.isObject(arr1[i]) && this.isObject(arr2[i])) {
+            const el = arr1[i]
+            const df = this.map(arr1[i], arr2[i]) as Diff<typeof el>
+            let diffType: DiffType = DiffType.VALUE_UNCHANGED
+            for (let key of Object.keys(df)) {
+              if ((df[key] as SingleDiff).type != DiffType.VALUE_UNCHANGED)
+                diffType = DiffType.VALUE_UPDATED
+            }
+            diff.push({type: diffType, data: df} as SingleDiff)
+          } else if (this.isArray(arr1[i]) && this.isArray(arr2[i])) {
+            diff.push(...this.mapArray(arr1[i], arr2[i]))
+          } else {
+            diff.push({
+              type: this.compareValues(arr1[i], arr2[i]) as DiffType,
+              data: arr2[i],
+            })
+          }
+        } else if (i < arr1.length) {
+          diff.push({
+            type: DiffType.VALUE_DELETED,
+            data: arr1[i],
+          })
+        } else if (i < arr2.length) {
+          diff.push({
+            type: DiffType.VALUE_CREATED,
+            data: arr2[i],
+          })
+        }
+      }
+      console.debug('ArrayDiff: ', diff)
+      return diff
+    },
+  }
+})()

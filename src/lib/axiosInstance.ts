@@ -53,14 +53,15 @@ client.interceptors.request.use(async req => {
   const refreshToken = await AsyncStorage.getItem('refreshToken')
   if (accessToken) req.headers.Authorization = `Bearer ${accessToken}`
   if (refreshToken) req.headers['Refresh-Token'] = `Bearer ${refreshToken}`
-  console.log(`'${req.url}'\nHeader:`, req.headers, req)
+  console.info(`'${req.url}'\nHeader:`, req.headers, req)
   return req
 })
 
 client.interceptors.response.use(
   async res => {
-    console.log(
-      `${res.config.url} Responsed: ${res.status}}\n Response:`,
+    console.info(
+      `${res.config.url} \nResponsed: ${res.status}`,
+      `\nResponse:`,
       res.data.responseData.data,
     )
     try {
@@ -95,22 +96,27 @@ client.interceptors.response.use(
   },
   error => {
     const e = error as AxiosError
-    console.log(
+    console.error(
       `Path:`,
       e.config?.url,
-      `StatusCode:`,
+      `\nStatusCode:`,
       e.response?.status,
-      `AccessToken: `,
+      `\nAccessToken: `,
       e.config?.headers['Authorization'],
-      `RefreshToken: `,
+      `\nRefreshToken: `,
       e.config?.headers['Refresh-Token'],
-      `Response:`,
-      e.response?.data,
+      `\nResponse:`,
+      e.response,
     )
-    if (e.response?.status == 403) {
+    if (e.response?.status == 401 || e.response?.status == 403) {
       // Todo: Try token renew and logout when renew failed
       AsyncStorage.setItem('accessToken', '')
       AsyncStorage.setItem('refreshToken', '')
+      throw {
+        name: 'UNAUTHORIZED',
+        message: '로그인 세션이 만료됐습니다.',
+        stack: e.stack,
+      }
     }
     const response = e.response?.data as ResponseWrapper<undefined>
     throw {
