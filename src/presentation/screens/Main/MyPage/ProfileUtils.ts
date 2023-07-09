@@ -1,8 +1,8 @@
 /**
- * 프로필에 관련된 비즈니스 로직을 
+ * 프로필에 관련된 비즈니스 로직을
  */
-import ProfileViewDto from '@/model/Profile/ProfileViewDto'
-import {Position} from '@/model/type/Position'
+import ProfileViewDto from '@/data/model/Profile/ProfileViewDto'
+import {Position} from '@/data/model/type/Position'
 
 export function isProfileExist(profile?: ProfileViewDto | null) {
   return (
