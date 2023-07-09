@@ -1,4 +1,3 @@
-import globalStyles from '@/styles'
 import {Button, ButtonProps, Text, useTheme} from '@rneui/themed'
 import {Alert, Modal, StyleSheet, View} from 'react-native'
 import DatePicker from 'react-native-date-picker'

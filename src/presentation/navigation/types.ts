@@ -42,19 +42,18 @@ export type MainStackParamList = {
   Profile: NavigatorScreenParams<ProfileStackParamList>
   ApplyStatus: undefined
   TeamHistory: undefined
-  TeamReview: {teamId: string}
+  TeamReview: {teamId: number}
   BookMark: undefined
   OfferPage: undefined
   TeamApplied: undefined
   GroupDetail: {teamId: number}
   GroupCreator: undefined
-  PositionSelector: {teamId: string}
+  OpenChatingPage: {uri: string}
+  PositionSelector: {teamId: number}
   Setting: undefined
   AlarmSetting: undefined
   Etc: undefined
-
   OpenSourcePage: undefined
-
   UserModifier: undefined
   TeamEditor: undefined
   TeamComplete: undefined

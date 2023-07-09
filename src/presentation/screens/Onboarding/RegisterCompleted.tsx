@@ -5,8 +5,7 @@ import {
   OnboardingStackParamList,
   RootStackParamList,
 } from '@/presentation/navigation/types'
-import useGlobalStyles from '@/styles'
-import globalStyles from '@/styles'
+import useGlobalStyles from '@/presentation/styles'
 import {useNavigation} from '@react-navigation/native'
 import {StackScreenProps} from '@react-navigation/stack/lib/typescript/src/types'
 import {Text, useTheme} from '@rneui/themed'

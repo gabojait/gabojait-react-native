@@ -1,5 +1,5 @@
 import {AsyncState} from '@/lib/reducerUtils'
-import {User} from '@/model/User'
+import {User} from '@/data/model/User'
 import {ActionType} from 'typesafe-actions'
 import * as actions from '@/redux/action/register'
 

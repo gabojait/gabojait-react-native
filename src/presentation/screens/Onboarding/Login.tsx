@@ -8,11 +8,11 @@ import CustomInput from '@/presentation/components/CustomInput'
 import Gabojait from '@/presentation/components/icon/Gabojait'
 import {login} from '@/redux/reducers/loginReducer'
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
-import LoginRequestDTO from '@/model/LoginRequestDto'
+import LoginRequestDTO from '@/data/model/LoginRequestDto'
 import {ModalContext} from '@/presentation/components/modal/context'
 import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent'
-import useGlobalStyles from '@/styles'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import useGlobalStyles from '@/presentation/styles'
 
 const Login = ({navigation}: OnboardingScreenProps<'Login'>) => {
   const [loginState, setLoginState] = useState({username: '', password: ''} as LoginRequestDTO)
@@ -73,7 +73,13 @@ const Login = ({navigation}: OnboardingScreenProps<'Login'>) => {
           onPress={async () => {
             console.log(loginState.username, loginState.password)
             await AsyncStorage.setItem('accessToken', '')
-            dispatch(login({username: loginState.username, password: loginState.password, fcmToken: "testToken"}))
+            dispatch(
+              login({
+                username: loginState.username,
+                password: loginState.password,
+                fcmToken: 'testToken',
+              }),
+            )
           }}
           containerStyle={{marginBottom: 10}}
         />

@@ -2,7 +2,7 @@ import {ScrollView, View} from 'react-native'
 import React, {useEffect, useState} from 'react'
 import {ArrowCard} from '@/presentation/components/BaseCard'
 import {Input, Text, useTheme} from '@rneui/themed'
-import ProfileViewDto from '@/model/Profile/ProfileViewDto'
+import ProfileViewDto from '@/data/model/Profile/ProfileViewDto'
 import {
   CustomSlider,
   IconLabel,
@@ -13,14 +13,13 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import {ProfileStackParamListProps} from '@/presentation/navigation/types'
 import CardWrapper from '@/presentation/components/CardWrapper'
-import globalStyles from '@/styles'
-import useGlobalStyles from '@/styles'
 import CustomHeader from '@/presentation/components/CustomHeader'
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
-import {Level} from '@/model/Profile/Skill'
-import {Position} from '@/model/type/Position'
-import {DiffUtil} from '@/util'
-import Work from '@/model/Profile/Work'
+import {Position} from '@/data/model/type/Position'
+import {DiffUtil} from '@/presentation/util'
+import Work from '@/data/model/Profile/Work'
+import {Level} from '@/data/model/Profile/Skill'
+import useGlobalStyles from '@/presentation/styles'
 
 const useUpdateProfile = ({
   prevProfile,

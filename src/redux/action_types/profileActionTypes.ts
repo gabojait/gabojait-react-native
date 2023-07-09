@@ -1,9 +1,9 @@
 import {AsyncState} from '@/lib/reducerUtils'
 import {ActionType} from 'typesafe-actions'
-import ProfileViewDto from '@/model/Profile/ProfileViewDto'
+import ProfileViewDto from '@/data/model/Profile/ProfileViewDto'
 import * as actions from '@/redux/action/profileActions'
-import Education from '@/model/Profile/Education'
-import Work from '@/model/Profile/Work'
+import Education from '@/data/model/Profile/Education'
+import Work from '@/data/model/Profile/Work'
 
 export type ProfileAction = ActionType<typeof actions>
 export type ProfileState = {

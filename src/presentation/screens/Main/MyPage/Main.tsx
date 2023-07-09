@@ -6,10 +6,10 @@ import CardWrapper from '@/presentation/components/CardWrapper'
 import Gabojait from '@/presentation/components/icon/Gabojait'
 import DivideWrapper from '@/presentation/components/DivideWrapper'
 import {RatingBar} from '@/presentation/components/RatingBar'
-import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { chagneToOfficialWord, isEmptyArray, isLeader } from '@/util'
-import ProfileViewDto from '@/model/Profile/ProfileViewDto'
-import { getProfile } from '@/redux/reducers/profileReducer'
+import {useAppDispatch, useAppSelector} from '@/redux/hooks'
+import {chagneToOfficialWord, isEmptyArray, isLeader} from '@/presentation/util'
+import ProfileViewDto from '@/data/model/Profile/ProfileViewDto'
+import {getProfile} from '@/redux/reducers/profileReducer'
 
 const Main = ({navigation}: MainBottomTabNavigationProps<'MyPage'>) => {
   const {theme} = useTheme()
@@ -95,7 +95,7 @@ const Main = ({navigation}: MainBottomTabNavigationProps<'MyPage'>) => {
         </CardWrapper>
       </View>
       <View style={styles.divider}>
-        {isLeader(profileData?.teamMemberStatus)? (
+        {isLeader(profileData?.teamMemberStatus) ? (
           <LeaderComponent
             onPressApply={() => navigation.navigate('MainNavigation', {screen: 'ApplyStatus'})}
             onPressTeam={() => {}}
@@ -119,7 +119,7 @@ const Main = ({navigation}: MainBottomTabNavigationProps<'MyPage'>) => {
         }}>
         나의 리뷰
       </Text>
-      {isEmptyArray(profileData?.reviews)?  <NoReview /> :<MyReview data={profileData!} />}
+      {isEmptyArray(profileData?.reviews) ? <NoReview /> : <MyReview data={profileData!} />}
     </ScrollView>
   )
 }

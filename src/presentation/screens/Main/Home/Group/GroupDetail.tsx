@@ -1,29 +1,52 @@
-import {getTeam} from '@/api/team'
-import TeamDetailDto from '@/model/Team/TeamDetailDto'
+import {postFavoriteTeam} from '@/data/api/favorite'
+import {getTeam} from '@/data/api/team'
+import TeamDetailDto from '@/data/model/Team/TeamDetailDto'
 import {FilledButton} from '@/presentation/components/Button'
 import CardWrapper from '@/presentation/components/CardWrapper'
-import PositionIcon from '@/presentation/components/PositionIcon'
+import CustomHeader from '@/presentation/components/CustomHeader'
+import PositionIcon from '@/presentation/components/PositionWaveIcon'
+import CustomIcon from '@/presentation/components/icon/Gabojait'
+import PositionRecruiting from '@/presentation/model/PositionRecruitng'
 import {MainStackScreenProps} from '@/presentation/navigation/types'
-import useGlobalStyles from '@/styles'
 import {makeStyles, Text} from '@rneui/themed'
-import React from 'react'
-import {ScrollView, View} from 'react-native'
-import {useQuery, UseQueryResult} from 'react-query'
+import React, {useState} from 'react'
+import {ScrollView, TouchableOpacity, View} from 'react-native'
+import {useMutation, useQuery, UseQueryResult} from 'react-query'
+import useGlobalStyles from '@/presentation/styles'
+import {theme} from '@/presentation/theme'
+import {initials, mapToInitial} from '@/presentation/util'
+import FavoriteUpdateDto from '@/data/model/Favorite/FavoriteUpdateDto'
 
 const GroupDetail = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) => {
   const styles = useStyles()
   const globalStyles = useGlobalStyles()
-  const {data, isLoading, error}: UseQueryResult<TeamDetailDto> = useQuery(['data'], () =>
-    getTeam(route.params.teamId),
+  const {data, isLoading, error}: UseQueryResult<TeamDetailDto> = useQuery(
+    ['GroupDetail', route.params.teamId],
+    () => getTeam(route.params.teamId),
   )
+  const {mutate: mutateFavorite} = useMutation(
+    'postFavorite',
+    (args: [number, FavoriteUpdateDto]) => postFavoriteTeam(...args),
+  )
+  const [favoriteState, setFavoriteState] = useState<FavoriteUpdateDto>({
+    isAddFavorite: data?.isFavorite || false,
+  })
+  const positions: Array<PositionRecruiting> = data?.teamMemberCnts || []
 
-  const positions = [
-    [data?.backendTotalRecruitCnt, data?.backends?.length ?? 0],
-    [data?.frontendTotalRecruitCnt, data?.frontends?.length ?? 0],
-    [data?.designerTotalRecruitCnt, data?.designers?.length ?? 0],
-    [data?.managerTotalRecruitCnt, data?.managers?.length ?? 0],
-  ]
-  const initials = ['B', 'F', 'D', 'P']
+  function isFavorite() {
+    if (data?.isFavorite) {
+      return theme.lightColors?.primary
+    }
+    return 'black'
+  }
+  //TODO: 200,201 결과로 찜 아이콘 색 분기하기
+  function handleFavoriteTeam() {
+    if (data?.isFavorite) {
+      mutateFavorite([route.params.teamId, {isAddFavorite: !favoriteState.isAddFavorite}])
+    } else {
+      mutateFavorite([route.params.teamId, {isAddFavorite: !favoriteState.isAddFavorite}])
+    }
+  }
 
   if (isLoading && !data) {
     return <Text>로딩 중</Text>
@@ -37,44 +60,60 @@ const GroupDetail = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) =
     return null
   }
 
+  //TODO: BookMarkHeader로 묶어서 팀원찾기/프로필미리보기 에서 사용하기
   return (
-    <ScrollView style={styles.scrollView}>
-      <CardWrapper style={[styles.card, {minHeight: 243}]}>
-        <View
-          style={{width: '100%', paddingHorizontal: 10, flex: 1, justifyContent: 'space-between'}}>
-          <Text style={styles.teamname}>{data?.projectName}</Text>
-          <View style={styles.partIcon}>
-            {positions.map((item, index) =>
-              item[0] != undefined && item[0] > 0 ? (
+    <>
+      <CustomHeader
+        title={''}
+        canGoBack={true}
+        rightChildren={
+          <TouchableOpacity onPress={handleFavoriteTeam}>
+            <CustomIcon name="heart" size={30} color={isFavorite()} />
+          </TouchableOpacity>
+        }
+      />
+      <ScrollView style={styles.scrollView}>
+        <CardWrapper style={[styles.card, {minHeight: 243}]}>
+          <View
+            style={{
+              width: '100%',
+              paddingHorizontal: 10,
+              flex: 1,
+              justifyContent: 'space-between',
+            }}>
+            <Text style={styles.teamname}>{data?.projectName}</Text>
+            <View style={styles.partIcon}>
+              {positions.map((item, index) => (
                 <PositionIcon
-                  currentApplicant={item[1] ?? 0}
-                  recruitNumber={item[0]}
-                  textView={<Text style={globalStyles.itnitialText}>{initials[index]}</Text>}
+                  currentCnt={item.currentCnt}
+                  recruitNumber={item.recruitCnt}
+                  textView={
+                    <Text style={globalStyles.itnitialText}>{mapToInitial(item.position)}</Text>
+                  }
+                  key={item.position}
                 />
-              ) : (
-                <></>
-              ),
-            )}
+              ))}
+            </View>
+            <FilledButton
+              title={'함께 하기'}
+              onPress={() => navigation.navigate('PositionSelector', {teamId: route.params.teamId})}
+            />
           </View>
-          <FilledButton
-            title={'함께 하기'}
-            onPress={() => navigation.navigate('PositionSelector', {teamId: data?.teamId ?? ''})}
-          />
+        </CardWrapper>
+        <View style={[styles.card, globalStyles.FlexStartCardWrapper, {minHeight: 243}]}>
+          <View>
+            <Text style={styles.title}>프로젝트 설명</Text>
+            <Text style={styles.text}>{data?.projectDescription}</Text>
+          </View>
         </View>
-      </CardWrapper>
-      <View style={[styles.card, globalStyles.FlexStartCardWrapper, {minHeight: 243}]}>
-        <View>
-          <Text style={styles.title}>프로젝트 설명</Text>
-          <Text style={styles.text}>{data?.projectDescription}</Text>
+        <View style={[styles.card, globalStyles.FlexStartCardWrapper, {minHeight: 243}]}>
+          <View>
+            <Text style={styles.title}>바라는 점</Text>
+            <Text style={styles.text}>{data?.expectation}</Text>
+          </View>
         </View>
-      </View>
-      <View style={[styles.card, globalStyles.FlexStartCardWrapper, {minHeight: 243}]}>
-        <View>
-          <Text style={styles.title}>바라는 점</Text>
-          <Text style={styles.text}>{data?.expectation}</Text>
-        </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </>
   )
 }
 

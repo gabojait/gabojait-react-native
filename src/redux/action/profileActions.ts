@@ -1,12 +1,12 @@
-import {Position} from '@/model/type/Position'
-import ProfileViewDto from '@/model/Profile/ProfileViewDto'
-import Education from '@/model/Profile/Education'
-import Portfolio from '@/model/Profile/Portfolio'
-import Skill from '@/model/Profile/Skill'
+import {Position} from '@/data/model/type/Position'
+import ProfileViewDto from '@/data/model/Profile/ProfileViewDto'
+import Education from '@/data/model/Profile/Education'
+import Portfolio from '@/data/model/Profile/Portfolio'
+import Skill from '@/data/model/Profile/Skill'
 import {createSlice} from '@reduxjs/toolkit'
 import {createAction, createAsyncAction} from 'typesafe-actions'
-import Work from '@/model/Profile/Work'
 import UpdateSkillPostionDto from '@/model/Profile/UpdateSkillPositionDto'
+import Work from '@/data/model/Profile/Work'
 
 /*------------- Profile View/Edit related --------------*/
 

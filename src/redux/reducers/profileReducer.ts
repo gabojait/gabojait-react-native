@@ -1,7 +1,7 @@
 import {AnyAsyncActionCreator, asyncState, createAsyncReducer} from '@/lib/reducerUtils'
 import {createAction, createReducer, getType} from 'typesafe-actions'
 import {ProfileAction, ProfileState} from '../action_types/profileActionTypes'
-import * as profileApi from '@/api/profile'
+import * as profileApi from '@/data/api/profile'
 import {
   addEducationAsync,
   addPortfolioFile,
@@ -27,10 +27,10 @@ import {
 } from '../action/profileActions'
 import createAsyncThunk from '@/lib/createAsyncThunk'
 import {SEND_AUTH_CODE_ERROR} from '../action/register'
-import Education from '@/model/Profile/Education'
-import ProfileViewDto from '@/model/Profile/ProfileViewDto'
+import Education from '@/data/model/Profile/Education'
+import ProfileViewDto from '@/data/model/Profile/ProfileViewDto'
 import {AnyAction} from 'redux'
-import Work from '@/model/Profile/Work'
+import Work from '@/data/model/Profile/Work'
 
 const initialState: ProfileState = {userProfile: asyncState.initial(), educations: [], works: []}
 

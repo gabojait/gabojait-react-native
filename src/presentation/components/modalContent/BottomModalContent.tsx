@@ -2,7 +2,7 @@ import {ButtonProps, Text, TouchableOpacity, View} from 'react-native'
 import {FilledButton} from '../Button'
 import React, {ReactNode} from 'react'
 import {makeStyles, useTheme} from '@rneui/themed'
-import useGlobalStyles from '@/styles'
+import useGlobalStyles from '@/presentation/styles'
 
 interface BottomSlideModalContentProps {
   title: string

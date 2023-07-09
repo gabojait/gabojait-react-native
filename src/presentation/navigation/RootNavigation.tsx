@@ -7,7 +7,7 @@ import {RootStackParamList} from './types'
 import WebViewPage from '../components/WebView'
 import SplashScreen from '../screens/Onboarding/SplashScreen'
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
-import {User} from '@/model/User'
+import {User} from '@/data/model/User'
 import {getUser} from '@/redux/reducers/loginReducer'
 import {AsyncState} from '@/lib/reducerUtils'
 import MainNavigation from './MainNavigation'
@@ -31,7 +31,11 @@ export const RootNavigation = () => {
           <RootStack.Screen name="OnboardingNavigation" component={OnboardingNavigation} />
           <RootStack.Screen name="SplashScreen" component={SplashScreen} />
           <RootStack.Screen name="MainNavigation" component={MainNavigation} />
-          <RootStack.Screen name="MainBottomTabNavigation" component={MainBottomTabNavigation} options={{gestureEnabled: false}} />
+          <RootStack.Screen
+            name="MainBottomTabNavigation"
+            component={MainBottomTabNavigation}
+            options={{gestureEnabled: false}}
+          />
         </RootStack.Group>
       </RootStack.Navigator>
     </NavigationContainer>

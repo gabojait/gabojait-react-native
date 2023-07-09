@@ -1,69 +1,56 @@
 import {FilledButton} from '@/presentation/components/Button'
-import {PositionMaker} from '@/presentation/components/PositionMaker'
 import {MainStackScreenProps} from '@/presentation/navigation/types'
 import color from '@/presentation/res/styles/color'
-import {Text, useTheme, makeStyles, Input} from '@rneui/themed'
-import React, {useEffect, useState} from 'react'
-import {FlatList, KeyboardAvoidingView, TextInput, TouchableOpacity, View} from 'react-native'
-import CustomIcon from '@/presentation/components/icon/Gabojait'
-import TeamRequestDto from '@/model/Team/TeamRequestDto'
+import {Text, useTheme, makeStyles} from '@rneui/themed'
+import React, {useState} from 'react'
+import {KeyboardAvoidingView, TextInput, View} from 'react-native'
+import TeamRequestDto from '@/data/model/Team/TeamRequestDto'
 import {ModalContext} from '@/presentation/components/modal/context'
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent'
 import CardWrapper from '@/presentation/components/CardWrapper'
-import useGlobalStyles from '@/styles'
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent'
-import {useMutation} from 'react-query'
-import {createTeam} from '@/api/team'
+import {ScrollView} from 'react-native-gesture-handler'
+import {PositionDropdownMaker} from '@/presentation/components/PositionDropdownMaker'
+import PositionCountDto from '@/data/model/Team/PostionCountDto'
+import {useCreateTeam} from '@/reactQuery/useCreateTeam'
+import useGlobalStyles from '@/presentation/styles'
 
 const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupCreator'>) => {
   const {theme} = useTheme()
   const styles = useStyles({navigation, route})
   const modal = React.useContext(ModalContext)
-  const [array, setArray] = useState([{idex: '0'}])
-  const [positionMakerCount, setPositionMakerCount] = useState(1)
   const [teamCreateState, setTeamCreateState] = useState<TeamRequestDto>({
-    backendTotalRecruitCnt: 0,
-    designerTotalRecruitCnt: 0,
     expectation: '',
-    frontendTotalRecruitCnt: 0,
     openChatUrl: '',
     projectDescription: '',
-    managerTotalRecruitCnt: 0,
     projectName: '',
+    teamMemberRecruitCnts: [],
   })
-  const {mutateAsync, isLoading, isError, error, isSuccess} = useMutation(createTeam)
-  const [positionState, setPositionState] = useState([
-    {key: '벡엔드 개발자', value: '벡엔드 개발자', disabled: false},
-    {key: '프론트엔드 개발자', value: '프론트엔드 개발자', disabled: false},
-    {key: '디자이너', value: '디자이너', disabled: false},
-    {key: 'PM', value: 'PM', disabled: false},
-  ])
   const globalStyles = useGlobalStyles()
+  const createTeam = useCreateTeam()
 
   function handleCreateTeam() {
-    mutateAsync(teamCreateState)
+    createTeam.mutate(teamCreateState)
   }
 
-  function addPositionMaker() {
-    let newArray = [...array, {idex: (positionMakerCount + 1).toString()}]
-    setArray(newArray)
-    setPositionMakerCount(positionMakerCount + 1)
-    console.log(positionMakerCount)
+  function updateExpectation(text: string) {
+    setTeamCreateState(prevState => ({...prevState, expectation: text}))
   }
 
-  function positionMapper(count: number, position: string) {
-    if (position == '벡엔드 개발자') {
-      setTeamCreateState(prevState => ({...prevState, backendTotalRecruitCnt: count}))
-    }
-    if (position == '프론트엔드 개발자') {
-      setTeamCreateState(prevState => ({...prevState, frontendTotalRecruitCnt: count}))
-    }
-    if (position == '디자이너') {
-      setTeamCreateState(prevState => ({...prevState, designerTotalRecruitCnt: count}))
-    }
-    if (position == 'PM') {
-      setTeamCreateState(prevState => ({...prevState, projectManagerTotalRecruitCnt: count}))
-    }
+  function updateOpenchatUrl(text: string) {
+    setTeamCreateState(prevState => ({...prevState, openChatUrl: text}))
+  }
+
+  function updateProjectDescription(text: string) {
+    setTeamCreateState(prevState => ({...prevState, projectDescription: text}))
+  }
+
+  function updateProjectName(text: string) {
+    setTeamCreateState(prevState => ({...prevState, projectName: text}))
+  }
+
+  function updateTeamMemberRecruitCnts(data: PositionCountDto[]) {
+    setTeamCreateState(prevState => ({...prevState, teamMemberRecruitCnts: data}))
   }
 
   function isOpenChatUrlValidate() {
@@ -75,12 +62,7 @@ const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupCreator'>)
   }
 
   function isRecruitCntValidate() {
-    const backendCnt = teamCreateState.backendTotalRecruitCnt
-    const frontendCnt = teamCreateState.frontendTotalRecruitCnt
-    const designerCnt = teamCreateState.designerTotalRecruitCnt
-    const projectManagerCnt = teamCreateState.managerTotalRecruitCnt
-
-    if (backendCnt == 0 && frontendCnt == 0 && designerCnt == 0 && projectManagerCnt == 0) {
+    if (teamCreateState.teamMemberRecruitCnts.length == 0) {
       throw Error('팀원이 존재하지 않습니다')
     } else return true
   }
@@ -201,122 +183,101 @@ const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupCreator'>)
     })
   }
 
+  //TODO: useCreateTeam onSuccess일 경우 네비게이션 넣기 + 에러처리 필요함
   return (
-    <KeyboardAvoidingView behavior="height" style={{backgroundColor: 'white', flex: 1}}>
-      <FlatList
-        style={{flex: 1}}
-        ListHeaderComponentStyle={{paddingTop: 29}}
-        ListHeaderComponent={
-          <>
-            <View style={styles.item}>
-              <Text style={styles.text}>프로젝트 이름</Text>
-              <CardWrapper style={[styles.inputBox, {maxHeight: 90}]}>
-                <TextInput
-                  value={teamCreateState?.projectName}
-                  onChangeText={(text: string) => {
-                    setTeamCreateState(prevState => ({...prevState, projectName: text}))
-                  }}
-                  multiline={false}
-                  maxLength={20}
-                  placeholder="최대 20자"
-                />
-              </CardWrapper>
-            </View>
-
-            <View style={styles.item}>
-              <Text style={styles.text}>프로젝트 설명</Text>
-              <CardWrapper style={[globalStyles.card, styles.inputBox, {minHeight: 160}]}>
-                <TextInput
-                  value={teamCreateState?.projectDescription}
-                  onChangeText={(text: string) => {
-                    setTeamCreateState(prevState => ({...prevState, projectDescription: text}))
-                  }}
-                  multiline={true}
-                  maxLength={500}
-                />
-              </CardWrapper>
-            </View>
-            <Text style={styles.text}>원하는 팀원</Text>
-          </>
-        }
-        keyExtractor={item => item.idex}
-        data={array}
-        renderItem={() => (
-          <PositionMaker
-            callback={(count: number, position: string) => {
-              /*서버로 보낼 number, position을 바인딩하면 됨*/
-              positionMapper(count, position)
-              setTeamCreateState(prevState => ({...prevState}))
-              setPositionState(prevState => [
-                ...prevState.filter(item => item.value != position),
-                {key: position, value: position, disabled: true},
-              ])
-            }}
-            data={positionState}
-          />
-        )}
-        contentContainerStyle={{backgroundColor: theme.colors.white, paddingHorizontal: 20}}
-        ListFooterComponent={
-          <>
-            <TouchableOpacity
-              style={{alignItems: 'center'}}
-              onPress={() => {
-                addPositionMaker()
+    <KeyboardAvoidingView
+      behavior="height"
+      style={{backgroundColor: 'white', flex: 1, paddingTop: 29, paddingHorizontal: 20}}>
+      <ScrollView>
+        <View style={styles.item}>
+          <Text style={styles.text}>프로젝트 이름</Text>
+          <CardWrapper style={[styles.inputBox, {maxHeight: 90}]}>
+            <TextInput
+              value={teamCreateState?.projectName}
+              onChangeText={(text: string) => {
+                updateProjectName(text)
               }}
-              disabled={positionMakerCount > 3 ? true : false}>
-              <CustomIcon name="plus-square" size={25} color={theme.colors.grey1} />
-            </TouchableOpacity>
-            <View style={styles.item}>
-              <Text style={styles.text}>바라는 점</Text>
-              <CardWrapper style={[globalStyles.card, styles.inputBox, {minHeight: 95}]}>
-                <TextInput
-                  value={teamCreateState?.expectation}
-                  onChangeText={(text: string) => {
-                    setTeamCreateState(prevState => ({...prevState, expectation: text}))
-                  }}
-                  multiline={true}
-                  maxLength={200}
-                />
-              </CardWrapper>
-            </View>
+              multiline={false}
+              maxLength={20}
+              placeholder="최대 20자"
+            />
+          </CardWrapper>
+        </View>
 
-            <View style={styles.item}>
-              <Text style={styles.text}>오픈채팅 링크</Text>
-              <CardWrapper style={[styles.inputBox, {maxHeight: 50}]}>
-                <TextInput
-                  value={teamCreateState?.openChatUrl}
-                  onChangeText={(text: string) => {
-                    setTeamCreateState(prevState => ({...prevState, openChatUrl: text}))
-                  }}
-                  multiline={true}
-                  maxLength={100}
-                  placeholder="카카오톡 오픈채팅 링크"
-                />
-              </CardWrapper>
-            </View>
+        <View style={styles.item}>
+          <Text style={styles.text}>프로젝트 설명</Text>
+          <CardWrapper style={[globalStyles.card, styles.inputBox, {minHeight: 160}]}>
+            <TextInput
+              value={teamCreateState?.projectDescription}
+              onChangeText={(text: string) => {
+                updateProjectDescription(text)
+              }}
+              multiline={true}
+              maxLength={500}
+            />
+          </CardWrapper>
+        </View>
 
-            <View style={{paddingHorizontal: 30}}>
-              <FilledButton
-                title={'완료'}
-                disabled={false}
-                onPress={() => {
-                  if (isAllInputValidate()) {
-                    handleCreateTeam
-                    navigation.goBack()
-                  }
-                }}
-              />
-              <FilledButton
-                title={'삭제하기'}
-                buttonStyle={{backgroundColor: theme.colors.grey0}}
-                onPress={() => {
-                  DeleteConfirmModal()
-                }}
-              />
-            </View>
-          </>
-        }
-      />
+        <View style={styles.item}>
+          <Text style={styles.text}>원하는 팀원</Text>
+          <CardWrapper style={[styles.dropdownBox, {paddingVertical: 20}]}>
+            <PositionDropdownMaker
+              onTeamMemberRecruitChanged={(data: PositionCountDto[]) => {
+                updateTeamMemberRecruitCnts(data)
+                console.log(data)
+              }}
+            />
+          </CardWrapper>
+        </View>
+
+        <View style={styles.item}>
+          <Text style={styles.text}>바라는 점</Text>
+          <CardWrapper style={[globalStyles.card, styles.inputBox, {minHeight: 95}]}>
+            <TextInput
+              value={teamCreateState?.expectation}
+              onChangeText={(text: string) => {
+                updateExpectation(text)
+              }}
+              multiline={true}
+              maxLength={200}
+            />
+          </CardWrapper>
+        </View>
+
+        <View style={styles.item}>
+          <Text style={styles.text}>오픈채팅 링크</Text>
+          <CardWrapper style={[styles.inputBox, {maxHeight: 50}]}>
+            <TextInput
+              value={teamCreateState?.openChatUrl}
+              onChangeText={(text: string) => {
+                updateOpenchatUrl(text)
+              }}
+              multiline={true}
+              maxLength={100}
+              placeholder="카카오톡 오픈채팅 링크"
+            />
+          </CardWrapper>
+        </View>
+
+        <View style={{paddingHorizontal: 30}}>
+          <FilledButton
+            title={'완료'}
+            disabled={false}
+            onPress={() => {
+              if (isAllInputValidate()) {
+                handleCreateTeam()
+              }
+            }}
+          />
+          <FilledButton
+            title={'삭제하기'}
+            buttonStyle={{backgroundColor: theme.colors.grey0}}
+            onPress={() => {
+              DeleteConfirmModal()
+            }}
+          />
+        </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   )
 }
@@ -348,6 +309,16 @@ const useStyles = makeStyles(theme => ({
     marginBottom: 20,
     borderRadius: 15,
     paddingHorizontal: 25,
+  },
+  dropdownBox: {
+    flex: 1,
+    width: '100%',
+    flexDirection: 'row',
+    borderWidth: 1.3,
+    borderColor: theme.colors.disabled,
+    marginBottom: 20,
+    borderRadius: 15,
+    paddingHorizontal: 14,
   },
 }))
 export default GroupCreator

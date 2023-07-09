@@ -2,7 +2,7 @@ import {ButtonProps, Text, useTheme} from '@rneui/themed'
 import {StyleSheet, View} from 'react-native'
 import {FilledButton} from '../Button'
 import React from 'react'
-import useGlobalStyles from '@/styles'
+import useGlobalStyles from '@/presentation/styles'
 
 export interface SymbolModalContentProps {
   title?: string

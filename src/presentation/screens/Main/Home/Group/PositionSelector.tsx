@@ -1,46 +1,49 @@
 import {FilledButton} from '@/presentation/components/Button'
 import CardWrapper from '@/presentation/components/CardWrapper'
-import PositionIcon from '@/presentation/components/PositionIcon'
+import PositionIcon from '@/presentation/components/PositionWaveIcon'
 import {makeStyles, Text, useTheme} from '@rneui/themed'
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import {ScrollView, View} from 'react-native'
 import {MainStackScreenProps} from '@/presentation/navigation/types'
-import {useAppDispatch, useAppSelector} from '@/redux/hooks'
-import {getTeamDetail} from '@/redux/reducers/teamDetailGetReducer'
 import {ModalContext} from '@/presentation/components/modal/context'
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent'
-import {applyToTeam} from '@/redux/reducers/applyToTeamReducer'
-import {positionWord} from '@/util'
+import {useMutation, useQuery, UseQueryResult} from 'react-query'
+import TeamDetailDto from '@/data/model/Team/TeamDetailDto'
+import {getTeam} from '@/data/api/team'
+import PositionRecruiting from '@/presentation/model/PositionRecruitng'
+import BriefOfferDto from '@/data/model/Offer/BriefOfferDto'
+import {Position} from '@/data/model/type/Position'
+import {applyToTeam} from '@/data/api/offer'
+
+interface ApplyPositionCardProps {
+  data: PositionRecruiting
+  offers: BriefOfferDto[]
+  onApplyButtonPressed: (position: Position) => void
+}
+
+type RecruitStatusType = '함께하기' | '모집완료' | '지원완료'
+type PositionTextNameType = '디자이너' | '기획자' | '프론트엔드' | '백엔드'
+
+interface ApplyPositionCardState {
+  title: PositionTextNameType
+  buttonState: RecruitStatusType
+  buttonDisabled: boolean
+}
 
 const PositionSelector = ({navigation, route}: MainStackScreenProps<'PositionSelector'>) => {
   const {theme} = useTheme()
   const styles = useStyles()
-  const dispatch = useAppDispatch()
-  const {
-    data: teamDetailGetResult,
-    loading: teamDetailGetLoading,
-    error: teamDetailGetError,
-  } = useAppSelector(state => state.teamDetailGetReducer.teamDetailGetResult)
-  const {
-    data: applyToTeamResult,
-    loading: applyToTeamLoading,
-    error: applyToTeamError,
-  } = useAppSelector(state => state.applyToTeamReducer.applyToTeamResult)
-  const positions= [
-    [teamDetailGetResult?.backendTotalRecruitCnt ?? 0, teamDetailGetResult?.backends?.length ?? 0],
-    [teamDetailGetResult?.frontendTotalRecruitCnt ?? 0, teamDetailGetResult?.frontends?.length ?? 0],
-    [teamDetailGetResult?.designerTotalRecruitCnt ?? 0, teamDetailGetResult?.designers?.length ?? 0],
-    [teamDetailGetResult?.managerTotalRecruitCnt ?? 0, teamDetailGetResult?.managers?.length ?? 0],
-  ]
-  const positionName = ['벡엔드 개발자', '프론트엔드 개발자', 'UI/UX 디자이너', '프로덕트 매니저']
   const modal = React.useContext(ModalContext)
-
-  const isRecruitDone = (positionTotalRecruitCnt: number, positionApplicantCnt: number) => {
-    if (positionTotalRecruitCnt == positionApplicantCnt) return true
-    else return false
-  }
-
-  const applyCompletedModal = () => {
+  const {data, isLoading, error}: UseQueryResult<TeamDetailDto> = useQuery(
+    ['GroupDetail', route.params.teamId],
+    () => getTeam(route.params.teamId),
+  )
+  const positions = data?.teamMemberCnts || []
+  const {mutate: mutateApply} = useMutation('applyTeam', (args: [Position, number]) =>
+    applyToTeam(...args),
+  )
+  //TODO: 에러처리결과-> 버튼 상태분기, 모달 띄우기
+  function applyCompletedModal() {
     modal?.show({
       title: '',
       content: (
@@ -54,48 +57,96 @@ const PositionSelector = ({navigation, route}: MainStackScreenProps<'PositionSel
     })
   }
 
-  useEffect(() => {
-    dispatch(getTeamDetail(route.params.teamId))
-  }, [])
+  if (isLoading && !data) {
+    return <Text>로딩 중</Text>
+  }
 
-  useEffect(() => {
-    //팀 지원요청 성공 시
-    if (applyToTeamResult && applyToTeamLoading == false && applyToTeamError == null) {
-      applyCompletedModal()
-    }
-  }, [applyToTeamResult, applyToTeamLoading, applyToTeamError])
+  if (error) {
+    return <Text>에러 발생</Text>
+  }
+
+  if (!data) {
+    return null
+  }
 
   return (
     <ScrollView style={styles.scrollView}>
-      {positions.map((item, index) =>
-        item[0] != undefined && item[0] > 0 ? (
-          <CardWrapper style={[styles.card]}>
-            <View style={styles.container}>
-              <View style={{alignItems: 'center'}}>
-                <PositionIcon
-                  currentApplicant={item[1]}
-                  recruitNumber={item[0]}
-                  textView={
-                    <Text style={styles.posiionText}>
-                      {item[1]}/{item[0]}
-                    </Text>
-                  }
-                />
-                <Text style={styles.text}>{positionName[index]}</Text>
-              </View>
-              <FilledButton
-                title={isRecruitDone(item[0], item[1]) ? '모집완료' : '함께하기'}
-                size="sm"
-                disabled={isRecruitDone(item[0], item[1]) ? true : false}
-                onPress={() => dispatch(applyToTeam(positionWord[index], route.params.teamId))}
-              />
-            </View>
-          </CardWrapper>
-        ) : (
-          <></>
-        ),
-      )}
+      {positions.map((item, index) => (
+        <ApplyPositionCard
+          data={item}
+          offers={data.offers}
+          onApplyButtonPressed={(position: Position) => {
+            mutateApply([position, route.params.teamId])
+          }}
+        />
+      ))}
     </ScrollView>
+  )
+}
+
+const ApplyPositionCard = ({data, offers, onApplyButtonPressed}: ApplyPositionCardProps) => {
+  const styles = useStyles()
+  const [state, setState] = useState<ApplyPositionCardState>({
+    title: handleTitle(),
+    buttonState: handleButtonState(),
+    buttonDisabled: true,
+  })
+
+  useEffect(() => {
+    if (state.buttonState == '함께하기') {
+      setState(prevState => ({...prevState, buttonDisabled: false}))
+    } else {
+      setState(prevState => ({...prevState, buttonDisabled: true}))
+    }
+  }, [state.buttonState])
+
+  function handleTitle(): PositionTextNameType {
+    if (data.position == Position.backend) {
+      return '백엔드'
+    } else if (data.position == Position.designer) {
+      return '디자이너'
+    } else if (data.position == Position.frontend) {
+      return '프론트엔드'
+    } else {
+      return '기획자'
+    }
+  }
+
+  function handleButtonState(): RecruitStatusType {
+    const offerThisPosition = offers.some(item => item.position == data.position)
+
+    if (data.currentCnt == data.recruitCnt) {
+      return '모집완료'
+    } else if (offerThisPosition) {
+      return '지원완료'
+    }
+    return '함께하기'
+  }
+
+  return (
+    <CardWrapper style={[styles.card]}>
+      <View style={styles.container}>
+        <View style={{alignItems: 'center'}}>
+          <PositionIcon
+            currentCnt={data.currentCnt}
+            recruitNumber={data.recruitCnt}
+            textView={
+              <Text style={styles.posiionText}>
+                {data.currentCnt}/{data.recruitCnt}
+              </Text>
+            }
+            key={data.position}
+          />
+          <Text style={styles.text}>{data.position}</Text>
+        </View>
+        <FilledButton
+          title={state.buttonState}
+          size="sm"
+          disabled={state.buttonDisabled}
+          onPress={() => onApplyButtonPressed(data.position)}
+        />
+      </View>
+    </CardWrapper>
   )
 }
 
