@@ -7,10 +7,10 @@ import useGlobalStyles from '@/presentation/styles'
 interface BottomSlideModalContentProps {
   title: string
   children?: ReactNode
-  neverSeeAgainButton?: boolean
+  neverSeeAgainShow?: boolean
   yesButton?: ButtonProps
   noButton?: ButtonProps
-  handleNeverSeeAgain?: () => {}
+  onNeverSeeAgainPress?: () => void
 }
 
 const BottomModalContent: React.FC<BottomSlideModalContentProps> = props => {
@@ -39,10 +39,13 @@ const BottomModalContent: React.FC<BottomSlideModalContentProps> = props => {
           onPress={props.noButton?.onPress}
           size="xs"
         />
-        {props.neverSeeAgainButton ? (
+        {props.neverSeeAgainShow ? (
           <TouchableOpacity
             style={{paddingVertical: 7}}
-            onPress={() => props.handleNeverSeeAgain()}>
+            onPress={() => {
+              props.onNeverSeeAgainPress()
+              console.log('onNeverSeeAgainPress')
+            }}>
             <Text style={style.neverSeeText}>다시보지 않기</Text>
           </TouchableOpacity>
         ) : (

@@ -49,6 +49,11 @@ const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
     console.log(`GUIDE_MODE_MODAL_KEY 값 확인: ${value}`)
   }
 
+  function handleNeverSeeAgain() {
+    saveGuideModeModalKey()
+    modal?.hide()
+  }
+
   const handleBottomSlideModal = () => {
     getGuideModeModalKey().then(result => {
       console.log(`result 값 확인: ${result}`)
@@ -77,9 +82,9 @@ const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
                   modal.hide()
                 },
               }}
-              neverSeeAgainButton={true}
-              handleNeverSeeAgain={() => {
-                return saveGuideModeModalKey()
+              neverSeeAgainShow={true}
+              onNeverSeeAgainPress={() => {
+                return handleNeverSeeAgain()
               }}
             />
           ),
