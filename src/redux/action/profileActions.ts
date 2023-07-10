@@ -5,7 +5,7 @@ import Portfolio from '@/data/model/Profile/Portfolio'
 import Skill from '@/data/model/Profile/Skill'
 import {createSlice} from '@reduxjs/toolkit'
 import {createAction, createAsyncAction} from 'typesafe-actions'
-import UpdateSkillPostionDto from '@/model/Profile/UpdateSkillPositionDto'
+import UpdateSkillPostionDto from '@/data/model/Profile/UpdateSkillPositionDto'
 import Work from '@/data/model/Profile/Work'
 
 /*------------- Profile View/Edit related --------------*/
