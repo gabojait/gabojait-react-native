@@ -1,11 +1,12 @@
-import { Identifier } from "./ProfileViewDto"
+import {Identifier} from './ProfileViewDto'
 
 export default interface Work {
   corporationName: string
-  description: string
-  endedDate?: string | null
+  createdAt: string
+  ended: string
   isCurrent: boolean
-  schemaVersion: string
-  startedDate: string
-  workId: Identifier
+  startedAt: string
+  updatedAt: string
+  workDescription: string
+  workId: number
 }

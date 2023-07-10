@@ -5,9 +5,10 @@ export const PortfolioType = {
 } as {[key: string]: PortfolioType}
 
 export default interface Portfolio {
-  name: string
-  portfolioId: string
-  portfolioType: PortfolioType
-  schemaVersion?: string
-  url: string
+  createdAt: string
+  media: string
+  portfolioId: number
+  portfolioName: string
+  portfolioUrl: string
+  updatedAt: string
 }

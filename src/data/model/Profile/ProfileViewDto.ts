@@ -1,4 +1,6 @@
-import CompletedTeamDto from './CompletedTeamDto'
+import BriefOfferDto from '../Offer/BriefOfferDto'
+import TeamBriefDto from '../Team/TeamBriefDto'
+import {Position} from '../type/Position'
 import Education from './Education'
 import Portfolio from './Portfolio'
 import Review from './Review'
@@ -6,22 +8,25 @@ import Skill from './Skill'
 import Work from './Work'
 
 export default interface ProfileViewDto {
-  completedTeams: CompletedTeamDto[]
-  currentTeamId: string
-  profileDescription: string
+  createdAt: string
+  completedTeams: TeamBriefDto[]
+  currentTeam: TeamBriefDto
   educations: Education[]
   imageUrl: string
-  isPublic: boolean
+  isFavorite: boolean
+  isLeader: boolean
+  isSeekingTeam: boolean
   nickname: string
+  offers: BriefOfferDto[]
   portfolios: Portfolio[]
-  reviews: Review[]
-  position: string
+  position: Position
+  profileDescription: string
   rating: number
-  schemaVersion: string
+  reviewCnt: number
+  reviews: Review[]
   skills: Skill[]
   userId: number
   works: Work[]
-  teamMemberStatus: string
 }
 
 export type Identifier = number
