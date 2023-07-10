@@ -1,10 +1,12 @@
-import UserProfileBriefDto from "../User/UserProfileBriefDto"
+import PositionRecruiting from '@/presentation/model/PositionRecruitng'
+import BriefProfileDto from '../Profile/BriefProfileDto'
+import BriefOfferDto from '../Offer/BriefOfferDto'
 
 export default interface TeamBriefDto {
-    backends: Array<UserProfileBriefDto>
-    designers: Array<UserProfileBriefDto>
-    frontends: Array<UserProfileBriefDto>
-    projectManagers: Array<UserProfileBriefDto>
-    projectName: string
-    teamId: string
+  createdAt: string
+  projectName: string
+  teamId: number
+  teamMemberCnts: PositionRecruiting[]
+  teamMembers: BriefProfileDto[]
+  updatedAt: string
 }

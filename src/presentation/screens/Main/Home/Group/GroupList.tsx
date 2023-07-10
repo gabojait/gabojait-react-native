@@ -9,7 +9,7 @@ import {getRecruiting, GetRecruitingProps} from '@/data/api/team'
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import {useModelList} from '../../../../../reactQuery/useModelList'
-import RecruitingTeamDto from '@/data/model/Team/RecruitingTeamDto'
+import RecruitingTeamDto from '@/data/model/Team/TeamBriefDto'
 
 const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
   const {theme} = useTheme()

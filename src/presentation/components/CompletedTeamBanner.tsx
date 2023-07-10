@@ -6,7 +6,7 @@ import color from '../res/styles/color'
 import CustomIcon from '@/presentation/components/icon/Gabojait'
 import TeamBriefDto from '@/data/model/Team/TeamBriefDto'
 import {PartIcon} from './TeamBanner'
-
+//TODO: 수정
 const CompletedTeamBanner: React.FC<CardProps & {team: TeamBriefDto}> = ({team}) => {
   const {theme} = useTheme()
   const positions = [
