@@ -2,7 +2,7 @@ import PositionRecruiting from '@/presentation/model/PositionRecruitng'
 import BriefProfileDto from '../Profile/BriefProfileDto'
 import BriefOfferDto from '../Offer/BriefOfferDto'
 
-export default interface TeamListDto {
+export default interface RecruitingTeamDto {
   createdAt: string
   projectName: string
   teamId: number
