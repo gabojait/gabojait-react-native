@@ -1,8 +1,8 @@
-import TeamBanner from '@/presentation/components/TeamBanner'
-import {MainStackScreenProps} from '@/presentation/navigation/types'
-import React from 'react'
-import {FlatList, TouchableOpacity, View} from 'react-native'
-import Team from '@/presentation/model/Team'
+import TeamBanner from '@/presentation/components/TeamBanner';
+import {MainStackScreenProps} from '@/presentation/navigation/types';
+import React from 'react';
+import {FlatList, TouchableOpacity, View} from 'react-native';
+import Team from '@/presentation/model/Team';
 
 const BookMark = ({navigation}: MainStackScreenProps<'BookMark'>) => {
   const arr: Team[] = [
@@ -14,7 +14,7 @@ const BookMark = ({navigation}: MainStackScreenProps<'BookMark'>) => {
       frontends: [],
       managers: [],
     },
-  ]
+  ];
   return (
     <View style={{backgroundColor: 'white', flex: 1}}>
       <FlatList
@@ -29,7 +29,7 @@ const BookMark = ({navigation}: MainStackScreenProps<'BookMark'>) => {
         )}
       />
     </View>
-  )
-}
+  );
+};
 
-export default BookMark
+export default BookMark;

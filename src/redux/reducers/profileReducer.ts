@@ -1,7 +1,7 @@
-import {AnyAsyncActionCreator, asyncState, createAsyncReducer} from '@/lib/reducerUtils'
-import {createAction, createReducer, getType} from 'typesafe-actions'
-import {ProfileAction, ProfileState} from '../action_types/profileActionTypes'
-import * as profileApi from '@/data/api/profile'
+import {AnyAsyncActionCreator, asyncState, createAsyncReducer} from '@/lib/reducerUtils';
+import {createAction, createReducer, getType} from 'typesafe-actions';
+import {ProfileAction, ProfileState} from '../action_types/profileActionTypes';
+import * as profileApi from '@/data/api/profile';
 import {
   addEducationAsync,
   addPortfolioFile,
@@ -24,27 +24,27 @@ import {
   GET_PROFILE_SUCCESS,
   GET_PROFILE,
   GET_PROFILE_ERROR,
-} from '../action/profileActions'
-import createAsyncThunk from '@/lib/createAsyncThunk'
-import {SEND_AUTH_CODE_ERROR} from '../action/register'
-import Education from '@/data/model/Profile/Education'
-import ProfileViewDto from '@/data/model/Profile/ProfileViewDto'
-import {AnyAction} from 'redux'
-import Work from '@/data/model/Profile/Work'
+} from '../action/profileActions';
+import createAsyncThunk from '@/lib/createAsyncThunk';
+import {SEND_AUTH_CODE_ERROR} from '../action/register';
+import Education from '@/data/model/Profile/Education';
+import ProfileViewDto from '@/data/model/Profile/ProfileViewDto';
+import {AnyAction} from 'redux';
+import Work from '@/data/model/Profile/Work';
 
-const initialState: ProfileState = {userProfile: asyncState.initial(), educations: [], works: []}
+const initialState: ProfileState = {userProfile: asyncState.initial(), educations: [], works: []};
 
-export const getProfile = createAsyncThunk(getProfileAsyncAction, profileApi.getProfile)
+export const getProfile = createAsyncThunk(getProfileAsyncAction, profileApi.getProfile);
 export const setProfileVisibility = createAsyncThunk(
   getProfileAsyncAction,
   profileApi.setProfileVisibility,
-)
+);
 
 export const profileReducer = createReducer<ProfileState, ProfileAction>(initialState, {
   [SET_EDUCATION_AND_WORK]: (state, action) => ({...state}),
   [SET_EDUCATIONS]: (state, action) => {
-    console.log(action)
-    return {...state, educations: action.payload as Education[]}
+    console.log(action);
+    return {...state, educations: action.payload as Education[]};
   },
   [SET_WORKS]: (state, action) => ({...state, works: action.payload as Work[]}),
 })
@@ -109,4 +109,4 @@ export const profileReducer = createReducer<ProfileState, ProfileAction>(initial
   .handleAction(
     [updatePortfolioLink.request, updatePortfolioLink.success, updatePortfolioLink.failure],
     createAsyncReducer(updatePortfolioLink, 'userProfile'),
-  )
+  );

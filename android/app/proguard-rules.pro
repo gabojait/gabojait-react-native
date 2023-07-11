@@ -11,3 +11,6 @@
 
 -keep public class net.time4j.android.ApplicationStarter
 -keep public class net.time4j.PrettyTime
+
+-keep class com.facebook.hermes.unicode.** { *; }
+-keep class com.facebook.jni.** { *; }
