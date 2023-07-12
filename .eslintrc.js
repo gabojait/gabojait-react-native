@@ -10,7 +10,6 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
-
     'plugin:prettier/recommended',
     'prettier/@typescript-eslint',
     'prettier/react',
@@ -34,10 +33,18 @@ module.exports = {
     'react/display-name': 'off',
     'react/prop-types': 'off',
     'no-unused-vars': 'warn',
+    // Prettier conflicts
+    'arrowParens': ['error', 'avoid'],
+    'bracketSpacing': 'off',
+    'comma-dangle': 'off',
+    'jsx-quotes': ['error', 'prefer-single'],
+    'object-curly-spacing': 'off',
+    'quote-props': ['error', 'as-needed'],
+    'trailingComma': ['error', { 'all': true, 'esSpecCompliant': true }],
   },
   settings: {
     react: {
       version: 'detect',
     },
   },
-}
+};

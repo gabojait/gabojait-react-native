@@ -1,10 +1,10 @@
 import TeamBanner from '@/presentation/components/TeamBanner';
-import {MainStackScreenProps} from '@/presentation/navigation/types';
+import { MainStackScreenProps } from '@/presentation/navigation/types';
 import React from 'react';
-import {FlatList, TouchableOpacity, View} from 'react-native';
+import { FlatList, TouchableOpacity, View } from 'react-native';
 import Team from '@/presentation/model/Team';
 
-const BookMark = ({navigation}: MainStackScreenProps<'BookMark'>) => {
+const BookMark = ({ navigation }: MainStackScreenProps<'BookMark'>) => {
   const arr: Team[] = [
     {
       teamId: 'fasdfsf',
@@ -16,14 +16,15 @@ const BookMark = ({navigation}: MainStackScreenProps<'BookMark'>) => {
     },
   ];
   return (
-    <View style={{backgroundColor: 'white', flex: 1}}>
+    <View style={{ backgroundColor: 'white', flex: 1 }}>
       <FlatList
         showsHorizontalScrollIndicator={false}
         keyExtractor={item => item.toString()}
         data={arr}
-        renderItem={({item}) => (
+        renderItem={({ item }) => (
           <TouchableOpacity
-            onPress={() => navigation.navigate('GroupDetail', {teamId: item.teamId})}>
+            onPress={() => navigation.navigate('GroupDetail', { teamId: item.teamId })}
+          >
             <TeamBanner team={item} />
           </TouchableOpacity>
         )}
