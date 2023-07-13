@@ -145,7 +145,7 @@ export const TeamPage = ({navigation}: MainBottomTabNavigationProps<'Team'>) => 
             onPress={() => {
               navigation.navigate('MainNavigation', {
                 screen: 'OpenChatingPage',
-                params: {uri: 'https://open.kakao.com/o/s1rB9Okf'},
+                params: {uri: teamData?.openChatUrl!},
               })
             }}
             style={[

@@ -21,6 +21,7 @@ import OpenSourceLicense from '../screens/Main/MyPage/Setting/OpenSourceLicense'
 import GroupCreator from '../screens/Main/Home/Group/GroupCreator'
 import Header from '../screens/Headers/CloseHeader'
 import {OpenChatingPage} from '../screens/Main/Team/OpenChatingPage'
+import {TeamEditor} from '../screens/Main/Team/TeamEditor'
 
 const Main = createStackNavigator<MainStackParamList>()
 
@@ -144,13 +145,13 @@ const MainNavigation = () => {
         />
       </Main.Group>
       <Main.Group>
-        {/* <Main.Screen
+        <Main.Screen
           name="TeamEditor"
           options={{
             headerShown: false,
           }}
           component={TeamEditor}
-        /> */}
+        />
         <Main.Screen
           name="OpenChatingPage"
           component={OpenChatingPage}

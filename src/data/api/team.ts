@@ -17,6 +17,12 @@ export const createTeam = async (dto: TeamRequestDto) => {
   const result = await client.post('team', dto)
   return result
 }
+
+export const updateTeam = async (dto: TeamRequestDto) => {
+  const result = await client.put('team', dto)
+  return result
+}
+
 export async function getRecruiting(props: GetRecruitingProps) {
   const {pageFrom, pageSize, position, teamOrder} = props
   let params = {
