@@ -31,6 +31,7 @@ const initialState: ProfileState = {
   portfolios: [],
   skills: [],
   description: 'DEFAULT_DESCRIPTION',
+  position: 'none',
 };
 
 export const getProfile = createAsyncThunk(getProfileAsyncAction, profileApi.getProfile);
@@ -46,66 +47,59 @@ export const profileReducer = createReducer<ProfileState, ProfileAction>(initial
   // },
   [CREATE_WORK]: (state, action) => ({
     ...state,
-    works: [...state.works, { data: action.payload, mutationType: 'create' }],
+    works: [...state.works, action.payload],
   }),
   [UPDATE_WORK]: (state, action) => ({
     ...state,
-    works: [...state.works, { data: action.payload.dataToUpdate, mutationType: 'update' }],
+    works: state.works.map(work =>
+      work.workId === action.payload.id ? action.payload.dataToUpdate : work,
+    ),
   }),
   [DELETE_WORK]: (state, action) => ({
     ...state,
-    works: [...state.works, { data: { workId: action.payload } as Work, mutationType: 'delete' }],
+    works: state.works.filter(work => work.workId !== action.payload),
   }),
   [CREATE_EDUCATION]: (state, action) => ({
     ...state,
-    educations: [...state.educations, { data: action.payload, mutationType: 'create' }],
+    educations: [...state.educations, action.payload],
   }),
   [UPDATE_EDUCATION]: (state, action) => ({
     ...state,
-    educations: [
-      ...state.educations,
-      { data: action.payload.dataToUpdate, mutationType: 'update' },
-    ],
+    educations: state.educations.map(education =>
+      education.educationId === action.payload.id ? action.payload.dataToUpdate : education,
+    ),
   }),
   [DELETE_EDUCATION]: (state, action) => ({
     ...state,
-    educations: [
-      ...state.educations,
-      { data: { educationId: action.payload } as Education, mutationType: 'delete' },
-    ],
+    educations: state.educations.filter(education => education.educationId !== action.payload),
   }),
   [CREATE_SKILL]: (state, action) => ({
     ...state,
-    skills: [...state.skills, { data: action.payload, mutationType: 'create' }],
+    skills: [...state.skills, action.payload],
   }),
   [UPDATE_SKILL]: (state, action) => ({
     ...state,
-    skills: [...state.skills, { data: action.payload.dataToUpdate, mutationType: 'update' }],
+    skills: state.skills.map(skill =>
+      skill.skillId === action.payload.id ? action.payload.dataToUpdate : skill,
+    ),
   }),
   [DELETE_SKILL]: (state, action) => ({
     ...state,
-    skills: [
-      ...state.skills,
-      { data: { skillId: action.payload } as Skill, mutationType: 'delete' },
-    ],
+    skills: state.skills.filter(skill => skill.skillId !== action.payload),
   }),
   [CREATE_PORTFOLIO]: (state, action) => ({
     ...state,
-    portfolios: [...state.portfolios, { data: action.payload, mutationType: 'create' }],
+    portfolios: [...state.portfolios, action.payload],
   }),
   [UPDATE_PORTFOLIO]: (state, action) => ({
     ...state,
-    portfolios: [
-      ...state.portfolios,
-      { data: action.payload.dataToUpdate, mutationType: 'update' },
-    ],
+    portfolios: state.portfolios.map(portfolio =>
+      portfolio.portfolioId === action.payload.id ? action.payload.dataToUpdate : portfolio,
+    ),
   }),
   [DELETE_PORTFOLIO]: (state, action) => ({
     ...state,
-    portfolios: [
-      ...state.portfolios,
-      { data: { portfolioId: action.payload } as Portfolio, mutationType: 'delete' },
-    ],
+    portfolios: state.portfolios.filter(portfolio => portfolio.portfolioId !== action.payload),
   }),
 })
   .handleAction(

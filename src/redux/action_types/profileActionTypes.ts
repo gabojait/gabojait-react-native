@@ -15,19 +15,13 @@ export const MutationType = {
 };
 export type MutationType = keyof typeof MutationType;
 
-export interface LoggingMutateType<T> {
-  mutationType: MutationType;
-  data: T;
-}
-export type LoggingMutateArray<T> = LoggingMutateType<T>[];
-
 export type ProfileAction = ActionType<typeof actions>;
 export type ProfileState = {
   userProfile: AsyncState<ProfileViewDto, Error>;
-  educations: LoggingMutateArray<Education>;
-  works: LoggingMutateArray<Work>;
-  portfolios: LoggingMutateArray<Portfolio>;
-  skills: LoggingMutateArray<Skill>;
+  educations: Education[];
+  works: Work[];
+  portfolios: Portfolio[];
+  skills: Skill[];
   description: string;
   position: Position;
 };
