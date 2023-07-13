@@ -5,7 +5,6 @@ import {SelectList} from 'react-native-dropdown-select-list'
 import Gabojait from '@/presentation/components/icon/Gabojait'
 import PositionCountDto from '@/data/model/Team/PostionCountDto'
 import {Position} from '@/data/model/type/Position'
-import {PositionTextName} from '@/presentation/model/PositionTextName'
 import PositionDropdownContent from '@/presentation/model/PositionDropdownContent'
 
 interface positionDropdownProps {
@@ -173,7 +172,7 @@ export const PositionDropdown = ({
             backgroundColor: theme.colors.grey0,
           }}>
           <SelectList
-            placeholder="팀원 직무를 선택해주세요"
+            placeholder="벡엔드"
             inputStyles={{fontSize: theme.fontSize.xs}}
             setSelected={(value: string) => {
               onPositionSelected(value)
@@ -196,6 +195,30 @@ export const PositionDropdown = ({
             }}
             arrowicon={<Text></Text>}
           />
+          {/* <SelectList
+            placeholder="팀원 직무를 선택해주세요"
+            inputStyles={{fontSize: theme.fontSize.xs}}
+            setSelected={(value: string) => {
+              onPositionSelected(value)
+            }}
+            data={dropdownData}
+            save="value"
+            boxStyles={{
+              borderColor: theme.colors.grey0,
+              width: 168,
+              height: 42,
+            }}
+            search={false}
+            onSelect={() => {
+              setImage(position)
+            }}
+            dropdownStyles={{
+              backgroundColor: theme.colors.grey0,
+              borderColor: theme.colors.grey0,
+              borderRadius: 6,
+            }}
+            arrowicon={<Text></Text>}
+          /> */}
           <TouchableOpacity
             onPress={() => {
               onCloseClick()
