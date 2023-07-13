@@ -9,6 +9,7 @@ import PositionCountDto from '@/data/model/Team/PostionCountDto'
 import {Position} from '@/data/model/type/Position'
 import {PositionTextName} from '@/presentation/model/PositionTextName'
 import PositionDropdownContent from '@/presentation/model/PositionDropdownContent'
+import PositionCount from '../model/PositionCount'
 
 interface StateProp {
   disabled: boolean
@@ -18,11 +19,11 @@ interface StateProp {
 interface PositionDropdownProps {
   index: number
   hide: boolean
-  positionData: PositionCountDto
+  positionData: PositionCount
 }
 
 interface PositionDropdownMakerProps {
-  onTeamMemberRecruitChanged: (data: PositionCountDto[]) => void
+  onTeamMemberRecruitChanged: (data: PositionCount[]) => void
 }
 
 export const PositionDropdownMaker = ({onTeamMemberRecruitChanged}: PositionDropdownMakerProps) => {
@@ -159,6 +160,7 @@ export const PositionDropdownMaker = ({onTeamMemberRecruitChanged}: PositionDrop
           }}
           onDropdownSelected={(value: Position) => handlePositionDisabled(value)}
           dropdownData={positionState}
+          defaultData={item.positionData}
         />
       </Animated.View>
     )

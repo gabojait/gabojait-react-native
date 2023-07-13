@@ -8,6 +8,7 @@ import {Position} from '@/data/model/type/Position'
 import {PositionTextName} from '../model/PositionTextName'
 import PositionRecruiting from '../model/PositionRecruitng'
 import {PositionDropdown} from './PositionDropdown'
+import {mapPositionRecruitingToPositionCount} from '../model/mapper/mapPositionRecruitingToPositionCount'
 
 export interface StateProp {
   disabled: boolean
@@ -48,10 +49,9 @@ export const PositionDropdownEditor = ({
     {key: Position.manager, value: PositionTextName.manager, disabled: false},
   ])
 
-  // useEffect(() => {
-  //   console.log(state.positionDropdownArray)
-  //   initializeDropdownView()
-  // }, [state.positionDropdownArray])
+  useEffect(() => {
+    initializeDropdownView()
+  }, [])
 
   function initializePositionDropdownArray(array: PositionRecruiting[]) {
     const positionDropdownArray: PositionDropdownProps[] = array.map((item, index) => {
@@ -125,39 +125,34 @@ export const PositionDropdownEditor = ({
     })
   }
 
-  useEffect(() => {
-    initializeDropdownView()
-  }, [])
-
-  let newArray = state.positionDropdownArray.map(
-    (item: {hide: any}, idx: Key | null | undefined) => {
-      return (
-        <Animated.View
-          key={idx}
-          style={[
-            {
-              opacity: animatedValue,
-              transform: [{translateY: animationValue}],
-              backgroundColor: 'white',
-            },
-            item.hide ? {width: 0, height: 0} : {},
-          ]}>
-          <PositionDropdown
-            onCloseClick={() => {
-              //함부로 지워선 안됨 해당 포지션의 currentCnt와 비교후 제거해야 함
-              //제거할 수 없다는 문구도 넣어야 할 듯
-            }}
-            onSelectPosition={(data: PositionCountDto) => {
-              //updatePositionDropdownArray(data, idx)
-              addTeamMemberRecruit(data)
-            }}
-            onDropdownSelected={(value: Position) => handlePositionDisabled(value)}
-            dropdownData={positionState}
-          />
-        </Animated.View>
-      )
-    },
-  )
+  let newArray = state.positionDropdownArray.map((item, idx: Key | null | undefined) => {
+    return (
+      <Animated.View
+        key={idx}
+        style={[
+          {
+            opacity: animatedValue,
+            transform: [{translateY: animationValue}],
+            backgroundColor: 'white',
+          },
+          item.hide ? {width: 0, height: 0} : {},
+        ]}>
+        <PositionDropdown
+          onCloseClick={() => {
+            //함부로 지워선 안됨 해당 포지션의 currentCnt와 비교후 제거해야 함
+            //제거할 수 없다는 문구도 넣어야 할 듯
+          }}
+          onSelectPosition={(data: PositionCountDto) => {
+            updatePositionDropdownArray(data, idx)
+            addTeamMemberRecruit(data)
+          }}
+          onDropdownSelected={(value: Position) => handlePositionDisabled(value)}
+          dropdownData={positionState}
+          defaultData={mapPositionRecruitingToPositionCount(item.positionData)}
+        />
+      </Animated.View>
+    )
+  })
 
   return (
     <View>

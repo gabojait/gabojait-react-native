@@ -6,7 +6,7 @@ import color from '../res/styles/color'
 import CustomIcon from '@/presentation/components/icon/Gabojait'
 import PositionRecruiting from '../model/PositionRecruitng'
 import {Position} from '@/data/model/type/Position'
-import {mapToInitial} from '../util'
+import {mapToInitial} from '../utils/util'
 
 const TeamBanner: React.FC<
   CardProps & {teamMembersCnt: PositionRecruiting[]; teamName: String}

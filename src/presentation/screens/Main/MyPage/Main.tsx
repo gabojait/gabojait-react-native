@@ -7,7 +7,7 @@ import Gabojait from '@/presentation/components/icon/Gabojait'
 import DivideWrapper from '@/presentation/components/DivideWrapper'
 import {RatingBar} from '@/presentation/components/RatingBar'
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
-import {chagneToOfficialWord, isEmptyArray, isLeader} from '@/presentation/util'
+import {chagneToOfficialWord, isEmptyArray, isLeader} from '@/presentation/utils/util'
 import ProfileViewDto from '@/data/model/Profile/ProfileViewDto'
 import {getProfile} from '@/redux/reducers/profileReducer'
 

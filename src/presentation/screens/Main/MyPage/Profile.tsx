@@ -17,8 +17,8 @@ import {TouchableOpacity} from 'react-native-gesture-handler'
 import {getProfile, setProfileVisibility} from '@/redux/reducers/profileReducer'
 import {Level} from '@/data/model/Profile/Skill'
 import useGlobalStyles from '@/presentation/styles'
-import {calcMonth} from '@/presentation/util'
-import { isProfileExist } from './ProfileUtils'
+import {calcMonth} from '@/presentation/utils/util'
+import {isProfileExist} from './ProfileUtils'
 
 const Header = ({navigation}: StackHeaderProps) => {
   const {theme} = useTheme()

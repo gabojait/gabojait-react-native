@@ -16,7 +16,7 @@ import ReviewAnswer from '@/data/model/Review/ReviewAnswer'
 import {ModalContext} from '@/presentation/components/modal/context'
 import SymbolCenteredModalContent from '@/presentation/components/modalContent/SymbolCenteredModalContent'
 import {createReview} from '@/redux/reducers/reviewCreateReducer'
-import {changeFirstLetterToCapital, getFirstAlphabet} from '@/presentation/util'
+import {changeFirstLetterToCapital, getFirstAlphabet} from '@/presentation/utils/util'
 
 const TeamReview = ({navigation, route}: MainStackScreenProps<'TeamReview'>) => {
   const teamToReviewTest = {
