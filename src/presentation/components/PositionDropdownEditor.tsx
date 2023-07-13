@@ -1,6 +1,6 @@
 import {useTheme} from '@rneui/themed'
 import React, {Key, useEffect, useState} from 'react'
-import {Animated, ScrollView, TouchableOpacity, View} from 'react-native'
+import {Animated, ScrollView, Text, TouchableOpacity, View} from 'react-native'
 import CustomIcon from '@/presentation/components/icon/Gabojait'
 import PositionCountDto from '@/data/model/Team/PostionCountDto'
 import PositionDropdownContent from '../model/PositionDropdownContent'
@@ -9,6 +9,8 @@ import {PositionTextName} from '../model/PositionTextName'
 import PositionRecruiting from '../model/PositionRecruitng'
 import {PositionDropdown} from './PositionDropdown'
 import {mapPositionRecruitingToPositionCount} from '../model/mapper/mapPositionRecruitingToPositionCount'
+import {ModalContext} from './modal/context'
+import SymbolModalContent from './modalContent/SymbolModalContent'
 
 export interface StateProp {
   disabled: boolean
@@ -29,6 +31,7 @@ export const PositionDropdownEditor = ({
   onTeamMemberRecruitChanged,
   currentTeamMembers,
 }: PositionDropdownEditorProps) => {
+  const modal = React.useContext(ModalContext)
   const [animatedValue, setAnimatedValue] = useState(() => new Animated.Value(0))
   const [state, setState] = useState<StateProp>({
     disabled: false,
@@ -42,22 +45,34 @@ export const PositionDropdownEditor = ({
     outputRange: [-59, 0],
   })
   const [teamMemberRecruit, setTeamMemberRecruit] = useState<PositionCountDto[]>([])
-  const [positionState, setPositionState] = useState<PositionDropdownContent[]>([
-    {key: Position.backend, value: PositionTextName.backend, disabled: false},
-    {key: Position.frontend, value: PositionTextName.frontend, disabled: false},
-    {key: Position.designer, value: PositionTextName.designer, disabled: false},
-    {key: Position.manager, value: PositionTextName.manager, disabled: false},
-  ])
+  const [positionState, setPositionState] = useState<PositionDropdownContent[]>([])
 
   useEffect(() => {
-    initializeDropdownView()
+    initializeView()
   }, [])
 
-  function initializePositionDropdownArray(array: PositionRecruiting[]) {
-    const positionDropdownArray: PositionDropdownProps[] = array.map((item, index) => {
-      return {index: index, hide: false, positionData: item}
+  const AlertCantRemoveView = () => {
+    modal?.show({
+      title: '',
+      content: (
+        <SymbolModalContent
+          title="포지션을 지울 수 없어요!"
+          symbol={<Text style={{fontSize: theme.emojiSize.md, textAlign: 'center'}}>🧐</Text>}
+          text={'이미 팀원이 모집된 포지션은 삭제할 수 없어요!'}
+          yesButton={{title: '확인', onPress: () => modal.hide()}}
+        />
+      ),
     })
-    return positionDropdownArray
+  }
+
+  function updatePositionDropdownArray(selectedData: PositionCountDto, index: number) {
+    const updatedArray = state.positionDropdownArray.map(item => {
+      if (item.index == index) {
+        return {index: item.index, hide: item.hide, positionData: selectedData}
+      }
+      return item
+    })
+    //setState(prevState => ({disabled: prevState.disabled, positionDropdownArray: updatedArray}))
   }
 
   function addTeamMemberRecruit(selectedData: PositionCountDto) {
@@ -75,16 +90,6 @@ export const PositionDropdownEditor = ({
     }
   }
 
-  function updatePositionDropdownArray(selectedData: PositionCountDto, index: number) {
-    const updatedArray = state.positionDropdownArray.map(item => {
-      if (item.index == index) {
-        return {index: item.index, hide: item.hide, positionData: selectedData}
-      }
-      return item
-    })
-    //setState(prevState => ({disabled: prevState.disabled, positionDropdownArray: updatedArray}))
-  }
-
   function handlePositionDisabled(value: Position) {
     const updatedArray = positionState.map(item => {
       if (item.value == value) {
@@ -95,7 +100,27 @@ export const PositionDropdownEditor = ({
     setPositionState(updatedArray)
   }
 
-  function addView(item: PositionRecruiting) {
+  function initializeView() {
+    currentTeamMembers.map(item => {
+      initializeViewData(item)
+      positionState.map(dropdownItem => {
+        let isDisabled = false
+        if (item.position == dropdownItem.key) {
+          isDisabled = true
+        }
+        setPositionState(prevState => [
+          ...prevState,
+          {
+            key: dropdownItem.key,
+            value: dropdownItem.value,
+            disabled: isDisabled,
+          },
+        ])
+      })
+    })
+  }
+
+  function initializeViewData(item: PositionRecruiting) {
     animatedValue.setValue(0)
     const newlyAddedValue: PositionDropdownProps = {
       index: index,
@@ -119,13 +144,69 @@ export const PositionDropdownEditor = ({
     })
   }
 
-  function initializeDropdownView() {
-    currentTeamMembers.map(item => {
-      addView(item)
+  function addView() {
+    animatedValue.setValue(0)
+    const newlyAddedValue: PositionDropdownProps = {
+      index: index,
+      hide: false,
+      positionData: {position: 'none', recruitCnt: 0, currentCnt: 0},
+    }
+    setState(prevState => ({
+      disabled: true,
+      positionDropdownArray: [...prevState.positionDropdownArray, newlyAddedValue],
+    }))
+    Animated.timing(animatedValue, {toValue: 1, duration: 500, useNativeDriver: true}).start(() => {
+      setIndex(index + 1)
+      setState(prevState => ({
+        disabled: false,
+        positionDropdownArray: [...prevState.positionDropdownArray],
+      }))
     })
   }
 
-  let newArray = state.positionDropdownArray.map((item, idx: Key | null | undefined) => {
+  function hideView(removeIndex: number) {
+    const updatedArray = state.positionDropdownArray.map(item => {
+      if (item.index == removeIndex && item.positionData.currentCnt == 0) {
+        handlePositionEnabled(item.positionData.position)
+        removeTeamMemberRecruit(item.positionData.position)
+        return {index: removeIndex, hide: true, positionData: item.positionData}
+      }
+      if (item.positionData.currentCnt > 0) {
+        //TODO: 팀원이 0명 이상인 포지션 못 지운다는 모달 띄우기
+        AlertCantRemoveView()
+      }
+      return item
+    })
+    updatedArray.sort((a, b) => a.index - b.index)
+
+    Animated.timing(animatedValue, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).stop()
+
+    setState({
+      disabled: false,
+      positionDropdownArray: [...updatedArray],
+    })
+  }
+
+  function handlePositionEnabled(value: Position) {
+    const updatedArray = positionState.map(item => {
+      if (item.value == value) {
+        return {key: item.key, value: item.value, disabled: false}
+      }
+      return item
+    })
+    setPositionState(updatedArray)
+  }
+
+  function removeTeamMemberRecruit(value: Position) {
+    const filteredArray = teamMemberRecruit.filter(item => item.position != value)
+    setTeamMemberRecruit(filteredArray)
+  }
+
+  let newArray = state.positionDropdownArray.map((item, idx) => {
     return (
       <Animated.View
         key={idx}
@@ -139,8 +220,7 @@ export const PositionDropdownEditor = ({
         ]}>
         <PositionDropdown
           onCloseClick={() => {
-            //함부로 지워선 안됨 해당 포지션의 currentCnt와 비교후 제거해야 함
-            //제거할 수 없다는 문구도 넣어야 할 듯
+            hideView(idx)
           }}
           onSelectPosition={(data: PositionCountDto) => {
             updatePositionDropdownArray(data, idx)
@@ -148,7 +228,7 @@ export const PositionDropdownEditor = ({
           }}
           onDropdownSelected={(value: Position) => handlePositionDisabled(value)}
           dropdownData={positionState}
-          defaultData={mapPositionRecruitingToPositionCount(item.positionData)}
+          defaultData={item.positionData}
         />
       </Animated.View>
     )
@@ -157,7 +237,11 @@ export const PositionDropdownEditor = ({
   return (
     <View>
       <ScrollView style={{backgroundColor: 'white'}}>{newArray}</ScrollView>
-      <TouchableOpacity style={{alignItems: 'center'}} onPress={() => {}}>
+      <TouchableOpacity
+        style={{alignItems: 'center'}}
+        onPress={() => {
+          addView()
+        }}>
         <CustomIcon name="plus-square" size={25} color={theme.colors.grey1} />
       </TouchableOpacity>
     </View>

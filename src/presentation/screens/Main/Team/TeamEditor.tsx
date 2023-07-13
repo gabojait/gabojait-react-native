@@ -178,28 +178,28 @@ export const TeamEditor = ({navigation}: MainStackScreenProps<'TeamEditor'>) => 
     })
   }
 
-  const DeleteConfirmModal = () => {
+  const CancelConfirmModal = () => {
     modal?.show({
       title: '',
       content: (
         <BottomModalContent
-          title="글을 입력하시겠어요?"
+          title="글 수정을 취소하시겠어요?"
           yesButton={{
-            title: '삭제하기',
+            title: '확인',
             onPress: () => {
               modal.hide()
               navigation.goBack()
             },
           }}
           noButton={{
-            title: '돌아가기',
+            title: '취소',
             onPress: () => {
               modal.hide()
             },
           }}>
           <View>
-            <Text style={{textAlign: 'center'}}>글을 삭제하면</Text>
-            <Text style={{textAlign: 'center'}}>다시 되돌릴 수 없습니다</Text>
+            <Text style={{textAlign: 'center'}}>글 수정을 취소하면</Text>
+            <Text style={{textAlign: 'center'}}>적은 내용은 반영되지 않습니다</Text>
           </View>
         </BottomModalContent>
       ),
@@ -294,10 +294,10 @@ export const TeamEditor = ({navigation}: MainStackScreenProps<'TeamEditor'>) => 
             }}
           />
           <FilledButton
-            title={'삭제하기'}
+            title={'취소하기'}
             buttonStyle={{backgroundColor: theme.colors.grey0}}
             onPress={() => {
-              DeleteConfirmModal()
+              CancelConfirmModal()
             }}
           />
         </View>

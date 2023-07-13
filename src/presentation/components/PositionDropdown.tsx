@@ -7,13 +7,15 @@ import PositionCountDto from '@/data/model/Team/PostionCountDto'
 import {Position} from '@/data/model/type/Position'
 import PositionDropdownContent from '@/presentation/model/PositionDropdownContent'
 import PositionCount from '../model/PositionCount'
+import {mapPositionToTextName, mapTextNameToPosition} from '../utils/PositionDropdownUtils'
+import PositionRecruiting from '../model/PositionRecruitng'
 
 interface positionDropdownProps {
   onCloseClick: () => void
   onSelectPosition: (data: PositionCount) => void
   dropdownData: PositionDropdownContent[]
   onDropdownSelected: (value: Position) => void
-  defaultData: PositionCount
+  defaultData: PositionRecruiting
 }
 
 export const PositionDropdown = ({
@@ -25,12 +27,12 @@ export const PositionDropdown = ({
 }: positionDropdownProps) => {
   const {theme} = useTheme()
   const [position, setPosition] = useState<Position>(defaultData.position)
-  const [count, setCount] = useState(defaultData.totalRecruitCnt)
+  const [count, setCount] = useState(defaultData.recruitCnt)
   const [select, setSelected] = useState(false)
   const [codename, setCodename] = useState('')
   const [positionResult, setPositionResult] = useState<PositionCountDto>({
     position: defaultData.position,
-    totalRecruitCnt: defaultData.totalRecruitCnt,
+    totalRecruitCnt: defaultData.recruitCnt,
   })
 
   useEffect(() => {
@@ -47,7 +49,7 @@ export const PositionDropdown = ({
 
   function onPositionSelected(value: string) {
     console.log(value)
-    const position = mapToPosition(value)
+    const position = mapTextNameToPosition(value)
     setPosition(position as Position)
     onDropdownSelected(position as Position)
   }
@@ -64,7 +66,7 @@ export const PositionDropdown = ({
   }
 
   function decrease() {
-    count > 0 ? setCount(count - 1) : {}
+    count > 0 && defaultData.currentCnt < count - 1 ? setCount(count - 1) : {}
   }
 
   function setImage(position: Position) {
@@ -73,13 +75,6 @@ export const PositionDropdown = ({
     else if (position == Position.frontend) setCodename('F')
     else if (position == Position.designer) setCodename('D')
     else if (position == Position.manager) setCodename('P')
-  }
-
-  function mapToPosition(position: string) {
-    if (position == '벡엔드 개발자') return Position.backend
-    else if (position == '프론트엔드 개발자') return Position.frontend
-    else if (position == '디자이너') return Position.designer
-    else if (position == 'PM') return Position.manager
   }
 
   return (
@@ -175,7 +170,7 @@ export const PositionDropdown = ({
             backgroundColor: theme.colors.grey0,
           }}>
           <SelectList
-            placeholder="벡엔드"
+            placeholder={'팀원의 포지션을 선택해주세요'}
             inputStyles={{fontSize: theme.fontSize.xs}}
             setSelected={(value: string) => {
               onPositionSelected(value)
@@ -197,6 +192,7 @@ export const PositionDropdown = ({
               borderRadius: 6,
             }}
             arrowicon={<Text></Text>}
+            dropdownShown={false}
           />
           <TouchableOpacity
             onPress={() => {

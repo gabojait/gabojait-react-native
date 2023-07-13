@@ -10,6 +10,8 @@ import {Position} from '@/data/model/type/Position'
 import {PositionTextName} from '@/presentation/model/PositionTextName'
 import PositionDropdownContent from '@/presentation/model/PositionDropdownContent'
 import PositionCount from '../model/PositionCount'
+import {mapPositionCountToPositionRecruiting} from '../model/mapper/mapPositionCountToPositionRecruiting'
+import {updateEducationAsync} from '@/redux/action/profileActions'
 
 interface StateProp {
   disabled: boolean
@@ -113,6 +115,8 @@ export const PositionDropdownMaker = ({onTeamMemberRecruitChanged}: PositionDrop
   function updatePositionDropdownArray(selectedData: PositionCountDto, index: number) {
     const updatedArray = state.positionDropdownArray.map(item => {
       if (item.index == index) {
+        handlePositionEnabled(item.positionData.position)
+        removeTeamMemberRecruit(item.positionData.position)
         return {index: item.index, hide: item.hide, positionData: selectedData}
       }
       return item
@@ -122,22 +126,28 @@ export const PositionDropdownMaker = ({onTeamMemberRecruitChanged}: PositionDrop
 
   function handlePositionDisabled(value: Position) {
     const updatedArray = positionState.map(item => {
-      if (item.value == value) {
+      if (item.key == value) {
         return {key: item.key, value: item.value, disabled: true}
       }
       return item
     })
     setPositionState(updatedArray)
+    updatedArray.map(item =>
+      console.log(`item.value:${item.value},  item.disabled:${item.disabled}`),
+    )
   }
 
   function handlePositionEnabled(value: Position) {
     const updatedArray = positionState.map(item => {
-      if (item.value == value) {
+      if (item.key == value) {
         return {key: item.key, value: item.value, disabled: false}
       }
       return item
     })
     setPositionState(updatedArray)
+    updatedArray.map(item =>
+      console.log(`item.value:${item.value},  item.disabled:${item.disabled}`),
+    )
   }
 
   let newArray = state.positionDropdownArray.map((item, idx) => {
@@ -153,14 +163,22 @@ export const PositionDropdownMaker = ({onTeamMemberRecruitChanged}: PositionDrop
           item.hide ? {width: 0, height: 0} : {},
         ]}>
         <PositionDropdown
-          onCloseClick={() => hideView(idx)}
+          onCloseClick={() => {
+            handlePositionDisabled(item.positionData.position)
+            console.log(`x누름. 지워져야 할 것:${item.positionData.position}`)
+            hideView(idx)
+          }}
           onSelectPosition={(data: PositionCountDto) => {
+            console.log(
+              `data.position:${data.position}, data.totalRecruitCnt:${data.totalRecruitCnt}`,
+            )
             updatePositionDropdownArray(data, idx)
             addTeamMemberRecruit(data)
+            handlePositionDisabled(data.position)
           }}
           onDropdownSelected={(value: Position) => handlePositionDisabled(value)}
           dropdownData={positionState}
-          defaultData={item.positionData}
+          defaultData={mapPositionCountToPositionRecruiting(item.positionData)}
         />
       </Animated.View>
     )
