@@ -1,25 +1,26 @@
-import React, {useRef} from 'react'
-import {SafeAreaView} from 'react-native'
-import {ThemeProvider} from '@rneui/themed'
-import {RootNavigation} from './presentation/navigation/RootNavigation'
-import {Provider} from 'react-redux'
-import {createStore, applyMiddleware} from 'redux'
-import allReducers from '@/redux/reducers'
-import ReduxThunk from 'redux-thunk'
-import CustomModal, {CustomModalRef} from './presentation/components/modal/Modal'
-import {ModalProvider} from './presentation/components/modal/context'
-import {QueryClient, QueryClientProvider, useQuery} from 'react-query'
-import {theme} from './presentation/theme'
-import ErrorBoundary from './presentation/components/errorComponent/ErrorBoundary'
-import {Fallback500, Fallback503} from './presentation/components/errorComponent/GeneralFallback'
+import { SafeAreaView } from 'react-native';
+import { ThemeProvider } from '@rneui/themed';
+import { RootNavigation } from './presentation/navigation/RootNavigation';
+import allReducers from '@/redux/reducers';
+import ReduxThunk from 'redux-thunk';
+import { ModalProvider } from './presentation/components/modal/context';
+import { theme } from './presentation/theme';
+import ErrorBoundary from './presentation/components/errorComponent/ErrorBoundary';
+import { Fallback500, Fallback503 } from './presentation/components/errorComponent/GeneralFallback';
+import React from 'react';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { createLogger } from 'redux-logger';
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
+const logger = createLogger();
+const store = createStore(allReducers, applyMiddleware(ReduxThunk, logger));
 
 const App = () => {
   const backgroundStyle = {
     flex: 1,
-  }
-  const store = createStore(allReducers, applyMiddleware(ReduxThunk))
+  };
   // const modalRef = useRef<CustomModalRef>()
 
   return (
@@ -36,7 +37,7 @@ const App = () => {
         </ErrorBoundary>
       </ThemeProvider>
     </Provider>
-  )
-}
+  );
+};
 
-export default App
+export default App;

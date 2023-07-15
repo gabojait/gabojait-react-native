@@ -1,19 +1,19 @@
-import {loginAsyncAction} from '../action/login'
+import {loginAsyncAction} from '../action/login';
 
-import createAsyncThunk from '@/lib/createAsyncThunk'
-import {LoginAction} from '@/redux/action_types/login'
-import * as accountApi from '@/data/api/accounts'
-import {asyncState, createAsyncReducer} from '@/lib/reducerUtils'
-import {createReducer} from 'typesafe-actions'
-import {RegisterAction, RegisterState} from '../action_types/register'
-import {getType} from 'typesafe-actions'
+import createAsyncThunk from '@/lib/createAsyncThunk';
+import {LoginAction} from '@/redux/action_types/login';
+import * as accountApi from '@/data/api/accounts';
+import {asyncState, createAsyncReducer} from '@/lib/reducerUtils';
+import {createReducer} from 'typesafe-actions';
+import {RegisterAction, RegisterState} from '../action_types/register';
+import {getType} from 'typesafe-actions';
 import {
   nicknameDupCheckAction,
   registerAsyncAction,
   sendAuthCodeAction,
   usernameDupCheckAction,
   verifyAuthCodeAction,
-} from '@/redux/action/register'
+} from '@/redux/action/register';
 
 const initialState: RegisterState = {
   registerResult: asyncState.initial(),
@@ -21,19 +21,19 @@ const initialState: RegisterState = {
   nicknameDupCheckResult: asyncState.initial(),
   sendAuthCodeResult: asyncState.initial(),
   verifyAuthCodeResult: asyncState.initial(),
-}
+};
 
-export const register = createAsyncThunk(registerAsyncAction, accountApi.register)
+export const register = createAsyncThunk(registerAsyncAction, accountApi.register);
 export const checkUsernameDuplicate = createAsyncThunk(
   usernameDupCheckAction,
   accountApi.checkUsernameDuplicate,
-)
+);
 export const checkNicknameDuplicate = createAsyncThunk(
   nicknameDupCheckAction,
   accountApi.checkNicknameDuplicate,
-)
-export const sendAuthCode = createAsyncThunk(sendAuthCodeAction, accountApi.sendAuthCode)
-export const verifyAuthCode = createAsyncThunk(verifyAuthCodeAction, accountApi.verifyAuthCode)
+);
+export const sendAuthCode = createAsyncThunk(sendAuthCodeAction, accountApi.sendAuthCode);
+export const verifyAuthCode = createAsyncThunk(verifyAuthCodeAction, accountApi.verifyAuthCode);
 
 export const registerReducer = createReducer<RegisterState, RegisterAction>(initialState)
   .handleAction(
@@ -63,4 +63,4 @@ export const registerReducer = createReducer<RegisterState, RegisterAction>(init
   .handleAction(
     [verifyAuthCodeAction.request, verifyAuthCodeAction.success, verifyAuthCodeAction.failure],
     createAsyncReducer(verifyAuthCodeAction, 'verifyAuthCodeResult'),
-  )
+  );

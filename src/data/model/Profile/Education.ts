@@ -1,9 +1,8 @@
 export default interface Education {
-  createdAt: string
-  educationId: number
-  endedAt: string
-  institutionName: string
-  isCurrent: boolean
-  startedAt: string
-  updatedAt: string
+  educationId: number;
+  endedDate?: string;
+  institutionName?: string;
+  isCurrent?: boolean;
+  schemaVersion?: string;
+  startedDate?: string;
 }

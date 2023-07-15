@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import {FilledButton} from '@/presentation/components/Button'
 import CustomInput from '@/presentation/components/CustomInput'
 import {CustomSwitch} from '@/presentation/components/CustomSwitch'
@@ -6,12 +7,22 @@ import {nicknameRegex} from '@/presentation/utils/util'
 import {Text, useTheme} from '@rneui/themed'
 import React, {useState} from 'react'
 import {View} from 'react-native'
+=======
+import {FilledButton} from '@/presentation/components/Button';
+import CustomInput from '@/presentation/components/CustomInput';
+import {CustomSwitch} from '@/presentation/components/CustomSwitch';
+import {MainStackScreenProps} from '@/presentation/navigation/types';
+import {nicknameRegex, passwordRegex} from '@/presentation/util';
+import {Text, useTheme} from '@rneui/themed';
+import React, {useState} from 'react';
+import {View} from 'react-native';
+>>>>>>> 2a5304d5764e76cec6e543e469b58f99d49bebc1
 
 const UserModifier = ({navigation}: MainStackScreenProps<'UserModifier'>) => {
-  const {theme} = useTheme()
+  const {theme} = useTheme();
 
-  const [nickname, setNickname] = useState('')
-  const [passwords, setPasswords] = useState<string[]>([])
+  const [nickname, setNickname] = useState('');
+  const [passwords, setPasswords] = useState<string[]>([]);
 
   return (
     <View style={{backgroundColor: 'white', flex: 1, padding: 20}}>
@@ -55,7 +66,7 @@ const UserModifier = ({navigation}: MainStackScreenProps<'UserModifier'>) => {
         }
       />
     </View>
-  )
-}
+  );
+};
 
-export default UserModifier
+export default UserModifier;
