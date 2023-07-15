@@ -118,10 +118,11 @@ client.interceptors.response.use(
         stack: e.stack,
       }
     }
+
     const response = e.response?.data as ResponseWrapper<undefined>
     throw {
-      name: response.responseCode ?? 'UNKNOWN_ERROR',
-      message: response.responseMessage ?? '알 수 없는 오류입니다.',
+      name: e.response?.status.toString() ?? 'UNKNOWN_ERROR',
+      message: response.responseCode ?? '알 수 없는 오류입니다.',
       stack: e.stack,
     } as Error
   },

@@ -75,7 +75,10 @@ export default {
    */
   FIELD_REQUIRED: {name: 'FIELD_REQUIRED', text: '모든 필수 정보를 입력해주세요.'},
   POSITION_UNSELECTED: {name: 'POSITION_UNSELECTED', text: '본인의 포지션을 먼저 선택해주세요.'},
-  OPENCHATURL_FORMAT_INVALID: {name: 'POSITION_UNSELECTED', text: '오픈채팅 링크는 25~100자만 가능합니다.'},
+  OPENCHATURL_FORMAT_INVALID: {
+    name: 'POSITION_UNSELECTED',
+    text: '오픈채팅 링크는 25~100자만 가능합니다.',
+  },
   /**
    * 401 UNAUTHORIZED
    */
@@ -106,12 +109,17 @@ export default {
   /**
    * 404 NOT_FOUND
    */
-  USER_NOT_FOUND: {name: 'USER_NOT_FOUND', text: '존재하지 않는 사용자입니다.'},
-  EMAIL_NOT_FOUND: {name: 'EMAIL_NOT_FOUND', text: '존재하지 않는 이메일입니다.'},
-  EDUCATION_NOT_FOUND: {name: 'EDUCATION_NOT_FOUND', text: '존재하지 않는 학력입니다.'},
-  WORK_NOT_FOUND: {name: 'WORK_NOT_FOUND', text: '존재하지 않는 경력입니다.'},
-  SKILL_NOT_FOUND: {name: 'SKILL_NOT_FOUND', text: '존재하지 않은 기술입니다.'},
-  PORTFOLIO_NOT_FOUND: {name: 'PORTFOLIO_NOT_FOUND', text: '존재하지 않은 포트폴리오입니다.'},
+  404: {
+    code: '404',
+    message: {
+      USER_NOT_FOUND: {name: 'USER_NOT_FOUND', text: '존재하지 않는 사용자입니다.'},
+      EMAIL_NOT_FOUND: {name: 'EMAIL_NOT_FOUND', text: '존재하지 않는 이메일입니다.'},
+      EDUCATION_NOT_FOUND: {name: 'EDUCATION_NOT_FOUND', text: '존재하지 않는 학력입니다.'},
+      WORK_NOT_FOUND: {name: 'WORK_NOT_FOUND', text: '존재하지 않는 경력입니다.'},
+      SKILL_NOT_FOUND: {name: 'SKILL_NOT_FOUND', text: '존재하지 않은 기술입니다.'},
+      PORTFOLIO_NOT_FOUND: {name: 'PORTFOLIO_NOT_FOUND', text: '존재하지 않은 포트폴리오입니다.'},
+    },
+  },
 
   /**
    * 405 METHOD_NOT_ALLOWED
@@ -134,12 +142,27 @@ export default {
   /**
    * 500 INTERNAL_SERVER_ERROR
    */
-  SERVER_ERROR: {
-    name: 'SERVER_ERROR',
-    text: '서버 에러가 발생했습니다. 최대한 빠른 시일내 수정하겠습니다.',
+  500: {
+    code: '500',
+    message: {
+      SERVER_ERROR: {
+        name: 'SERVER_ERROR',
+        text: '서버 에러가 발생했습니다. 최대한 빠른 시일내 수정하겠습니다.',
+      },
+      MAIL_SENDING_ERROR: {
+        name: 'MAIL_SENDING_ERROR',
+        text: '이메일 발송 중 에러가 발생했습니다. 최대한 빠른 시일내 수정하겠습니다.',
+      },
+    },
   },
-  MAIL_SENDING_ERROR: {
-    name: 'MAIL_SENDING_ERROR',
-    text: '이메일 발송 중 에러가 발생했습니다. 최대한 빠른 시일내 수정하겠습니다.',
+
+  503: {
+    code: '503',
+    message: {
+      ONGOING_INSPECTION: {
+        name: 'ONGOING_INSPECTION',
+        text: '서버 점검중입니다. 이용에 불편을 드려 죄송합니다.',
+      },
+    },
   },
 }

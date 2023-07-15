@@ -19,8 +19,28 @@ import {Icon} from '@rneui/base'
 import {ModalContext} from '@/presentation/components/modal/context'
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent'
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent'
+import ErrorBoundary from '@/presentation/components/errorComponent/ErrorBoundary'
+import {
+  Fallback404,
+  Fallback500,
+  Fallback503,
+} from '@/presentation/components/errorComponent/GeneralFallback'
+import GetTeamErrorBoundary from '@/presentation/components/errorComponent/GetTeamErrorBoundary'
 
 const GroupDetail = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) => {
+  return (
+    <GetTeamErrorBoundary
+      fallback={
+        <>
+          <Text>수고</Text>
+        </>
+      }>
+      <GroupDetailComponent navigation={navigation} route={route} />
+    </GetTeamErrorBoundary>
+  )
+}
+
+const GroupDetailComponent = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) => {
   const styles = useStyles()
   const {theme} = useTheme()
   const globalStyles = useGlobalStyles()
@@ -28,12 +48,13 @@ const GroupDetail = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) =
   const {data, isLoading, error}: UseQueryResult<TeamDetailDto> = useQuery(
     ['GroupDetail', route.params.teamId],
     () => getTeam(route.params.teamId),
+    {useErrorBoundary: true, retry: 0},
   )
   const {mutate: mutateFavorite, data: favoriteResponse} = useMutation(
     'postFavorite',
     (args: [number, FavoriteUpdateDto]) => postFavoriteTeam(...args),
     {
-      useErrorBoundary: false,
+      useErrorBoundary: true,
       retry: 0,
       onSuccess: () => {
         console.log(favoriteResponse)
@@ -127,17 +148,17 @@ const GroupDetail = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) =
     }
   }
 
-  if (isLoading && !data) {
-    return <Text>로딩 중</Text>
-  }
+  // if (isLoading && !data) {
+  //   return <Text>로딩 중</Text>
+  // }
 
-  if (error) {
-    return <Text>에러 발생</Text>
-  }
+  // if (error) {
+  //   return <Text>에러 발생</Text>
+  // }
 
-  if (!data) {
-    return null
-  }
+  // if (!data) {
+  //   return null
+  // }
 
   //TODO: BookMarkHeader로 묶어서 팀원찾기/프로필미리보기 에서 사용하기
   return (
