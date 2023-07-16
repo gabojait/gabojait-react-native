@@ -4,5 +4,5 @@ export default interface BriefProfileDto {
   isLeader: string
   nickname: string
   position: Position
-  userId: number
+  userId: string
 }
