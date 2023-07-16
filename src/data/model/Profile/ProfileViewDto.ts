@@ -1,5 +1,5 @@
 import { Position } from '../type/Position';
-import CompletedTeamDto from './CompletedTeamDto';
+import TeamBriefDto from '../Team/TeamBriefDto'
 import Education from './Education';
 import Portfolio from './Portfolio';
 import Review from './Review';
@@ -7,7 +7,7 @@ import Skill from './Skill';
 import Work from './Work';
 
 export default interface ProfileViewDto {
-  completedTeams?: CompletedTeamDto[];
+  completedTeams?: TeamBriefDto[];
   currentTeamId?: string;
   profileDescription?: string;
   educations?: Education[];
@@ -23,5 +23,3 @@ export default interface ProfileViewDto {
   works?: Work[];
   teamMemberStatus?: string;
 }
-
-export type Identifier = number;

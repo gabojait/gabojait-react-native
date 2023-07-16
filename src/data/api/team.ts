@@ -1,7 +1,7 @@
 import client from '@/lib/axiosInstance'
 import {ResponseWrapper} from '@/data/model/ResponseWrapper'
 import TeamBriefResponseDto from '@/data/model/Team/TeamBriefResponseDto'
-import TeamListDto from '@/data/model/Team/TeamListDto'
+import RecruitingTeamDto from '@/data/model/Team/TeamBriefDto'
 import TeamRequestDto from '@/data/model/Team/TeamRequestDto'
 import {Position} from '@/data/model/type/Position'
 import {TeamOrder} from '@/data/model/type/TeamOrder'
@@ -17,6 +17,12 @@ export const createTeam = async (dto: TeamRequestDto) => {
   const result = await client.post('team', dto)
   return result
 }
+
+export const updateTeam = async (dto: TeamRequestDto) => {
+  const result = await client.put('team', dto)
+  return result
+}
+
 export async function getRecruiting(props: GetRecruitingProps) {
   const {pageFrom, pageSize, position, teamOrder} = props
   let params = {
@@ -25,7 +31,7 @@ export async function getRecruiting(props: GetRecruitingProps) {
     position: position,
     'team-order': teamOrder,
   }
-  return (await client.get('team/recruiting', {params})) as TeamListDto[]
+  return (await client.get('team/recruiting', {params})) as RecruitingTeamDto[]
 }
 
 export const getTeam = async (teamId: number) => {

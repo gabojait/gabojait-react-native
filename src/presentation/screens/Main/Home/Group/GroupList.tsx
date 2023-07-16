@@ -9,7 +9,7 @@ import {getRecruiting, GetRecruitingProps} from '@/data/api/team'
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import {useModelList} from '../../../../../reactQuery/useModelList'
-import TeamListDto from '@/data/model/Team/TeamListDto'
+import RecruitingTeamDto from '@/data/model/Team/TeamBriefDto'
 
 const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
   const {theme} = useTheme()
@@ -19,7 +19,7 @@ const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
   const GUIDE_MODE_MODAL_VALUE = 'guideModeModalValue'
   const {data, isLoading, error, fetchNextPage, refetch, param, isRefreshing} = useModelList<
     GetRecruitingProps,
-    TeamListDto
+    RecruitingTeamDto
   >({
     initialParam: {pageFrom: 0, pageSize: 20, position: 'none', teamOrder: 'created'},
     key: 'recruiting',
@@ -47,6 +47,11 @@ const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
     }
     const value = getGuideModeModalKey()
     console.log(`GUIDE_MODE_MODAL_KEY 값 확인: ${value}`)
+  }
+
+  function handleNeverSeeAgain() {
+    saveGuideModeModalKey()
+    modal?.hide()
   }
 
   const handleBottomSlideModal = () => {
@@ -77,9 +82,9 @@ const GroupList = ({navigation}: BoardStackParamListProps<'GroupList'>) => {
                   modal.hide()
                 },
               }}
-              neverSeeAgainButton={true}
-              handleNeverSeeAgain={() => {
-                return saveGuideModeModalKey()
+              neverSeeAgainShow={true}
+              onNeverSeeAgainPress={() => {
+                return handleNeverSeeAgain()
               }}
             />
           ),

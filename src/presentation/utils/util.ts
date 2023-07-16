@@ -70,7 +70,8 @@ export const isEmptyArray = (array: any[] | undefined) => {
   else return false
 }
 
-export const isLeader = (isLeader: boolean) => {
+//TODO:undefined 값을 다른 곳에서 처리하고 들어오는 방법으로 수정
+export const isLeader = (isLeader: boolean | undefined) => {
   if (isLeader) return true
   else return false
 }

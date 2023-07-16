@@ -1,3 +1,29 @@
+<<<<<<< HEAD
+import {createStackNavigator} from '@react-navigation/stack'
+import React from 'react'
+import {MainStackParamList} from './types'
+import PositionSelector from '../screens/Main/Home/Group/PositionSelector'
+import GroupDetail from '../screens/Main/Home/Group/GroupDetail'
+import ApplyStatus from '../screens/Main/MyPage/ApplyStatus/ApplyStatus'
+import TeamHistory from '../screens/Main/MyPage/TeamHistory'
+import TitleWithCloseHeader from '../screens/Headers/TitleWithCloseHeader'
+import TeamReview from '../screens/Main/MyPage/TeamReview'
+import BookMark from '../screens/Main/MyPage/BookMark'
+import OfferPage from '../screens/Main/MyPage/OfferPage'
+import TeamsApplied from '../screens/Main/MyPage/TeamsApplied'
+import Setting from '../screens/Main/MyPage/Setting/Setting'
+import AlarmSetting from '../screens/Main/MyPage/Setting/AlarmSetting'
+import UserModifier from '../screens/Main/MyPage/Setting/UserModifier'
+import Etc from '../screens/Main/MyPage/Setting/Etc'
+import ProfileNavigation from './ProfileNavigation'
+import {TeamComplete} from '../screens/Main/Team/TeamComplete'
+import {CompleteSuccess} from '../screens/Main/Team/CompleteSuccess'
+import OpenSourceLicense from '../screens/Main/MyPage/Setting/OpenSourceLicense'
+import GroupCreator from '../screens/Main/Home/Group/GroupCreator'
+import Header from '../screens/Headers/CloseHeader'
+import {OpenChatingPage} from '../screens/Main/Team/OpenChatingPage'
+import {TeamEditor} from '../screens/Main/Team/TeamEditor'
+=======
 import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
 import {MainStackParamList} from './types';
@@ -21,6 +47,7 @@ import OpenSourceLicense from '../screens/Main/MyPage/Setting/OpenSourceLicense'
 import GroupCreator from '../screens/Main/Home/Group/GroupCreator';
 import Header from '../screens/Headers/CloseHeader';
 import {OpenChatingPage} from '../screens/Main/Team/OpenChatingPage';
+>>>>>>> 2a5304d5764e76cec6e543e469b58f99d49bebc1
 
 const Main = createStackNavigator<MainStackParamList>();
 
@@ -144,13 +171,13 @@ const MainNavigation = () => {
         />
       </Main.Group>
       <Main.Group>
-        {/* <Main.Screen
+        <Main.Screen
           name="TeamEditor"
           options={{
             headerShown: false,
           }}
           component={TeamEditor}
-        /> */}
+        />
         <Main.Screen
           name="OpenChatingPage"
           component={OpenChatingPage}

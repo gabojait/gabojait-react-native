@@ -2,15 +2,16 @@ import CardWrapper from '@/presentation/components/CardWrapper'
 import {makeStyles, Text, useTheme} from '@rneui/themed'
 import React from 'react'
 import {Platform, ScrollView, TouchableOpacity, View} from 'react-native'
-import CustomIcon from '@/presentation/components/icon/Gabojait'
 import PositionIcon from '@/presentation/components/PositionWaveIcon'
 import {OutlinedButton} from '@/presentation/components/Button'
-import {isLeader, mapToInitial} from '@/presentation/util'
+import {isLeader, mapToInitial} from '@/presentation/utils/util'
 import {MainBottomTabNavigationProps} from '@/presentation/navigation/types'
 import useGlobalStyles from '@/presentation/styles'
 import {useQuery, UseQueryResult} from 'react-query'
 import TeamDto from '@/data/model/Team/TeamDto'
 import {getMyTeam} from '@/data/api/team'
+import {getProfile} from '@/data/api/profile'
+import ProfileViewDto from '@/data/model/Profile/ProfileViewDto'
 
 interface LeaderHeaderParams {
   onPressEditor: () => void
@@ -98,15 +99,16 @@ export const TeamPage = ({navigation}: MainBottomTabNavigationProps<'Team'>) => 
     isLoading: isTeamDataLoading,
     error: teamDataError,
   }: UseQueryResult<TeamDto> = useQuery(['TeamPage'], () => getMyTeam())
-  //TODO: Profile 모델 커밋받으면 하기
-  // const {data:dataUser, isLoading:isLoadingData, error:errorData}: UseQueryResult<> = useQuery(
-  //   ['getMyProfile'],
-  //   () => getProfile()
-  // )
+
+  const {
+    data: dataUser,
+    isLoading: isLoadingData,
+    error: errorData,
+  }: UseQueryResult<ProfileViewDto> = useQuery(['getMyProfile'], () => getProfile())
 
   return (
     <>
-      {isLeader(false) ? (
+      {isLeader(dataUser?.isLeader) ? (
         <LeaderHeader
           onPressEditor={() => navigation.navigate('MainNavigation', {screen: 'TeamEditor'})}
         />
@@ -143,7 +145,7 @@ export const TeamPage = ({navigation}: MainBottomTabNavigationProps<'Team'>) => 
             onPress={() => {
               navigation.navigate('MainNavigation', {
                 screen: 'OpenChatingPage',
-                params: {uri: 'https://open.kakao.com/o/s1rB9Okf'},
+                params: {uri: teamData?.openChatUrl!},
               })
             }}
             style={[
@@ -162,7 +164,9 @@ export const TeamPage = ({navigation}: MainBottomTabNavigationProps<'Team'>) => 
                 fontWeight: theme.fontWeight.semibold,
                 ...Platform.select({
                   ios: {
-                    alignItems: 'center',
+                    flex: 1,
+                    alignSelf: 'center',
+                    position: 'absolute',
                   },
                   android: {textAlignVertical: 'center'},
                 }),
@@ -182,16 +186,16 @@ export const TeamPage = ({navigation}: MainBottomTabNavigationProps<'Team'>) => 
               <Text style={styles.text}>{teamData?.expectation}</Text>
             </View>
           </CardWrapper>
-          {/* {isLeader(profileData.teamMemberStatus) ? (
-              <LeaderFooter
-                onPressComplete={() => {
-                  navigation.navigate('MainNavigation', {screen: 'TeamComplete'})
-                }}
-                onPressDelete={() => {}}
-              />
-            ) : (
-              <></>
-            )} */}
+          {isLeader(dataUser?.isLeader) ? (
+            <LeaderFooter
+              onPressComplete={() => {
+                navigation.navigate('MainNavigation', {screen: 'TeamComplete'})
+              }}
+              onPressDelete={() => {}}
+            />
+          ) : (
+            <></>
+          )}
         </ScrollView>
       </View>
     </>

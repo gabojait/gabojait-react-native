@@ -8,34 +8,134 @@ import PositionIcon from '@/presentation/components/PositionWaveIcon'
 import CustomIcon from '@/presentation/components/icon/Gabojait'
 import PositionRecruiting from '@/presentation/model/PositionRecruitng'
 import {MainStackScreenProps} from '@/presentation/navigation/types'
-import {makeStyles, Text} from '@rneui/themed'
-import React, {useState} from 'react'
-import {ScrollView, TouchableOpacity, View} from 'react-native'
-import {useMutation, useQuery, UseQueryResult} from 'react-query'
+import {makeStyles, Text, useTheme} from '@rneui/themed'
+import React, {useEffect, useState} from 'react'
+import {ScrollView, TextInput, TouchableOpacity, View} from 'react-native'
+import {Mutation, useMutation, useQuery, useQueryClient, UseQueryResult} from 'react-query'
 import useGlobalStyles from '@/presentation/styles'
-import {theme} from '@/presentation/theme'
-import {initials, mapToInitial} from '@/presentation/util'
+import {mapToInitial} from '@/presentation/utils/util'
 import FavoriteUpdateDto from '@/data/model/Favorite/FavoriteUpdateDto'
+import {Icon} from '@rneui/base'
+import {ModalContext} from '@/presentation/components/modal/context'
+import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent'
+import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent'
+import ErrorBoundary from '@/presentation/components/errorComponent/ErrorBoundary'
+import {
+  Fallback404,
+  Fallback500,
+  Fallback503,
+} from '@/presentation/components/errorComponent/GeneralFallback'
+import GetTeamErrorBoundary from '@/presentation/components/errorComponent/GetTeamErrorBoundary'
 
 const GroupDetail = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) => {
+  return (
+    <GetTeamErrorBoundary
+      fallback={
+        <>
+          <Text>수고</Text>
+        </>
+      }>
+      <GroupDetailComponent navigation={navigation} route={route} />
+    </GetTeamErrorBoundary>
+  )
+}
+
+const GroupDetailComponent = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) => {
   const styles = useStyles()
+  const {theme} = useTheme()
   const globalStyles = useGlobalStyles()
+  const modal = React.useContext(ModalContext)
   const {data, isLoading, error}: UseQueryResult<TeamDetailDto> = useQuery(
     ['GroupDetail', route.params.teamId],
     () => getTeam(route.params.teamId),
+    {useErrorBoundary: true, retry: 0},
   )
-  const {mutate: mutateFavorite} = useMutation(
+  const {mutate: mutateFavorite, data: favoriteResponse} = useMutation(
     'postFavorite',
     (args: [number, FavoriteUpdateDto]) => postFavoriteTeam(...args),
+    {
+      useErrorBoundary: true,
+      retry: 0,
+      onSuccess: () => {
+        console.log(favoriteResponse)
+      },
+    },
   )
   const [favoriteState, setFavoriteState] = useState<FavoriteUpdateDto>({
     isAddFavorite: data?.isFavorite || false,
   })
   const positions: Array<PositionRecruiting> = data?.teamMemberCnts || []
+  const [reportState, setReportState] = useState('')
+  const [reportButtonState, setReportButtonState] = useState({text: '신고하기', isDisabled: true})
+
+  useEffect(() => {
+    if (reportState.length > 0) {
+      setReportButtonState({text: '완료', isDisabled: false})
+    } else {
+      setReportButtonState({text: '신고하기', isDisabled: true})
+    }
+  }, [reportState])
+
+  const reportCompeletedModal = () => {
+    modal?.show({
+      title: '',
+      content: (
+        <SymbolModalContent
+          title="신고완료!"
+          symbol={<Text style={{fontSize: theme.emojiSize.md, textAlign: 'center'}}>✅</Text>}
+          text={'신고가 완료되었습니다.'}
+          yesButton={{title: '확인', onPress: () => modal.hide()}}
+        />
+      ),
+      modalProps: {animationType: 'none', justifying: 'center'},
+    })
+  }
+
+  const handleReportModal = () => {
+    modal?.show({
+      title: '',
+      content: (
+        <BottomModalContent
+          title="팀을 신고하시겠습니까?"
+          children={
+            <View>
+              <Text style={styles.text}>신고 사유를 적어주세요</Text>
+              <CardWrapper style={[globalStyles.card, {minHeight: 160}]}>
+                <TextInput
+                  value={reportState}
+                  onChangeText={(text: string) => {
+                    setReportState(text)
+                  }}
+                  multiline={true}
+                  maxLength={500}
+                />
+              </CardWrapper>
+            </View>
+          }
+          yesButton={{
+            title: reportButtonState.text,
+            onPress: () => {
+              modal.hide()
+              reportCompeletedModal()
+            },
+            disabled: reportButtonState.isDisabled,
+          }}
+          noButton={{
+            title: '나가기',
+            onPress: () => {
+              modal.hide()
+            },
+          }}
+          neverSeeAgainShow={false}
+        />
+      ),
+      modalProps: {animationType: 'slide', justifying: 'bottom'},
+    })
+  }
 
   function isFavorite() {
     if (data?.isFavorite) {
-      return theme.lightColors?.primary
+      return theme.colors.primary
     }
     return 'black'
   }
@@ -48,17 +148,17 @@ const GroupDetail = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) =
     }
   }
 
-  if (isLoading && !data) {
-    return <Text>로딩 중</Text>
-  }
+  // if (isLoading && !data) {
+  //   return <Text>로딩 중</Text>
+  // }
 
-  if (error) {
-    return <Text>에러 발생</Text>
-  }
+  // if (error) {
+  //   return <Text>에러 발생</Text>
+  // }
 
-  if (!data) {
-    return null
-  }
+  // if (!data) {
+  //   return null
+  // }
 
   //TODO: BookMarkHeader로 묶어서 팀원찾기/프로필미리보기 에서 사용하기
   return (
@@ -67,9 +167,14 @@ const GroupDetail = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) =
         title={''}
         canGoBack={true}
         rightChildren={
-          <TouchableOpacity onPress={handleFavoriteTeam}>
-            <CustomIcon name="heart" size={30} color={isFavorite()} />
-          </TouchableOpacity>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <TouchableOpacity onPress={handleFavoriteTeam} style={{paddingRight: 25}}>
+              <CustomIcon name="heart" size={30} color={isFavorite()} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleReportModal}>
+              <Icon type="entypo" name="dots-three-vertical" size={20} />
+            </TouchableOpacity>
+          </View>
         }
       />
       <ScrollView style={styles.scrollView}>

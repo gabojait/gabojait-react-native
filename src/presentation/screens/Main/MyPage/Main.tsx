@@ -1,16 +1,15 @@
-import { FlatList, ScrollView, TouchableOpacity, View } from 'react-native';
-import React, { useEffect } from 'react';
-import { Icon, makeStyles, Text, useTheme } from '@rneui/themed';
-import { MainBottomTabNavigationProps } from '@/presentation/navigation/types';
-import CardWrapper from '@/presentation/components/CardWrapper';
-import Gabojait from '@/presentation/components/icon/Gabojait';
-import DivideWrapper from '@/presentation/components/DivideWrapper';
-import { RatingBar } from '@/presentation/components/RatingBar';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { chagneToOfficialWord, isEmptyArray, isLeader } from '@/presentation/util';
-import ProfileViewDto from '@/data/model/Profile/ProfileViewDto';
-import { getProfile } from '@/redux/reducers/profileReducer';
-import { TeamMemberStatus } from '@/data/model/type/TeamMemberStatus';
+import {FlatList, ScrollView, TouchableOpacity, View} from 'react-native'
+import React, {useEffect} from 'react'
+import {Icon, makeStyles, Text, useTheme} from '@rneui/themed'
+import {MainBottomTabNavigationProps} from '@/presentation/navigation/types'
+import CardWrapper from '@/presentation/components/CardWrapper'
+import Gabojait from '@/presentation/components/icon/Gabojait'
+import DivideWrapper from '@/presentation/components/DivideWrapper'
+import {RatingBar} from '@/presentation/components/RatingBar'
+import {useAppDispatch, useAppSelector} from '@/redux/hooks'
+import {chagneToOfficialWord, isEmptyArray, isLeader} from '@/presentation/utils/util'
+import ProfileViewDto from '@/data/model/Profile/ProfileViewDto'
+import {getProfile} from '@/redux/reducers/profileReducer'
 
 const Main = ({ navigation }: MainBottomTabNavigationProps<'MyPage'>) => {
   const { theme } = useTheme();

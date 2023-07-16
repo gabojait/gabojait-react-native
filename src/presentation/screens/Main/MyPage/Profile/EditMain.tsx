@@ -16,12 +16,10 @@ import CardWrapper from '@/presentation/components/CardWrapper';
 import CustomHeader from '@/presentation/components/CustomHeader';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Position } from '@/data/model/type/Position';
-import { DiffUtil } from '@/presentation/util';
 import Work from '@/data/model/Profile/Work';
 import { Level } from '@/data/model/Profile/Skill';
 import useGlobalStyles from '@/presentation/styles';
 import { useMutation } from 'react-query';
-import UpdateSkillPostionDto from '@/model/Profile/UpdateSkillPositionDto';
 import { MutationType } from '@/redux/action_types/profileActionTypes';
 import { updateProfileInfo } from '@/data/api/profile';
 

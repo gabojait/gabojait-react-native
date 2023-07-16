@@ -17,9 +17,8 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { getProfile, setProfileVisibility } from '@/redux/reducers/profileReducer';
 import { Level } from '@/data/model/Profile/Skill';
 import useGlobalStyles from '@/presentation/styles';
-import { calcMonth } from '@/presentation/util';
+import { calcMonth } from '@/presentation/utils/util';
 import { isProfileExist } from './ProfileUtils';
-import { Position } from '@/data/model/type/Position';
 
 const Header = ({ navigation }: StackHeaderProps) => {
   const { theme } = useTheme();
@@ -153,7 +152,7 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
               )}
 
               <Text h4>기술스택/직무</Text>
-              {profile.position !== Position.none ? (
+              {profile.position !== 'none' ? (
                 <ToggleButton title={profile.position} />
               ) : (
                 <Text>아직 직무 정보를 입력하지 않은 것 같아요.</Text>
@@ -190,7 +189,8 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
               {profile.completedTeams?.length ?? 0 > 0 ? (
                 profile.completedTeams?.map(team => (
                   <Text>
-                    프로젝트 '{team.projectName}' - {team.position}
+                    프로젝트 '{team.projectName}' -
+                    {team.teamMembers.find(member => member.userId === user?.userId )?.position}
                   </Text>
                 ))
               ) : (
@@ -240,21 +240,21 @@ const ReviewItem = ({ review }: { review: Review }) => {
         <Text
           style={{ fontSize: theme.fontSize.md, fontWeight: theme.fontWeight.bold, marginEnd: 10 }}
         >
-          {review.nickname}
+          {review.reviewerId}
         </Text>
-        <RatingBar ratingScore={review.rating} size={20} />
+        <RatingBar ratingScore={2.5} size={20} />
       </View>
       <Text
         style={{ fontWeight: theme.fontWeight.light, color: theme.colors.grey1, lineHeight: 25 }}
         numberOfLines={3}
         ellipsizeMode="tail"
       >
-        {review.content}
+        {review.post}
       </Text>
       <Text
         style={{ fontWeight: theme.fontWeight.light, color: theme.colors.grey1, lineHeight: 25 }}
       >
-        {review.addedAt}
+        {review.createdAt}
       </Text>
     </View>
   );
@@ -406,8 +406,8 @@ const PortfolioView = ({
   const { theme } = useTheme();
 
   const workTime = calcMonth(
-    new Date(profile.works?.[profile.works.length - 1]?.endedDate ?? ''),
-    new Date(profile.works?.[0]?.startedDate ?? ''),
+    new Date(profile.works?.[profile.works.length - 1]?.endedAt ?? ''),
+    new Date(profile.works?.[0]?.startedAt ?? ''),
   );
 
   return (

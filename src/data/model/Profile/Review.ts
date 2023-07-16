@@ -1,6 +1,10 @@
 export default interface Review {
-  nickname: string
-  rating: number
-  content: string
-  addedAt: string 
+  createdAt: string
+  post: string
+  rating: string
+  reviewId: number
+  revieweeId: number
+  reviewerId: number
+  teamID: number
+  updatedAt: string
 }
