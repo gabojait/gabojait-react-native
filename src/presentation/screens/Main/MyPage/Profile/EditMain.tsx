@@ -1,5 +1,5 @@
 import { ScrollView, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ArrowCard } from '@/presentation/components/BaseCard';
 import { Input, Text, useTheme } from '@rneui/themed';
 import ProfileViewDto from '@/data/model/Profile/ProfileViewDto';
@@ -23,49 +23,24 @@ import useGlobalStyles from '@/presentation/styles';
 import { useMutation } from 'react-query';
 import UpdateSkillPostionDto from '@/model/Profile/UpdateSkillPositionDto';
 import { MutationType } from '@/redux/action_types/profileActionTypes';
-async function updateProfileAndSkill(body: UpdateSkillPostionDto) {
-  return 'Success!';
-}
+import { updateProfileInfo } from '@/data/api/profile';
 
 const useUpdateProfile = ({}: {}) => {
-  const skills = useAppSelector(state => state.profileReducer.skills);
-  const educations = useAppSelector(state => state.profileReducer.educations);
-  const works = useAppSelector(state => state.profileReducer.works);
-  const portfolios = useAppSelector(state => state.profileReducer.portfolios);
-  const desc = useAppSelector(state => state.profileReducer.description);
-  const position = useAppSelector(state => state.profileReducer.position);
+  const { data, loading, error } = useAppSelector(state => state.profileReducer.userProfile);
 
-  const profileSkillMutation = useMutation((body: UpdateSkillPostionDto) => {
-    return updateProfileAndSkill(body);
-  });
+  const profile = {
+    educations: data?.educations ?? [],
+    skills: data?.skills ?? [],
+    portfolios: data?.portfolios ?? [],
+    position: data?.position ?? 'none',
+    works: data?.works ?? [],
+  };
+  const profileSkillMutation = useMutation(updateProfileInfo);
 
   return {
-    update: () => {
-      const body: UpdateSkillPostionDto = {
-        createSkills: [],
-        updateSkills: [],
-        deleteSkillIds: [],
-        position,
-      };
-      skills.forEach(skill => {
-        switch (skill.mutationType) {
-          case MutationType.create: {
-            body.createSkills?.push(skill.data);
-            break;
-          }
-          case MutationType.update: {
-            body.updateSkills?.push(skill.data);
-            break;
-          }
-          case MutationType.delete: {
-            if (skill.data.skillId) body.deleteSkillIds?.push(skill.data.skillId);
-            break;
-          }
-        }
-        if (skill.mutationType == MutationType.create) body.createSkills?.push();
-      });
-      profileSkillMutation.mutateAsync(body);
-    },
+    ...profileSkillMutation,
+    mutate: () => profileSkillMutation.mutate(profile),
+    mutateAsync: () => profileSkillMutation.mutateAsync(profile),
   };
 };
 
@@ -77,7 +52,7 @@ export function EditMainHeader() {
     error: profileError,
   } = useAppSelector(state => state.profileReducer.userProfile);
 
-  const { update } = useUpdateProfile({ prevProfile: profile!, profileToUpdate: profile! });
+  const { mutate } = useUpdateProfile({ prevProfile: profile!, profileToUpdate: profile! });
 
   return (
     <CustomHeader
@@ -87,7 +62,7 @@ export function EditMainHeader() {
       rightChildren={
         <Text
           onPress={() => {
-            update();
+            mutate();
           }}
           style={{ color: theme.colors.primary }}
         >
@@ -147,7 +122,7 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
           }}
         >
           <View style={{ flexWrap: 'wrap', flexDirection: 'row' }}>
-            {profile.portfolios.map(portfolio => (
+            {profile.portfolios?.map(portfolio => (
               <ToggleButton
                 key={portfolio.portfolioId}
                 title={portfolio.name}
@@ -170,10 +145,10 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
             <>
               <IconLabel
                 iconName="school"
-                label={profile.educations[profile.educations.length - 1].institutionName}
+                label={profile.educations?.[profile.educations.length - 1].institutionName}
               />
               {profile.works
-                .map(work => (
+                ?.map(work => (
                   <IconLabel key={work.workId} iconName="work" label={work.corporationName} />
                 ))
                 .slice(0, 2)}
@@ -189,13 +164,13 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
         >
           <View style={{ alignItems: 'flex-start' }}>
             {profile.position != Position.none && <ToggleButton title={profile.position} />}
-            {profile.skills.map((skill, idx) => (
+            {profile.skills?.map((skill, idx) => (
               <>
                 <Text>{skill.isExperienced ? '사용' : '희망'} 기술스택</Text>
                 <CustomSlider
                   key={skill.skillId}
                   text={skill.skillName}
-                  value={Level[skill.level]}
+                  value={Level[skill.level ?? 'LOW']}
                   minimumTrackTintColor={sliderColors[idx % 3]}
                 />
               </>

@@ -1,4 +1,4 @@
-import { AsyncState } from '@/lib/reducerUtils';
+import { AsyncState, AsyncStateModifiable } from '@/lib/reducerUtils';
 import { ActionType } from 'typesafe-actions';
 import ProfileViewDto from '@/data/model/Profile/ProfileViewDto';
 import * as actions from '@/redux/action/profileActions';
@@ -17,11 +17,11 @@ export type MutationType = keyof typeof MutationType;
 
 export type ProfileAction = ActionType<typeof actions>;
 export type ProfileState = {
-  userProfile: AsyncState<ProfileViewDto, Error>;
-  educations: Education[];
-  works: Work[];
-  portfolios: Portfolio[];
-  skills: Skill[];
-  description: string;
-  position: Position;
+  userProfile: AsyncStateModifiable<ProfileViewDto, Error>;
+  // educations: Education[];
+  // works: Work[];
+  // portfolios: Portfolio[];
+  // skills: Skill[];
+  // description: string;
+  // position: Position;
 };
