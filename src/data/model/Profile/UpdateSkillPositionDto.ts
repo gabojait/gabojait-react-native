@@ -1,9 +1,9 @@
-import { Position } from "../type/Position";
-import SkillResponse from "./SkillResponse"
+import { Position } from '@/data/model/type/Position';
+import Skill from './Skill';
 
 export default interface UpdateSkillPostionDto {
-  createSkills: SkillResponse[];
-  deleteSkillIds: number[];
-  updateSkills: SkillResponse[];
-  position: Position
+  createSkills?: Skill[];
+  deleteSkillIds?: number[];
+  updateSkills?: Skill[];
+  position?: Position;
 }

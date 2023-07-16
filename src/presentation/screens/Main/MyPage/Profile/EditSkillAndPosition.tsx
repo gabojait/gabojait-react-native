@@ -6,7 +6,7 @@ import {ToggleButton, Chip, CustomSlider, sliderColors} from '../Profile'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import {SquareIcon} from './EditPortfolio'
 import {useAppSelector} from '@/redux/hooks'
-import {Level} from '@/data/model/Profile/SkillResponse'
+import {Level} from '@/data/model/Profile/Skill'
 import {uuidv4} from '@/presentation/utils/util'
 
 const EditSkillAndPosition = () => {
