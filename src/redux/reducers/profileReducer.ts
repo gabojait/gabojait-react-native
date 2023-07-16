@@ -30,7 +30,7 @@ import {SEND_AUTH_CODE_ERROR} from '../action/register'
 import Education from '@/data/model/Profile/Education'
 import ProfileViewDto from '@/data/model/Profile/ProfileViewDto'
 import {AnyAction} from 'redux'
-import Work from '@/data/model/Profile/Work'
+import WorkResponse from '@/data/model/Profile/WorkResponse'
 
 const initialState: ProfileState = {userProfile: asyncState.initial(), educations: [], works: []}
 
@@ -46,7 +46,7 @@ export const profileReducer = createReducer<ProfileState, ProfileAction>(initial
     console.log(action)
     return {...state, educations: action.payload as Education[]}
   },
-  [SET_WORKS]: (state, action) => ({...state, works: action.payload as Work[]}),
+  [SET_WORKS]: (state, action) => ({...state, works: action.payload as WorkResponse[]}),
 })
   .handleAction(
     [getProfileAsyncAction.request, getProfileAsyncAction.success, getProfileAsyncAction.failure],

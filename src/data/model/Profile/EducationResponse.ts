@@ -1,4 +1,4 @@
-export default interface Education {
+export default interface EducationResponse {
   createdAt: string
   educationId: number
   endedAt: string

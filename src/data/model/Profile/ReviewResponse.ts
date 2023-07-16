@@ -1,4 +1,4 @@
-export default interface Review {
+export default interface ReviewResponse {
   createdAt: string
   post: string
   rating: string

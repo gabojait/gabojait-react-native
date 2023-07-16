@@ -8,14 +8,14 @@ import {Slider} from '@miblanchard/react-native-slider'
 
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import {RatingBar} from '@/presentation/components/RatingBar'
-import Review from '@/data/model/Profile/Review'
+import ReviewResponse from '@/data/model/Profile/ReviewResponse'
 import {Link} from '@react-navigation/native'
 import {ProfileStackParamListProps} from '@/presentation/navigation/types'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import {StackHeaderProps} from '@react-navigation/stack'
 import {TouchableOpacity} from 'react-native-gesture-handler'
 import {getProfile, setProfileVisibility} from '@/redux/reducers/profileReducer'
-import {Level} from '@/data/model/Profile/Skill'
+import {Level} from '@/data/model/Profile/SkillResponse'
 import useGlobalStyles from '@/presentation/styles'
 import {calcMonth} from '@/presentation/utils/util'
 import {isProfileExist} from './ProfileUtils'
@@ -227,7 +227,7 @@ const Profile = ({navigation}: ProfileStackParamListProps<'View'>) => {
   )
 }
 
-const ReviewItem = ({review}: {review: Review}) => {
+const ReviewItem = ({review}: {review: ReviewResponse}) => {
   const {theme} = useTheme()
   return (
     <View style={{marginBottom: 20}}>

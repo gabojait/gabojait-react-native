@@ -1,12 +1,12 @@
 import {Position} from '@/data/model/type/Position'
 import ProfileViewDto from '@/data/model/Profile/ProfileViewDto'
 import Education from '@/data/model/Profile/Education'
-import Portfolio from '@/data/model/Profile/Portfolio'
-import Skill from '@/data/model/Profile/Skill'
+import PortfolioResponse from '@/data/model/Profile/PortfolioResponse'
+import SkillResponse from '@/data/model/Profile/SkillResponse'
 import {createSlice} from '@reduxjs/toolkit'
 import {createAction, createAsyncAction} from 'typesafe-actions'
 import UpdateSkillPostionDto from '@/data/model/Profile/UpdateSkillPositionDto'
-import Work from '@/data/model/Profile/Work'
+import WorkResponse from '@/data/model/Profile/WorkResponse'
 
 /*------------- Profile View/Edit related --------------*/
 
@@ -108,7 +108,7 @@ export const setEducationAndWorkAction = ({
   works,
 }: {
   educations: Education[]
-  works: Work[]
+  works: WorkResponse[]
 }) => ({
   type: SET_EDUCATION_AND_WORK,
   payload: {educations, works},
@@ -117,16 +117,16 @@ export const setEducations = (educations: Education[]) => ({
   type: SET_EDUCATIONS,
   payload: educations,
 })
-export const setWorks = (works: Work[]) => ({
+export const setWorks = (works: WorkResponse[]) => ({
   type: SET_WORKS,
   payload: works,
 })
 
-export const setPortfolio = (portfolios: Portfolio[]) => ({
+export const setPortfolio = (portfolios: PortfolioResponse[]) => ({
   type: SET_PORTFOLIO,
   payload: portfolios,
 })
-export const setSkillAndPosition = ({skills, position}: {skills: Skill[]; position: Position}) => ({
+export const setSkillAndPosition = ({skills, position}: {skills: SkillResponse[]; position: Position}) => ({
   type: SET_SKILL_AND_POSITION,
   payload: {skills, position},
 })
@@ -176,7 +176,7 @@ export const updateWorkAsync = createAsyncAction(
   UPDATE_WORK,
   UPDATE_WORK_SUCCESS,
   UPDATE_WORK_ERROR,
-)<UpdateDto<Work>, ProfileViewDto, Error>()
+)<UpdateDto<WorkResponse>, ProfileViewDto, Error>()
 
 export const addEducationAsync = createAsyncAction(
   ADD_EDUCATION,
@@ -221,19 +221,19 @@ export const addPortfolioFile = createAsyncAction(
   ADD_PORTFOLIO_FILE,
   ADD_PORTFOLIO_FILE_SUCCESS,
   ADD_PORTFOLIO_FILE_ERROR,
-)<Portfolio, ProfileViewDto, Error>()
+)<PortfolioResponse, ProfileViewDto, Error>()
 export const updatePortfolioFile = createAsyncAction(
   UPDATE_PORTFOLIO_FILE,
   UPDATE_PORTFOLIO_FILE_SUCCESS,
   UPDATE_PORTFOLIO_FILE_ERROR,
-)<UpdateDto<Portfolio>, ProfileViewDto, Error>()
+)<UpdateDto<PortfolioResponse>, ProfileViewDto, Error>()
 export const addPortfolioLink = createAsyncAction(
   ADD_PORTFOLIO_LINK,
   ADD_PORTFOLIO_LINK_SUCCESS,
   ADD_PORTFOLIO_LINK_ERROR,
-)<Portfolio, ProfileViewDto, Error>()
+)<PortfolioResponse, ProfileViewDto, Error>()
 export const updatePortfolioLink = createAsyncAction(
   UPDATE_PORTFOLIO_LINK,
   UPDATE_PORTFOLIO_LINK_SUCCESS,
   UPDATE_PORTFOLIO_LINK_ERROR,
-)<UpdateDto<Portfolio>, ProfileViewDto, Error>()
+)<UpdateDto<PortfolioResponse>, ProfileViewDto, Error>()

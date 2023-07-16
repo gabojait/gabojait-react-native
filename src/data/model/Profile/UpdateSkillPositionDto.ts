@@ -1,9 +1,9 @@
 import { Position } from "../type/Position";
-import Skill from "./Skill"
+import SkillResponse from "./SkillResponse"
 
 export default interface UpdateSkillPostionDto {
-  createSkills: Skill[];
+  createSkills: SkillResponse[];
   deleteSkillIds: number[];
-  updateSkills: Skill[];
+  updateSkills: SkillResponse[];
   position: Position
 }

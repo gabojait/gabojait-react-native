@@ -2,10 +2,10 @@ import BriefOfferDto from '../Offer/BriefOfferDto'
 import TeamBriefDto from '../Team/TeamBriefDto'
 import {Position} from '../type/Position'
 import Education from './Education'
-import Portfolio from './Portfolio'
-import Review from './Review'
-import Skill from './Skill'
-import Work from './Work'
+import PortfolioResponse from './PortfolioResponse'
+import ReviewResponse from './ReviewResponse'
+import SkillResponse from './SkillResponse'
+import WorkResponse from './WorkResponse'
 
 export default interface ProfileViewDto {
   createdAt: string
@@ -18,15 +18,15 @@ export default interface ProfileViewDto {
   isSeekingTeam: boolean
   nickname: string
   offers: BriefOfferDto[]
-  portfolios: Portfolio[]
+  portfolios: PortfolioResponse[]
   position: Position
   profileDescription: string
   rating: number
   reviewCnt: number
-  reviews: Review[]
-  skills: Skill[]
+  reviews: ReviewResponse[]
+  skills: SkillResponse[]
   userId: number
-  works: Work[]
+  works: WorkResponse[]
 }
 
 export type Identifier = number

@@ -4,7 +4,7 @@ export const Level = {
   HIGH: 3,
 }
 
-export default interface Skill {
+export default interface SkillResponse {
   createdAt: string
   isExperienced: boolean
   level: keyof typeof Level

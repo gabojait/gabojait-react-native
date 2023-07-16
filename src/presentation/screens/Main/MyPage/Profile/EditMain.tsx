@@ -17,8 +17,8 @@ import CustomHeader from '@/presentation/components/CustomHeader'
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
 import {Position} from '@/data/model/type/Position'
 import {DiffUtil} from '@/presentation/utils/util'
-import Work from '@/data/model/Profile/Work'
-import {Level} from '@/data/model/Profile/Skill'
+import WorkResponse from '@/data/model/Profile/WorkResponse'
+import {Level} from '@/data/model/Profile/SkillResponse'
 import useGlobalStyles from '@/presentation/styles'
 
 const useUpdateProfile = ({
@@ -44,7 +44,7 @@ const useUpdateProfile = ({
                 startedDate: '2022-07-02',
                 endedDate: '2022-12-01',
                 corporationName: '회사명',
-              } as Work,
+              } as WorkResponse,
             ],
           } as ProfileViewDto,
           {
@@ -55,7 +55,7 @@ const useUpdateProfile = ({
               {
                 startedDate: '2022-12-10',
                 corporationName: '회사명2',
-              } as Work,
+              } as WorkResponse,
             ],
           } as ProfileViewDto,
         ),

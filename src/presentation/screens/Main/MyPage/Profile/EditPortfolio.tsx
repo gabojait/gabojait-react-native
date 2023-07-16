@@ -1,4 +1,4 @@
-import Portfolio, {PortfolioType} from '@/data/model/Profile/Portfolio'
+import PortfolioResponse, {PortfolioType} from '@/data/model/Profile/PortfolioResponse'
 import CustomInput from '@/presentation/components/CustomInput'
 import {useAppSelector} from '@/redux/hooks'
 import {Input, Text, useTheme} from '@rneui/themed'
@@ -22,7 +22,7 @@ const EditPortfolio = () => {
 
   const globalStyles = useGlobalStyles()
 
-  const handleAdd = (portfolio: Portfolio) => {
+  const handleAdd = (portfolio: PortfolioResponse) => {
     setPortfolios(prevState => [
       ...prevState,
       {...portfolio, portfolioId: prevState.length.toString()},
@@ -36,7 +36,7 @@ const EditPortfolio = () => {
     })
   }
 
-  const handleEdit = (portfolio: Portfolio) => {
+  const handleEdit = (portfolio: PortfolioResponse) => {
     setPortfolios(prevState => {
       const idx = prevState.findIndex(item => item.portfolioId == portfolio.portfolioId)
       prevState[idx] = portfolio
@@ -79,14 +79,14 @@ export const PortfolioList = ({
   title,
   fieldType,
 }: {
-  portfolios: Portfolio[]
-  onChangePortfolio: (portfolio: Portfolio) => void
-  onAddPortfolio: (portfolio: Portfolio) => void
+  portfolios: PortfolioResponse[]
+  onChangePortfolio: (portfolio: PortfolioResponse) => void
+  onAddPortfolio: (portfolio: PortfolioResponse) => void
   onDeletePortfolio: (portfolioId: string) => void
   title: string
   fieldType: PortfolioType
 }) => {
-  const pickDocument = (portfolio: Portfolio) => {
+  const pickDocument = (portfolio: PortfolioResponse) => {
     DocumentPicker.pickSingle().then(res => {
       portfolio.url = res.uri
       onChangePortfolio(portfolio)
@@ -139,7 +139,7 @@ export const PortfolioList = ({
             portfolioType: fieldType,
             name: '',
             url: '',
-          } as Portfolio)
+          } as PortfolioResponse)
         }
         title={title}
       />

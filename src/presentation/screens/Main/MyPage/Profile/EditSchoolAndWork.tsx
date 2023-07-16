@@ -1,5 +1,5 @@
 import Education from '@/data/model/Profile/Education'
-import Work from '@/data/model/Profile/Work'
+import WorkResponse from '@/data/model/Profile/WorkResponse'
 import CustomInput from '@/presentation/components/CustomInput'
 import DateDropdown from '@/presentation/components/DropdownWithoutItem'
 import {ModalContext} from '@/presentation/components/modal/context'
@@ -43,7 +43,7 @@ const EditSchoolAndWork = ({navigation}: ProfileStackParamListProps<'EditSchoolA
     dispatch(setEducations([...educations]))
   }
 
-  const handleAddCarrer = (work: Work) => {
+  const handleAddCarrer = (work: WorkResponse) => {
     dispatch(setWorks([...works, {...work, workId: works.length.toString()}]))
   }
   const handleDeleteWork = (id: string) => {
@@ -52,7 +52,7 @@ const EditSchoolAndWork = ({navigation}: ProfileStackParamListProps<'EditSchoolA
     dispatch(setWorks([...works]))
   }
 
-  const handleEditWork = (work: Work) => {
+  const handleEditWork = (work: WorkResponse) => {
     const idx = works.findIndex(item => item.workId == work.workId)
     const list = [...works]
     list[idx] = work
@@ -182,15 +182,15 @@ export const WorkList = ({
   onDeleteData,
   title,
 }: {
-  datas: Work[]
-  onChangeData: (data: Work) => void
-  onAddData: (data: Work) => void
+  datas: WorkResponse[]
+  onChangeData: (data: WorkResponse) => void
+  onAddData: (data: WorkResponse) => void
   onDeleteData: (dataId: string) => void
   title: string
 }) => {
   const modal = React.useContext(ModalContext)
 
-  const showDatePickerModal = (i: number, data: Work, dates: string[]) => {
+  const showDatePickerModal = (i: number, data: WorkResponse, dates: string[]) => {
     modal?.show({
       title: <Text>{i == 0 ? '시작' : '끝난'} 기간을 입력해주세요</Text>,
       content: (
@@ -231,7 +231,7 @@ export const WorkList = ({
       <List
         datas={datas}
         renderItems={data => {
-          const _data = data as Work
+          const _data = data as WorkResponse
           let dates = [
             _data.startedDate ?? new Date().toISOString(),
             _data.endedDate ?? new Date().toISOString(),
@@ -273,7 +273,7 @@ export const WorkList = ({
         onAdd={() =>
           onAddData({
             workId: datas.length.toString(),
-          } as Work)
+          } as WorkResponse)
         }
         title={title}
       />

@@ -4,7 +4,7 @@ export const PortfolioType = {
   File: 'F',
 } as {[key: string]: PortfolioType}
 
-export default interface Portfolio {
+export default interface PortfolioResponse {
   createdAt: string
   media: string
   portfolioId: number

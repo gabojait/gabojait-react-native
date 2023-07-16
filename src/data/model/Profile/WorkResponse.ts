@@ -1,6 +1,6 @@
 import {Identifier} from './ProfileViewDto'
 
-export default interface Work {
+export default interface WorkResponse {
   corporationName: string
   createdAt: string
   ended: string
