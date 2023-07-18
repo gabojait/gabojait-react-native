@@ -8,7 +8,7 @@ import { Slider } from '@miblanchard/react-native-slider';
 
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { RatingBar } from '@/presentation/components/RatingBar';
-import Review from '@/data/model/Profile/Review';
+import Review from '@/data/model/Profile/ReviewResponse';
 import { Link } from '@react-navigation/native';
 import { ProfileStackParamListProps } from '@/presentation/navigation/types';
 import Icon from 'react-native-vector-icons/MaterialIcons';

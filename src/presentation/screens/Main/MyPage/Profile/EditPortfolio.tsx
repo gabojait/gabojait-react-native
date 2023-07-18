@@ -11,7 +11,7 @@ import { IconProps } from 'react-native-vector-icons/Icon';
 import { ScreenWidth } from '@rneui/base';
 import { List } from './EditSchoolAndWork';
 import useGlobalStyles from '@/presentation/styles';
-import { createPortfolio, deletePortfolio } from '@/redux/action/profileActions';
+import { createPortfolio, deletePortfolio, updatePortfolio } from '@/redux/action/profileActions';
 
 const EditPortfolio = () => {
   // Todo: Implement Portfolio Reducer
@@ -32,11 +32,7 @@ const EditPortfolio = () => {
   };
 
   const handleEdit = (portfolio: Portfolio) => {
-    setPortfolios(prevState => {
-      const idx = prevState.findIndex(item => item.portfolioId == portfolio.portfolioId);
-      prevState[idx] = portfolio;
-      return [...prevState];
-    });
+    dispatch(updatePortfolio(portfolio.portfolioId!, portfolio));
   };
 
   return (

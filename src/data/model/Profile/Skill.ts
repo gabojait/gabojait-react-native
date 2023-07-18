@@ -5,8 +5,10 @@ export const Level = {
 };
 
 export default interface Skill {
-  isExperienced?: boolean;
-  level?: keyof typeof Level;
-  skillId?: number;
-  skillName?: string;
+  createdAt: string;
+  isExperienced: boolean;
+  level: keyof typeof Level;
+  skillId?: string;
+  skillName: string;
+  updatedAt: string;
 }

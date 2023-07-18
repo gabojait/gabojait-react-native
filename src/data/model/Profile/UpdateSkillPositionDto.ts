@@ -1,5 +1,5 @@
 import { Position } from '@/data/model/type/Position';
-import Skill from '@/data/model/Profile/Skill';
+import Skill from './Skill';
 
 export default interface UpdateSkillPostionDto {
   createSkills?: Skill[];

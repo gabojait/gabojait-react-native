@@ -1,10 +1,10 @@
 import { Position } from '../type/Position';
-import TeamBriefDto from '../Team/TeamBriefDto'
-import Education from './Education';
-import Portfolio from './Portfolio';
-import Review from './Review';
+import TeamBriefDto from '../Team/TeamBriefDto';
 import Skill from './Skill';
 import Work from './Work';
+import Education from './Education';
+import Portfolio from './Portfolio';
+import ReviewResponse from './ReviewResponse';
 
 export default interface ProfileViewDto {
   completedTeams?: TeamBriefDto[];
@@ -15,7 +15,7 @@ export default interface ProfileViewDto {
   isPublic?: boolean;
   nickname?: string;
   portfolios?: Portfolio[];
-  reviews?: Review[];
+  reviews?: ReviewResponse[];
   position?: Position;
   rating?: number;
   skills?: Skill[];

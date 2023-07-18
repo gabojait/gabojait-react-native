@@ -1,4 +1,4 @@
-import Review from '@/data/model/Profile/Review'
+import ReviewResponse from '@/data/model/Profile/ReviewResponse'
 import {createAsyncAction} from 'typesafe-actions'
 
 export const REVIEW_CREATE = 'REVIEW_CREATE'
@@ -8,4 +8,4 @@ export const reviewCreateAsyncAction = createAsyncAction(
   REVIEW_CREATE,
   REVIEW_CREATE_SUCCESS,
   REVIEW_CREATE_ERROR,
-)<Review, {}, Error>()
+)<ReviewResponse, {}, Error>()
