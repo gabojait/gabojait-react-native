@@ -71,7 +71,7 @@ const TeamReview = ({navigation, route}: MainStackScreenProps<'TeamReview'>) => 
   ]
 
   const {theme} = useTheme()
-  const modal = React.useContext(ModalContext)
+  const modal = useModal()
   const dispatch = useAppDispatch()
   const pagerViewRef = useRef<PagerView>(null)
   const {

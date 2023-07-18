@@ -7,7 +7,7 @@ import React from 'react';
 import { FlatList, TouchableOpacity, View } from 'react-native';
 
 const OfferPage = ({ navigation }: MainStackScreenProps<'OfferPage'>) => {
-  const arr: PositionRecruiting[] = [{ position: 'none', currentCnt: 0, recruitCnt: 0 }];
+  const arr: PositionRecruiting[] = [{ position: Position.None, currentCnt: 0, recruitCnt: 0 }];
   return (
     <View style={{ backgroundColor: 'white', flex: 1 }}>
       <FlatList

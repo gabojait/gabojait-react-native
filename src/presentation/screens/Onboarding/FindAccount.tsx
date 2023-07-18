@@ -14,7 +14,7 @@ const FindAccount = () => {
   const [userName, setuserName] = useState('')
   const [userEmail, setUserEmail] = useState('')
 
-  const modal = React.useContext(ModalContext)
+  const modal = useModal()
   const {theme} = useTheme()
 
   const findUserNameMutation = useMutation(findUserName, {

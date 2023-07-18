@@ -2,17 +2,17 @@ import TeamBanner from '@/presentation/components/TeamBanner';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import React from 'react';
 import { FlatList, TouchableOpacity, View } from 'react-native';
-import Team from '@/presentation/model/Team';
+import TeamBriefDto from '@/data/model/Team/TeamBriefDto';
 
 const BookMark = ({ navigation }: MainStackScreenProps<'BookMark'>) => {
-  const arr: Team[] = [
+  const arr: TeamBriefDto[] = [
     {
-      teamId: 'fasdfsf',
+      teamId: 0,
       projectName: '가보자잇',
-      designers: [],
-      backends: [],
-      frontends: [],
-      managers: [],
+      teamMemberCnts: [],
+      teamMembers: [],
+      createdAt: '2023-07-16',
+      updatedAt: '2023-07-16',
     },
   ];
   return (
@@ -25,7 +25,7 @@ const BookMark = ({ navigation }: MainStackScreenProps<'BookMark'>) => {
           <TouchableOpacity
             onPress={() => navigation.navigate('GroupDetail', { teamId: item.teamId })}
           >
-            <TeamBanner team={item} />
+            <TeamBanner teamMembersCnt={item.teamMemberCnts} teamName={item.projectName} />
           </TouchableOpacity>
         )}
       />

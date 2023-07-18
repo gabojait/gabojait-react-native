@@ -7,4 +7,5 @@ export default interface Review {
   reviewerId: number
   teamID: number
   updatedAt: string
+  revieweeNickname: string
 }

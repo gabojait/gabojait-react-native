@@ -19,6 +19,7 @@ import { Level } from '@/data/model/Profile/Skill';
 import useGlobalStyles from '@/presentation/styles';
 import { calcMonth } from '@/presentation/utils/util';
 import { isProfileExist } from './ProfileUtils';
+import { Position, PositionText } from '@/data/model/type/Position';
 
 const Header = ({ navigation }: StackHeaderProps) => {
   const { theme } = useTheme();
@@ -58,8 +59,6 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
     error: profileError,
   } = useAppSelector(state => state.profileReducer.userProfile);
   const pageLoading = profileLoading || userLoading;
-  console.log(user);
-  console.log(profile);
 
   useEffect(() => {
     dispatch(getProfile());
@@ -153,7 +152,7 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
 
               <Text h4>기술스택/직무</Text>
               {profile.position !== 'none' ? (
-                <ToggleButton title={profile.position} />
+                <ToggleButton title={PositionText[profile.position ?? Position.None]} />
               ) : (
                 <Text>아직 직무 정보를 입력하지 않은 것 같아요.</Text>
               )}
@@ -162,7 +161,7 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
                   <Text>희망 기술스택</Text>
                   <CustomSlider
                     text={skill.skillName}
-                    value={Level[skill.level ?? 'LOW']}
+                    value={Level[skill.level ?? 'low']}
                     onChangeValue={function (value: number | number[]): void {}}
                     minimumTrackTintColor={sliderColors[idx % 3]}
                   />
@@ -190,7 +189,12 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
                 profile.completedTeams?.map(team => (
                   <Text>
                     프로젝트 '{team.projectName}' -
-                    {team.teamMembers.find(member => member.userId === user?.userId )?.position}
+                    {
+                      PositionText[
+                        team.teamMembers.find(member => member.userId === user?.userId)?.position ??
+                          Position.None
+                      ]
+                    }
                   </Text>
                 ))
               ) : (
@@ -391,7 +395,6 @@ export const CustomSlider = ({
       >
         <Text>{text}</Text>
       </View>
-      fdsfsf
     </View>
   );
 };
@@ -427,7 +430,9 @@ const PortfolioView = ({
           title="팀 초대 허용"
         />
       </View>
-      <Text style={{ fontSize: theme.fontSize.md }}>{profile.position}</Text>
+      <Text style={{ fontSize: theme.fontSize.md }}>
+        {PositionText[profile.position ?? Position.None]}
+      </Text>
       <Text style={{ fontSize: theme.fontSize.md }}>{profile.profileDescription}</Text>
       <SolidCard>
         <View>

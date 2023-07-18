@@ -14,6 +14,7 @@ import PositionRecruiting from '@/presentation/model/PositionRecruitng'
 import BriefOfferDto from '@/data/model/Offer/BriefOfferDto'
 import {Position} from '@/data/model/type/Position'
 import {applyToTeam} from '@/data/api/offer'
+import useModal from '@/presentation/components/modal/useModal'
 
 interface ApplyPositionCardProps {
   data: PositionRecruiting
@@ -33,7 +34,7 @@ interface ApplyPositionCardState {
 const PositionSelector = ({navigation, route}: MainStackScreenProps<'PositionSelector'>) => {
   const {theme} = useTheme()
   const styles = useStyles()
-  const modal = React.useContext(ModalContext)
+  const modal = useModal()
   const {data, isLoading, error}: UseQueryResult<TeamDetailDto> = useQuery(
     ['GroupDetail', route.params.teamId],
     () => getTeam(route.params.teamId),
@@ -101,11 +102,11 @@ const ApplyPositionCard = ({data, offers, onApplyButtonPressed}: ApplyPositionCa
   }, [state.buttonState])
 
   function handleTitle(): PositionTextNameType {
-    if (data.position == Position.backend) {
+    if (data.position == Position.Backend) {
       return '백엔드'
-    } else if (data.position == Position.designer) {
+    } else if (data.position == Position.Designer) {
       return '디자이너'
-    } else if (data.position == Position.frontend) {
+    } else if (data.position == Position.Frontend) {
       return '프론트엔드'
     } else {
       return '기획자'

@@ -12,6 +12,7 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { createLogger } from 'redux-logger';
+import AxiosWrapper from './presentation/utils/AxiosWrapper';
 
 const queryClient = new QueryClient();
 const logger = createLogger();
@@ -28,11 +29,11 @@ const App = () => {
       <ThemeProvider theme={theme}>
         <ErrorBoundary fallback500={Fallback500()} fallback503={Fallback503()}>
           <QueryClientProvider client={queryClient}>
-            <ModalProvider>
-              <SafeAreaView style={backgroundStyle}>
-                <RootNavigation />
-              </SafeAreaView>
-            </ModalProvider>
+              <ModalProvider>
+                <SafeAreaView style={backgroundStyle}>
+                  <RootNavigation />
+                </SafeAreaView>
+              </ModalProvider>
           </QueryClientProvider>
         </ErrorBoundary>
       </ThemeProvider>

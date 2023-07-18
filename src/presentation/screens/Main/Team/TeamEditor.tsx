@@ -17,12 +17,13 @@ import {PositionDropdownMaker} from '@/presentation/components/PositionDropdownM
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent'
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent'
 import {PositionDropdownEditor} from '@/presentation/components/PositionDropdownEditor'
+import useModal from '@/presentation/components/modal/useModal'
 
 //TODO: api 수정반영, react query 적용, 요구사항 충족 필요함
 export const TeamEditor = ({navigation}: MainStackScreenProps<'TeamEditor'>) => {
   const {theme} = useTheme()
   const styles = useStyles({navigation})
-  const modal = React.useContext(ModalContext)
+  const modal = useModal()
   const {
     data: teamData,
     isLoading: isTeamDataLoading,

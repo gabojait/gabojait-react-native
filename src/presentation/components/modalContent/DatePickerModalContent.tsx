@@ -1,31 +1,38 @@
-import {Button, CheckBox, Text, useTheme} from '@rneui/themed'
-import {Alert, Modal, StyleSheet, View} from 'react-native'
-import DatePicker from 'react-native-date-picker'
-import {FilledButton} from '../Button'
-import React from 'react'
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+import { Button, CheckBox, Text, useTheme } from '@rneui/themed';
+import { Alert, Modal, StyleSheet, View } from 'react-native';
+import DatePicker from 'react-native-date-picker';
+import { FilledButton } from '../Button';
+import React, { ReactNode } from 'react';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
 interface DatePickerModalProps {
-  doneButtonText: string
-  onModalVisibityChanged: (visibility: boolean) => void
-  date: Date
-  onDatePicked: (date: Date) => void
-  isCurrent?: boolean
-  setIsCurrent?: (isCurrent: boolean) => void
-  isCurrentCheckable?: boolean
-  maximumDate?: Date
-  minimumDate?: Date
+  title?: ReactNode;
+  doneButtonText: string;
+  onModalVisibityChanged: (visibility: boolean) => void;
+  date: Date;
+  onDatePicked: (date: Date) => void;
+  isCurrent?: boolean;
+  setIsCurrent?: (isCurrent: boolean) => void;
+  isCurrentCheckable?: boolean;
+  maximumDate?: Date;
+  minimumDate?: Date;
 }
 
 const DatePickerModalContent: React.FC<DatePickerModalProps> = ({
+  title,
   isCurrent = false,
   setIsCurrent,
   isCurrentCheckable = false,
   ...props
 }) => {
-  const {theme} = useTheme()
+  const { theme } = useTheme();
   return (
-    <View style={{display: 'flex', alignItems: 'center'}}>
+    <View
+      style={{ display: 'flex', alignItems: 'center', backgroundColor: 'white', borderRadius: 20, margin: 30 }}
+    >
+      <View style={{margin: 20}}>
+      {title}
+      </View>
       <DatePicker
         mode="date"
         date={props.date}
@@ -35,20 +42,20 @@ const DatePickerModalContent: React.FC<DatePickerModalProps> = ({
         minimumDate={props.minimumDate}
       />
 
-      <View style={{flexDirection: 'row', display: 'flex'}}>
+      <View style={{ flexDirection: 'row', display: 'flex' }}>
         <FilledButton
           title={props.doneButtonText}
           containerStyle={style.buttonContainerStyle}
-          titleStyle={{color: '#FFFFFF'}}
+          titleStyle={{ color: '#FFFFFF' }}
           buttonStyle={style.buttonStyle}
           onPress={() => {
-            props.onModalVisibityChanged(false)
+            props.onModalVisibityChanged(false);
           }}
         />
       </View>
     </View>
-  )
-}
+  );
+};
 
 const style = StyleSheet.create({
   buttonStyle: {
@@ -63,6 +70,6 @@ const style = StyleSheet.create({
     borderTopStartRadius: 0,
     borderTopEndRadius: 0,
   },
-})
+});
 
-export default DatePickerModalContent
+export default DatePickerModalContent;

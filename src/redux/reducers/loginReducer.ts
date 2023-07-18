@@ -1,18 +1,25 @@
-import {getUserInfoAction, loginAsyncAction} from '../action/login'
+import { SIGN_OUT, getUserInfoAction, loginAsyncAction } from '../action/login';
 
-import createAsyncThunk from '@/lib/createAsyncThunk'
-import {LoginAction} from '@/redux/action_types/login'
-import * as accountApi from '@/data/api/accounts'
-import {asyncState, createAsyncReducer} from '@/lib/reducerUtils'
-import {createReducer} from 'typesafe-actions'
-import {LoginState} from '../action_types/login'
+import createAsyncThunk from '@/lib/createAsyncThunk';
+import { LoginAction } from '@/redux/action_types/login';
+import { asyncState, createAsyncReducer } from '@/lib/reducerUtils';
+import { createReducer } from 'typesafe-actions';
+import { LoginState } from '../action_types/login';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const initialState: LoginState = {loginResult: asyncState.initial(), user: asyncState.initial()}
+const initialState: LoginState = { loginResult: asyncState.initial(), user: asyncState.initial() };
 
-export const login = createAsyncThunk(loginAsyncAction, accountApi.login)
-export const getUser = createAsyncThunk(getUserInfoAction, accountApi.getUser)
-
-export const loginReducer = createReducer<LoginState, LoginAction>(initialState)
+export const loginReducer = createReducer<LoginState, LoginAction>(initialState, {
+  [SIGN_OUT]: (state, action) => {
+    AsyncStorage.setItem('accessToken', '');
+    AsyncStorage.setItem('refreshToken', '');
+    return {
+      ...state,
+      user: asyncState.initial(),
+      loginResult: asyncState.initial(),
+    };
+  },
+})
   .handleAction(
     [loginAsyncAction.request, loginAsyncAction.success, loginAsyncAction.failure],
     createAsyncReducer(loginAsyncAction, 'loginResult'),
@@ -20,4 +27,4 @@ export const loginReducer = createReducer<LoginState, LoginAction>(initialState)
   .handleAction(
     [getUserInfoAction.request, getUserInfoAction.success, getUserInfoAction.failure],
     createAsyncReducer(getUserInfoAction, 'user'),
-  )
+  );

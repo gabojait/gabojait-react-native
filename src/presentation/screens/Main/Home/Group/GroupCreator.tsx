@@ -14,11 +14,12 @@ import {PositionDropdownMaker} from '@/presentation/components/PositionDropdownM
 import PositionCountDto from '@/data/model/Team/PostionCountDto'
 import {useCreateTeam} from '@/reactQuery/useCreateTeam'
 import useGlobalStyles from '@/presentation/styles'
+import useModal from '@/presentation/components/modal/useModal'
 
 const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupCreator'>) => {
   const {theme} = useTheme()
   const styles = useStyles({navigation, route})
-  const modal = React.useContext(ModalContext)
+  const modal = useModal()
   const [teamCreateState, setTeamCreateState] = useState<TeamRequestDto>({
     expectation: '',
     openChatUrl: '',

@@ -13,6 +13,17 @@ export const GET_PROFILE = 'GET_PROFILE';
 export const GET_PROFILE_SUCCESS = 'GET_PROFILE_SUCCESS';
 export const GET_PROFILE_ERROR = 'GET_PROFILE_ERROR';
 
+export const SET_POSITION = 'SET_POSITION';
+export type SetPositionAction = {
+  type: typeof SET_POSITION;
+  payload: Position;
+};
+
+export const setPosition = (position: Position): SetPositionAction => ({
+  type: SET_POSITION,
+  payload: position,
+});
+
 export const CREATE_WORK = 'CREATE_WORK';
 export type CreateWorkAction = {
   type: typeof CREATE_WORK;

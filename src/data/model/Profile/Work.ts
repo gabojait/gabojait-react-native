@@ -1,9 +1,8 @@
-export default interface Work {
+import { Periodical } from './Periodical';
+
+export default interface Work extends Periodical {
   corporationName: string;
   createdAt: string;
-  endedAt: string;
-  isCurrent: boolean;
-  startedAt: string;
   updatedAt: string;
   workDescription: string;
   workId: number;

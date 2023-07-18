@@ -3,6 +3,7 @@ import React from 'react'
 import {Alert, Modal, StyleSheet, View} from 'react-native'
 import {ModalContext} from './context'
 import useGlobalStyles from '@/presentation/styles'
+import useModal from './useModal'
 
 export type CustomModalRef = {
   show: () => void
@@ -10,7 +11,7 @@ export type CustomModalRef = {
 }
 
 const CustomModal = () => {
-  const modal = React.useContext(ModalContext)
+  const modal = useModal()
   const globalStyles = useGlobalStyles()
 
   return (

@@ -8,6 +8,5 @@ export default interface Portfolio {
   name?: string;
   portfolioId?: number;
   portfolioType?: PortfolioType;
-  schemaVersion?: string;
   url?: string;
 }

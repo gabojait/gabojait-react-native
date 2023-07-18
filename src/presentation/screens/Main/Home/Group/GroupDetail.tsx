@@ -21,11 +21,11 @@ import BottomModalContent from '@/presentation/components/modalContent/BottomMod
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent'
 import ErrorBoundary from '@/presentation/components/errorComponent/ErrorBoundary'
 import {
-  Fallback404,
   Fallback500,
   Fallback503,
 } from '@/presentation/components/errorComponent/GeneralFallback'
 import GetTeamErrorBoundary from '@/presentation/components/errorComponent/GetTeamErrorBoundary'
+import useModal from '@/presentation/components/modal/useModal'
 
 const GroupDetail = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) => {
   return (
@@ -44,7 +44,7 @@ const GroupDetailComponent = ({navigation, route}: MainStackScreenProps<'GroupDe
   const styles = useStyles()
   const {theme} = useTheme()
   const globalStyles = useGlobalStyles()
-  const modal = React.useContext(ModalContext)
+  const modal = useModal()
   const {data, isLoading, error}: UseQueryResult<TeamDetailDto> = useQuery(
     ['GroupDetail', route.params.teamId],
     () => getTeam(route.params.teamId),

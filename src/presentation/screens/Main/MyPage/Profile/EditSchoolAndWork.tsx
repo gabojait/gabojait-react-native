@@ -2,67 +2,70 @@ import Education from '@/data/model/Profile/Education';
 import Work from '@/data/model/Profile/Work';
 import CustomInput from '@/presentation/components/CustomInput';
 import DateDropdown from '@/presentation/components/DropdownWithoutItem';
-import {ModalContext} from '@/presentation/components/modal/context';
+import { ModalContext } from '@/presentation/components/modal/context';
 import DatePickerModalContent from '@/presentation/components/modalContent/DatePickerModalContent';
-import {ProfileStackParamListProps} from '@/presentation/navigation/types';
-import {setEducationAndWorkAction, setEducations, setWorks} from '@/redux/action/profileActions';
-import {useAppDispatch, useAppSelector} from '@/redux/hooks';
-import {Text} from '@rneui/themed';
-import React, {useEffect, useState} from 'react';
-import {ScrollView, View} from 'react-native';
-import {EditItem, SquareIcon} from './EditPortfolio';
+import { ProfileStackParamListProps } from '@/presentation/navigation/types';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { Text } from '@rneui/themed';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, View } from 'react-native';
+import { EditItem, SquareIcon } from './EditPortfolio';
+import {
+  createEducation,
+  createWork,
+  deleteEducation,
+  deleteWork,
+  updateEducation,
+  updateWork,
+} from '@/redux/action/profileActions';
+import useModal from '@/presentation/components/modal/useModal';
+import { Periodical } from '@/data/model/Profile/Periodical';
 
-const EditSchoolAndWork = ({navigation}: ProfileStackParamListProps<'EditSchoolAndWork'>) => {
-  const works = useAppSelector(state => state.profileReducer.works);
-  const educations = useAppSelector(state => state.profileReducer.educations);
+const EditSchoolAndWork = ({ navigation }: ProfileStackParamListProps<'EditSchoolAndWork'>) => {
+  const { data, loading, error } = useAppSelector(state => state.profileReducer.userProfile);
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    navigation.addListener('beforeRemove', () => {
-      console.log('[Go out]', educations, works);
-      dispatch(setEducationAndWorkAction({educations: educations, works}));
-    });
-  }, []);
+  const { educations, works } = {
+    ...data,
+    educations: data?.educations ?? [],
+    works: data?.works ?? [],
+  } ?? { educations: [], works: [] };
 
-  useEffect(() => {
-    console.log('Works Change:', works);
-  }, [works]);
+  // useEffect(() => {
+  //   navigation.addListener('beforeRemove', () => {
+  //     console.log('[Go out]', educations, works);
+  //     dispatch(setEducationAndWorkAction({educations: educations, works}));
+  //   });
+  // }, []);
+
+  // useEffect(() => {
+  //   console.log('Works Change:', works);
+  // }, [works]);
 
   const handleAddSchool = (school: Education) => {
-    dispatch(
-      setEducations([...educations, {...school, educationId: educations.length.toString()}]),
-    );
+    dispatch(createEducation(school));
   };
-  const handleDeleteSchool = (id: string) => {
-    const idx = educations.findIndex(item => item.educationId == id);
-    educations.splice(idx, 1);
-    dispatch(setEducations([...educations]));
+  const handleDeleteSchool = (id: number) => {
+    dispatch(deleteEducation(id));
   };
 
   const handleEditSchool = (school: Education) => {
-    const idx = educations.findIndex(item => item.educationId == school.educationId);
-    educations[idx] = school;
-    dispatch(setEducations([...educations]));
+    dispatch(updateEducation(school.educationId, school));
   };
 
   const handleAddCarrer = (work: Work) => {
-    dispatch(setWorks([...works, {...work, workId: works.length.toString()}]));
+    dispatch(createWork(work));
   };
-  const handleDeleteWork = (id: string) => {
-    const idx = works.findIndex(item => item.workId == id);
-    works.splice(idx, 1);
-    dispatch(setWorks([...works]));
+  const handleDeleteWork = (id: number) => {
+    dispatch(deleteWork(id));
   };
 
   const handleEditWork = (work: Work) => {
-    const idx = works.findIndex(item => item.workId == work.workId);
-    const list = [...works];
-    list[idx] = work;
-    dispatch(setWorks([...list]));
+    dispatch(updateWork(work.workId, work));
   };
 
   return (
-    <ScrollView style={{padding: 20, backgroundColor: 'white'}}>
+    <ScrollView style={{ padding: 20, backgroundColor: 'white' }}>
       <EducationList
         datas={educations}
         onAddData={handleAddSchool}
@@ -91,46 +94,12 @@ export const EducationList = ({
   datas: Education[];
   onChangeData: (data: Education) => void;
   onAddData: (data: Education) => void;
-  onDeleteData: (dataId: string) => void;
+  onDeleteData: (dataId: number) => void;
   title: string;
 }) => {
-  const modal = React.useContext(ModalContext);
-
-  const showDatePickerModal = (i: number, data: Education, dates: string[]) => {
-    modal?.show({
-      title: <Text>{i == 0 ? '시작' : '끝난'} 기간을 입력해주세요</Text>,
-      content: (
-        <DatePickerModalContent
-          doneButtonText="다음"
-          onModalVisibityChanged={visibility => {
-            if (!visibility) {
-              modal.hide();
-              if (i == 0) {
-                showDatePickerModal(i + 1, data, dates);
-              } else if (i == 1) {
-                console.log(dates);
-                onChangeData({
-                  ...data,
-                  startedDate: dates[0] ?? new Date().toISOString(),
-                  endedDate: dates[1] ?? new Date().toISOString(),
-                });
-              }
-            }
-          }}
-          date={new Date(dates[i] ?? new Date().toISOString())}
-          onDatePicked={date => {
-            dates[i] = date.toISOString();
-          }}
-          isCurrentCheckable
-          isCurrent={data.isCurrent}
-          setIsCurrent={isCurrent => {
-            onChangeData({...data, isCurrent});
-          }}
-          minimumDate={i == 1 ? new Date(dates[0]) : undefined}
-        />
-      ),
-    });
-  };
+  const showDatePickerModal = useDatePickerModal((data: Periodical) =>
+    onChangeData(data as Education),
+  );
 
   return (
     <>
@@ -139,8 +108,8 @@ export const EducationList = ({
         renderItems={data => {
           const _data = data as Education;
           const dates = [
-            _data.startedDate ?? new Date().toISOString(),
-            _data.endedDate ?? new Date().toISOString(),
+            _data.startedAt ?? new Date().toISOString(),
+            _data.endedAt ?? new Date().toISOString(),
           ];
           return (
             <EditItem
@@ -151,7 +120,8 @@ export const EducationList = ({
               onDeleteItem={itemId => {
                 onDeleteData(itemId);
               }}
-              onChangeName={text => onChangeData({..._data, institutionName: text})}>
+              onChangeName={text => onChangeData({ ..._data, institutionName: text })}
+            >
               {/* 진행중인 경우 데이터 어떻게 처리됨? */}
               <DateDropdown
                 text={
@@ -168,7 +138,7 @@ export const EducationList = ({
         }}
         onAdd={() =>
           onAddData({
-            educationId: datas.length.toString(),
+            educationId: datas.length,
           } as Education)
         }
         title={title}
@@ -177,26 +147,15 @@ export const EducationList = ({
   );
 };
 
-export const WorkList = ({
-  datas,
-  onChangeData,
-  onAddData,
-  onDeleteData,
-  title,
-}: {
-  datas: Work[];
-  onChangeData: (data: Work) => void;
-  onAddData: (data: Work) => void;
-  onDeleteData: (dataId: string) => void;
-  title: string;
-}) => {
-  const modal = React.useContext(ModalContext);
+function useDatePickerModal(onChangeData: (data: Periodical) => void) {
+  const modal = useModal();
 
-  const showDatePickerModal = (i: number, data: Work, dates: string[]) => {
+  const showDatePickerModal = (i: number, data: Periodical, dates: string[]) => {
     modal?.show({
-      title: <Text>{i == 0 ? '시작' : '끝난'} 기간을 입력해주세요</Text>,
+      title: <></>,
       content: (
         <DatePickerModalContent
+          title={<Text h3>{i == 0 ? '시작' : '끝난'} 기간을 입력해주세요</Text>}
           doneButtonText="다음"
           onModalVisibityChanged={visibility => {
             if (!visibility) {
@@ -204,11 +163,10 @@ export const WorkList = ({
               if (i == 0) {
                 showDatePickerModal(i + 1, data, dates);
               } else if (i == 1) {
-                console.log(dates);
                 onChangeData({
                   ...data,
-                  startedDate: dates[0] ?? new Date().toISOString(),
-                  endedDate: dates[1] ?? new Date().toISOString(),
+                  startedAt: dates[0] ?? new Date().toISOString(),
+                  endedAt: dates[1] ?? new Date().toISOString(),
                 });
               }
             }
@@ -220,13 +178,30 @@ export const WorkList = ({
           isCurrentCheckable
           isCurrent={data.isCurrent}
           setIsCurrent={isCurrent => {
-            onChangeData({...data, isCurrent});
+            onChangeData({ ...data, isCurrent });
           }}
           minimumDate={i == 1 ? new Date(dates[0]) : undefined}
         />
       ),
     });
   };
+  return showDatePickerModal;
+}
+
+export const WorkList = ({
+  datas,
+  onChangeData,
+  onAddData,
+  onDeleteData,
+  title,
+}: {
+  datas: Work[];
+  onChangeData: (data: Work) => void;
+  onAddData: (data: Work) => void;
+  onDeleteData: (dataId: number) => void;
+  title: string;
+}) => {
+  const showDatePickerModal = useDatePickerModal((data: Periodical) => onChangeData(data as Work))
 
   return (
     <>
@@ -235,8 +210,8 @@ export const WorkList = ({
         renderItems={data => {
           const _data = data as Work;
           const dates = [
-            _data.startedDate ?? new Date().toISOString(),
-            _data.endedDate ?? new Date().toISOString(),
+            _data.startedAt ?? new Date().toISOString(),
+            _data.endedAt ?? new Date().toISOString(),
           ];
           return (
             <EditItem
@@ -247,7 +222,8 @@ export const WorkList = ({
               onDeleteItem={itemId => {
                 onDeleteData(itemId);
               }}
-              onChangeName={text => onChangeData({..._data, corporationName: text})}>
+              onChangeName={text => onChangeData({ ..._data, corporationName: text })}
+            >
               {/* 진행중인 경우 데이터 어떻게 처리됨? */}
               <DateDropdown
                 text={
@@ -260,6 +236,8 @@ export const WorkList = ({
                 onClick={() => showDatePickerModal(0, _data, dates)}
               />
               <CustomInput
+                value={_data.workDescription}
+                onChangeText={text => onChangeData({ ..._data, workDescription: text })}
                 numberOfLines={6}
                 multiline
                 style={{
@@ -274,7 +252,7 @@ export const WorkList = ({
         }}
         onAdd={() =>
           onAddData({
-            workId: datas.length.toString(),
+            workId: datas.length,
           } as Work)
         }
         title={title}
@@ -298,7 +276,7 @@ export const List = ({
     <>
       <Text h4>{title}</Text>
       {datas.map(renderItems)}
-      <View style={{alignItems: 'center'}}>
+      <View style={{ alignItems: 'center' }}>
         <SquareIcon
           name="add"
           onPress={() => {
