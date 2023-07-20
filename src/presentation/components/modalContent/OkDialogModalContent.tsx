@@ -3,6 +3,7 @@ import React from 'react'
 import DefaultDialogModalContent from './DefaultDialogModalContent'
 
 interface OkDialogModalContentProps {
+  title?: string
   text: string
   onOkClick: () => void
 }
@@ -10,6 +11,7 @@ interface OkDialogModalContentProps {
 const OkDialogModalContent: React.FC<OkDialogModalContentProps> = props => {
   return (
     <DefaultDialogModalContent
+    title={props.title}
       text={props.text}
       yesButton={{onPress: props.onOkClick, title: '확인'}}
     />

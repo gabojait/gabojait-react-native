@@ -21,6 +21,7 @@ import useGlobalStyles from '@/presentation/styles';
 import { useMutation } from 'react-query';
 import { updateProfileInfo } from '@/data/api/profile';
 import useModal from '@/presentation/components/modal/useModal';
+import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent';
 
 const useUpdateProfile = () => {
   const { data, loading, error } = useAppSelector(state => state.profileReducer.userProfile);
@@ -49,7 +50,16 @@ export function EditMainHeader() {
 
   useEffect(() => {
     if (isSuccess && !isLoading) {
-      modal?.show({ title: '프로필 수정 완료', content: '프로필이 수정되었습니다.' });
+      modal?.show({
+        content: (
+          <OkDialogModalContent
+            text="프로필 수정 완료"
+            onOkClick={() => {
+              modal?.hide();
+            }}
+          />
+        ),
+      });
     }
   }, [isSuccess]);
 

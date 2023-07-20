@@ -27,9 +27,9 @@ const Login = ({ navigation }: OnboardingScreenProps<'Login'>) => {
         navigation.getParent()?.navigate('MainBottomTabNavigation', { screen: 'Home ' });
       } else if (error) {
         modal?.show({
-          title: <Text>로그인</Text>,
           content: (
             <OkDialogModalContent
+              title="로그인"
               text={error?.message ?? '알 수 없는 오류로 로그인에 실패했습니다.'}
               onOkClick={function (): void {
                 modal.hide();

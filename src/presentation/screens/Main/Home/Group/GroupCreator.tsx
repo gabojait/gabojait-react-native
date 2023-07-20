@@ -112,7 +112,6 @@ const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupCreator'>)
 
   const EmptyInputWarningModal = () => {
     modal?.show({
-      title: '',
       content: (
         <SymbolModalContent
           title="빈 입력란이 있어요!"
@@ -127,7 +126,6 @@ const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupCreator'>)
 
   const OpenChatValidationWarningModal = () => {
     modal?.show({
-      title: '',
       content: (
         <SymbolModalContent
           title="알맞은 링크가 아니에요!"
@@ -142,7 +140,6 @@ const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupCreator'>)
 
   const RecruitCntValidationWarningModal = () => {
     modal?.show({
-      title: '',
       content: (
         <SymbolModalContent
           title="팀원이 없어요!"
@@ -157,7 +154,6 @@ const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupCreator'>)
 
   const DeleteConfirmModal = () => {
     modal?.show({
-      title: '',
       content: (
         <BottomModalContent
           title="글을 입력하시겠어요?"

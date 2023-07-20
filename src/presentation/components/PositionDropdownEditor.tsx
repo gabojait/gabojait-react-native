@@ -54,7 +54,6 @@ export const PositionDropdownEditor = ({
 
   const AlertCantRemoveView = () => {
     modal?.show({
-      title: '',
       content: (
         <SymbolModalContent
           title="포지션을 지울 수 없어요!"

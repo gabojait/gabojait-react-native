@@ -46,7 +46,6 @@ const PositionSelector = ({navigation, route}: MainStackScreenProps<'PositionSel
   //TODO: 에러처리결과-> 버튼 상태분기, 모달 띄우기
   function applyCompletedModal() {
     modal?.show({
-      title: '',
       content: (
         <SymbolModalContent
           title="지원 완료!"

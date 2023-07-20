@@ -11,16 +11,13 @@ export interface CustomModalProps extends ModalBaseProps {
 type ModalContextType = {
   content: React.ReactNode;
   show: ({
-    title,
     content,
     ...modalProps
   }: {
-    title: React.ReactNode;
     content: React.ReactNode;
     modalProps?: CustomModalProps;
   }) => void;
   hide: () => void;
-  title: React.ReactNode;
   modal: boolean;
   modalProps: CustomModalProps;
 };
@@ -30,20 +27,18 @@ const { Provider } = (ModalContext = React.createContext<ModalContextType | unde
   content: <></>,
   show: () => {},
   hide: () => {},
-  title: <></>,
   modal: false,
   modalProps: { animationType: undefined, justifying: undefined },
 }));
 
 const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { modal, show, hide, title, content, modalProps } = useRealModal();
+  const { modal, show, hide, content, modalProps } = useRealModal();
   return (
     <Provider
       value={{
         modal,
         show,
         hide,
-        title,
         content,
         modalProps,
       }}

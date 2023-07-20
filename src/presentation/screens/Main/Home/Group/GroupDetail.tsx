@@ -78,7 +78,6 @@ const GroupDetailComponent = ({navigation, route}: MainStackScreenProps<'GroupDe
 
   const reportCompeletedModal = () => {
     modal?.show({
-      title: '',
       content: (
         <SymbolModalContent
           title="신고완료!"
@@ -93,7 +92,6 @@ const GroupDetailComponent = ({navigation, route}: MainStackScreenProps<'GroupDe
 
   const handleReportModal = () => {
     modal?.show({
-      title: '',
       content: (
         <BottomModalContent
           title="팀을 신고하시겠습니까?"

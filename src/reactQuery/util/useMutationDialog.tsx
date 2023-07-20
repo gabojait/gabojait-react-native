@@ -30,9 +30,9 @@ export function useMutationDialog<TVariables, TData>(
     onSuccess(data, variables, context) {
       const message = resultToMessage?.(data) ?? '성공했습니다.';
       modal?.show({
-        title: '완료',
         content: (
           <OkDialogModalContent
+          title="완료"
             text={message}
             onOkClick={() => {
               modal?.hide();
@@ -45,9 +45,9 @@ export function useMutationDialog<TVariables, TData>(
     onError(error, variables, context) {
       const message = errorToMessage?.(error) ?? '요청에 실패했습니다.';
       modal?.show({
-        title: '오류',
         content: (
           <OkDialogModalContent
+          title="오류"
             text={message}
             onOkClick={() => {
               modal?.hide();

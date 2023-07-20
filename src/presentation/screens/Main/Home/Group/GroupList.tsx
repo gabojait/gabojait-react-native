@@ -61,7 +61,6 @@ const GroupList = ({ navigation }: BoardStackParamListProps<'GroupList'>) => {
       console.log(`result 값 확인: ${result}`);
       if (!result) {
         modal?.show({
-          title: '',
           content: (
             <BottomModalContent
               title="팀 찾기 모드로 변경하시겠어요?"

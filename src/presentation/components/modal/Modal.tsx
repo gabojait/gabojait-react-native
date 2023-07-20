@@ -30,7 +30,6 @@ const CustomModal = () => {
             : globalStyles.centeredView,
           {backgroundColor: 'rgba(217, 217, 217, 0.5)', marginTop: 0},
         ]}>
-        {modal?.title != '' ? <Text h3>{modal?.title}</Text> : null}
         {modal?.content}
       </View>
     </Modal>

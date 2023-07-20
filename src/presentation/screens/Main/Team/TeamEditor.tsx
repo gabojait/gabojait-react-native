@@ -136,7 +136,6 @@ export const TeamEditor = ({navigation}: MainStackScreenProps<'TeamEditor'>) => 
 
   const EmptyInputWarningModal = () => {
     modal?.show({
-      title: '',
       content: (
         <SymbolModalContent
           title="빈 입력란이 있어요!"
@@ -151,7 +150,6 @@ export const TeamEditor = ({navigation}: MainStackScreenProps<'TeamEditor'>) => 
 
   const OpenChatValidationWarningModal = () => {
     modal?.show({
-      title: '',
       content: (
         <SymbolModalContent
           title="알맞은 링크가 아니에요!"
@@ -166,7 +164,6 @@ export const TeamEditor = ({navigation}: MainStackScreenProps<'TeamEditor'>) => 
 
   const RecruitCntValidationWarningModal = () => {
     modal?.show({
-      title: '',
       content: (
         <SymbolModalContent
           title="팀원이 없어요!"
@@ -181,7 +178,6 @@ export const TeamEditor = ({navigation}: MainStackScreenProps<'TeamEditor'>) => 
 
   const CancelConfirmModal = () => {
     modal?.show({
-      title: '',
       content: (
         <BottomModalContent
           title="글 수정을 취소하시겠어요?"

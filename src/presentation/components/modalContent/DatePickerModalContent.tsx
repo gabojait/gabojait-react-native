@@ -28,10 +28,18 @@ const DatePickerModalContent: React.FC<DatePickerModalProps> = ({
   const { theme } = useTheme();
   return (
     <View
-      style={{ display: 'flex', alignItems: 'center', backgroundColor: 'white', borderRadius: 20, margin: 30 }}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        backgroundColor: 'white',
+        borderRadius: 20,
+        margin: 30,
+      }}
     >
-      <View style={{margin: 20}}>
-      {title}
+      <View style={{ margin: 20 }}>
+        <Text h3 style={{ textAlign: 'center' }}>
+          {title}
+        </Text>
       </View>
       <DatePicker
         mode="date"

@@ -21,7 +21,6 @@ const FindAccount = () => {
   const findUserNameMutation = useMutation(findUserName, {
     onSuccess(data, variables, context) {
       modal?.show({
-        title: '',
         content: (
           <SymbolModalContent
             title="아이디 전달 완료!"
@@ -37,7 +36,6 @@ const FindAccount = () => {
   const findPasswordMutation = useMutation(findPassword, {
     onSuccess(data, variables, context) {
       modal?.show({
-        title: '',
         content: (
           <SymbolModalContent
             title="임시 비밀번호 전달 완료!"

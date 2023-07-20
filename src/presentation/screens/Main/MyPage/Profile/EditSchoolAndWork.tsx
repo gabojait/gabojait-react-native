@@ -152,7 +152,6 @@ function useDatePickerModal(onChangeData: (data: Periodical) => void) {
 
   const showDatePickerModal = (i: number, data: Periodical, dates: string[]) => {
     modal?.show({
-      title: <></>,
       content: (
         <DatePickerModalContent
           title={<Text h3>{i == 0 ? '시작' : '끝난'} 기간을 입력해주세요</Text>}
