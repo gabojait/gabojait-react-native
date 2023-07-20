@@ -1,14 +1,6 @@
 import { Icon, useTheme } from '@rneui/themed';
 import React, { useEffect, useState } from 'react';
-import {
-  PixelRatio,
-  Platform,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import { PixelRatio, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list';
 import Gabojait from '@/presentation/components/icon/Gabojait';
 import PositionCountDto from '@/data/model/Team/PostionCountDto';
@@ -17,6 +9,7 @@ import PositionDropdownContent from '@/presentation/model/PositionDropdownConten
 import PositionCount from '../model/PositionCount';
 import { mapPositionToTextName, mapKoreanToPosition } from '../utils/PositionDropdownUtils';
 import PositionRecruiting from '../model/PositionRecruitng';
+import { mapToInitial } from '../utils/util';
 
 interface positionDropdownProps {
   onCloseClick: () => void;
@@ -70,7 +63,7 @@ export const PositionDropdown = ({
   }
 
   function handleSelectPosition() {
-    if (position != Position.none) {
+    if (position != Position.None) {
       setImage(position);
       setPositionResult({ position: position, totalRecruitCnt: count });
     }
@@ -86,10 +79,7 @@ export const PositionDropdown = ({
 
   function setImage(position: Position) {
     setSelected(true);
-    if (position == Position.backend) setCodename('B');
-    else if (position == Position.frontend) setCodename('F');
-    else if (position == Position.designer) setCodename('D');
-    else if (position == Position.manager) setCodename('P');
+    setCodename(mapToInitial(position));
   }
 
   return (
@@ -198,7 +188,7 @@ export const PositionDropdown = ({
         >
           {defaultData.position == 'none' ? (
             <SelectList
-              placeholder={initializePlaceHolderText(placeholdeText)}
+              placeholder={initializePlaceHolderText(placeholdeText).toString()}
               inputStyles={{ fontSize: theme.fontSize.xs }}
               setSelected={(value: string) => {
                 setPlaceholdText(value);
@@ -245,7 +235,7 @@ export const PositionDropdown = ({
   );
 };
 
-const NoDropdownBox = ({ text }) => {
+const NoDropdownBox = ({ text }: { text: string | (() => string) }) => {
   const { theme } = useTheme();
 
   return (
@@ -260,7 +250,7 @@ const NoDropdownBox = ({ text }) => {
         alignItems: 'center',
       }}
     >
-      <Text style={{ paddingStart: 20 }}>{text}</Text>
+      <Text style={{ paddingStart: 20 }}>{text.toString()}</Text>
     </View>
   );
 };

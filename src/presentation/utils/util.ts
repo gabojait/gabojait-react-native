@@ -1,4 +1,5 @@
-import { Position, PositionSymbol, PositionText } from '@/data/model/type/Position';
+import { Position } from '@/data/model/type/Position';
+import { PositionSymbol } from '../model/type/Position';
 
 export const usernameRegex = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{5,15}$/; //5~15자 영문, 숫자 조합
 export const passwordRegex =
@@ -58,10 +59,6 @@ export const chagneToOfficialWord = (text: string | undefined) => {
 };
 
 export function mapToInitial(position: Position) {
-  // if (position == Position.backend) return 'B'
-  // else if (position == Position.designer) return 'D'
-  // else if (position == Position.frontend) return 'F'
-  // else if (position == Position.manager) return 'P'
   return PositionSymbol[position];
 }
 
@@ -71,7 +68,6 @@ export const isEmptyArray = (array: any[] | undefined) => {
   else return false;
 };
 
-//TODO:undefined 값을 다른 곳에서 처리하고 들어오는 방법으로 수정
 export const isLeader = (isLeader: boolean | undefined) => {
   if (isLeader) return true;
   else return false;
@@ -83,7 +79,7 @@ export const DiffType = {
   VALUE_DELETED: 'deleted',
   VALUE_UNCHANGED: 'unchanged',
 } as const;
-export type DiffType = (typeof DiffType)[keyof typeof DiffType];
+export type DiffType = typeof DiffType[keyof typeof DiffType];
 
 type Diff<T> = {
   [key in keyof T]: { type: DiffType; data: any } | { type: DiffType; data: any }[] | Diff<any>;

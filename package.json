@@ -28,11 +28,7 @@
     "i18next": "^23.2.11",
     "pod-install": "^0.1.38",
     "react": "18.0.0",
-<<<<<<< HEAD
-    "react-loading": "^2.0.3",
-=======
     "react-i18next": "^13.0.2",
->>>>>>> 5435afe1fc5d8c457ba6145deda9af0d08044522
     "react-native": "0.69.3",
     "react-native-date-picker": "^4.2.5",
     "react-native-document-picker": "^8.1.3",

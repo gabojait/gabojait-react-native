@@ -3,7 +3,6 @@ import { makeStyles, useTheme } from '@rneui/themed';
 import React, { useEffect } from 'react';
 import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 import TeamBanner from '@/presentation/components/TeamBanner';
-import { ModalContext } from '@/presentation/components/modal/context';
 import { BoardStackParamListProps } from '@/presentation/navigation/types';
 import { getRecruiting, GetRecruitingProps } from '@/data/api/team';
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';

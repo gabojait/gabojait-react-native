@@ -40,10 +40,10 @@ export const PositionDropdownMaker = ({
   });
   const [teamMemberRecruit, setTeamMemberRecruit] = useState<PositionCountDto[]>([]);
   const [positionState, setPositionState] = useState<PositionDropdownContent[]>([
-    { key: Position.backend, value: KoreanPosition.backend, disabled: false },
-    { key: Position.frontend, value: KoreanPosition.frontend, disabled: false },
-    { key: Position.designer, value: KoreanPosition.designer, disabled: false },
-    { key: Position.manager, value: KoreanPosition.manager, disabled: false },
+    { key: Position.Backend, value: KoreanPosition.backend, disabled: false },
+    { key: Position.Frontend, value: KoreanPosition.frontend, disabled: false },
+    { key: Position.Designer, value: KoreanPosition.designer, disabled: false },
+    { key: Position.Manager, value: KoreanPosition.manager, disabled: false },
   ]);
 
   useEffect(() => {
@@ -80,7 +80,7 @@ export const PositionDropdownMaker = ({
     const newlyAddedValue: PositionDropdownProps = {
       index: index,
       hide: false,
-      positionData: { position: 'none', totalRecruitCnt: 0 },
+      positionData: { position: Position.None, totalRecruitCnt: 0 },
     };
 
     setState(prevState => ({
