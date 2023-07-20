@@ -1,30 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import { makeStyles, Text, useTheme } from '@rneui/themed';
-import { KeyboardAvoidingView, ScrollView, TextInput, View } from 'react-native';
-import TeamRequestDto from '@/data/model/Team/TeamRequestDto';
-import { ModalContext } from '@/presentation/components/modal/context';
-import CardWrapper from '@/presentation/components/CardWrapper';
-import { FilledButton } from '@/presentation/components/Button';
-import { MainStackScreenProps } from '@/presentation/navigation/types';
-import useGlobalStyles from '@/presentation/styles';
-import PositionCountDto from '@/data/model/Team/PostionCountDto';
-import { getMyTeam } from '@/data/api/team';
-import { UseMutationResult, useQuery, UseQueryResult } from 'react-query';
-import TeamDto from '@/data/model/Team/TeamDto';
-import PositionRecruiting from '@/presentation/model/PositionRecruitng';
-import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent';
-import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
-import { PositionDropdownEditor } from '@/presentation/components/PositionDropdownEditor';
-import { useUpdateTeam } from '@/reactQuery/useUpdateTeam';
-import { Buffering } from '@/presentation/components/Buffering';
-import { teamKeys } from '@/reactQuery/key/TeamKeys';
-import { mapPositionRecruitingToPositionCount } from '@/presentation/model/mapper/mapPositionRecruitingToPositionCount';
+import React, {useEffect, useState} from 'react'
+import {makeStyles, Text, useTheme} from '@rneui/themed'
+import {KeyboardAvoidingView, ScrollView, TextInput, View} from 'react-native'
+import TeamRequestDto from '@/data/model/Team/TeamRequestDto'
+import CardWrapper from '@/presentation/components/CardWrapper'
+import {FilledButton} from '@/presentation/components/Button'
+import {MainStackScreenProps} from '@/presentation/navigation/types'
+import useGlobalStyles from '@/presentation/styles'
+import PositionCountDto from '@/data/model/Team/PostionCountDto'
+import {getMyTeam} from '@/data/api/team'
+import {useQuery, UseQueryResult} from 'react-query'
+import TeamDto from '@/data/model/Team/TeamDto'
+import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent'
+import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent'
+import {PositionDropdownEditor} from '@/presentation/components/PositionDropdownEditor'
+import useModal from '@/presentation/components/modal/useModal'
+import { useUpdateTeam } from '@/reactQuery/useUpdateTeam'
+import { mapPositionRecruitingToPositionCount } from '@/presentation/model/mapper/mapPositionRecruitingToPositionCount'
+import { teamKeys } from '@/reactQuery/key/TeamKeys'
 
 //TODO: api 수정반영, react query 적용, 요구사항 충족 필요함
-export const TeamEditor = ({ navigation }: MainStackScreenProps<'TeamEditor'>) => {
-  const { theme } = useTheme();
-  const styles = useStyles({ navigation });
-  const modal = React.useContext(ModalContext);
+export const TeamEditor = ({navigation}: MainStackScreenProps<'TeamEditor'>) => {
+  const {theme} = useTheme()
+  const styles = useStyles({navigation})
+  const modal = useModal()
   const {
     data: teamData,
     isLoading: isTeamDataLoading,
@@ -135,7 +133,6 @@ export const TeamEditor = ({ navigation }: MainStackScreenProps<'TeamEditor'>) =
 
   const EmptyInputWarningModal = () => {
     modal?.show({
-      title: '',
       content: (
         <SymbolModalContent
           title="빈 입력란이 있어요!"
@@ -150,7 +147,6 @@ export const TeamEditor = ({ navigation }: MainStackScreenProps<'TeamEditor'>) =
 
   const OpenChatValidationWarningModal = () => {
     modal?.show({
-      title: '',
       content: (
         <SymbolModalContent
           title="알맞은 링크가 아니에요!"
@@ -165,7 +161,6 @@ export const TeamEditor = ({ navigation }: MainStackScreenProps<'TeamEditor'>) =
 
   const RecruitCntValidationWarningModal = () => {
     modal?.show({
-      title: '',
       content: (
         <SymbolModalContent
           title="팀원이 없어요!"
@@ -180,7 +175,6 @@ export const TeamEditor = ({ navigation }: MainStackScreenProps<'TeamEditor'>) =
 
   const CancelConfirmModal = () => {
     modal?.show({
-      title: '',
       content: (
         <BottomModalContent
           title="글 수정을 취소하시겠어요?"

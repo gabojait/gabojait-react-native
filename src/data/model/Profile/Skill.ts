@@ -1,14 +1,14 @@
 export const Level = {
-  LOW: 1,
-  MID: 2,
-  HIGH: 3,
+  low: 1,
+  mid: 2,
+  high: 3,
 };
 
 export default interface Skill {
-  createdAt: string;
+  createdAt?: string;
   isExperienced: boolean;
   level: keyof typeof Level;
-  skillId?: string;
+  skillId?: number;
   skillName: string;
-  updatedAt: string;
+  updatedAt?: string;
 }

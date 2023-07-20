@@ -7,7 +7,7 @@ import { useTheme } from '@rneui/themed';
 import CustomIcon from '@/presentation/components/icon/Gabojait';
 import PositionCountDto from '@/data/model/Team/PostionCountDto';
 import { Position } from '@/data/model/type/Position';
-import { PositionTextName } from '@/presentation/model/PositionTextName';
+import { KoreanPosition } from '@/presentation/model/type/Position';
 import PositionDropdownContent from '@/presentation/model/PositionDropdownContent';
 import PositionCount from '../model/PositionCount';
 import { mapPositionCountToPositionRecruiting } from '../model/mapper/mapPositionCountToPositionRecruiting';
@@ -40,10 +40,10 @@ export const PositionDropdownMaker = ({
   });
   const [teamMemberRecruit, setTeamMemberRecruit] = useState<PositionCountDto[]>([]);
   const [positionState, setPositionState] = useState<PositionDropdownContent[]>([
-    { key: Position.backend, value: PositionTextName.backend, disabled: false },
-    { key: Position.frontend, value: PositionTextName.frontend, disabled: false },
-    { key: Position.designer, value: PositionTextName.designer, disabled: false },
-    { key: Position.manager, value: PositionTextName.manager, disabled: false },
+    { key: Position.backend, value: KoreanPosition.backend, disabled: false },
+    { key: Position.frontend, value: KoreanPosition.frontend, disabled: false },
+    { key: Position.designer, value: KoreanPosition.designer, disabled: false },
+    { key: Position.manager, value: KoreanPosition.manager, disabled: false },
   ]);
 
   useEffect(() => {

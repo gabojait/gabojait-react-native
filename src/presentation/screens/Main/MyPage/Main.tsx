@@ -1,15 +1,15 @@
-import {FlatList, ScrollView, TouchableOpacity, View} from 'react-native'
-import React, {useEffect} from 'react'
-import {Icon, makeStyles, Text, useTheme} from '@rneui/themed'
-import {MainBottomTabNavigationProps} from '@/presentation/navigation/types'
-import CardWrapper from '@/presentation/components/CardWrapper'
-import Gabojait from '@/presentation/components/icon/Gabojait'
-import DivideWrapper from '@/presentation/components/DivideWrapper'
-import {RatingBar} from '@/presentation/components/RatingBar'
-import {useAppDispatch, useAppSelector} from '@/redux/hooks'
-import {chagneToOfficialWord, isEmptyArray, isLeader} from '@/presentation/utils/util'
-import ProfileViewDto from '@/data/model/Profile/ProfileViewDto'
-import {getProfile} from '@/redux/reducers/profileReducer'
+import { FlatList, ScrollView, TouchableOpacity, View } from 'react-native';
+import React, { useEffect } from 'react';
+import { Icon, makeStyles, Text, useTheme } from '@rneui/themed';
+import { MainBottomTabNavigationProps } from '@/presentation/navigation/types';
+import CardWrapper from '@/presentation/components/CardWrapper';
+import Gabojait from '@/presentation/components/icon/Gabojait';
+import DivideWrapper from '@/presentation/components/DivideWrapper';
+import { RatingBar } from '@/presentation/components/RatingBar';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import ProfileViewDto from '@/data/model/Profile/ProfileViewDto';
+import { getProfile } from '@/redux/reducers/profileReducer';
+import { chagneToOfficialWord, isEmptyArray } from '@/presentation/utils/util';
 
 const Main = ({ navigation }: MainBottomTabNavigationProps<'MyPage'>) => {
   const { theme } = useTheme();
@@ -259,7 +259,7 @@ const MyReview = ({ data }: { data: ProfileViewDto }) => {
           horizontal={true}
           data={data?.reviews}
           renderItem={({ item }) => (
-            <ReviewItem name={item.nickname} score={item.rating} content={item.content} />
+            <ReviewItem name={item.revieweeNickname} score={2.5} content={item.post} />
           )}
         />
       </View>

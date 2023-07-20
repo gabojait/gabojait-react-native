@@ -4,8 +4,8 @@ import {
   asyncState,
   createAsyncReducer,
 } from '@/lib/reducerUtils';
-import { createAction, createReducer, getType } from 'typesafe-actions';
-import { MutationType, ProfileAction, ProfileState } from '../action_types/profileActionTypes';
+import { createReducer } from 'typesafe-actions';
+import { ProfileAction, ProfileState } from '../action_types/profileActionTypes';
 import * as profileApi from '@/data/api/profile';
 import {
   getProfileAsyncAction,
@@ -22,6 +22,7 @@ import {
   UPDATE_WORK,
   DELETE_PORTFOLIO,
   UPDATE_PORTFOLIO,
+  SET_POSITION,
 } from '../action/profileActions';
 import createAsyncThunk from '@/lib/createAsyncThunk';
 import Work from '@/data/model/Profile/Work';
@@ -47,6 +48,16 @@ export const profileReducer = createReducer<ProfileState, ProfileAction>(initial
   //   console.log(action);
   //   return { ...state, educations: action.payload as Education[] };
   // },
+  [SET_POSITION]: (state, action) => ({
+    ...state,
+    userProfile: {
+      ...state.userProfile,
+      data: {
+        ...state.userProfile.data,
+        position: action.payload,
+      },
+    },
+  }),
   [CREATE_WORK]: (state, action) => ({
     ...state,
     userProfile: {

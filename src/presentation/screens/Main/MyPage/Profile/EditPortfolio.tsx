@@ -1,6 +1,6 @@
 import Portfolio, { PortfolioType } from '@/data/model/Profile/Portfolio';
 import CustomInput from '@/presentation/components/CustomInput';
-import { useAppSelector } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Input, Text, useTheme } from '@rneui/themed';
 import React, { useEffect, useState } from 'react';
 import { StyleProp, View, ViewStyle } from 'react-native';
@@ -11,37 +11,28 @@ import { IconProps } from 'react-native-vector-icons/Icon';
 import { ScreenWidth } from '@rneui/base';
 import { List } from './EditSchoolAndWork';
 import useGlobalStyles from '@/presentation/styles';
+import { createPortfolio, deletePortfolio, updatePortfolio } from '@/redux/action/profileActions';
 
 const EditPortfolio = () => {
   // Todo: Implement Portfolio Reducer
   const { data, loading, error } = useAppSelector(state => state.profileReducer.userProfile);
   const orgPortfolios = data?.portfolios ?? [];
   console.log(orgPortfolios);
+  const dispatch = useAppDispatch();
 
   const [portfolios, setPortfolios] = useState(orgPortfolios);
 
   const globalStyles = useGlobalStyles();
 
-  const handleAdd = (portfolio: PortfolioResponse) => {
-    setPortfolios(prevState => [
-      ...prevState,
-      { ...portfolio, portfolioId: prevState.length.toString() },
-    ]);
+  const handleAdd = (portfolio: Portfolio) => {
+    dispatch(createPortfolio(portfolio));
   };
-  const handleDelete = (id: string) => {
-    setPortfolios(prevState => {
-      const idx = prevState.findIndex(item => item.portfolioId == id);
-      prevState.splice(idx, 1);
-      return [...prevState];
-    });
+  const handleDelete = (id: number) => {
+    dispatch(deletePortfolio(id));
   };
 
-  const handleEdit = (portfolio: PortfolioResponse) => {
-    setPortfolios(prevState => {
-      const idx = prevState.findIndex(item => item.portfolioId == portfolio.portfolioId);
-      prevState[idx] = portfolio;
-      return [...prevState];
-    });
+  const handleEdit = (portfolio: Portfolio) => {
+    dispatch(updatePortfolio(portfolio.portfolioId!, portfolio));
   };
 
   return (
@@ -82,7 +73,7 @@ export const PortfolioList = ({
   portfolios: Portfolio[];
   onChangePortfolio: (portfolio: Portfolio) => void;
   onAddPortfolio: (portfolio: Portfolio) => void;
-  onDeletePortfolio: (portfolioId: string) => void;
+  onDeletePortfolio: (portfolioId: number) => void;
   title: string;
   fieldType: PortfolioType;
 }) => {
@@ -136,11 +127,11 @@ export const PortfolioList = ({
         }}
         onAdd={() =>
           onAddPortfolio({
-            portfolioId: portfolios.length.toString(),
+            portfolioId: portfolios.length,
             portfolioType: fieldType,
             name: '',
             url: '',
-          } as PortfolioResponse)
+          })
         }
         title={title}
       />
@@ -164,12 +155,12 @@ export const EditItem = ({
   onDeleteItem,
   children,
 }: {
-  id: string;
-  name: string;
+  id: number;
+  name?: string;
   fieldColor?: string;
   onChangeName: (text: string) => void;
   titleEditable?: boolean;
-  onDeleteItem?: (value: string) => void;
+  onDeleteItem?: (value: number) => void;
   children: React.ReactNode;
 }) => {
   const { theme } = useTheme();

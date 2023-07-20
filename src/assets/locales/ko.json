@@ -1,0 +1,7 @@
+{
+  "nicknameDupOk": "닉네임 중복검사 완료",
+  "usernameDupOk": "아이디 중복검사 완료",
+  "emailOk": "이메일 중복검사/인증번호 발송 완료",
+  "authCodeVerifyOk": "인증번호 확인 완료",
+  "registerOk": "회원가입 완료"
+}

@@ -14,11 +14,12 @@ import {PositionDropdownMaker} from '@/presentation/components/PositionDropdownM
 import PositionCountDto from '@/data/model/Team/PostionCountDto'
 import {useCreateTeam} from '@/reactQuery/useCreateTeam'
 import useGlobalStyles from '@/presentation/styles'
+import useModal from '@/presentation/components/modal/useModal'
 
 const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupCreator'>) => {
   const {theme} = useTheme()
   const styles = useStyles({navigation, route})
-  const modal = React.useContext(ModalContext)
+  const modal = useModal()
   const [teamCreateState, setTeamCreateState] = useState<TeamRequestDto>({
     expectation: '',
     openChatUrl: '',
@@ -111,7 +112,6 @@ const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupCreator'>)
 
   const EmptyInputWarningModal = () => {
     modal?.show({
-      title: '',
       content: (
         <SymbolModalContent
           title="빈 입력란이 있어요!"
@@ -126,7 +126,6 @@ const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupCreator'>)
 
   const OpenChatValidationWarningModal = () => {
     modal?.show({
-      title: '',
       content: (
         <SymbolModalContent
           title="알맞은 링크가 아니에요!"
@@ -141,7 +140,6 @@ const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupCreator'>)
 
   const RecruitCntValidationWarningModal = () => {
     modal?.show({
-      title: '',
       content: (
         <SymbolModalContent
           title="팀원이 없어요!"
@@ -156,7 +154,6 @@ const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupCreator'>)
 
   const DeleteConfirmModal = () => {
     modal?.show({
-      title: '',
       content: (
         <BottomModalContent
           title="글을 입력하시겠어요?"

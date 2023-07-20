@@ -5,13 +5,3 @@ import type {RootState, AppDispatch} from './store'
 type DispatchFunc = () => AppDispatch
 export const useAppDispatch: DispatchFunc = useDispatch
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
-
-
-export const useData = (stateSelector: (state: RootState) => any) => {
-  const result = useAppSelector(stateSelector)
-  return {
-    ...result,
-    isSuccess: !result.loading && result.data && !result.error,
-    isError: !result.loading && !result.data && result.error,
-  }
-}

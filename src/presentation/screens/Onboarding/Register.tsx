@@ -1,11 +1,11 @@
-import {CheckBox, makeStyles, Text, useTheme} from '@rneui/themed'
-import React, {useEffect, useState} from 'react'
-import {ScrollView, View} from 'react-native'
-import {FilledButton, OutlinedButton} from '@/presentation/components/Button'
-import {OnboardingScreenProps} from '@/presentation/navigation/types'
-import CustomInput from '@/presentation/components/CustomInput'
-import color from '@/presentation/res/styles/color'
-import RegisterRequestDto from '@/data/model/RegisterRequestDto'
+import { CheckBox, makeStyles, Text, useTheme } from '@rneui/themed';
+import React, { useEffect, useState, useTransition } from 'react';
+import { ScrollView, View } from 'react-native';
+import { FilledButton, OutlinedButton } from '@/presentation/components/Button';
+import { OnboardingScreenProps } from '@/presentation/navigation/types';
+import CustomInput from '@/presentation/components/CustomInput';
+import color from '@/presentation/res/styles/color';
+import RegisterRequestDto from '@/data/model/RegisterRequestDto';
 import {
   authCodeRegex,
   emailRegex,
@@ -13,24 +13,31 @@ import {
   passwordRegex,
   realnameRegex,
   usernameRegex,
-} from '@/presentation/utils/util'
-import {Gender} from '@/data/model/Gender'
-import DatePickerModalContent from '@/presentation/components/modalContent/DatePickerModalContent'
-import {ValidatorState} from '@/presentation/components/props/StateProps'
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import AgreementItem, {AgreementState} from '@/presentation/components/Agreement'
-import DropdownButton from '@/presentation/components/DropdownWithoutItem'
+} from '@/presentation/utils/util';
+import { Gender } from '@/data/model/Gender';
+import DatePickerModalContent from '@/presentation/components/modalContent/DatePickerModalContent';
+import { ValidatorState } from '@/presentation/components/props/StateProps';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import AgreementItem, { AgreementState } from '@/presentation/components/Agreement';
+import DropdownButton from '@/presentation/components/DropdownWithoutItem';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { ModalContext } from '@/presentation/components/modal/context';
+import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent';
+import ErrorCode from '@/data/api/ErrorCode';
+import useModal from '@/presentation/components/modal/useModal';
+import { signOut } from '@/redux/action/login';
+import { MutationFunction, MutationKey, QueryFunction, useMutation } from 'react-query';
 import {
   checkNicknameDuplicate,
   checkUsernameDuplicate,
   register,
   sendAuthCode,
   verifyAuthCode,
-} from '@/redux/reducers/registerReducer'
-import {useAppDispatch, useAppSelector} from '@/redux/hooks'
-import {ModalContext} from '@/presentation/components/modal/context'
-import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent'
-import ErrorCode from '@/data/api/ErrorCode'
+} from '@/data/api/accounts';
+import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
+import { useTranslation } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import '@/lib/date';
 
 const agreementItems = [
   {
@@ -45,181 +52,95 @@ const agreementItems = [
     checked: false,
     url: 'https://gs97ahninu.notion.site/29a9af66564b47c0ac758a882adf0b52',
   },
-]
+];
 
-const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
+const QueryKey = {
+  nickNmDupCheck: (nickname?: string) => ['nickNmDupCheck', nickname],
+  userIdDupCheck: (userId?: string) => ['userIdDupCheck', userId],
+  emailDupCheck: (email?: string) => ['emailDupCheck', email],
+  emailVerification: (email?: string, verificationCode?: string) => [
+    'emailVerification',
+    { email, verificationCode },
+  ],
+  register: (registerDto: RegisterRequestDto) => ['register', registerDto],
+} as const;
+
+const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
   const [registerState, setRegisterState] = useState<RegisterRequestDto>({
     gender: Gender.Female,
     birthdate: new Date().toISOString(),
     fcmToken: 'testToken!',
-  })
-  const {theme} = useTheme()
-  const dispatch = useAppDispatch()
-  const modal = React.useContext(ModalContext)
+  });
+  const { theme } = useTheme();
+  const dispatch = useAppDispatch();
+  const modal = useModal();
+
+  const { t } = useTranslation();
+  // Todo: 결과로 다이얼로그를 띄우는 (조건 커스텀 가능, 동작 따로 정의 가능) mutation 훅을 정의하자.
+  const { mutation: nickNmDupCheckMutation } = useMutationDialog(
+    QueryKey.nickNmDupCheck(registerState.nickname),
+    checkNicknameDuplicate,
+    { resultToMessage: _ => t('nicknameDupOk') },
+  );
+  const { mutation: userIdDupCheckMutation } = useMutationDialog(
+    QueryKey.userIdDupCheck(registerState.username),
+    checkUsernameDuplicate,
+    { resultToMessage: _ => t('usernameDupOk') },
+  );
+  const { mutation: emailDupCheckMutation } = useMutationDialog(
+    QueryKey.emailDupCheck(registerState.email),
+    sendAuthCode,
+    {
+      resultToMessage: _ => t('emailOk'),
+      onSuccessClick(result) {
+        console.log(result);
+      },
+    },
+  );
+  const { mutation: emailVerificationMutation } = useMutationDialog(
+    QueryKey.emailVerification(registerState.email, registerState.authCode),
+    verifyAuthCode,
+    {
+      resultToMessage: _ => t('authCodeVerifyOk'),
+      onSuccessClick(result) {
+        console.log(result);
+      },
+    },
+  );
+  const { mutation: registerMutation } = useMutationDialog(
+    QueryKey.register(registerState),
+    register,
+    {
+      resultToMessage: _ => t('registerOk'),
+      onSuccessClick(result) {
+        navigation.navigate('RegisterCompleted');
+      },
+    },
+  );
 
   const [agreementState, setAgreementState] = useState<AgreementState>({
     checkedAll: false,
     items: agreementItems,
-  })
-
-  const [dupChecked, setDupChecked] = useState(false)
-  const [emailVerified, setEmailVerified] = useState(false)
+  });
 
   useEffect(() => {
     if (agreementState.items.filter(item => item.checked).length == agreementState.items.length) {
-      setAgreementState(prevState => ({...prevState, checkedAll: true}))
+      setAgreementState(prevState => ({ ...prevState, checkedAll: true }));
     } else {
-      setAgreementState(prevState => ({...prevState, checkedAll: false}))
+      setAgreementState(prevState => ({ ...prevState, checkedAll: false }));
     }
-  }, [agreementState.items])
+  }, [agreementState.items]);
 
-  const styles = useStyles({navigation, route})
+  const styles = useStyles({ navigation, route });
 
   function isValid(regex: RegExp, text?: string): ValidatorState {
     if (text?.length == 0 || !text) {
-      return 'none'
+      return 'none';
     } else {
-      return regex.test(text) ? 'valid' : 'invalid'
+      return regex.test(text) ? 'valid' : 'invalid';
     }
   }
   // Todo: 우선 단순 리퀘 구현. 추후 에러 핸들링 등 예정.
-
-  const {
-    data: registerResult,
-    loading: registerLoading,
-    error: registerError,
-  } = useAppSelector(state => state.registerReducer.registerResult)
-
-  useEffect(() => {
-    if (!registerLoading) {
-      if (registerResult && !registerError) {
-        navigation.navigate('RegisterCompleted')
-      } else if (!registerResult && registerError) {
-        modal?.show({
-          title: '오류',
-          content: (
-            <OkDialogModalContent
-              text={registerError.message ?? '회원가입에 실패했어요.'}
-              onOkClick={() => {
-                modal.hide()
-              }}
-            />
-          ),
-        })
-      }
-    }
-  }, [registerResult, registerLoading, registerError])
-
-  const {
-    data: usernameDup,
-    loading: usernameDupLoading,
-    error: usernameDupError,
-  } = useAppSelector(state => state.registerReducer.usernameDupCheckResult)
-  useEffect(() => {
-    if (!usernameDupLoading) {
-      if ((usernameDup && !usernameDupError) || (!usernameDup && usernameDupError)) {
-        modal?.show({
-          title: <Text>중복확인</Text>,
-          content: (
-            <OkDialogModalContent
-              text={
-                usernameDup && !usernameDupError
-                  ? '사용할 수 있는 아이디입니다.'
-                  : usernameDupError?.message ?? '알 수 없는 오류입니다.'
-              }
-              onOkClick={() => {
-                modal?.hide()
-              }}
-            />
-          ),
-        })
-      }
-    }
-  }, [usernameDup, usernameDupLoading, usernameDupError])
-  const {
-    data: nicknameDup,
-    loading: nicknameDupLoading,
-    error: nicknameDupError,
-  } = useAppSelector(state => state.registerReducer.nicknameDupCheckResult)
-
-  useEffect(() => {
-    if (!nicknameDupLoading) {
-      if ((nicknameDup && !nicknameDupError) || (!nicknameDup && nicknameDupError)) {
-        modal?.show({
-          title: <Text>중복확인</Text>,
-          content: (
-            <OkDialogModalContent
-              text={
-                nicknameDup && !nicknameDupError
-                  ? '사용할 수 있는 닉네임입니다.'
-                  : nicknameDupError?.message ?? '알 수 없는 오류입니다.'
-              }
-              onOkClick={() => {
-                modal?.hide()
-              }}
-            />
-          ),
-        })
-      }
-    }
-  }, [nicknameDup, nicknameDupLoading, nicknameDupError])
-
-  const {
-    data: sendAuthCodeResult,
-    loading: sendAuthCodeLoading,
-    error: sendAuthCodeError,
-  } = useAppSelector(state => state.registerReducer.sendAuthCodeResult)
-
-  useEffect(() => {
-    if (sendAuthCodeResult && !sendAuthCodeLoading) {
-      modal?.show({
-        title: <Text>인증번호 발송</Text>,
-        content: (
-          <OkDialogModalContent
-            text={
-              !sendAuthCodeError
-                ? '이메일이 발송되었습니다.\n보이지 않을 경우 스팸메일함을 확인해주세요.'
-                : '이메일 발송에 실패했습니다.\n존재하는 이메일인지 확인해주세요.'
-            }
-            onOkClick={() => {
-              setRegisterState(state => ({...state, authCode: ''}))
-              modal?.hide()
-            }}
-          />
-        ),
-      })
-    }
-  }, [sendAuthCodeResult, sendAuthCodeLoading, sendAuthCodeError])
-
-  const {
-    data: verifyAuthCodeResult,
-    loading: verifyAuthCodeLoading,
-    error: verifyAuthCodeError,
-  } = useAppSelector(state => state.registerReducer.verifyAuthCodeResult)
-
-  useEffect(() => {
-    if (
-      !verifyAuthCodeLoading &&
-      ((verifyAuthCodeResult && !verifyAuthCodeError) ||
-        (!verifyAuthCodeResult && verifyAuthCodeError))
-    ) {
-      modal?.show({
-        title: <Text>인증번호 확인</Text>,
-        content: (
-          <OkDialogModalContent
-            text={
-              !verifyAuthCodeError
-                ? '이메일 인증에 성공했습니다.\n가입을 완료해주세요.'
-                : '인증번호가 올바르지 않습니다.'
-            }
-            onOkClick={() => {
-              modal?.hide()
-            }}
-          />
-        ),
-      })
-    }
-  }, [verifyAuthCodeResult, verifyAuthCodeLoading, verifyAuthCodeError])
 
   const checkAllFieldsValidate = () => {
     //FIXME: 개똥코드. 고쳐야해요
@@ -229,20 +150,20 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
       passwordRegex.test(registerState.password ?? '') &&
       emailRegex.test(registerState.email ?? '') &&
       agreementState.checkedAll
-    )
-  }
+    );
+  };
 
   return (
     <View>
       <ScrollView style={styles.view} showsVerticalScrollIndicator={false}>
         <View style={styles.item}>
-          <View style={{flex: 5}}>
+          <View style={{ flex: 5 }}>
             <CustomInput
               state={isValid(usernameRegex, registerState.username)}
               label="아이디 입력"
               value={registerState.username}
               onChangeText={(text: string) => {
-                setRegisterState(prevState => ({...prevState, username: text}))
+                setRegisterState(prevState => ({ ...prevState, username: text }));
               }}
             />
           </View>
@@ -250,19 +171,21 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
             title="중복확인"
             size="sm"
             onPress={() => {
-              if (usernameRegex.test(registerState.username ?? ''))
-                dispatch(checkUsernameDuplicate(registerState.username ?? ''))
+              if (usernameRegex.test(registerState.username ?? '')) {
+                dispatch(signOut());
+                userIdDupCheckMutation?.mutate(registerState.username!);
+              }
             }}
           />
         </View>
         <View style={styles.item}>
-          <View style={{flex: 5}}>
+          <View style={{ flex: 5 }}>
             <CustomInput
               state={isValid(nicknameRegex, registerState.nickname)}
               label="닉네임 입력"
               value={registerState.nickname}
               onChangeText={(text: string) => {
-                setRegisterState(prevState => ({...prevState, nickname: text}))
+                setRegisterState(prevState => ({ ...prevState, nickname: text }));
               }}
             />
           </View>
@@ -270,8 +193,10 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
             title="중복확인"
             size="sm"
             onPress={() => {
-              if (nicknameRegex.test(registerState.nickname ?? ''))
-                dispatch(checkNicknameDuplicate(registerState.nickname ?? ''))
+              if (nicknameRegex.test(registerState.nickname ?? '')) {
+                dispatch(signOut());
+                nickNmDupCheckMutation.mutate(registerState.nickname!);
+              }
             }}
           />
         </View>
@@ -282,7 +207,7 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
             secureTextEntry
             value={registerState.password}
             onChangeText={(text: string) => {
-              setRegisterState(prevState => ({...prevState, password: text}))
+              setRegisterState(prevState => ({ ...prevState, password: text }));
             }}
           />
         </View>
@@ -300,20 +225,20 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
             secureTextEntry
             value={registerState.passwordReEntered}
             onChangeText={(text: string) => {
-              setRegisterState(prevState => ({...prevState, passwordReEntered: text}))
+              setRegisterState(prevState => ({ ...prevState, passwordReEntered: text }));
             }}
           />
         </View>
 
         <View style={styles.item}>
-          <View style={{flex: 5}}>
+          <View style={{ flex: 5 }}>
             <CustomInput
               state={isValid(emailRegex, registerState.email)}
               label="이메일 입력"
               value={registerState.email}
               keyboardType="email-address"
               onChangeText={(text: string) => {
-                setRegisterState(prevState => ({...prevState, email: text}))
+                setRegisterState(prevState => ({ ...prevState, email: text }));
               }}
             />
           </View>
@@ -321,20 +246,22 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
             title="인증하기"
             size="sm"
             onPress={() => {
-              if (registerState.email && emailRegex.test(registerState.email))
-                dispatch(sendAuthCode(registerState.email))
+              if (registerState.email && emailRegex.test(registerState.email)) {
+                dispatch(signOut());
+                emailDupCheckMutation.mutate(registerState.email!);
+              }
             }}
           />
         </View>
-        {sendAuthCodeResult ? (
+        {emailDupCheckMutation.isSuccess && (
           <View style={styles.item}>
-            <View style={{flex: 5}}>
+            <View style={{ flex: 5 }}>
               <CustomInput
                 state={isValid(authCodeRegex, registerState.authCode)}
                 label="인증번호 입력"
                 value={registerState.authCode}
                 onChangeText={(text: string) => {
-                  setRegisterState(prevState => ({...prevState, authCode: text}))
+                  setRegisterState(prevState => ({ ...prevState, authCode: text }));
                 }}
               />
             </View>
@@ -342,17 +269,17 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
               title="인증확인"
               size="sm"
               onPress={() => {
-                if (registerState.authCode && authCodeRegex.test(registerState.authCode))
-                  dispatch(
-                    verifyAuthCode({
-                      email: registerState.email ?? '',
-                      verificationCode: registerState.authCode ?? '',
-                    }),
-                  )
+                if (registerState.authCode && authCodeRegex.test(registerState.authCode)) {
+                  console.log(AsyncStorage.getItem('accessToken'));
+                  emailVerificationMutation.mutate({
+                    email: registerState.email ?? '',
+                    verificationCode: registerState.authCode ?? '',
+                  });
+                }
               }}
             />
           </View>
-        ) : null}
+        )}
 
         <View style={styles.item}>
           <CustomInput
@@ -360,7 +287,7 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
             label="이름(실명)"
             value={registerState.legalName}
             onChangeText={(text: string) => {
-              setRegisterState(prevState => ({...prevState, legalName: text}))
+              setRegisterState(prevState => ({ ...prevState, legalName: text }));
             }}
           />
         </View>
@@ -375,16 +302,19 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
             }
             onClick={() =>
               modal?.show({
-                title: <Text>생년월일 입력</Text>,
                 content: (
                   <DatePickerModalContent
+                    title="생년월일 입력"
                     doneButtonText="다음"
                     onModalVisibityChanged={visibility => {
-                      if (!visibility) modal.hide()
+                      if (!visibility) modal.hide();
                     }}
                     date={new Date(registerState.birthdate ?? new Date().toISOString())}
                     onDatePicked={date => {
-                      setRegisterState(prevState => ({...prevState, birthdate: date.toISOString()}))
+                      setRegisterState(prevState => ({
+                        ...prevState,
+                        birthdate: date.toISOString(),
+                      }));
                     }}
                     maximumDate={new Date()}
                   />
@@ -400,7 +330,9 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
             <OutlinedButton
               title="여자"
               size="sm"
-              onPress={() => setRegisterState(prevState => ({...prevState, gender: Gender.Female}))}
+              onPress={() =>
+                setRegisterState(prevState => ({ ...prevState, gender: Gender.Female }))
+              }
               style={[
                 styles.toggleButton,
                 registerState.gender == Gender.Female ? styles.active : null,
@@ -410,7 +342,7 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
             <OutlinedButton
               title="남자"
               size="sm"
-              onPress={() => setRegisterState(prevState => ({...prevState, gender: Gender.Male}))}
+              onPress={() => setRegisterState(prevState => ({ ...prevState, gender: Gender.Male }))}
               style={[
                 styles.toggleButton,
                 registerState.gender == Gender.Male ? styles.active : null,
@@ -426,8 +358,8 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
                   const items = [...prevState.items].map(item => ({
                     ...item,
                     checked: !prevState.checkedAll,
-                  }))
-                  return {checkedAll: !prevState.checkedAll, items}
+                  }));
+                  return { checkedAll: !prevState.checkedAll, items };
                 })
               }
               checkedIcon={<MaterialIcon name="check-box" size={18} color={theme.colors.primary} />}
@@ -436,19 +368,18 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
               }
               title="약관 전체 동의"
             />
-            <View style={{height: 1, backgroundColor: '#EEEEEE'}} />
+            <View style={{ height: 1, backgroundColor: '#EEEEEE' }} />
             {agreementState.items.map((item, idx) => (
               <AgreementItem
                 key={idx}
                 text={item.text}
                 checked={item.checked}
                 onCheckedChange={(checked: boolean) => {
-                  console.log(checked)
                   setAgreementState(prevState => {
-                    const items = [...prevState.items]
-                    items[idx].checked = checked
-                    return {...prevState, items}
-                  })
+                    const items = [...prevState.items];
+                    items[idx].checked = checked;
+                    return { ...prevState, items };
+                  });
                 }}
                 value={item.value}
                 url={item.url}
@@ -461,17 +392,19 @@ const Register = ({navigation, route}: OnboardingScreenProps<'Register'>) => {
         <FilledButton
           title="가입하기"
           onPress={() => {
-            if (checkAllFieldsValidate())
-              dispatch(
-                register({...registerState, birthdate: registerState.birthdate?.split('T')[0]}),
-              )
+            if (checkAllFieldsValidate()) {
+              registerMutation.mutate({
+                ...registerState,
+                birthdate: new Date(registerState.birthdate!).format('yyyy-MM-dd'),
+              });
+            }
           }}
-          containerStyle={{marginBottom: 40}}
+          containerStyle={{ marginBottom: 40 }}
         />
       </ScrollView>
     </View>
-  )
-}
+  );
+};
 
 const useStyles = makeStyles(theme => ({
   agreementContainer: {
@@ -517,6 +450,6 @@ const useStyles = makeStyles(theme => ({
     color: color.grey2,
     paddingBottom: 24,
   },
-}))
+}));
 
-export default Register
+export default Register;

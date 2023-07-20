@@ -1,17 +1,16 @@
-import { Position } from '@/data/model/type/Position';
-import { PositionTextName } from '../model/PositionTextName';
+import {Position} from '@/data/model/type/Position'
+import {PositionText, KoreanPosition} from '../model/type/Position'
 
-export function mapTextNameToPosition(position: string) {
-  if (position == PositionTextName.backend) return Position.backend;
-  else if (position == PositionTextName.frontend) return Position.frontend;
-  else if (position == PositionTextName.designer) return Position.designer;
-  else if (position == PositionTextName.manager) return Position.manager;
+export function mapKoreanToPosition(position: keyof typeof Position) {
+  if (position == KoreanPosition.backend) return Position.Backend
+  else if (position == KoreanPosition.frontend) return Position.Frontend
+  else if (position == KoreanPosition.designer) return Position.Designer
+  else if (position == KoreanPosition.manager) return Position.Manager
 }
 
 export function mapPositionToTextName(position: Position) {
-  if (position == Position.backend) return PositionTextName.backend;
-  else if (position == Position.frontend) return PositionTextName.frontend;
-  else if (position == Position.designer) return PositionTextName.designer;
-  else if (position == Position.manager) return PositionTextName.manager;
-  else return '';
+  return PositionText[position];
+}
+export function mapPositionToKorean(position:Position){
+  return KoreanPosition[position]
 }

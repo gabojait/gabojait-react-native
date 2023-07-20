@@ -1,5 +1,5 @@
 import {Position} from '../../data/model/type/Position'
-import {PositionTextName} from './PositionTextName'
+import {KoreanPosition} from './type/Position'
 
 export default interface PositionDropdownContent {
   key: string

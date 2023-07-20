@@ -15,7 +15,7 @@ import PositionCountDto from '@/data/model/Team/PostionCountDto';
 import { Position } from '@/data/model/type/Position';
 import PositionDropdownContent from '@/presentation/model/PositionDropdownContent';
 import PositionCount from '../model/PositionCount';
-import { mapPositionToTextName, mapTextNameToPosition } from '../utils/PositionDropdownUtils';
+import { mapPositionToTextName, mapKoreanToPosition } from '../utils/PositionDropdownUtils';
 import PositionRecruiting from '../model/PositionRecruitng';
 
 interface positionDropdownProps {
@@ -64,7 +64,7 @@ export const PositionDropdown = ({
   }
 
   function onPositionSelected(value: string) {
-    const position = mapTextNameToPosition(value);
+    const position = mapKoreanToPosition(value);
     setPosition(position as Position);
     onDropdownSelected(position as Position);
   }

@@ -1,17 +1,16 @@
-import {combineReducers} from 'redux'
-import boardSwitchReducer from './boardSwitchReducer'
-import {loginReducer} from './loginReducer'
-import {registerReducer} from './registerReducer'
-import {teamsToReviewGetReducer} from './teamsToReviewGetReducer'
-import {reviewQuestionsGetReducer} from './reviewQuestionsGetReducer'
-import {profileReducer} from './profileReducer'
-import {teamToReviewGetReducer} from './teamToReviewGetReducer'
-import {reviewCreateReducer} from './reviewCreateReducer'
+import { combineReducers } from 'redux';
+import boardSwitchReducer from './boardSwitchReducer';
+import { loginReducer } from './loginReducer';
+import { teamsToReviewGetReducer } from './teamsToReviewGetReducer';
+import { reviewQuestionsGetReducer } from './reviewQuestionsGetReducer';
+import { profileReducer } from './profileReducer';
+import { teamToReviewGetReducer } from './teamToReviewGetReducer';
+import { reviewCreateReducer } from './reviewCreateReducer';
 
 export interface Result<T> {
-  data?: T
-  error?: Error
-  loading?: boolean
+  data?: T;
+  error?: Error;
+  loading?: boolean;
 }
 
 export class Empty {}
@@ -20,13 +19,12 @@ export class Empty {}
 const rootReducer = combineReducers({
   loginReducer,
   boardSwitchReducer,
-  registerReducer,
   teamsToReviewGetReducer,
   reviewQuestionsGetReducer,
   teamToReviewGetReducer,
   reviewCreateReducer,
   profileReducer,
-})
+});
 
 // 루트 리듀서를 내보내주세요.
-export default rootReducer
+export default rootReducer;

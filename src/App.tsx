@@ -12,6 +12,7 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { createLogger } from 'redux-logger';
+import './assets/locales/index';
 
 const queryClient = new QueryClient();
 const logger = createLogger();

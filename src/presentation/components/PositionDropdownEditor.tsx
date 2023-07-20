@@ -5,11 +5,11 @@ import CustomIcon from '@/presentation/components/icon/Gabojait';
 import PositionCountDto from '@/data/model/Team/PostionCountDto';
 import PositionDropdownContent from '../model/PositionDropdownContent';
 import { Position } from '@/data/model/type/Position';
-import { PositionTextName } from '../model/PositionTextName';
+import { KoreanPosition } from '../model/type/Position';
 import PositionRecruiting from '../model/PositionRecruitng';
 import { PositionDropdown } from './PositionDropdown';
-import { ModalContext } from './modal/context';
 import SymbolModalContent from './modalContent/SymbolModalContent';
+import useModal from './modal/useModal';
 import { mapPositionCountToPositionRecruiting } from '../model/mapper/mapPositionCountToPositionRecruiting';
 
 export interface StateProp {
@@ -32,7 +32,7 @@ export const PositionDropdownEditor = ({
   onTeamMemberRecruitChanged,
   currentTeamMembers,
 }: PositionDropdownEditorProps) => {
-  const modal = React.useContext(ModalContext);
+  const modal = useModal();
   const [animatedValue, setAnimatedValue] = useState(() => new Animated.Value(0));
   const [state, setState] = useState<StateProp>({
     disabled: false,
@@ -46,15 +46,14 @@ export const PositionDropdownEditor = ({
   });
   const [teamMemberRecruit, setTeamMemberRecruit] = useState<PositionCountDto[]>([]);
   const [positionState, setPositionState] = useState<PositionDropdownContent[]>([
-    { key: Position.backend, value: PositionTextName.backend, disabled: false },
-    { key: Position.frontend, value: PositionTextName.frontend, disabled: false },
-    { key: Position.designer, value: PositionTextName.designer, disabled: false },
-    { key: Position.manager, value: PositionTextName.manager, disabled: false },
+    { key: Position.Backend, value: KoreanPosition.backend, disabled: false },
+    { key: Position.Frontend, value: KoreanPosition.frontend, disabled: false },
+    { key: Position.Designer, value: KoreanPosition.designer, disabled: false },
+    { key: Position.Manager, value: KoreanPosition.manager, disabled: false },
   ]);
 
   const AlertCantRemoveView = () => {
     modal?.show({
-      title: '',
       content: (
         <SymbolModalContent
           title="포지션을 지울 수 없어요!"
@@ -168,7 +167,7 @@ export const PositionDropdownEditor = ({
     const newlyAddedValue: PositionDropdownProps = {
       index: index,
       hide: false,
-      positionData: { position: 'none', recruitCnt: 0, currentCnt: 0 },
+      positionData: { position: Position.None, recruitCnt: 0, currentCnt: 0 },
     };
     setState(prevState => ({
       disabled: true,

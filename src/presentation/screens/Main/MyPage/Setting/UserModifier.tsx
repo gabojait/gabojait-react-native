@@ -1,9 +1,11 @@
-import { FilledButton } from '@/presentation/components/Button';
+import {FilledButton} from '@/presentation/components/Button';
 import CustomInput from '@/presentation/components/CustomInput';
-import { MainStackScreenProps } from '@/presentation/navigation/types';
+import {CustomSwitch} from '@/presentation/components/CustomSwitch';
+import {MainStackScreenProps} from '@/presentation/navigation/types';
 import { nicknameRegex, passwordRegex } from '@/presentation/utils/util';
-import React, { useState } from 'react';
-import { Text, View } from 'react-native';
+import {Text, useTheme} from '@rneui/themed';
+import React, {useState} from 'react';
+import {View} from 'react-native';
 
 const UserModifier = ({ navigation }: MainStackScreenProps<'UserModifier'>) => {
   const { theme } = useTheme();
@@ -57,6 +59,4 @@ const UserModifier = ({ navigation }: MainStackScreenProps<'UserModifier'>) => {
 };
 
 export default UserModifier;
-function useTheme(): { theme: any } {
-  throw new Error('Function not implemented.');
-}
+

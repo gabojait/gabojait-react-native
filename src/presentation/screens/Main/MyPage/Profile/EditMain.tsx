@@ -15,42 +15,66 @@ import { ProfileStackParamListProps } from '@/presentation/navigation/types';
 import CardWrapper from '@/presentation/components/CardWrapper';
 import CustomHeader from '@/presentation/components/CustomHeader';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { Position } from '@/data/model/type/Position';
-import Work from '@/data/model/Profile/Work';
+import { Position, PositionText } from '@/data/model/type/Position';
 import { Level } from '@/data/model/Profile/Skill';
 import useGlobalStyles from '@/presentation/styles';
 import { useMutation } from 'react-query';
-import { MutationType } from '@/redux/action_types/profileActionTypes';
 import { updateProfileInfo } from '@/data/api/profile';
+import useModal from '@/presentation/components/modal/useModal';
+import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent';
 
-const useUpdateProfile = ({}: {}) => {
+const useUpdateProfile = () => {
   const { data, loading, error } = useAppSelector(state => state.profileReducer.userProfile);
 
   const profile = {
     educations: data?.educations ?? [],
     skills: data?.skills ?? [],
     portfolios: data?.portfolios ?? [],
-    position: data?.position ?? 'none',
+    position: data?.position ?? Position.None,
     works: data?.works ?? [],
   };
+
   const profileSkillMutation = useMutation(updateProfileInfo);
 
   return {
     ...profileSkillMutation,
-    mutate: () => profileSkillMutation.mutate(profile),
+    mutate: () =>
+      profileSkillMutation.mutate({
+        ...profile,
+        educations: profile.educations.map(education => ({
+          ...education,
+          startedAt: new Date(education.startedAt).format('yyyy-MM-dd'),
+          endedAt: new Date(education.endedAt).format('yyyy-MM-dd'),
+        })),
+        works: profile.works.map(work => ({
+          ...work,
+          startedAt: new Date(work.startedAt).format('yyyy-MM-dd'),
+          endedAt: new Date(work.endedAt).format('yyyy-MM-dd'),
+        })),
+      }),
     mutateAsync: () => profileSkillMutation.mutateAsync(profile),
   };
 };
 
 export function EditMainHeader() {
   const { theme } = useTheme();
-  const {
-    data: profile,
-    loading: profileLoading,
-    error: profileError,
-  } = useAppSelector(state => state.profileReducer.userProfile);
+  const { mutate, isSuccess, isLoading } = useUpdateProfile();
+  const modal = useModal();
 
-  const { mutate } = useUpdateProfile({ prevProfile: profile!, profileToUpdate: profile! });
+  useEffect(() => {
+    if (isSuccess && !isLoading) {
+      modal?.show({
+        content: (
+          <OkDialogModalContent
+            text="프로필 수정 완료"
+            onOkClick={() => {
+              modal?.hide();
+            }}
+          />
+        ),
+      });
+    }
+  }, [isSuccess]);
 
   return (
     <CustomHeader
@@ -161,14 +185,14 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
           }}
         >
           <View style={{ alignItems: 'flex-start' }}>
-            {profile.position != Position.none && <ToggleButton title={profile.position} />}
+            {profile.position && <ToggleButton title={PositionText[profile.position]} />}
             {profile.skills?.map((skill, idx) => (
               <>
                 <Text>{skill.isExperienced ? '사용' : '희망'} 기술스택</Text>
                 <CustomSlider
                   key={skill.skillId}
                   text={skill.skillName}
-                  value={Level[skill.level ?? 'LOW']}
+                  value={Level[skill.level ?? 'low']}
                   minimumTrackTintColor={sliderColors[idx % 3]}
                 />
               </>

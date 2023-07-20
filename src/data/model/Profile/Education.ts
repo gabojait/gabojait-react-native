@@ -1,9 +1,7 @@
-export default interface Education {
-  createdAt: string
-  educationId: number
-  endedAt: string
-  institutionName: string
-  isCurrent: boolean
-  startedAt: string
-  updatedAt: string
+import { Periodical } from "./Periodical";
+
+export default interface Education extends Periodical {
+  educationId: number;
+  institutionName?: string;
+  schemaVersion?: string;
 }

@@ -1,6 +1,6 @@
 import {RootStackScreenProps} from '@/presentation/navigation/types'
+import { getUser } from '@/redux/action/login'
 import {useAppDispatch, useAppSelector} from '@/redux/hooks'
-import {getUser} from '@/redux/reducers/loginReducer'
 import React, {useEffect} from 'react'
 import {View} from 'react-native'
 import Splash from 'react-native-splash-screen'

@@ -1,8 +1,7 @@
-export const Position = {
-  designer: 'designer',
-  backend: 'backend',
-  frontend: 'frontend',
-  manager: 'manager',
-  none: 'none',
+export const enum Position {
+  Designer = 'designer',
+  Backend = 'backend',
+  Frontend = 'frontend',
+  Manager = 'manager',
+  None = 'none',
 }
-export type Position = keyof typeof Position

@@ -1,46 +1,55 @@
-import {ScreenWidth} from '@rneui/base'
-import {CheckBox, Input, Text, useTheme} from '@rneui/themed'
-import React, {useState} from 'react'
-import {ScrollView, View} from 'react-native'
-import {ToggleButton, Chip, CustomSlider, sliderColors} from '../Profile'
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import {SquareIcon} from './EditPortfolio'
-import {useAppSelector} from '@/redux/hooks'
-import {Level} from '@/data/model/Profile/Skill'
-import {uuidv4} from '@/presentation/utils/util'
+import { ScreenWidth } from '@rneui/base';
+import { CheckBox, Input, Text, useTheme } from '@rneui/themed';
+import React, { useState } from 'react';
+import { ScrollView, View } from 'react-native';
+import { ToggleButton, Chip, CustomSlider, sliderColors } from '../Profile';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import { SquareIcon } from './EditPortfolio';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { Level } from '@/data/model/Profile/Skill';
+import { uuidv4 } from '@/presentation/utils/util';
+import { Position } from '@/data/model/type/Position';
+import {
+  CREATE_SKILL,
+  createSkill,
+  deleteSkill,
+  setPosition,
+  updateSkill,
+} from '@/redux/action/profileActions';
 
 const EditSkillAndPosition = () => {
-  const positions = ['PM', 'Designer', 'Frontend', 'Backend']
-  const {data, loading, error} = useAppSelector(state => state.profileReducer.userProfile)
-  const orgSkills = data?.skills ?? []
-  const [position, setPosition] = useState(data?.position)
-  const [skills, setSkills] = useState(orgSkills)
+  const positions = ['PM', 'Designer', 'Frontend', 'Backend'];
+  const { data, loading, error } = useAppSelector(state => state.profileReducer.userProfile);
+  const dispatch = useAppDispatch();
 
-  const {theme} = useTheme()
+  const position = data?.position ?? Position.None;
+  const skills = data?.skills ?? [];
+
+  const { theme } = useTheme();
 
   return (
-    <ScrollView style={{padding: 20, backgroundColor: 'white', flex: 1}}>
+    <ScrollView style={{ padding: 20, backgroundColor: 'white', flex: 1 }}>
       <Text h4>희망 포지션</Text>
-      <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
         {positions.map(item => {
           return (
-            <View style={{marginEnd: 15}}>
+            <View style={{ marginEnd: 15 }}>
               <ToggleButton
                 title={item}
-                titleStyle={{fontSize: 18, fontWeight: '300', textAlign: 'center', flex: 1}}
+                titleStyle={{ fontSize: 18, fontWeight: '300', textAlign: 'center', flex: 1 }}
                 style={{
                   borderRadius: 15,
                   padding: 10,
                   width: ScreenWidth * 0.26,
                   marginBottom: 10,
-                  backgroundColor: position == item ? theme.colors.primary : 'white',
+                  backgroundColor: position == item.toLowerCase() ? theme.colors.primary : 'white',
                 }}
                 onClick={() => {
-                  setPosition(item)
+                  dispatch(setPosition(item.toLowerCase() as Position));
                 }}
               />
             </View>
-          )
+          );
         })}
       </View>
       <Text h4>기술스택</Text>
@@ -48,61 +57,52 @@ const EditSkillAndPosition = () => {
       {skills.map((skill, idx) => (
         <SliderItem
           sliderColor={sliderColors[idx % 3]}
-          value={Level[skill.level]}
+          value={Level[skill.level ?? 'low']}
           title={skill.skillName}
-          onTitleChange={title =>
-            setSkills(prevState => {
-              const idx = prevState.findIndex(item => item.skillId == skill.skillId)
-              prevState[idx].skillName = title
-              return [...prevState]
-            })
-          }
-          isChecked={skill.isExperienced}
-          onCheckboxChange={checked =>
-            setSkills(prevState => {
-              const idx = prevState.findIndex(item => item.skillId == skill.skillId)
-              prevState[idx].isExperienced = checked
-              return [...prevState]
-            })
-          }
-          onSliderChange={value => {
-            setSkills(prevState => {
-              const idx = prevState.findIndex(item => item.skillId == skill.skillId)
-              prevState[idx].level = Object.entries(Level).find(
-                ([_, lvl]) => lvl == value,
-              )?.[0] as keyof typeof Level
-              return [...prevState]
-            })
+          onTitleChange={title => {
+            if (skill.skillId) dispatch(updateSkill(skill.skillId, { ...skill, skillName: title }));
           }}
-          onDelete={() =>
-            setSkills(prevState => {
-              const idx = prevState.findIndex(item => item.skillId == skill.skillId)
-              prevState.splice(idx, 1)
-              return [...prevState]
-            })
-          }
+          isChecked={skill.isExperienced ?? false}
+          onCheckboxChange={checked => {
+            if (skill.skillId)
+              dispatch(updateSkill(skill.skillId, { ...skill, isExperienced: checked }));
+          }}
+          onSliderChange={value => {
+            if (skill.skillId)
+              dispatch(
+                updateSkill(skill.skillId, {
+                  ...skill,
+                  level: Object.entries(Level).find(
+                    ([_, lvl]) => lvl == value,
+                  )?.[0] as keyof typeof Level,
+                }),
+              );
+          }}
+          onDelete={() => {
+            if (skill.skillId) dispatch(deleteSkill(skill.skillId));
+          }}
         />
       ))}
-      <View style={{alignItems: 'center'}}>
+      <View style={{ alignItems: 'center' }}>
         <SquareIcon
           name="add"
           onPress={() => {
-            setSkills(prevState => [
-              ...prevState,
-              {
+            // FIXME: 임시로 id를 rough 하게 auto-increment 한 방향으로 설정해두었습니다만,
+            // 빠르게 여러번 추가하는 등의 액션에 어떻게 동작할지 모르겠어요.
+            dispatch(
+              createSkill({
                 isExperienced: false,
-                level: 'MID',
-                schemaVersion: 'string',
-                skillId: uuidv4(),
+                level: 'mid',
+                skillId: skills.length + 1,
                 skillName: '',
-              },
-            ])
+              }),
+            );
           }}
         />
       </View>
     </ScrollView>
-  )
-}
+  );
+};
 
 const SliderItem = ({
   title,
@@ -116,29 +116,30 @@ const SliderItem = ({
   sliderColor,
   onDelete,
 }: {
-  title: string
-  onTitleChange: (title: string) => void
-  isChecked: boolean
-  onCheckboxChange: (checked: boolean) => void
-  value: number
-  onSliderChange: (value: number) => void
-  checkedText?: string
-  unCheckedText?: string
-  sliderColor: string
-  onDelete: () => void
+  title?: string;
+  onTitleChange: (title: string) => void;
+  isChecked: boolean;
+  onCheckboxChange: (checked: boolean) => void;
+  value: number;
+  onSliderChange: (value: number) => void;
+  checkedText?: string;
+  unCheckedText?: string;
+  sliderColor: string;
+  onDelete: () => void;
 }) => {
-  const {theme} = useTheme()
+  const { theme } = useTheme();
 
   return (
-    <View style={{marginBottom: 30}}>
+    <View style={{ marginBottom: 30 }}>
       <View
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
           marginBottom: 10,
           alignItems: 'center',
-        }}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        }}
+      >
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Chip
             style={{
               backgroundColor: 'white',
@@ -146,9 +147,10 @@ const SliderItem = ({
               width: ScreenWidth * 0.25,
               padding: 0,
               marginEnd: 8,
-            }}>
+            }}
+          >
             <Input
-              inputContainerStyle={{borderBottomWidth: 0}}
+              inputContainerStyle={{ borderBottomWidth: 0 }}
               style={{
                 fontSize: theme.fontSize.md,
                 fontWeight: theme.fontWeight.light,
@@ -158,11 +160,12 @@ const SliderItem = ({
               }}
               value={title}
               onChangeText={onTitleChange}
-              renderErrorMessage={false}></Input>
+              renderErrorMessage={false}
+            ></Input>
           </Chip>
           <SquareIcon name="close" onPress={onDelete} />
         </View>
-        <Chip style={{backgroundColor: 'white', borderColor: theme.colors.disabled}}>
+        <Chip style={{ backgroundColor: 'white', borderColor: theme.colors.disabled }}>
           <CheckBox
             checked={isChecked}
             checkedIcon={<MaterialIcon name="check-box" size={18} color={theme.colors.primary} />}
@@ -170,8 +173,8 @@ const SliderItem = ({
               <MaterialIcon name="check-box-outline-blank" size={18} color={theme.colors.grey2} />
             }
             onPress={() => onCheckboxChange(!isChecked)}
-            containerStyle={{padding: 0}}
-            textStyle={{fontWeight: theme.fontWeight.light, color: 'black'}}
+            containerStyle={{ padding: 0 }}
+            textStyle={{ fontWeight: theme.fontWeight.light, color: 'black' }}
             title={isChecked ? checkedText : unCheckedText}
           />
         </Chip>
@@ -184,7 +187,7 @@ const SliderItem = ({
         minimumTrackTintColor={sliderColor}
       />
     </View>
-  )
-}
+  );
+};
 
-export default EditSkillAndPosition
+export default EditSkillAndPosition;
