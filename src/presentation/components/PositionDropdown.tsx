@@ -1,21 +1,29 @@
-import {Icon, useTheme} from '@rneui/themed'
-import React, {useEffect, useState} from 'react'
-import {PixelRatio, Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
-import {SelectList} from 'react-native-dropdown-select-list'
-import Gabojait from '@/presentation/components/icon/Gabojait'
-import PositionCountDto from '@/data/model/Team/PostionCountDto'
-import {Position} from '@/data/model/type/Position'
-import PositionDropdownContent from '@/presentation/model/PositionDropdownContent'
-import PositionCount from '../model/PositionCount'
-import {mapPositionToTextName, mapTextNameToPosition} from '../utils/PositionDropdownUtils'
-import PositionRecruiting from '../model/PositionRecruitng'
+import { Icon, useTheme } from '@rneui/themed';
+import React, { useEffect, useState } from 'react';
+import {
+  PixelRatio,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
+import { SelectList } from 'react-native-dropdown-select-list';
+import Gabojait from '@/presentation/components/icon/Gabojait';
+import PositionCountDto from '@/data/model/Team/PostionCountDto';
+import { Position } from '@/data/model/type/Position';
+import PositionDropdownContent from '@/presentation/model/PositionDropdownContent';
+import PositionCount from '../model/PositionCount';
+import { mapPositionToTextName, mapTextNameToPosition } from '../utils/PositionDropdownUtils';
+import PositionRecruiting from '../model/PositionRecruitng';
 
 interface positionDropdownProps {
-  onCloseClick: () => void
-  onSelectPosition: (data: PositionCount) => void
-  dropdownData: PositionDropdownContent[]
-  onDropdownSelected: (value: Position) => void
-  defaultData: PositionRecruiting
+  onCloseClick: () => void;
+  onSelectPosition: (data: PositionCount) => void;
+  dropdownData: PositionDropdownContent[];
+  onDropdownSelected: (value: Position) => void;
+  defaultData: PositionRecruiting;
 }
 
 export const PositionDropdown = ({
@@ -25,60 +33,73 @@ export const PositionDropdown = ({
   onDropdownSelected,
   defaultData,
 }: positionDropdownProps) => {
-  const {theme} = useTheme()
-  const [position, setPosition] = useState<Position>(defaultData.position)
-  const [count, setCount] = useState(defaultData.recruitCnt)
-  const [select, setSelected] = useState(false)
-  const [codename, setCodename] = useState('')
+  const { theme } = useTheme();
+  const [position, setPosition] = useState<Position>(defaultData.position);
+  const [count, setCount] = useState(defaultData.recruitCnt);
+  const [placeholdeText, setPlaceholdText] = useState<string | (() => string)>(
+    mapPositionToTextName(defaultData.position),
+  );
+  const [select, setSelected] = useState(false);
+  const [codename, setCodename] = useState('');
   const [positionResult, setPositionResult] = useState<PositionCountDto>({
     position: defaultData.position,
     totalRecruitCnt: defaultData.recruitCnt,
-  })
+  });
 
   useEffect(() => {
-    handleSelectPosition()
-  }, [count])
+    handleSelectPosition();
+  }, [count]);
 
   useEffect(() => {
-    handleSelectPosition()
-  }, [position])
+    handleSelectPosition();
+  }, [position]);
 
   useEffect(() => {
-    onSelectPosition(positionResult)
-  }, [positionResult])
+    onSelectPosition(positionResult);
+  }, [positionResult]);
+
+  function initializePlaceHolderText(text: string | (() => string)) {
+    if (text == '') return '팀원 포지션을 선택해주세요';
+    else return placeholdeText;
+  }
 
   function onPositionSelected(value: string) {
-    console.log(value)
-    const position = mapTextNameToPosition(value)
-    setPosition(position as Position)
-    onDropdownSelected(position as Position)
+    const position = mapTextNameToPosition(value);
+    setPosition(position as Position);
+    onDropdownSelected(position as Position);
   }
 
   function handleSelectPosition() {
     if (position != Position.none) {
-      setImage(position)
-      setPositionResult({position: position, totalRecruitCnt: count})
+      setImage(position);
+      setPositionResult({ position: position, totalRecruitCnt: count });
     }
   }
 
   function increase() {
-    setCount(count + 1)
+    setCount(count + 1);
   }
 
   function decrease() {
-    count > 0 && defaultData.currentCnt < count - 1 ? setCount(count - 1) : {}
+    count > 0 && defaultData.currentCnt <= count - 1 ? setCount(count - 1) : {};
   }
 
   function setImage(position: Position) {
-    setSelected(true)
-    if (position == Position.backend) setCodename('B')
-    else if (position == Position.frontend) setCodename('F')
-    else if (position == Position.designer) setCodename('D')
-    else if (position == Position.manager) setCodename('P')
+    setSelected(true);
+    if (position == Position.backend) setCodename('B');
+    else if (position == Position.frontend) setCodename('F');
+    else if (position == Position.designer) setCodename('D');
+    else if (position == Position.manager) setCodename('P');
   }
 
   return (
-    <View style={[{paddingBottom: 20}]}>
+    <View
+      style={[
+        {
+          paddingBottom: 20,
+        },
+      ]}
+    >
       <View
         style={[
           {
@@ -87,9 +108,10 @@ export const PositionDropdown = ({
             justifyContent: 'space-between',
             flex: 1,
           },
-        ]}>
-        <View style={{alignItems: 'center'}}>
-          <View style={{alignItems: 'center', justifyContent: 'center'}}>
+        ]}
+      >
+        <View style={{ alignItems: 'center' }}>
+          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
             <View
               style={{
                 borderColor: select ? theme.colors.primary : theme.colors.grey0,
@@ -110,11 +132,12 @@ export const PositionDropdown = ({
                 fontWeight: theme.fontWeight.bold,
                 position: 'absolute',
                 color: 'black',
-              }}>
+              }}
+            >
               {codename}
             </Text>
           </View>
-          <View style={{flexDirection: 'row'}}>
+          <View style={{ flexDirection: 'row' }}>
             <View
               style={{
                 width: 15,
@@ -122,7 +145,8 @@ export const PositionDropdown = ({
                 backgroundColor: theme.colors.grey0,
                 alignItems: 'center',
                 marginTop: 10,
-              }}>
+              }}
+            >
               <TouchableOpacity onPress={() => increase()}>
                 <Gabojait
                   name="plus"
@@ -139,8 +163,9 @@ export const PositionDropdown = ({
                 backgroundColor: theme.colors.grey0,
                 alignItems: 'center',
                 marginTop: 10,
-              }}>
-              <Text style={{color: theme.colors.grey2, fontSize: 17}}>{count}</Text>
+              }}
+            >
+              <Text style={{ color: theme.colors.grey2, fontSize: 17 }}>{count}</Text>
             </View>
             <View
               style={{
@@ -149,7 +174,8 @@ export const PositionDropdown = ({
                 backgroundColor: theme.colors.grey0,
                 alignItems: 'center',
                 marginTop: 10,
-              }}>
+              }}
+            >
               <TouchableOpacity onPress={() => decrease()}>
                 <Gabojait
                   name="minus"
@@ -168,48 +194,76 @@ export const PositionDropdown = ({
             borderRadius: 6,
             justifyContent: 'space-between',
             backgroundColor: theme.colors.grey0,
-          }}>
-          <SelectList
-            placeholder={'팀원의 포지션을 선택해주세요'}
-            inputStyles={{fontSize: theme.fontSize.xs}}
-            setSelected={(value: string) => {
-              onPositionSelected(value)
-            }}
-            data={dropdownData}
-            save="value"
-            boxStyles={{
-              borderColor: theme.colors.grey0,
-              width: 168,
-              height: 42,
-            }}
-            search={false}
-            onSelect={() => {
-              setImage(position)
-            }}
-            dropdownStyles={{
-              backgroundColor: theme.colors.grey0,
-              borderColor: theme.colors.grey0,
-              borderRadius: 6,
-            }}
-            arrowicon={<Text></Text>}
-            dropdownShown={false}
-          />
+          }}
+        >
+          {defaultData.position == 'none' ? (
+            <SelectList
+              placeholder={initializePlaceHolderText(placeholdeText)}
+              inputStyles={{ fontSize: theme.fontSize.xs }}
+              setSelected={(value: string) => {
+                setPlaceholdText(value);
+                onPositionSelected(value);
+              }}
+              data={dropdownData}
+              save="value"
+              boxStyles={{
+                borderColor: theme.colors.grey0,
+                width: 168,
+                height: 42,
+              }}
+              search={false}
+              onSelect={() => {
+                setImage(position);
+              }}
+              dropdownStyles={{
+                backgroundColor: theme.colors.grey0,
+                borderColor: theme.colors.grey0,
+                borderRadius: 6,
+              }}
+              arrowicon={<Text></Text>}
+              dropdownShown={false}
+            />
+          ) : (
+            <NoDropdownBox text={initializePlaceHolderText(placeholdeText)} />
+          )}
+
           <TouchableOpacity
             onPress={() => {
-              onCloseClick()
-            }}>
+              onCloseClick();
+            }}
+          >
             <Icon
               type="material"
               name="close"
               color={theme.colors.grey1}
-              containerStyle={{paddingEnd: 4, paddingTop: 10}}
+              containerStyle={{ paddingEnd: 4, paddingTop: 10 }}
             />
           </TouchableOpacity>
         </View>
       </View>
     </View>
-  )
-}
+  );
+};
+
+const NoDropdownBox = ({ text }) => {
+  const { theme } = useTheme();
+
+  return (
+    <View
+      style={{
+        backgroundColor: theme.colors.grey0,
+        borderColor: theme.colors.grey0,
+        borderRadius: 6,
+        width: 168,
+        height: 42,
+        flexDirection: 'row',
+        alignItems: 'center',
+      }}
+    >
+      <Text style={{ paddingStart: 20 }}>{text}</Text>
+    </View>
+  );
+};
 const styles = StyleSheet.create({
   plusIcon: {
     flex: 1,
@@ -233,4 +287,4 @@ const styles = StyleSheet.create({
       },
     }),
   },
-})
+});
