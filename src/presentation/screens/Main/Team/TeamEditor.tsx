@@ -1,102 +1,102 @@
-import React, {useEffect, useState} from 'react'
-import {makeStyles, Text, useTheme} from '@rneui/themed'
-import {KeyboardAvoidingView, ScrollView, TextInput, View} from 'react-native'
-import TeamRequestDto from '@/data/model/Team/TeamRequestDto'
-import {ModalContext} from '@/presentation/components/modal/context'
-import CardWrapper from '@/presentation/components/CardWrapper'
-import {FilledButton} from '@/presentation/components/Button'
-import {MainStackScreenProps} from '@/presentation/navigation/types'
-import useGlobalStyles from '@/presentation/styles'
-import PositionCountDto from '@/data/model/Team/PostionCountDto'
-import {getMyTeam} from '@/data/api/team'
-import {useQuery, UseQueryResult} from 'react-query'
-import TeamDto from '@/data/model/Team/TeamDto'
-import PositionRecruiting from '@/presentation/model/PositionRecruitng'
-import {useCreateTeam, useUpdateTeam} from '@/reactQuery/useCreateTeam'
-import {PositionDropdownMaker} from '@/presentation/components/PositionDropdownMaker'
-import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent'
-import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent'
-import {PositionDropdownEditor} from '@/presentation/components/PositionDropdownEditor'
+import React, { useEffect, useState } from 'react';
+import { makeStyles, Text, useTheme } from '@rneui/themed';
+import { KeyboardAvoidingView, ScrollView, TextInput, View } from 'react-native';
+import TeamRequestDto from '@/data/model/Team/TeamRequestDto';
+import { ModalContext } from '@/presentation/components/modal/context';
+import CardWrapper from '@/presentation/components/CardWrapper';
+import { FilledButton } from '@/presentation/components/Button';
+import { MainStackScreenProps } from '@/presentation/navigation/types';
+import useGlobalStyles from '@/presentation/styles';
+import PositionCountDto from '@/data/model/Team/PostionCountDto';
+import { getMyTeam } from '@/data/api/team';
+import { UseMutationResult, useQuery, UseQueryResult } from 'react-query';
+import TeamDto from '@/data/model/Team/TeamDto';
+import PositionRecruiting from '@/presentation/model/PositionRecruitng';
+import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent';
+import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
+import { PositionDropdownEditor } from '@/presentation/components/PositionDropdownEditor';
+import { useUpdateTeam } from '@/reactQuery/useUpdateTeam';
+import { Buffering } from '@/presentation/components/Buffering';
+import { teamKeys } from '@/reactQuery/key/TeamKeys';
+import { mapPositionRecruitingToPositionCount } from '@/presentation/model/mapper/mapPositionRecruitingToPositionCount';
 
 //TODO: api 수정반영, react query 적용, 요구사항 충족 필요함
-export const TeamEditor = ({navigation}: MainStackScreenProps<'TeamEditor'>) => {
-  const {theme} = useTheme()
-  const styles = useStyles({navigation})
-  const modal = React.useContext(ModalContext)
+export const TeamEditor = ({ navigation }: MainStackScreenProps<'TeamEditor'>) => {
+  const { theme } = useTheme();
+  const styles = useStyles({ navigation });
+  const modal = React.useContext(ModalContext);
   const {
     data: teamData,
     isLoading: isTeamDataLoading,
     error: teamDataError,
-  }: UseQueryResult<TeamDto> = useQuery(['TeamPage'], () => getMyTeam())
-  const updateTeam = useUpdateTeam()
+  }: UseQueryResult<TeamDto> = useQuery(teamKeys.myTeam, () => getMyTeam());
+  const updateTeam = useUpdateTeam();
+  const [teamUpdateState, setTeamUpdateState] = useState<TeamRequestDto>({
+    expectation: '',
+    openChatUrl: '',
+    projectDescription: '',
+    projectName: '',
+    teamMemberRecruitCnts: [],
+  });
 
-  const [teamEditState, setTeamEditState] = useState<TeamRequestDto>({
-    expectation: teamData?.expectation || '',
-    openChatUrl: teamData?.openChatUrl || '',
-    projectDescription: teamData?.projectDescription || '',
-    projectName: teamData?.projectName || '',
-    teamMemberRecruitCnts: mapToTeamMemberRecruitCnts(teamData?.teamMemberCnts!) || [],
-  })
-  const globalStyles = useGlobalStyles()
-  const createTeam = useCreateTeam()
   useEffect(() => {
-    console.log(`teamEditState.teamMemberRecruitCnts:${teamEditState.teamMemberRecruitCnts}`)
-  }, [])
+    setTeamUpdateState({
+      expectation: teamData?.expectation!,
+      openChatUrl: teamData?.openChatUrl!,
+      projectDescription: teamData?.projectDescription!,
+      projectName: teamData?.projectName!,
+      teamMemberRecruitCnts: initializeTeamMemberRecruitCnts()!,
+    });
+  }, [teamData]);
 
-  function mapToTeamMemberRecruitCnts(teamMemberCnts: PositionRecruiting[]) {
-    const result = teamMemberCnts.map(item => {
-      const positionCount: PositionCountDto = {
-        position: item.position,
-        totalRecruitCnt: item.recruitCnt,
-      }
-      return positionCount
-    })
-    return result
-  }
+  const globalStyles = useGlobalStyles();
 
-  function handleCreateTeam() {
-    createTeam.mutate(teamEditState)
+  function initializeTeamMemberRecruitCnts() {
+    const result = teamData?.teamMemberCnts.map(item => {
+      return mapPositionRecruitingToPositionCount(item);
+    });
+    return result;
   }
 
   function updateExpectation(text: string) {
-    setTeamEditState(prevState => ({...prevState, expectation: text}))
+    setTeamUpdateState(prevState => ({ ...prevState, expectation: text }));
   }
 
   function updateOpenchatUrl(text: string) {
-    setTeamEditState(prevState => ({...prevState, openChatUrl: text}))
+    setTeamUpdateState(prevState => ({ ...prevState, openChatUrl: text }));
   }
 
   function updateProjectDescription(text: string) {
-    setTeamEditState(prevState => ({...prevState, projectDescription: text}))
+    setTeamUpdateState(prevState => ({ ...prevState, projectDescription: text }));
   }
 
   function updateProjectName(text: string) {
-    setTeamEditState(prevState => ({...prevState, projectName: text}))
+    setTeamUpdateState(prevState => ({ ...prevState, projectName: text }));
   }
 
   function updateTeamMemberRecruitCnts(data: PositionCountDto[]) {
-    setTeamEditState(prevState => ({...prevState, teamMemberRecruitCnts: data}))
+    setTeamUpdateState(prevState => ({ ...prevState, teamMemberRecruitCnts: data }));
   }
   function isOpenChatUrlValidate() {
-    const pattern = /^https\:\/\/open\.kakao\.com\/.+$/
-    const result = pattern.test(teamEditState.openChatUrl)
+    const pattern = /^https\:\/\/open\.kakao\.com\/.+$/;
+    const result = pattern.test(teamUpdateState.openChatUrl);
 
-    if (result) return true
-    else throw Error('유효한 카카오톡 오픈채팅 링크가 아닙니다')
+    if (result) return true;
+    else throw Error('유효한 카카오톡 오픈채팅 링크가 아닙니다');
   }
 
   function isRecruitCntValidate() {
-    if (teamEditState.teamMemberRecruitCnts.length == 0) {
-      throw Error('팀원이 존재하지 않습니다')
-    } else return true
+    if (teamUpdateState.teamMemberRecruitCnts.length == 0) {
+      throw Error('팀원이 존재하지 않습니다');
+    } else return true;
   }
 
   function isEmptyInputExisted() {
     //공백제거하기
-    const projectName = teamEditState.projectName.replace(/ /gi, '')
-    const projectDescription = teamEditState.projectDescription.replace(/ /gi, '')
-    const expectation = teamEditState.expectation.replace(/ /gi, '')
-    const openChatUrl = teamEditState.openChatUrl.replace(/ /gi, '')
+    const projectName = teamUpdateState.projectName.replace(/ /gi, '');
+    const projectDescription = teamUpdateState.projectDescription.replace(/ /gi, '');
+    const expectation = teamUpdateState.expectation.replace(/ /gi, '');
+    const openChatUrl = teamUpdateState.openChatUrl.replace(/ /gi, '');
 
     if (
       projectName.length != 0 &&
@@ -104,33 +104,33 @@ export const TeamEditor = ({navigation}: MainStackScreenProps<'TeamEditor'>) => 
       expectation.length != 0 &&
       openChatUrl.length != 0
     ) {
-      return true
-    } else throw Error('빈 입력란이 있습니다')
+      return true;
+    } else throw Error('빈 입력란이 있습니다');
   }
 
   function isAllInputValidate() {
     try {
-      isRecruitCntValidate()
+      isRecruitCntValidate();
     } catch (error) {
-      RecruitCntValidationWarningModal()
-      return false
+      RecruitCntValidationWarningModal();
+      return false;
     }
 
     try {
-      isEmptyInputExisted()
+      isEmptyInputExisted();
     } catch (error) {
-      EmptyInputWarningModal()
-      return false
+      EmptyInputWarningModal();
+      return false;
     }
 
     try {
-      isOpenChatUrlValidate()
+      isOpenChatUrlValidate();
     } catch (error) {
-      OpenChatValidationWarningModal()
-      return false
+      OpenChatValidationWarningModal();
+      return false;
     }
 
-    return true
+    return true;
   }
 
   const EmptyInputWarningModal = () => {
@@ -139,14 +139,14 @@ export const TeamEditor = ({navigation}: MainStackScreenProps<'TeamEditor'>) => 
       content: (
         <SymbolModalContent
           title="빈 입력란이 있어요!"
-          symbol={<Text style={{fontSize: theme.emojiSize.md, textAlign: 'center'}}>😚</Text>}
+          symbol={<Text style={{ fontSize: theme.emojiSize.md, textAlign: 'center' }}>😚</Text>}
           text={'최대한 자세히 적어주시면\n 프로젝트 모집에 도움이 될 수 있어요!'}
-          yesButton={{title: '확인', onPress: () => modal.hide()}}
+          yesButton={{ title: '확인', onPress: () => modal.hide() }}
         />
       ),
-      modalProps: {animationType: 'none', justifying: 'center'},
-    })
-  }
+      modalProps: { animationType: 'none', justifying: 'center' },
+    });
+  };
 
   const OpenChatValidationWarningModal = () => {
     modal?.show({
@@ -154,14 +154,14 @@ export const TeamEditor = ({navigation}: MainStackScreenProps<'TeamEditor'>) => 
       content: (
         <SymbolModalContent
           title="알맞은 링크가 아니에요!"
-          symbol={<Text style={{fontSize: theme.emojiSize.md, textAlign: 'center'}}>🧐</Text>}
+          symbol={<Text style={{ fontSize: theme.emojiSize.md, textAlign: 'center' }}>🧐</Text>}
           text={'유효한 카카오톡 오픈채팅 링크를 첨부해주세요!'}
-          yesButton={{title: '확인', onPress: () => modal.hide()}}
+          yesButton={{ title: '확인', onPress: () => modal.hide() }}
         />
       ),
-      modalProps: {animationType: 'none', justifying: 'center'},
-    })
-  }
+      modalProps: { animationType: 'none', justifying: 'center' },
+    });
+  };
 
   const RecruitCntValidationWarningModal = () => {
     modal?.show({
@@ -169,14 +169,14 @@ export const TeamEditor = ({navigation}: MainStackScreenProps<'TeamEditor'>) => 
       content: (
         <SymbolModalContent
           title="팀원이 없어요!"
-          symbol={<Text style={{fontSize: theme.emojiSize.md, textAlign: 'center'}}>🫥</Text>}
+          symbol={<Text style={{ fontSize: theme.emojiSize.md, textAlign: 'center' }}>🫥</Text>}
           text={'프로젝트를 함께할 팀원들을 알려주세요!'}
-          yesButton={{title: '확인', onPress: () => modal.hide()}}
+          yesButton={{ title: '확인', onPress: () => modal.hide() }}
         />
       ),
-      modalProps: {animationType: 'none', justifying: 'center'},
-    })
-  }
+      modalProps: { animationType: 'none', justifying: 'center' },
+    });
+  };
 
   const CancelConfirmModal = () => {
     modal?.show({
@@ -187,38 +187,49 @@ export const TeamEditor = ({navigation}: MainStackScreenProps<'TeamEditor'>) => 
           yesButton={{
             title: '확인',
             onPress: () => {
-              modal.hide()
-              navigation.goBack()
+              modal.hide();
+              navigation.goBack();
             },
           }}
           noButton={{
             title: '취소',
             onPress: () => {
-              modal.hide()
+              modal.hide();
             },
-          }}>
+          }}
+        >
           <View>
-            <Text style={{textAlign: 'center'}}>글 수정을 취소하면</Text>
-            <Text style={{textAlign: 'center'}}>적은 내용은 반영되지 않습니다</Text>
+            <Text style={{ textAlign: 'center' }}>글 수정을 취소하면</Text>
+            <Text style={{ textAlign: 'center' }}>적은 내용은 반영되지 않습니다</Text>
           </View>
         </BottomModalContent>
       ),
-      modalProps: {animationType: 'slide', justifying: 'bottom'},
-    })
+      modalProps: { animationType: 'slide', justifying: 'bottom' },
+    });
+  };
+
+  if (updateTeam.data) {
+    console.log(`updateTeam.data:${updateTeam.data}`);
+    navigation.navigate('Team', { refetchKey: updateTeam.data });
+  }
+
+  if (isTeamDataLoading) {
+    return <Text>로딩중</Text>;
   }
 
   return (
     <KeyboardAvoidingView
       behavior="height"
-      style={{backgroundColor: 'white', flex: 1, paddingTop: 29, paddingHorizontal: 20}}>
+      style={{ backgroundColor: 'white', flex: 1, paddingTop: 29, paddingHorizontal: 20 }}
+    >
       <ScrollView>
         <View style={styles.item}>
           <Text style={styles.text}>프로젝트 이름</Text>
-          <CardWrapper style={[styles.inputBox, {maxHeight: 90}]}>
+          <CardWrapper style={[styles.inputBox, { maxHeight: 90 }]}>
             <TextInput
-              value={teamEditState?.projectName}
+              value={teamUpdateState?.projectName}
               onChangeText={(text: string) => {
-                updateProjectName(text)
+                updateProjectName(text);
               }}
               multiline={false}
               maxLength={20}
@@ -229,11 +240,11 @@ export const TeamEditor = ({navigation}: MainStackScreenProps<'TeamEditor'>) => 
 
         <View style={styles.item}>
           <Text style={styles.text}>프로젝트 설명</Text>
-          <CardWrapper style={[globalStyles.card, styles.inputBox, {minHeight: 160}]}>
+          <CardWrapper style={[globalStyles.card, styles.inputBox, { minHeight: 160 }]}>
             <TextInput
-              value={teamEditState?.projectDescription}
+              value={teamUpdateState?.projectDescription}
               onChangeText={(text: string) => {
-                updateProjectDescription(text)
+                updateProjectDescription(text);
               }}
               multiline={true}
               maxLength={500}
@@ -243,11 +254,11 @@ export const TeamEditor = ({navigation}: MainStackScreenProps<'TeamEditor'>) => 
 
         <View style={styles.item}>
           <Text style={styles.text}>원하는 팀원</Text>
-          <CardWrapper style={[styles.dropdownBox, {paddingVertical: 20}]}>
+          <CardWrapper style={[styles.dropdownBox, { paddingVertical: 20 }]}>
             <PositionDropdownEditor
               onTeamMemberRecruitChanged={(data: PositionCountDto[]) => {
-                updateTeamMemberRecruitCnts(data)
-                console.log(data)
+                updateTeamMemberRecruitCnts(data);
+                console.log(data);
               }}
               currentTeamMembers={teamData?.teamMemberCnts!}
             />
@@ -256,11 +267,11 @@ export const TeamEditor = ({navigation}: MainStackScreenProps<'TeamEditor'>) => 
 
         <View style={styles.item}>
           <Text style={styles.text}>바라는 점</Text>
-          <CardWrapper style={[globalStyles.card, styles.inputBox, {minHeight: 95}]}>
+          <CardWrapper style={[globalStyles.card, styles.inputBox, { minHeight: 95 }]}>
             <TextInput
-              value={teamEditState?.expectation}
+              value={teamUpdateState?.expectation}
               onChangeText={(text: string) => {
-                updateExpectation(text)
+                updateExpectation(text);
               }}
               multiline={true}
               maxLength={200}
@@ -270,11 +281,11 @@ export const TeamEditor = ({navigation}: MainStackScreenProps<'TeamEditor'>) => 
 
         <View style={styles.item}>
           <Text style={styles.text}>오픈채팅 링크</Text>
-          <CardWrapper style={[styles.inputBox, {maxHeight: 50}]}>
+          <CardWrapper style={[styles.inputBox, { maxHeight: 50 }]}>
             <TextInput
-              value={teamEditState?.openChatUrl}
+              value={teamUpdateState?.openChatUrl}
               onChangeText={(text: string) => {
-                updateOpenchatUrl(text)
+                updateOpenchatUrl(text);
               }}
               multiline={true}
               maxLength={100}
@@ -283,28 +294,28 @@ export const TeamEditor = ({navigation}: MainStackScreenProps<'TeamEditor'>) => 
           </CardWrapper>
         </View>
 
-        <View style={{paddingHorizontal: 30}}>
+        <View style={{ paddingHorizontal: 30 }}>
           <FilledButton
             title={'완료'}
             disabled={false}
             onPress={() => {
               if (isAllInputValidate()) {
-                handleCreateTeam()
+                updateTeam.updateTeam(teamUpdateState);
               }
             }}
           />
           <FilledButton
             title={'취소하기'}
-            buttonStyle={{backgroundColor: theme.colors.grey0}}
+            buttonStyle={{ backgroundColor: theme.colors.grey0 }}
             onPress={() => {
-              CancelConfirmModal()
+              CancelConfirmModal();
             }}
           />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
-  )
-}
+  );
+};
 
 const useStyles = makeStyles(theme => ({
   view: {
@@ -345,4 +356,4 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 15,
     paddingHorizontal: 14,
   },
-}))
+}));

@@ -1,5 +1,5 @@
 import { useTheme } from '@rneui/themed';
-import React, { Key, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Animated, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import CustomIcon from '@/presentation/components/icon/Gabojait';
 import PositionCountDto from '@/data/model/Team/PostionCountDto';
@@ -8,7 +8,6 @@ import { Position } from '@/data/model/type/Position';
 import { PositionTextName } from '../model/PositionTextName';
 import PositionRecruiting from '../model/PositionRecruitng';
 import { PositionDropdown } from './PositionDropdown';
-import { mapPositionRecruitingToPositionCount } from '../model/mapper/mapPositionRecruitingToPositionCount';
 import { ModalContext } from './modal/context';
 import SymbolModalContent from './modalContent/SymbolModalContent';
 import { mapPositionCountToPositionRecruiting } from '../model/mapper/mapPositionCountToPositionRecruiting';

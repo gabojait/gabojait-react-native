@@ -1,25 +1,28 @@
-import CardWrapper from '@/presentation/components/CardWrapper'
-import {makeStyles, Text, useTheme} from '@rneui/themed'
-import React from 'react'
-import {Platform, ScrollView, TouchableOpacity, View} from 'react-native'
-import PositionIcon from '@/presentation/components/PositionWaveIcon'
-import {OutlinedButton} from '@/presentation/components/Button'
-import {isLeader, mapToInitial} from '@/presentation/utils/util'
-import {MainBottomTabNavigationProps} from '@/presentation/navigation/types'
-import useGlobalStyles from '@/presentation/styles'
-import {useQuery, UseQueryResult} from 'react-query'
-import TeamDto from '@/data/model/Team/TeamDto'
-import {getMyTeam} from '@/data/api/team'
-import {getProfile} from '@/data/api/profile'
-import ProfileViewDto from '@/data/model/Profile/ProfileViewDto'
+import CardWrapper from '@/presentation/components/CardWrapper';
+import { makeStyles, Text, useTheme } from '@rneui/themed';
+import React from 'react';
+import { Platform, ScrollView, TouchableOpacity, View } from 'react-native';
+import PositionIcon from '@/presentation/components/PositionWaveIcon';
+import { OutlinedButton } from '@/presentation/components/Button';
+import { isLeader, mapToInitial } from '@/presentation/utils/util';
+import { MainBottomTabNavigationProps } from '@/presentation/navigation/types';
+import useGlobalStyles from '@/presentation/styles';
+import { useQuery, UseQueryResult } from 'react-query';
+import TeamDto from '@/data/model/Team/TeamDto';
+import { getMyTeam } from '@/data/api/team';
+import { getProfile } from '@/data/api/profile';
+import ProfileViewDto from '@/data/model/Profile/ProfileViewDto';
+import ProfileViewResponse from '@/data/model/Profile/ProfileViewResponse';
+import { teamKeys } from '@/reactQuery/key/TeamKeys';
+import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 
 interface LeaderHeaderParams {
-  onPressEditor: () => void
+  onPressEditor: () => void;
 }
 
 interface LeaderFooterParams {
-  onPressComplete: () => void
-  onPressDelete: () => void
+  onPressComplete: () => void;
+  onPressDelete: () => void;
 }
 
 //TODO: 에러처리 결과 404로 보여줘야 됨
@@ -31,15 +34,16 @@ const NoProcessingTeam = () => (
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: 'white',
-    }}>
-    <Text style={{fontSize: 100, alignContent: 'center'}}>🫥</Text>
+    }}
+  >
+    <Text style={{ fontSize: 100, alignContent: 'center' }}>🫥</Text>
     <Text h4>현재 진행 중인 팀이 없어요</Text>
   </View>
-)
+);
 
-const LeaderHeader = ({onPressEditor}: LeaderHeaderParams) => {
-  const styles = useStyles()
-  const {theme} = useTheme()
+const LeaderHeader = ({ onPressEditor }: LeaderHeaderParams) => {
+  const styles = useStyles();
+  const { theme } = useTheme();
   return (
     <View style={styles.header}>
       <Text
@@ -47,34 +51,38 @@ const LeaderHeader = ({onPressEditor}: LeaderHeaderParams) => {
           fontSize: theme.fontSize.lg,
           fontWeight: theme.fontWeight.bold,
           textAlignVertical: 'center',
-        }}>
+        }}
+      >
         팀페이지
       </Text>
-      <TouchableOpacity onPress={() => onPressEditor()} style={{justifyContent: 'center'}}>
-        <Text style={{fontSize: 20, color: theme.colors.primary}}>수정</Text>
+      <TouchableOpacity onPress={() => onPressEditor()} style={{ justifyContent: 'center' }}>
+        <Text style={{ fontSize: 20, color: theme.colors.primary }}>수정</Text>
       </TouchableOpacity>
     </View>
-  )
-}
+  );
+};
 
 const TeamMateHeader = () => {
-  const styles = useStyles()
-  const {theme} = useTheme()
+  const styles = useStyles();
+  const { theme } = useTheme();
   return (
     <View style={styles.header}>
-      <Text style={{fontSize: theme.fontSize.lg, fontWeight: theme.fontWeight.bold}}>팀페이지</Text>
+      <Text style={{ fontSize: theme.fontSize.lg, fontWeight: theme.fontWeight.bold }}>
+        팀페이지
+      </Text>
     </View>
-  )
-}
+  );
+};
 
-const LeaderFooter = ({onPressComplete, onPressDelete}: LeaderFooterParams) => {
-  const {theme} = useTheme()
+const LeaderFooter = ({ onPressComplete, onPressDelete }: LeaderFooterParams) => {
+  const { theme } = useTheme();
   return (
-    <View style={{paddingBottom: 30}}>
+    <View style={{ paddingBottom: 30 }}>
       <OutlinedButton onPress={() => onPressComplete()} title={'종료하기'} size={'md'} />
       <TouchableOpacity
         onPress={() => onPressDelete()}
-        style={{justifyContent: 'center', alignContent: 'center', flex: 1}}>
+        style={{ justifyContent: 'center', alignContent: 'center', flex: 1 }}
+      >
         <Text
           style={{
             fontSize: theme.fontSize.md,
@@ -82,50 +90,63 @@ const LeaderFooter = ({onPressComplete, onPressDelete}: LeaderFooterParams) => {
             color: theme.colors.disabled,
             paddingTop: 20,
             textAlign: 'center',
-          }}>
+          }}
+        >
           해산하기
         </Text>
       </TouchableOpacity>
     </View>
-  )
-}
+  );
+};
 
-export const TeamPage = ({navigation}: MainBottomTabNavigationProps<'Team'>) => {
-  const {theme} = useTheme()
-  const globalStyles = useGlobalStyles()
-  const styles = useStyles()
+export const TeamPage = ({ navigation, route }: MainBottomTabNavigationProps<'Team'>) => {
+  const { theme } = useTheme();
+  const globalStyles = useGlobalStyles();
+  const styles = useStyles();
   const {
     data: teamData,
     isLoading: isTeamDataLoading,
     error: teamDataError,
-  }: UseQueryResult<TeamDto> = useQuery(['TeamPage'], () => getMyTeam())
+  }: UseQueryResult<TeamDto> = useQuery(teamKeys.myTeamRefetchable(initializeRefetchKey()), () =>
+    getMyTeam(),
+  );
 
   const {
     data: dataUser,
     isLoading: isLoadingData,
     error: errorData,
-  }: UseQueryResult<ProfileViewDto> = useQuery(['getMyProfile'], () => getProfile())
+  }: UseQueryResult<ProfileViewResponse> = useQuery(profileKeys.profile, () => getProfile());
+
+  function initializeRefetchKey() {
+    if (route.params) {
+      return route.params.refetchKey;
+    } else {
+      return {};
+    }
+  }
 
   return (
     <>
       {isLeader(dataUser?.isLeader) ? (
         <LeaderHeader
-          onPressEditor={() => navigation.navigate('MainNavigation', {screen: 'TeamEditor'})}
+          onPressEditor={() => navigation.navigate('MainNavigation', { screen: 'TeamEditor' })}
         />
       ) : (
         <TeamMateHeader />
       )}
       <View style={styles.scrollView}>
-        <ScrollView style={{paddingTop: 10, backgroundColor: theme.colors.white}}>
+        <ScrollView style={{ paddingTop: 10, backgroundColor: theme.colors.white }}>
           <CardWrapper
-            style={[styles.card, {minHeight: 190, justifyContent: 'center', marginBottom: 16}]}>
+            style={[styles.card, { minHeight: 190, justifyContent: 'center', marginBottom: 16 }]}
+          >
             <View
               style={{
                 width: '100%',
                 paddingHorizontal: 10,
                 flex: 1,
                 justifyContent: 'space-evenly',
-              }}>
+              }}
+            >
               <Text style={styles.teamname}>{teamData?.projectName}</Text>
               <View style={styles.partIcon}>
                 {teamData?.teamMemberCnts.map(item => (
@@ -145,8 +166,8 @@ export const TeamPage = ({navigation}: MainBottomTabNavigationProps<'Team'>) => 
             onPress={() => {
               navigation.navigate('MainNavigation', {
                 screen: 'OpenChatingPage',
-                params: {uri: teamData?.openChatUrl!},
-              })
+                params: { uri: teamData?.openChatUrl! },
+              });
             }}
             style={[
               styles.kakaoCard,
@@ -157,7 +178,8 @@ export const TeamPage = ({navigation}: MainBottomTabNavigationProps<'Team'>) => 
                 backgroundColor: '#FEE500',
                 marginBottom: 16,
               },
-            ]}>
+            ]}
+          >
             <Text
               style={{
                 fontSize: theme.fontSize.md,
@@ -168,19 +190,20 @@ export const TeamPage = ({navigation}: MainBottomTabNavigationProps<'Team'>) => 
                     alignSelf: 'center',
                     position: 'absolute',
                   },
-                  android: {textAlignVertical: 'center'},
+                  android: { textAlignVertical: 'center' },
                 }),
-              }}>
+              }}
+            >
               카카오톡 오픈채팅으로 시작하기
             </Text>
           </TouchableOpacity>
-          <CardWrapper style={[globalStyles.card, {minHeight: 200, marginBottom: 16}]}>
+          <CardWrapper style={[globalStyles.card, { minHeight: 200, marginBottom: 16 }]}>
             <View>
               <Text style={styles.title}>프로젝트 설명</Text>
               <Text style={styles.text}>{teamData?.projectDescription}</Text>
             </View>
           </CardWrapper>
-          <CardWrapper style={[globalStyles.card, {minHeight: 200, marginBottom: 16}]}>
+          <CardWrapper style={[globalStyles.card, { minHeight: 200, marginBottom: 16 }]}>
             <View>
               <Text style={styles.title}>바라는 점</Text>
               <Text style={styles.text}>{teamData?.expectation}</Text>
@@ -189,7 +212,7 @@ export const TeamPage = ({navigation}: MainBottomTabNavigationProps<'Team'>) => 
           {isLeader(dataUser?.isLeader) ? (
             <LeaderFooter
               onPressComplete={() => {
-                navigation.navigate('MainNavigation', {screen: 'TeamComplete'})
+                navigation.navigate('MainNavigation', { screen: 'TeamComplete' });
               }}
               onPressDelete={() => {}}
             />
@@ -199,8 +222,8 @@ export const TeamPage = ({navigation}: MainBottomTabNavigationProps<'Team'>) => 
         </ScrollView>
       </View>
     </>
-  )
-}
+  );
+};
 
 const useStyles = makeStyles(theme => ({
   scrollView: {
@@ -258,4 +281,4 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 20,
     height: 50,
   },
-}))
+}));
