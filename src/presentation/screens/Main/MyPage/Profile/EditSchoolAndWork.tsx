@@ -174,7 +174,7 @@ function useDatePickerModal(onChangeData: (data: Periodical) => void) {
           onDatePicked={date => {
             dates[i] = date.toISOString();
           }}
-          isCurrentCheckable
+          isCurrentCheckable={i != 0}
           isCurrent={data.isCurrent}
           setIsCurrent={isCurrent => {
             onChangeData({ ...data, isCurrent });
@@ -200,7 +200,7 @@ export const WorkList = ({
   onDeleteData: (dataId: number) => void;
   title: string;
 }) => {
-  const showDatePickerModal = useDatePickerModal((data: Periodical) => onChangeData(data as Work))
+  const showDatePickerModal = useDatePickerModal((data: Periodical) => onChangeData(data as Work));
 
   return (
     <>

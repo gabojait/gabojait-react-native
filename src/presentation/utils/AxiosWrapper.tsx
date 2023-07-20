@@ -26,6 +26,7 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
       try {
         if (isSuccess(res.status)) {
           // Todo: Interceptor에서 AsyncStorage에 item을 set 하는 것 보다 헤더의 토큰을 reducer로 전달할 방법을 찾고, 전달 받은 토큰을 반영하는 방법을 찾아야 함.
+          console.log(res.headers);
           if (res.headers['authorization']) {
             await AsyncStorage.setItem('accessToken', res.headers['authorization']);
           }

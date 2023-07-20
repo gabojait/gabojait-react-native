@@ -36,6 +36,8 @@ import {
 } from '@/data/api/accounts';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { useTranslation } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import '@/lib/date';
 
 const agreementItems = [
   {
@@ -83,21 +85,37 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
   const { mutation: userIdDupCheckMutation } = useMutationDialog(
     QueryKey.userIdDupCheck(registerState.username),
     checkUsernameDuplicate,
-    {resultToMessage: _ => t('usernameDupOk')},
+    { resultToMessage: _ => t('usernameDupOk') },
   );
   const { mutation: emailDupCheckMutation } = useMutationDialog(
     QueryKey.emailDupCheck(registerState.email),
     sendAuthCode,
-    {resultToMessage: _ => t('emailOk')}
+    {
+      resultToMessage: _ => t('emailOk'),
+      onSuccessClick(result) {
+        console.log(result);
+      },
+    },
   );
   const { mutation: emailVerificationMutation } = useMutationDialog(
     QueryKey.emailVerification(registerState.email, registerState.authCode),
     verifyAuthCode,
-    {resultToMessage: _ => t('authCodeVerifyOk')}
+    {
+      resultToMessage: _ => t('authCodeVerifyOk'),
+      onSuccessClick(result) {
+        console.log(result);
+      },
+    },
   );
   const { mutation: registerMutation } = useMutationDialog(
     QueryKey.register(registerState),
     register,
+    {
+      resultToMessage: _ => t('registerOk'),
+      onSuccessClick(result) {
+        navigation.navigate('RegisterCompleted');
+      },
+    },
   );
 
   const [agreementState, setAgreementState] = useState<AgreementState>({
@@ -252,7 +270,7 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
               size="sm"
               onPress={() => {
                 if (registerState.authCode && authCodeRegex.test(registerState.authCode)) {
-                  dispatch(signOut());
+                  console.log(AsyncStorage.getItem('accessToken'));
                   emailVerificationMutation.mutate({
                     email: registerState.email ?? '',
                     verificationCode: registerState.authCode ?? '',
@@ -284,9 +302,9 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
             }
             onClick={() =>
               modal?.show({
-                title: <Text h3>생년월일 입력</Text>,
                 content: (
                   <DatePickerModalContent
+                    title="생년월일 입력"
                     doneButtonText="다음"
                     onModalVisibityChanged={visibility => {
                       if (!visibility) modal.hide();
@@ -375,8 +393,10 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
           title="가입하기"
           onPress={() => {
             if (checkAllFieldsValidate()) {
-              dispatch(signOut());
-              registerMutation.mutate(registerState);
+              registerMutation.mutate({
+                ...registerState,
+                birthdate: new Date(registerState.birthdate!).format('yyyy-MM-dd'),
+              });
             }
           }}
           containerStyle={{ marginBottom: 40 }}

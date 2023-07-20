@@ -4,6 +4,8 @@ import DatePicker from 'react-native-date-picker';
 import { FilledButton } from '../Button';
 import React, { ReactNode } from 'react';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import { useAppSelector } from '@/redux/hooks';
+import { profileReducer } from '@/redux/reducers/profileReducer';
 
 interface DatePickerModalProps {
   title?: ReactNode;
@@ -26,6 +28,7 @@ const DatePickerModalContent: React.FC<DatePickerModalProps> = ({
   ...props
 }) => {
   const { theme } = useTheme();
+  
   return (
     <View
       style={{
@@ -49,7 +52,20 @@ const DatePickerModalContent: React.FC<DatePickerModalProps> = ({
         maximumDate={props.maximumDate}
         minimumDate={props.minimumDate}
       />
-
+      {isCurrentCheckable && setIsCurrent && (
+        <CheckBox
+          checked={isCurrent}
+          onPress={() => {
+            console.log(isCurrent);
+            setIsCurrent(!isCurrent);
+          }}
+          checkedIcon={<MaterialIcon name="check-box" size={18} color={theme.colors.primary} />}
+          uncheckedIcon={
+            <MaterialIcon name="check-box-outline-blank" size={18} color={theme.colors.grey2} />
+          }
+          title="현재 진행중"
+        />
+      )}
       <View style={{ flexDirection: 'row', display: 'flex' }}>
         <FilledButton
           title={props.doneButtonText}

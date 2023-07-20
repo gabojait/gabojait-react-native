@@ -4,8 +4,8 @@ import {
   asyncState,
   createAsyncReducer,
 } from '@/lib/reducerUtils';
-import { createAction, createReducer, getType } from 'typesafe-actions';
-import { MutationType, ProfileAction, ProfileState } from '../action_types/profileActionTypes';
+import { createReducer } from 'typesafe-actions';
+import { ProfileAction, ProfileState } from '../action_types/profileActionTypes';
 import * as profileApi from '@/data/api/profile';
 import {
   getProfileAsyncAction,

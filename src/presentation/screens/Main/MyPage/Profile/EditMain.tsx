@@ -38,7 +38,20 @@ const useUpdateProfile = () => {
 
   return {
     ...profileSkillMutation,
-    mutate: () => profileSkillMutation.mutate(profile),
+    mutate: () =>
+      profileSkillMutation.mutate({
+        ...profile,
+        educations: profile.educations.map(education => ({
+          ...education,
+          startedAt: new Date(education.startedAt).format('yyyy-MM-dd'),
+          endedAt: new Date(education.endedAt).format('yyyy-MM-dd'),
+        })),
+        works: profile.works.map(work => ({
+          ...work,
+          startedAt: new Date(work.startedAt).format('yyyy-MM-dd'),
+          endedAt: new Date(work.endedAt).format('yyyy-MM-dd'),
+        })),
+      }),
     mutateAsync: () => profileSkillMutation.mutateAsync(profile),
   };
 };

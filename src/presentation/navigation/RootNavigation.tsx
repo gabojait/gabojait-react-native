@@ -6,9 +6,6 @@ import OnboardingNavigation from '@/presentation/navigation/OnboardingNavigation
 import { RootStackParamList } from './types';
 import WebViewPage from '../components/WebView';
 import SplashScreen from '../screens/Onboarding/SplashScreen';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { User } from '@/data/model/User';
-import { AsyncState } from '@/lib/reducerUtils';
 import MainNavigation from './MainNavigation';
 import AxiosWrapper from '../utils/AxiosWrapper';
 
