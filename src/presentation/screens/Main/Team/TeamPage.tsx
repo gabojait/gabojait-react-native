@@ -2,7 +2,7 @@ import CardWrapper from '@/presentation/components/CardWrapper';
 import { makeStyles, Text, useTheme } from '@rneui/themed';
 import React from 'react';
 import { Platform, ScrollView, TouchableOpacity, View } from 'react-native';
-import PositionIcon from '@/presentation/components/PositionWaveIcon';
+import PositionWaveIcon from '@/presentation/components/PositionWaveIcon';
 import { OutlinedButton } from '@/presentation/components/Button';
 import { isLeader, mapToInitial } from '@/presentation/utils/util';
 import { MainBottomTabNavigationProps } from '@/presentation/navigation/types';
@@ -156,7 +156,7 @@ export const TeamPage = ({ navigation, route }: MainBottomTabNavigationProps<'Te
               <Text style={styles.teamname}>{teamData?.projectName}</Text>
               <View style={styles.partIcon}>
                 {teamData?.teamMemberCnts.map(item => (
-                  <PositionIcon
+                  <PositionWaveIcon
                     currentCnt={item.currentCnt}
                     recruitNumber={item.recruitCnt}
                     textView={
@@ -166,6 +166,11 @@ export const TeamPage = ({ navigation, route }: MainBottomTabNavigationProps<'Te
                   />
                 ))}
               </View>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('MainNavigation', { screen: 'ManageTeammate' })}
+              >
+                <Text style={styles.text2}>팀원관리</Text>
+              </TouchableOpacity>
             </View>
           </CardWrapper>
           <TouchableOpacity
@@ -282,8 +287,19 @@ const useStyles = makeStyles(theme => ({
     color: theme.colors.black,
     lineHeight: 22,
   },
+  text2: {
+    fontSize: 14,
+    fontWeight: theme.fontWeight.medium,
+    color: theme.colors.primary,
+    borderBottomColor: theme.colors.primary,
+    textAlign: 'center',
+    textDecorationLine: 'underline',
+    textDecorationColor: theme.colors.primary,
+    textDecorationStyle: 'solid',
+  },
   partIcon: {
     flexDirection: 'row',
+    paddingVertical: 28,
   },
   kakaoCard: {
     borderRadius: 20,

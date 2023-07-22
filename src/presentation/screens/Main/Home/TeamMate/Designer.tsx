@@ -1,26 +1,26 @@
-import {GetProfileProps, getUserSeekingTeam} from '@/data/api/profile'
-import UserProfileBriefDto from '@/data/model/User/UserProfileBriefDto'
-import CardWrapper from '@/presentation/components/CardWrapper'
-import Gabojait from '@/presentation/components/icon/Gabojait'
-import {RatingBar} from '@/presentation/components/RatingBar'
-import {useModelList} from '@/reactQuery/useModelList'
-import {makeStyles, Text, useTheme} from '@rneui/themed'
-import React from 'react'
-import {FlatList, TouchableOpacity, View} from 'react-native'
+import { GetProfileProps, getUserSeekingTeam } from '@/data/api/profile';
+import UserProfileBriefDto from '@/data/model/User/UserProfileBriefDto';
+import CardWrapper from '@/presentation/components/CardWrapper';
+import Gabojait from '@/presentation/components/icon/Gabojait';
+import { RatingBar } from '@/presentation/components/RatingBar';
+import { useModelList } from '@/reactQuery/util/useModelList';
+import { makeStyles, Text, useTheme } from '@rneui/themed';
+import React from 'react';
+import { FlatList, TouchableOpacity, View } from 'react-native';
 
 const DesignerList = () => {
-  const {theme} = useTheme()
-  const styles = useStyles()
-  const {data, isLoading, error, fetchNextPage, refetch, param, isRefreshing} = useModelList<
+  const { theme } = useTheme();
+  const styles = useStyles();
+  const { data, isLoading, error, fetchNextPage, refetch, param, isRefreshing } = useModelList<
     GetProfileProps,
     UserProfileBriefDto
   >({
-    initialParam: {pageFrom: 0, pageSize: 20, position: 'designer', profileOrder: 'active'},
+    initialParam: { pageFrom: 0, pageSize: 20, position: 'designer', profileOrder: 'active' },
     key: 'designerList',
-    fetcher: async ({pageParam}) => {
-      return await getUserSeekingTeam(pageParam!)
+    fetcher: async ({ pageParam }) => {
+      return await getUserSeekingTeam(pageParam!);
     },
-  })
+  });
 
   return (
     <View
@@ -30,19 +30,21 @@ const DesignerList = () => {
         backgroundColor: 'white',
         justifyContent: 'flex-end',
         paddingVertical: 15,
-      }}>
+      }}
+    >
       <FlatList
         showsVerticalScrollIndicator={false}
         keyExtractor={item => item.userId.toString()}
         data={data?.pages.flat()}
-        renderItem={({item}) => (
+        renderItem={({ item }) => (
           <CardWrapper
             style={{
               marginVertical: 5,
               marginHorizontal: 20,
               borderWidth: 1,
               borderColor: theme.colors.disabled,
-            }}>
+            }}
+          >
             <View
               style={{
                 flexDirection: 'row',
@@ -51,16 +53,17 @@ const DesignerList = () => {
                 paddingHorizontal: 10,
                 justifyContent: 'space-between',
                 alignContent: 'center',
-              }}>
+              }}
+            >
               <View>
                 <Text style={styles.name}>{item.nickname}</Text>
                 <Text style={styles.position}>UI/UX 디자이너</Text>
-                <View style={{flexDirection: 'row', paddingBottom: 10}}>
+                <View style={{ flexDirection: 'row', paddingBottom: 10 }}>
                   <RatingBar ratingScore={item.rating} />
                   <Text style={styles.score}>{item.rating}</Text>
                 </View>
               </View>
-              <TouchableOpacity style={{justifyContent: 'center'}}>
+              <TouchableOpacity style={{ justifyContent: 'center' }}>
                 <Gabojait name="arrow-next" size={28} color={theme.colors.disabled} />
               </TouchableOpacity>
             </View>
@@ -69,13 +72,13 @@ const DesignerList = () => {
         refreshing={isRefreshing}
         onRefresh={refetch}
         onEndReached={() => {
-          fetchNextPage()
+          fetchNextPage();
         }}
         onEndReachedThreshold={0.6}
       />
     </View>
-  )
-}
+  );
+};
 
 const useStyles = makeStyles(theme => ({
   name: {
@@ -95,6 +98,6 @@ const useStyles = makeStyles(theme => ({
     color: 'black',
     paddingLeft: 10,
   },
-}))
+}));
 
-export default DesignerList
+export default DesignerList;

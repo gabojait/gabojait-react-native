@@ -1,94 +1,95 @@
-import {postFavoriteTeam} from '@/data/api/favorite'
-import {getTeam} from '@/data/api/team'
-import TeamDetailDto from '@/data/model/Team/TeamDetailDto'
-import {FilledButton} from '@/presentation/components/Button'
-import CardWrapper from '@/presentation/components/CardWrapper'
-import CustomHeader from '@/presentation/components/CustomHeader'
-import PositionIcon from '@/presentation/components/PositionWaveIcon'
-import CustomIcon from '@/presentation/components/icon/Gabojait'
-import PositionRecruiting from '@/presentation/model/PositionRecruitng'
-import {MainStackScreenProps} from '@/presentation/navigation/types'
-import {makeStyles, Text, useTheme} from '@rneui/themed'
-import React, {useEffect, useState} from 'react'
-import {ScrollView, TextInput, TouchableOpacity, View} from 'react-native'
-import {Mutation, useMutation, useQuery, useQueryClient, UseQueryResult} from 'react-query'
-import useGlobalStyles from '@/presentation/styles'
-import {mapToInitial} from '@/presentation/utils/util'
-import FavoriteUpdateDto from '@/data/model/Favorite/FavoriteUpdateDto'
-import {Icon} from '@rneui/base'
-import {ModalContext} from '@/presentation/components/modal/context'
-import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent'
-import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent'
-import ErrorBoundary from '@/presentation/components/errorComponent/ErrorBoundary'
-import {
-  Fallback500,
-  Fallback503,
-} from '@/presentation/components/errorComponent/GeneralFallback'
-import GetTeamErrorBoundary from '@/presentation/components/errorComponent/GetTeamErrorBoundary'
-import useModal from '@/presentation/components/modal/useModal'
+import { postFavoriteTeam } from '@/data/api/favorite';
+import { getTeam } from '@/data/api/team';
+import TeamDetailDto from '@/data/model/Team/TeamDetailDto';
+import { FilledButton } from '@/presentation/components/Button';
+import CardWrapper from '@/presentation/components/CardWrapper';
+import CustomHeader from '@/presentation/components/CustomHeader';
+import PositionWaveIcon from '@/presentation/components/PositionWaveIcon';
+import CustomIcon from '@/presentation/components/icon/Gabojait';
+import PositionRecruiting from '@/presentation/model/PositionRecruitng';
+import { MainStackScreenProps } from '@/presentation/navigation/types';
+import { makeStyles, Text, useTheme } from '@rneui/themed';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
+import { Mutation, useMutation, useQuery, useQueryClient, UseQueryResult } from 'react-query';
+import useGlobalStyles from '@/presentation/styles';
+import { mapToInitial } from '@/presentation/utils/util';
+import FavoriteUpdateDto from '@/data/model/Favorite/FavoriteUpdateDto';
+import { Icon } from '@rneui/base';
+import { ModalContext } from '@/presentation/components/modal/context';
+import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
+import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent';
+import ErrorBoundary from '@/presentation/components/errorComponent/ErrorBoundary';
+import { Fallback500, Fallback503 } from '@/presentation/components/errorComponent/GeneralFallback';
+import GetTeamErrorBoundary from '@/presentation/components/errorComponent/GetTeamErrorBoundary';
+import useModal from '@/presentation/components/modal/useModal';
 
-const GroupDetail = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) => {
+const GroupDetail = ({ navigation, route }: MainStackScreenProps<'GroupDetail'>) => {
   return (
     <GetTeamErrorBoundary
       fallback={
         <>
           <Text>수고</Text>
         </>
-      }>
+      }
+    >
       <GroupDetailComponent navigation={navigation} route={route} />
     </GetTeamErrorBoundary>
-  )
-}
+  );
+};
 
-const GroupDetailComponent = ({navigation, route}: MainStackScreenProps<'GroupDetail'>) => {
-  const styles = useStyles()
-  const {theme} = useTheme()
-  const globalStyles = useGlobalStyles()
-  const modal = useModal()
-  const {data, isLoading, error}: UseQueryResult<TeamDetailDto> = useQuery(
+const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'GroupDetail'>) => {
+  const styles = useStyles();
+  const { theme } = useTheme();
+  const globalStyles = useGlobalStyles();
+  const modal = useModal();
+  const { data, isLoading, error }: UseQueryResult<TeamDetailDto> = useQuery(
     ['GroupDetail', route.params.teamId],
     () => getTeam(route.params.teamId),
-    {useErrorBoundary: true, retry: 0},
-  )
-  const {mutate: mutateFavorite, data: favoriteResponse} = useMutation(
+    { useErrorBoundary: true, retry: 0 },
+  );
+  const { mutate: mutateFavorite, data: favoriteResponse } = useMutation(
     'postFavorite',
     (args: [number, FavoriteUpdateDto]) => postFavoriteTeam(...args),
     {
       useErrorBoundary: true,
       retry: 0,
       onSuccess: () => {
-        console.log(favoriteResponse)
+        console.log(favoriteResponse);
       },
     },
-  )
+  );
   const [favoriteState, setFavoriteState] = useState<FavoriteUpdateDto>({
     isAddFavorite: data?.isFavorite || false,
-  })
-  const positions: Array<PositionRecruiting> = data?.teamMemberCnts || []
-  const [reportState, setReportState] = useState('')
-  const [reportButtonState, setReportButtonState] = useState({text: '신고하기', isDisabled: true})
+  });
+  const positions: Array<PositionRecruiting> = data?.teamMemberCnts || [];
+  const [reportState, setReportState] = useState('');
+  const [reportButtonState, setReportButtonState] = useState({
+    text: '신고하기',
+    isDisabled: true,
+  });
 
   useEffect(() => {
     if (reportState.length > 0) {
-      setReportButtonState({text: '완료', isDisabled: false})
+      setReportButtonState({ text: '완료', isDisabled: false });
     } else {
-      setReportButtonState({text: '신고하기', isDisabled: true})
+      setReportButtonState({ text: '신고하기', isDisabled: true });
     }
-  }, [reportState])
+  }, [reportState]);
 
   const reportCompeletedModal = () => {
     modal?.show({
       content: (
         <SymbolModalContent
           title="신고완료!"
-          symbol={<Text style={{fontSize: theme.emojiSize.md, textAlign: 'center'}}>✅</Text>}
+          symbol={<Text style={{ fontSize: theme.emojiSize.md, textAlign: 'center' }}>✅</Text>}
           text={'신고가 완료되었습니다.'}
-          yesButton={{title: '확인', onPress: () => modal.hide()}}
+          yesButton={{ title: '확인', onPress: () => modal.hide() }}
         />
       ),
-      modalProps: {animationType: 'none', justifying: 'center'},
-    })
-  }
+      modalProps: { animationType: 'none', justifying: 'center' },
+    });
+  };
 
   const handleReportModal = () => {
     modal?.show({
@@ -98,11 +99,11 @@ const GroupDetailComponent = ({navigation, route}: MainStackScreenProps<'GroupDe
           children={
             <View>
               <Text style={styles.text}>신고 사유를 적어주세요</Text>
-              <CardWrapper style={[globalStyles.card, {minHeight: 160}]}>
+              <CardWrapper style={[globalStyles.card, { minHeight: 160 }]}>
                 <TextInput
                   value={reportState}
                   onChangeText={(text: string) => {
-                    setReportState(text)
+                    setReportState(text);
                   }}
                   multiline={true}
                   maxLength={500}
@@ -113,36 +114,36 @@ const GroupDetailComponent = ({navigation, route}: MainStackScreenProps<'GroupDe
           yesButton={{
             title: reportButtonState.text,
             onPress: () => {
-              modal.hide()
-              reportCompeletedModal()
+              modal.hide();
+              reportCompeletedModal();
             },
             disabled: reportButtonState.isDisabled,
           }}
           noButton={{
             title: '나가기',
             onPress: () => {
-              modal.hide()
+              modal.hide();
             },
           }}
           neverSeeAgainShow={false}
         />
       ),
-      modalProps: {animationType: 'slide', justifying: 'bottom'},
-    })
-  }
+      modalProps: { animationType: 'slide', justifying: 'bottom' },
+    });
+  };
 
   function isFavorite() {
     if (data?.isFavorite) {
-      return theme.colors.primary
+      return theme.colors.primary;
     }
-    return 'black'
+    return 'black';
   }
   //TODO: 200,201 결과로 찜 아이콘 색 분기하기
   function handleFavoriteTeam() {
     if (data?.isFavorite) {
-      mutateFavorite([route.params.teamId, {isAddFavorite: !favoriteState.isAddFavorite}])
+      mutateFavorite([route.params.teamId, { isAddFavorite: !favoriteState.isAddFavorite }]);
     } else {
-      mutateFavorite([route.params.teamId, {isAddFavorite: !favoriteState.isAddFavorite}])
+      mutateFavorite([route.params.teamId, { isAddFavorite: !favoriteState.isAddFavorite }]);
     }
   }
 
@@ -165,8 +166,8 @@ const GroupDetailComponent = ({navigation, route}: MainStackScreenProps<'GroupDe
         title={''}
         canGoBack={true}
         rightChildren={
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <TouchableOpacity onPress={handleFavoriteTeam} style={{paddingRight: 25}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <TouchableOpacity onPress={handleFavoriteTeam} style={{ paddingRight: 25 }}>
               <CustomIcon name="heart" size={30} color={isFavorite()} />
             </TouchableOpacity>
             <TouchableOpacity onPress={handleReportModal}>
@@ -176,18 +177,19 @@ const GroupDetailComponent = ({navigation, route}: MainStackScreenProps<'GroupDe
         }
       />
       <ScrollView style={styles.scrollView}>
-        <CardWrapper style={[styles.card, {minHeight: 243}]}>
+        <CardWrapper style={[styles.card, { minHeight: 243 }]}>
           <View
             style={{
               width: '100%',
               paddingHorizontal: 10,
               flex: 1,
               justifyContent: 'space-between',
-            }}>
+            }}
+          >
             <Text style={styles.teamname}>{data?.projectName}</Text>
             <View style={styles.partIcon}>
               {positions.map((item, index) => (
-                <PositionIcon
+                <PositionWaveIcon
                   currentCnt={item.currentCnt}
                   recruitNumber={item.recruitCnt}
                   textView={
@@ -199,17 +201,19 @@ const GroupDetailComponent = ({navigation, route}: MainStackScreenProps<'GroupDe
             </View>
             <FilledButton
               title={'함께 하기'}
-              onPress={() => navigation.navigate('PositionSelector', {teamId: route.params.teamId})}
+              onPress={() =>
+                navigation.navigate('PositionSelector', { teamId: route.params.teamId })
+              }
             />
           </View>
         </CardWrapper>
-        <View style={[styles.card, globalStyles.FlexStartCardWrapper, {minHeight: 243}]}>
+        <View style={[styles.card, globalStyles.FlexStartCardWrapper, { minHeight: 243 }]}>
           <View>
             <Text style={styles.title}>프로젝트 설명</Text>
             <Text style={styles.text}>{data?.projectDescription}</Text>
           </View>
         </View>
-        <View style={[styles.card, globalStyles.FlexStartCardWrapper, {minHeight: 243}]}>
+        <View style={[styles.card, globalStyles.FlexStartCardWrapper, { minHeight: 243 }]}>
           <View>
             <Text style={styles.title}>바라는 점</Text>
             <Text style={styles.text}>{data?.expectation}</Text>
@@ -217,8 +221,8 @@ const GroupDetailComponent = ({navigation, route}: MainStackScreenProps<'GroupDe
         </View>
       </ScrollView>
     </>
-  )
-}
+  );
+};
 
 const useStyles = makeStyles(theme => ({
   scrollView: {
@@ -254,5 +258,5 @@ const useStyles = makeStyles(theme => ({
     paddingBottom: 25,
     flexDirection: 'row',
   },
-}))
-export default GroupDetail
+}));
+export default GroupDetail;
