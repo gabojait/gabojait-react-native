@@ -7,7 +7,7 @@ import { BoardStackParamListProps } from '@/presentation/navigation/types';
 import { getRecruiting, GetRecruitingProps } from '@/data/api/team';
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useModelList } from '../../../../../reactQuery/useModelList';
+import { useModelList } from '../../../../../reactQuery/util/useModelList';
 import RecruitingTeamDto from '@/data/model/Team/TeamBriefDto';
 import useModal from '@/presentation/components/modal/useModal';
 import { Position } from '@/data/model/type/Position';
