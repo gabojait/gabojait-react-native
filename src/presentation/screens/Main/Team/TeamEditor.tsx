@@ -8,14 +8,14 @@ import { MainStackScreenProps } from '@/presentation/navigation/types';
 import useGlobalStyles from '@/presentation/styles';
 import PositionCountDto from '@/data/model/Team/PostionCountDto';
 import { getMyTeam, updateTeam } from '@/data/api/team';
-import { useQuery, UseQueryResult } from 'react-query';
+import { useQuery, useQueryClient, UseQueryResult } from 'react-query';
 import TeamDto from '@/data/model/Team/TeamDto';
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent';
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
 import { PositionDropdownEditor } from '@/presentation/components/PositionDropdownEditor';
 import useModal from '@/presentation/components/modal/useModal';
 import { mapPositionRecruitingToPositionCount } from '@/presentation/model/mapper/mapPositionRecruitingToPositionCount';
-import { TeamRefetchKey, teamKeys } from '@/reactQuery/key/TeamKeys';
+import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { useMutationForm } from '@/reactQuery/util/useMutationForm';
 
 //TODO: api 수정반영, react query 적용, 요구사항 충족 필요함
@@ -41,6 +41,7 @@ export const TeamEditor = ({ navigation }: MainStackScreenProps<'TeamEditor'>) =
     teamMemberRecruitCnts: [],
   });
   const globalStyles = useGlobalStyles();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     setTeamUpdateState({
@@ -54,8 +55,8 @@ export const TeamEditor = ({ navigation }: MainStackScreenProps<'TeamEditor'>) =
 
   if (teamUpdate.data) {
     console.log(`updateTeam.data:${teamUpdate.data}`);
-    //TODO:queryClient이용으로 refetch하기
-    navigation.navigate('Team', { refetchKey: TeamRefetchKey.TEAM_UPDATE });
+    queryClient.invalidateQueries(teamKeys.myTeam);
+    navigation.navigate('Team');
   }
 
   function initializeTeamMemberRecruitCnts() {

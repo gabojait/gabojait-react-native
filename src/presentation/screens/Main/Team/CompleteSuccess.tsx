@@ -4,10 +4,13 @@ import { Text, View } from 'react-native';
 import React from 'react';
 import useGlobalStyles from '@/presentation/styles';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
+import { useQueryClient } from 'react-query';
+import { teamKeys } from '@/reactQuery/key/TeamKeys';
 
 export const CompleteSuccess = ({ navigation }: MainStackScreenProps<'CompleteSuccess'>) => {
   const globalStyles = useGlobalStyles();
   const { theme } = useTheme();
+  const queryClient = useQueryClient();
 
   return (
     <View style={[globalStyles.container]}>
@@ -39,8 +42,8 @@ export const CompleteSuccess = ({ navigation }: MainStackScreenProps<'CompleteSu
         title={'완료하기'}
         containerStyle={{ paddingTop: 10 }}
         onPress={() => {
-          //TODO:queryClient이용으로 refetch하기
-          navigation.navigate('Team', { refetchKey: 'TEAM_COMPLETE' });
+          queryClient.invalidateQueries(teamKeys.myTeam);
+          navigation.navigate('Team');
         }}
       />
     </View>

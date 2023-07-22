@@ -1,10 +1,6 @@
 import { MutationFunction, useMutation, UseMutationResult } from 'react-query';
 import { MutationState } from 'react-query/types/core/mutation';
 
-/**
- * body or none parameter로 보내는 useMutation
- */
-
 type PartialMuationForm<TVariables, TData> = {
   mutationKey: readonly [unknown];
   mutationFn: MutationFunction<TData, TVariables>;
@@ -24,6 +20,7 @@ interface MutationFormResult<
   mutation: (dto?: TVariables) => Promise<void>;
 }
 
+//TODO: 파라미터 여러개일 경우도 추가필요
 export function useMutationForm<TVariables = undefined, TData = undefined>({
   mutationKey,
   mutationFn,
@@ -44,7 +41,6 @@ export function useMutationForm<TVariables = undefined, TData = undefined>({
     } else {
       mutation.mutate;
     }
-    //mutation.mutate(dto);
   }
 
   return {
@@ -60,5 +56,6 @@ export function useMutationForm<TVariables = undefined, TData = undefined>({
     status: mutation.status,
     variables: mutation.variables,
     isPaused: mutation.isPaused,
+    onSuccess: mutation,
   };
 }

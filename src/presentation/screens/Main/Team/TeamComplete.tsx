@@ -10,11 +10,10 @@ import { useTheme } from '@rneui/themed';
 import React, { useState } from 'react';
 import { Text, View } from 'react-native';
 
-const globalStyles = useGlobalStyles();
-const { theme } = useTheme();
-
 export const TeamComplete = ({ navigation }: MainStackScreenProps<'TeamComplete'>) => {
   const [link, setLink] = useState<ProjectUrl>({ projectUrl: '' });
+  const globalStyles = useGlobalStyles();
+  const { theme } = useTheme();
   const teamComplete = useMutationForm<ProjectUrl, unknown>({
     mutationKey: teamKeys.completeTeam,
     mutationFn: async (dto: ProjectUrl) => completeTeam(dto),

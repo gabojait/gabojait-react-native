@@ -12,7 +12,7 @@ import TeamDto from '@/data/model/Team/TeamDto';
 import { getMyTeam, incompleteTeam } from '@/data/api/team';
 import { getProfile } from '@/data/api/profile';
 import ProfileViewResponse from '@/data/model/Profile/ProfileViewResponse';
-import { teamKeys, TeamRefetchKey } from '@/reactQuery/key/TeamKeys';
+import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 import { useMutationForm } from '@/reactQuery/util/useMutationForm';
 
@@ -107,23 +107,13 @@ export const TeamPage = ({ navigation, route }: MainBottomTabNavigationProps<'Te
     data: teamData,
     isLoading: isTeamDataLoading,
     error: teamDataError,
-  }: UseQueryResult<TeamDto> = useQuery(teamKeys.myTeamRefetchable(initializeRefetchKey()), () =>
-    getMyTeam(),
-  );
+  }: UseQueryResult<TeamDto> = useQuery(teamKeys.myTeam, () => getMyTeam());
 
   const {
     data: dataUser,
     isLoading: isLoadingData,
     error: errorData,
   }: UseQueryResult<ProfileViewResponse> = useQuery(profileKeys.profile, () => getProfile());
-
-  function initializeRefetchKey() {
-    if (route.params) {
-      return route.params.refetchKey;
-    } else {
-      return TeamRefetchKey.INITIALIZE;
-    }
-  }
 
   const deleteTeam = useMutationForm<undefined, unknown>({
     mutationKey: teamKeys.incompleteTeam,

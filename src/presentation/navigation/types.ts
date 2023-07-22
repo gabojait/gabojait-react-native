@@ -64,11 +64,12 @@ export type MainStackParamList = {
   TeamEditor: undefined;
   TeamComplete: undefined;
   CompleteSuccess: undefined;
+  ManageTeammate: undefined;
 };
 
 export type MainBottomTabParamList = {
   Home: undefined;
-  Team: { refetchKey: TeamRefetchKeyType };
+  Team: undefined;
   MyPage: undefined;
   Notification: undefined;
 };
