@@ -11,16 +11,13 @@ import { MainStackScreenProps } from '@/presentation/navigation/types';
 import { makeStyles, Text, useTheme } from '@rneui/themed';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
-import { Mutation, useMutation, useQuery, useQueryClient, UseQueryResult } from 'react-query';
+import { useMutation, useQuery, UseQueryResult } from 'react-query';
 import useGlobalStyles from '@/presentation/styles';
 import { mapToInitial } from '@/presentation/utils/util';
 import FavoriteUpdateDto from '@/data/model/Favorite/FavoriteUpdateDto';
 import { Icon } from '@rneui/base';
-import { ModalContext } from '@/presentation/components/modal/context';
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent';
-import ErrorBoundary from '@/presentation/components/errorComponent/ErrorBoundary';
-import { Fallback500, Fallback503 } from '@/presentation/components/errorComponent/GeneralFallback';
 import GetTeamErrorBoundary from '@/presentation/components/errorComponent/GetTeamErrorBoundary';
 import useModal from '@/presentation/components/modal/useModal';
 
@@ -98,7 +95,7 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
           title="팀을 신고하시겠습니까?"
           children={
             <View>
-              <Text style={styles.text}>신고 사유를 적어주세요</Text>
+              <Text style={globalStyles.textLight11}>신고 사유를 적어주세요</Text>
               <CardWrapper style={[globalStyles.card, { minHeight: 160 }]}>
                 <TextInput
                   value={reportState}
@@ -210,13 +207,13 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
         <View style={[styles.card, globalStyles.FlexStartCardWrapper, { minHeight: 243 }]}>
           <View>
             <Text style={styles.title}>프로젝트 설명</Text>
-            <Text style={styles.text}>{data?.projectDescription}</Text>
+            <Text style={globalStyles.textLight11}>{data?.projectDescription}</Text>
           </View>
         </View>
         <View style={[styles.card, globalStyles.FlexStartCardWrapper, { minHeight: 243 }]}>
           <View>
             <Text style={styles.title}>바라는 점</Text>
-            <Text style={styles.text}>{data?.expectation}</Text>
+            <Text style={globalStyles.textLight11}>{data?.expectation}</Text>
           </View>
         </View>
       </ScrollView>
@@ -246,12 +243,6 @@ const useStyles = makeStyles(theme => ({
     fontWeight: theme.fontWeight.semibold,
     paddingBottom: 5,
     color: theme.colors.black,
-  },
-  text: {
-    fontSize: 11,
-    fontWeight: theme.fontWeight.light,
-    color: theme.colors.black,
-    lineHeight: 22,
   },
   partIcon: {
     paddingTop: 30,

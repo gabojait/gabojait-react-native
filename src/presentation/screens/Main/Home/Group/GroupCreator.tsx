@@ -1,79 +1,79 @@
-import {FilledButton} from '@/presentation/components/Button'
-import {MainStackScreenProps} from '@/presentation/navigation/types'
-import color from '@/presentation/res/styles/color'
-import {Text, useTheme, makeStyles} from '@rneui/themed'
-import React, {useState} from 'react'
-import {KeyboardAvoidingView, TextInput, View} from 'react-native'
-import TeamRequestDto from '@/data/model/Team/TeamRequestDto'
-import {ModalContext} from '@/presentation/components/modal/context'
-import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent'
-import CardWrapper from '@/presentation/components/CardWrapper'
-import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent'
-import {ScrollView} from 'react-native-gesture-handler'
-import {PositionDropdownMaker} from '@/presentation/components/PositionDropdownMaker'
-import PositionCountDto from '@/data/model/Team/PostionCountDto'
-import {useCreateTeam} from '@/reactQuery/useCreateTeam'
-import useGlobalStyles from '@/presentation/styles'
-import useModal from '@/presentation/components/modal/useModal'
+import { FilledButton } from '@/presentation/components/Button';
+import { MainStackScreenProps } from '@/presentation/navigation/types';
+import color from '@/presentation/res/styles/color';
+import { Text, useTheme, makeStyles } from '@rneui/themed';
+import React, { useState } from 'react';
+import { KeyboardAvoidingView, TextInput, View } from 'react-native';
+import TeamRequestDto from '@/data/model/Team/TeamRequestDto';
+import { ModalContext } from '@/presentation/components/modal/context';
+import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent';
+import CardWrapper from '@/presentation/components/CardWrapper';
+import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
+import { ScrollView } from 'react-native-gesture-handler';
+import { PositionDropdownMaker } from '@/presentation/components/PositionDropdownMaker';
+import PositionCountDto from '@/data/model/Team/PostionCountDto';
+import { useCreateTeam } from '@/reactQuery/useCreateTeam';
+import useGlobalStyles from '@/presentation/styles';
+import useModal from '@/presentation/components/modal/useModal';
 
-const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupCreator'>) => {
-  const {theme} = useTheme()
-  const styles = useStyles({navigation, route})
-  const modal = useModal()
+const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'>) => {
+  const { theme } = useTheme();
+  const styles = useStyles({ navigation, route });
+  const modal = useModal();
   const [teamCreateState, setTeamCreateState] = useState<TeamRequestDto>({
     expectation: '',
     openChatUrl: '',
     projectDescription: '',
     projectName: '',
     teamMemberRecruitCnts: [],
-  })
-  const globalStyles = useGlobalStyles()
-  const createTeam = useCreateTeam()
+  });
+  const globalStyles = useGlobalStyles();
+  const createTeam = useCreateTeam();
 
   function handleCreateTeam() {
-    createTeam.mutate(teamCreateState)
+    createTeam.mutate(teamCreateState);
   }
 
   function updateExpectation(text: string) {
-    setTeamCreateState(prevState => ({...prevState, expectation: text}))
+    setTeamCreateState(prevState => ({ ...prevState, expectation: text }));
   }
 
   function updateOpenchatUrl(text: string) {
-    setTeamCreateState(prevState => ({...prevState, openChatUrl: text}))
+    setTeamCreateState(prevState => ({ ...prevState, openChatUrl: text }));
   }
 
   function updateProjectDescription(text: string) {
-    setTeamCreateState(prevState => ({...prevState, projectDescription: text}))
+    setTeamCreateState(prevState => ({ ...prevState, projectDescription: text }));
   }
 
   function updateProjectName(text: string) {
-    setTeamCreateState(prevState => ({...prevState, projectName: text}))
+    setTeamCreateState(prevState => ({ ...prevState, projectName: text }));
   }
 
   function updateTeamMemberRecruitCnts(data: PositionCountDto[]) {
-    setTeamCreateState(prevState => ({...prevState, teamMemberRecruitCnts: data}))
+    setTeamCreateState(prevState => ({ ...prevState, teamMemberRecruitCnts: data }));
   }
 
   function isOpenChatUrlValidate() {
-    const pattern = /^https\:\/\/open\.kakao\.com\/.+$/
-    const result = pattern.test(teamCreateState.openChatUrl)
+    const pattern = /^https\:\/\/open\.kakao\.com\/.+$/;
+    const result = pattern.test(teamCreateState.openChatUrl);
 
-    if (result) return true
-    else throw Error('유효한 카카오톡 오픈채팅 링크가 아닙니다')
+    if (result) return true;
+    else throw Error('유효한 카카오톡 오픈채팅 링크가 아닙니다');
   }
 
   function isRecruitCntValidate() {
     if (teamCreateState.teamMemberRecruitCnts.length == 0) {
-      throw Error('팀원이 존재하지 않습니다')
-    } else return true
+      throw Error('팀원이 존재하지 않습니다');
+    } else return true;
   }
 
   function isEmptyInputExisted() {
     //공백제거하기
-    const projectName = teamCreateState.projectName.replace(/ /gi, '')
-    const projectDescription = teamCreateState.projectDescription.replace(/ /gi, '')
-    const expectation = teamCreateState.expectation.replace(/ /gi, '')
-    const openChatUrl = teamCreateState.openChatUrl.replace(/ /gi, '')
+    const projectName = teamCreateState.projectName.replace(/ /gi, '');
+    const projectDescription = teamCreateState.projectDescription.replace(/ /gi, '');
+    const expectation = teamCreateState.expectation.replace(/ /gi, '');
+    const openChatUrl = teamCreateState.openChatUrl.replace(/ /gi, '');
 
     if (
       projectName.length != 0 &&
@@ -81,33 +81,33 @@ const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupCreator'>)
       expectation.length != 0 &&
       openChatUrl.length != 0
     ) {
-      return true
-    } else throw Error('빈 입력란이 있습니다')
+      return true;
+    } else throw Error('빈 입력란이 있습니다');
   }
 
   function isAllInputValidate() {
     try {
-      isRecruitCntValidate()
+      isRecruitCntValidate();
     } catch (error) {
-      RecruitCntValidationWarningModal()
-      return false
+      RecruitCntValidationWarningModal();
+      return false;
     }
 
     try {
-      isEmptyInputExisted()
+      isEmptyInputExisted();
     } catch (error) {
-      EmptyInputWarningModal()
-      return false
+      EmptyInputWarningModal();
+      return false;
     }
 
     try {
-      isOpenChatUrlValidate()
+      isOpenChatUrlValidate();
     } catch (error) {
-      OpenChatValidationWarningModal()
-      return false
+      OpenChatValidationWarningModal();
+      return false;
     }
 
-    return true
+    return true;
   }
 
   const EmptyInputWarningModal = () => {
@@ -115,42 +115,42 @@ const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupCreator'>)
       content: (
         <SymbolModalContent
           title="빈 입력란이 있어요!"
-          symbol={<Text style={{fontSize: theme.emojiSize.md, textAlign: 'center'}}>😚</Text>}
+          symbol={<Text style={{ fontSize: theme.emojiSize.md, textAlign: 'center' }}>😚</Text>}
           text={'최대한 자세히 적어주시면\n 프로젝트 모집에 도움이 될 수 있어요!'}
-          yesButton={{title: '확인', onPress: () => modal.hide()}}
+          yesButton={{ title: '확인', onPress: () => modal.hide() }}
         />
       ),
-      modalProps: {animationType: 'none', justifying: 'center'},
-    })
-  }
+      modalProps: { animationType: 'none', justifying: 'center' },
+    });
+  };
 
   const OpenChatValidationWarningModal = () => {
     modal?.show({
       content: (
         <SymbolModalContent
           title="알맞은 링크가 아니에요!"
-          symbol={<Text style={{fontSize: theme.emojiSize.md, textAlign: 'center'}}>🧐</Text>}
+          symbol={<Text style={{ fontSize: theme.emojiSize.md, textAlign: 'center' }}>🧐</Text>}
           text={'유효한 카카오톡 오픈채팅 링크를 첨부해주세요!'}
-          yesButton={{title: '확인', onPress: () => modal.hide()}}
+          yesButton={{ title: '확인', onPress: () => modal.hide() }}
         />
       ),
-      modalProps: {animationType: 'none', justifying: 'center'},
-    })
-  }
+      modalProps: { animationType: 'none', justifying: 'center' },
+    });
+  };
 
   const RecruitCntValidationWarningModal = () => {
     modal?.show({
       content: (
         <SymbolModalContent
           title="팀원이 없어요!"
-          symbol={<Text style={{fontSize: theme.emojiSize.md, textAlign: 'center'}}>🫥</Text>}
+          symbol={<Text style={{ fontSize: theme.emojiSize.md, textAlign: 'center' }}>🫥</Text>}
           text={'프로젝트를 함께할 팀원들을 알려주세요!'}
-          yesButton={{title: '확인', onPress: () => modal.hide()}}
+          yesButton={{ title: '확인', onPress: () => modal.hide() }}
         />
       ),
-      modalProps: {animationType: 'none', justifying: 'center'},
-    })
-  }
+      modalProps: { animationType: 'none', justifying: 'center' },
+    });
+  };
 
   const DeleteConfirmModal = () => {
     modal?.show({
@@ -160,39 +160,41 @@ const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupCreator'>)
           yesButton={{
             title: '삭제하기',
             onPress: () => {
-              modal.hide()
-              navigation.goBack()
+              modal.hide();
+              navigation.goBack();
             },
           }}
           noButton={{
             title: '돌아가기',
             onPress: () => {
-              modal.hide()
+              modal.hide();
             },
-          }}>
+          }}
+        >
           <View>
-            <Text style={{textAlign: 'center'}}>글을 삭제하면</Text>
-            <Text style={{textAlign: 'center'}}>다시 되돌릴 수 없습니다</Text>
+            <Text style={{ textAlign: 'center' }}>글을 삭제하면</Text>
+            <Text style={{ textAlign: 'center' }}>다시 되돌릴 수 없습니다</Text>
           </View>
         </BottomModalContent>
       ),
-      modalProps: {animationType: 'slide', justifying: 'bottom'},
-    })
-  }
+      modalProps: { animationType: 'slide', justifying: 'bottom' },
+    });
+  };
 
   //TODO: useCreateTeam onSuccess일 경우 네비게이션 넣기 + 에러처리 필요함
   return (
     <KeyboardAvoidingView
       behavior="height"
-      style={{backgroundColor: 'white', flex: 1, paddingTop: 29, paddingHorizontal: 20}}>
+      style={{ backgroundColor: 'white', flex: 1, paddingTop: 29, paddingHorizontal: 20 }}
+    >
       <ScrollView>
         <View style={styles.item}>
           <Text style={styles.text}>프로젝트 이름</Text>
-          <CardWrapper style={[styles.inputBox, {maxHeight: 90}]}>
+          <CardWrapper style={[styles.inputBox, { maxHeight: 90 }]}>
             <TextInput
               value={teamCreateState?.projectName}
               onChangeText={(text: string) => {
-                updateProjectName(text)
+                updateProjectName(text);
               }}
               multiline={false}
               maxLength={20}
@@ -203,11 +205,11 @@ const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupCreator'>)
 
         <View style={styles.item}>
           <Text style={styles.text}>프로젝트 설명</Text>
-          <CardWrapper style={[globalStyles.card, styles.inputBox, {minHeight: 160}]}>
+          <CardWrapper style={[globalStyles.card, styles.inputBox, { minHeight: 160 }]}>
             <TextInput
               value={teamCreateState?.projectDescription}
               onChangeText={(text: string) => {
-                updateProjectDescription(text)
+                updateProjectDescription(text);
               }}
               multiline={true}
               maxLength={500}
@@ -217,11 +219,11 @@ const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupCreator'>)
 
         <View style={styles.item}>
           <Text style={styles.text}>원하는 팀원</Text>
-          <CardWrapper style={[styles.dropdownBox, {paddingVertical: 20}]}>
+          <CardWrapper style={[styles.dropdownBox, { paddingVertical: 20 }]}>
             <PositionDropdownMaker
               onTeamMemberRecruitChanged={(data: PositionCountDto[]) => {
-                updateTeamMemberRecruitCnts(data)
-                console.log(data)
+                updateTeamMemberRecruitCnts(data);
+                console.log(data);
               }}
             />
           </CardWrapper>
@@ -229,11 +231,11 @@ const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupCreator'>)
 
         <View style={styles.item}>
           <Text style={styles.text}>바라는 점</Text>
-          <CardWrapper style={[globalStyles.card, styles.inputBox, {minHeight: 95}]}>
+          <CardWrapper style={[globalStyles.card, styles.inputBox, { minHeight: 95 }]}>
             <TextInput
               value={teamCreateState?.expectation}
               onChangeText={(text: string) => {
-                updateExpectation(text)
+                updateExpectation(text);
               }}
               multiline={true}
               maxLength={200}
@@ -243,11 +245,11 @@ const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupCreator'>)
 
         <View style={styles.item}>
           <Text style={styles.text}>오픈채팅 링크</Text>
-          <CardWrapper style={[styles.inputBox, {maxHeight: 50}]}>
+          <CardWrapper style={[styles.inputBox, { maxHeight: 50 }]}>
             <TextInput
               value={teamCreateState?.openChatUrl}
               onChangeText={(text: string) => {
-                updateOpenchatUrl(text)
+                updateOpenchatUrl(text);
               }}
               multiline={true}
               maxLength={100}
@@ -256,28 +258,28 @@ const GroupCreator = ({navigation, route}: MainStackScreenProps<'GroupCreator'>)
           </CardWrapper>
         </View>
 
-        <View style={{paddingHorizontal: 30}}>
+        <View style={{ paddingHorizontal: 30 }}>
           <FilledButton
             title={'완료'}
             disabled={false}
             onPress={() => {
               if (isAllInputValidate()) {
-                handleCreateTeam()
+                handleCreateTeam();
               }
             }}
           />
           <FilledButton
             title={'삭제하기'}
-            buttonStyle={{backgroundColor: theme.colors.grey0}}
+            buttonStyle={{ backgroundColor: theme.colors.grey0 }}
             onPress={() => {
-              DeleteConfirmModal()
+              DeleteConfirmModal();
             }}
           />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
-  )
-}
+  );
+};
 const useStyles = makeStyles(theme => ({
   view: {
     backgroundColor: color.white,
@@ -317,5 +319,5 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 15,
     paddingHorizontal: 14,
   },
-}))
-export default GroupCreator
+}));
+export default GroupCreator;
