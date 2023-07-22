@@ -9,12 +9,12 @@ import { MainBottomTabNavigationProps } from '@/presentation/navigation/types';
 import useGlobalStyles from '@/presentation/styles';
 import { useQuery, UseQueryResult } from 'react-query';
 import TeamDto from '@/data/model/Team/TeamDto';
-import { getMyTeam } from '@/data/api/team';
+import { getMyTeam, incompleteTeam } from '@/data/api/team';
 import { getProfile } from '@/data/api/profile';
-import ProfileViewDto from '@/data/model/Profile/ProfileViewDto';
 import ProfileViewResponse from '@/data/model/Profile/ProfileViewResponse';
-import { teamKeys } from '@/reactQuery/key/TeamKeys';
+import { teamKeys, TeamRefetchKey } from '@/reactQuery/key/TeamKeys';
 import { profileKeys } from '@/reactQuery/key/ProfileKeys';
+import { useMutationForm } from '@/reactQuery/util/useMutationForm';
 
 interface LeaderHeaderParams {
   onPressEditor: () => void;
@@ -121,9 +121,15 @@ export const TeamPage = ({ navigation, route }: MainBottomTabNavigationProps<'Te
     if (route.params) {
       return route.params.refetchKey;
     } else {
-      return {};
+      return TeamRefetchKey.INITIALIZE;
     }
   }
+
+  const deleteTeam = useMutationForm<undefined, unknown>({
+    mutationKey: teamKeys.incompleteTeam,
+    mutationFn: async () => incompleteTeam(),
+    useErrorBoundary: true,
+  });
 
   return (
     <>
@@ -214,7 +220,9 @@ export const TeamPage = ({ navigation, route }: MainBottomTabNavigationProps<'Te
               onPressComplete={() => {
                 navigation.navigate('MainNavigation', { screen: 'TeamComplete' });
               }}
-              onPressDelete={() => {}}
+              onPressDelete={() => {
+                deleteTeam.mutation();
+              }}
             />
           ) : (
             <></>

@@ -1,3 +1,4 @@
+import { TeamRefetchKey, TeamRefetchKeyType } from '@/reactQuery/key/TeamKeys';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import {
   CompositeScreenProps,
@@ -67,7 +68,7 @@ export type MainStackParamList = {
 
 export type MainBottomTabParamList = {
   Home: undefined;
-  Team: { refetchKey: unknown };
+  Team: { refetchKey: TeamRefetchKeyType };
   MyPage: undefined;
   Notification: undefined;
 };

@@ -1,34 +1,38 @@
-import React, {useEffect, useState} from 'react'
-import {makeStyles, Text, useTheme} from '@rneui/themed'
-import {KeyboardAvoidingView, ScrollView, TextInput, View} from 'react-native'
-import TeamRequestDto from '@/data/model/Team/TeamRequestDto'
-import CardWrapper from '@/presentation/components/CardWrapper'
-import {FilledButton} from '@/presentation/components/Button'
-import {MainStackScreenProps} from '@/presentation/navigation/types'
-import useGlobalStyles from '@/presentation/styles'
-import PositionCountDto from '@/data/model/Team/PostionCountDto'
-import {getMyTeam} from '@/data/api/team'
-import {useQuery, UseQueryResult} from 'react-query'
-import TeamDto from '@/data/model/Team/TeamDto'
-import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent'
-import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent'
-import {PositionDropdownEditor} from '@/presentation/components/PositionDropdownEditor'
-import useModal from '@/presentation/components/modal/useModal'
-import { useUpdateTeam } from '@/reactQuery/useUpdateTeam'
-import { mapPositionRecruitingToPositionCount } from '@/presentation/model/mapper/mapPositionRecruitingToPositionCount'
-import { teamKeys } from '@/reactQuery/key/TeamKeys'
+import React, { useEffect, useState } from 'react';
+import { makeStyles, Text, useTheme } from '@rneui/themed';
+import { KeyboardAvoidingView, ScrollView, TextInput, View } from 'react-native';
+import TeamRequestDto from '@/data/model/Team/TeamRequestDto';
+import CardWrapper from '@/presentation/components/CardWrapper';
+import { FilledButton } from '@/presentation/components/Button';
+import { MainStackScreenProps } from '@/presentation/navigation/types';
+import useGlobalStyles from '@/presentation/styles';
+import PositionCountDto from '@/data/model/Team/PostionCountDto';
+import { getMyTeam, updateTeam } from '@/data/api/team';
+import { useQuery, UseQueryResult } from 'react-query';
+import TeamDto from '@/data/model/Team/TeamDto';
+import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent';
+import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
+import { PositionDropdownEditor } from '@/presentation/components/PositionDropdownEditor';
+import useModal from '@/presentation/components/modal/useModal';
+import { mapPositionRecruitingToPositionCount } from '@/presentation/model/mapper/mapPositionRecruitingToPositionCount';
+import { TeamRefetchKey, teamKeys } from '@/reactQuery/key/TeamKeys';
+import { useMutationForm } from '@/reactQuery/util/useMutationForm';
 
 //TODO: api 수정반영, react query 적용, 요구사항 충족 필요함
-export const TeamEditor = ({navigation}: MainStackScreenProps<'TeamEditor'>) => {
-  const {theme} = useTheme()
-  const styles = useStyles({navigation})
-  const modal = useModal()
+export const TeamEditor = ({ navigation }: MainStackScreenProps<'TeamEditor'>) => {
+  const { theme } = useTheme();
+  const styles = useStyles({ navigation });
+  const modal = useModal();
   const {
     data: teamData,
     isLoading: isTeamDataLoading,
     error: teamDataError,
   }: UseQueryResult<TeamDto> = useQuery(teamKeys.myTeam, () => getMyTeam());
-  const updateTeam = useUpdateTeam();
+  const teamUpdate = useMutationForm<TeamRequestDto, TeamDto>({
+    mutationKey: teamKeys.updateTeam,
+    mutationFn: async (dto: TeamRequestDto) => updateTeam(dto) as Promise<TeamDto>,
+    useErrorBoundary: true,
+  });
   const [teamUpdateState, setTeamUpdateState] = useState<TeamRequestDto>({
     expectation: '',
     openChatUrl: '',
@@ -36,6 +40,7 @@ export const TeamEditor = ({navigation}: MainStackScreenProps<'TeamEditor'>) => 
     projectName: '',
     teamMemberRecruitCnts: [],
   });
+  const globalStyles = useGlobalStyles();
 
   useEffect(() => {
     setTeamUpdateState({
@@ -47,7 +52,11 @@ export const TeamEditor = ({navigation}: MainStackScreenProps<'TeamEditor'>) => 
     });
   }, [teamData]);
 
-  const globalStyles = useGlobalStyles();
+  if (teamUpdate.data) {
+    console.log(`updateTeam.data:${teamUpdate.data}`);
+    //TODO:queryClient이용으로 refetch하기
+    navigation.navigate('Team', { refetchKey: TeamRefetchKey.TEAM_UPDATE });
+  }
 
   function initializeTeamMemberRecruitCnts() {
     const result = teamData?.teamMemberCnts.map(item => {
@@ -202,11 +211,6 @@ export const TeamEditor = ({navigation}: MainStackScreenProps<'TeamEditor'>) => 
     });
   };
 
-  if (updateTeam.data) {
-    console.log(`updateTeam.data:${updateTeam.data}`);
-    navigation.navigate('Team', { refetchKey: updateTeam.data });
-  }
-
   if (isTeamDataLoading) {
     return <Text>로딩중</Text>;
   }
@@ -294,7 +298,7 @@ export const TeamEditor = ({navigation}: MainStackScreenProps<'TeamEditor'>) => 
             disabled={false}
             onPress={() => {
               if (isAllInputValidate()) {
-                updateTeam.updateTeam(teamUpdateState);
+                teamUpdate.mutation(teamUpdateState);
               }
             }}
           />
