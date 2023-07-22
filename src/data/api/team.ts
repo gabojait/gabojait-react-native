@@ -49,3 +49,7 @@ export const completeTeam = async (dto: ProjectUrl) => {
 export const incompleteTeam = async () => {
   return await client.delete(`team/incomplete`);
 };
+
+export const fireTeammate = async (userId: number) => {
+  return await client.patch(`team/user/${userId}/fire`);
+};

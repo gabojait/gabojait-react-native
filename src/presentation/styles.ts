@@ -1,5 +1,5 @@
-import {makeStyles} from '@rneui/themed'
-import {StyleSheet} from 'react-native'
+import { makeStyles } from '@rneui/themed';
+import { StyleSheet } from 'react-native';
 
 const useGlobalStyles = makeStyles(theme => ({
   card: {
@@ -18,10 +18,22 @@ const useGlobalStyles = makeStyles(theme => ({
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
   },
+  card2: {
+    padding: 30,
+    marginVertical: 5,
+    marginHorizontal: 20,
+  },
   container: {
     flex: 1,
     backgroundColor: 'white',
     padding: 20,
+  },
+  container2: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    minHeight: 100,
   },
   wrapButtonConatiner: {
     flexDirection: 'row',
@@ -97,6 +109,10 @@ const useGlobalStyles = makeStyles(theme => ({
     fontWeight: theme.fontWeight.bold,
     fontSize: 30,
   },
+  scrollView: {
+    backgroundColor: theme.colors.white,
+    paddingVertical: 18,
+  },
   tabBar: {
     minHeight: 60,
     paddingVertical: 10,
@@ -106,5 +122,20 @@ const useGlobalStyles = makeStyles(theme => ({
     fontWeight: theme.fontWeight.semibold,
     paddingTop: 10,
   },
-}))
-export default useGlobalStyles
+  positionText: {
+    fontSize: 20,
+    fontWeight: theme.fontWeight.bold,
+  },
+  textUnderPosition: {
+    fontSize: theme.fontSize.sm,
+    fontWeight: theme.fontWeight.semibold,
+    paddingTop: 10,
+  },
+  textLight11: {
+    fontSize: 11,
+    fontWeight: theme.fontWeight.light,
+    color: theme.colors.black,
+    lineHeight: 22,
+  },
+}));
+export default useGlobalStyles;

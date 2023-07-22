@@ -22,6 +22,7 @@ import GroupCreator from '../screens/Main/Home/Group/GroupCreator';
 import Header from '../screens/Headers/CloseHeader';
 import { OpenChatingPage } from '../screens/Main/Team/OpenChatingPage';
 import { TeamEditor } from '../screens/Main/Team/TeamEditor';
+import { ManageTeammate } from '../screens/Main/Team/ManageTeammate';
 
 const Main = createStackNavigator<MainStackParamList>();
 
@@ -178,6 +179,14 @@ const MainNavigation = () => {
             headerTitle: '팀관리',
           }}
           component={CompleteSuccess}
+        />
+        <Main.Screen
+          name="ManageTeammate"
+          options={{
+            header: TitleWithCloseHeader,
+            headerTitle: '팀원 관리',
+          }}
+          component={ManageTeammate}
         />
       </Main.Group>
     </Main.Navigator>
