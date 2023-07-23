@@ -1,4 +1,4 @@
-import { ScrollView, View } from 'react-native';
+import { Linking, ScrollView, View } from 'react-native';
 import React, { useEffect, useMemo, useState } from 'react';
 import { ArrowCard } from '@/presentation/components/BaseCard';
 import { Input, Text, useTheme } from '@rneui/themed';
@@ -23,6 +23,7 @@ import { updateProfileInfo } from '@/data/api/profile';
 import useModal from '@/presentation/components/modal/useModal';
 import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent';
 import { KoreanPosition } from '@/presentation/model/type/Position';
+import { openAppWithUri } from 'react-native-send-intent';
 
 const useUpdateProfile = () => {
   const { data, loading, error } = useAppSelector(state => state.profileReducer.userProfile);
@@ -162,6 +163,10 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
                 icon={<Icon name={portfolioTypeIconName['pdf']} />}
                 style={{
                   backgroundColor: 'FFF',
+                }}
+                onClick={async () => {
+                  if (await Linking.canOpenURL(portfolio.portfolioUrl))
+                    Linking.openURL(portfolio.portfolioUrl);
                 }}
               />
             ))}

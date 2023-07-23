@@ -12,7 +12,7 @@ import axios, {
 } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const axiosConfig: AxiosRequestConfig = {
+export const axiosConfig: AxiosRequestConfig = {
   baseURL: 'https://gabojait-dev.nogamsung.com/api/v1',
   headers: {} as AxiosRequestHeaders,
 };
@@ -50,7 +50,7 @@ interface CustomResponseInterceptorManager
 export const isSuccess = (statusCode: number) => 200 <= statusCode && statusCode < 300;
 
 const client: CustomInstance = axios.create(axiosConfig);
-client.interceptors.request.use(async req => {
+export const reqInterceptor = async (req: AdaptAxiosRequestConfig) => {
   // Todo: 재시도 구현
   if (!req.headers) throw new Error('Unexpected Request');
   const accessToken = await AsyncStorage.getItem('accessToken');
@@ -59,6 +59,7 @@ client.interceptors.request.use(async req => {
   if (refreshToken) req.headers['Refresh-Token'] = `Bearer ${refreshToken}`;
   console.info(`'${req.url}'\nHeader:`, req.headers, req);
   return req;
-});
+};
+client.interceptors.request.use(reqInterceptor);
 
 export default client;
