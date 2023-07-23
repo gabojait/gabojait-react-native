@@ -64,7 +64,7 @@ export const profileReducer = createReducer<ProfileState, ProfileAction>(initial
       ...state.userProfile,
       data: {
         ...state.userProfile.data,
-        works: [...(state.userProfile.data?.works ?? []), action.payload],
+        works: [...(state.userProfile.data?.works ?? []), {...action.payload, new: true}],
       },
     },
   }),
@@ -98,7 +98,7 @@ export const profileReducer = createReducer<ProfileState, ProfileAction>(initial
       ...state.userProfile,
       data: {
         ...state.userProfile.data,
-        educations: [...(state.userProfile.data?.educations ?? []), action.payload],
+        educations: [...(state.userProfile.data?.educations ?? []), {...action.payload, new: true}],
       },
       modified: true,
     },
@@ -133,7 +133,7 @@ export const profileReducer = createReducer<ProfileState, ProfileAction>(initial
       ...state.userProfile,
       data: {
         ...state.userProfile.data,
-        skills: [...(state.userProfile.data?.skills ?? []), action.payload],
+        skills: [...(state.userProfile.data?.skills ?? []), {...action.payload, new: true}],
       },
     },
   }),
@@ -165,7 +165,7 @@ export const profileReducer = createReducer<ProfileState, ProfileAction>(initial
       ...state.userProfile,
       data: {
         ...state.userProfile.data,
-        portfolios: [...(state.userProfile.data?.portfolios ?? []), action.payload],
+        portfolios: [...(state.userProfile.data?.portfolios ?? []), {...action.payload, new: true}],
       },
     },
   }),

@@ -50,7 +50,7 @@ const EditSchoolAndWork = ({ navigation }: ProfileStackParamListProps<'EditSchoo
   };
 
   const handleEditSchool = (school: Education) => {
-    dispatch(updateEducation(school.educationId, school));
+    dispatch(updateEducation(school.educationId!, school));
   };
 
   const handleAddCarrer = (work: Work) => {
@@ -61,7 +61,7 @@ const EditSchoolAndWork = ({ navigation }: ProfileStackParamListProps<'EditSchoo
   };
 
   const handleEditWork = (work: Work) => {
-    dispatch(updateWork(work.workId, work));
+    dispatch(updateWork(work.workId!, work));
   };
 
   return (
@@ -113,7 +113,7 @@ export const EducationList = ({
           ];
           return (
             <EditItem
-              id={_data.educationId}
+              id={_data.educationId!}
               name={_data.institutionName}
               titleEditable
               fieldColor="white"
@@ -156,7 +156,7 @@ function useDatePickerModal(onChangeData: (data: Periodical) => void) {
         <DatePickerModalContent
           title={<Text h3>{i == 0 ? '시작' : '끝난'} 기간을 입력해주세요</Text>}
           doneButtonText="다음"
-          onModalVisibityChanged={visibility => {
+          onModalVisibityChanged={(visibility, isCurrent) => {
             if (!visibility) {
               modal.hide();
               if (i == 0) {
@@ -164,6 +164,7 @@ function useDatePickerModal(onChangeData: (data: Periodical) => void) {
               } else if (i == 1) {
                 onChangeData({
                   ...data,
+                  isCurrent,
                   startedAt: dates[0] ?? new Date().toISOString(),
                   endedAt: dates[1] ?? new Date().toISOString(),
                 });
@@ -214,7 +215,7 @@ export const WorkList = ({
           ];
           return (
             <EditItem
-              id={_data.workId}
+              id={_data.workId!}
               name={_data.corporationName}
               titleEditable
               fieldColor="white"

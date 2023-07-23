@@ -31,5 +31,5 @@ export default () => {
     setContent(null);
   };
 
-  return { modal, show, hide, content, modalProps };
+  return { modal, show, hide, content, modalProps, setContent };
 };

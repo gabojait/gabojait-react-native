@@ -22,7 +22,7 @@ const OnboardingNavigation = () => {
         options={{
           header: TitleHeader,
           title: '',
-          gestureEnabled: false
+          gestureEnabled: false,
         }}
       />
       <OnboardingStack.Screen

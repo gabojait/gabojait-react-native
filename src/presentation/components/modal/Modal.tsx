@@ -1,5 +1,5 @@
 import {Text} from '@rneui/themed'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {Alert, Modal, StyleSheet, View} from 'react-native'
 import {ModalContext} from './context'
 import useGlobalStyles from '@/presentation/styles'

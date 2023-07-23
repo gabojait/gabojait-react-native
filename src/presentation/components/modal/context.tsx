@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import useRealModal from './useRealModal';
 import CustomModal from './Modal';
 import { ModalBaseProps } from 'react-native';
@@ -20,6 +20,7 @@ type ModalContextType = {
   hide: () => void;
   modal: boolean;
   modalProps: CustomModalProps;
+  setContent: (content: ReactNode) => void;
 };
 
 let ModalContext: React.Context<ModalContextType | undefined>;
@@ -29,10 +30,11 @@ const { Provider } = (ModalContext = React.createContext<ModalContextType | unde
   hide: () => {},
   modal: false,
   modalProps: { animationType: undefined, justifying: undefined },
+  setContent: (content: ReactNode) => {},
 }));
 
 const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { modal, show, hide, content, modalProps } = useRealModal();
+  const { modal, show, hide, content, modalProps, setContent } = useRealModal();
   return (
     <Provider
       value={{
@@ -41,6 +43,7 @@ const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         hide,
         content,
         modalProps,
+        setContent,
       }}
     >
       <CustomModal />

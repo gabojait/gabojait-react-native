@@ -174,7 +174,7 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
                 {profile.portfolios?.length ?? 0 > 0 ? (
                   profile.portfolios?.map(portfolio => (
                     <ToggleButton
-                      title={portfolio.name}
+                      title={portfolio.portfolioName}
                       icon={<MaterialIcon name={portfolioTypeIconName['pdf']} />}
                       style={{
                         backgroundColor: '#fff',

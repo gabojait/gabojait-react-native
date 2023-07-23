@@ -42,13 +42,23 @@ const useUpdateProfile = () => {
     mutate: () =>
       profileSkillMutation.mutate({
         ...profile,
+        skills: profile.skills.map(skill => ({
+          ...skill,
+          skillId: skill.new ? undefined : skill.skillId,
+        })),
+        portfolios: profile.portfolios.map(portfolio => ({
+          ...portfolio,
+          portfolioId: portfolio.new ? undefined : portfolio.portfolioId,
+        })),
         educations: profile.educations.map(education => ({
           ...education,
+          educationId: education.new ? undefined : education.educationId,
           startedAt: new Date(education.startedAt).format('yyyy-MM-dd'),
           endedAt: new Date(education.endedAt).format('yyyy-MM-dd'),
         })),
         works: profile.works.map(work => ({
           ...work,
+          workId: work.new ? undefined : work.workId,
           startedAt: new Date(work.startedAt).format('yyyy-MM-dd'),
           endedAt: new Date(work.endedAt).format('yyyy-MM-dd'),
         })),
@@ -148,7 +158,7 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
             {profile.portfolios?.map(portfolio => (
               <ToggleButton
                 key={portfolio.portfolioId}
-                title={portfolio.name}
+                title={portfolio.portfolioName}
                 icon={<Icon name={portfolioTypeIconName['pdf']} />}
                 style={{
                   backgroundColor: 'FFF',

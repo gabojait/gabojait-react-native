@@ -5,5 +5,7 @@ export default interface Work extends Periodical {
   createdAt: string;
   updatedAt: string;
   workDescription: string;
-  workId: number;
+  workId?: number;
+  new?: boolean;
+
 }

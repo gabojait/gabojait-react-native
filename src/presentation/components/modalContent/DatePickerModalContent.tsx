@@ -2,15 +2,16 @@ import { Button, CheckBox, Text, useTheme } from '@rneui/themed';
 import { Alert, Modal, StyleSheet, View } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import { FilledButton } from '../Button';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState } from 'react';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { useAppSelector } from '@/redux/hooks';
 import { profileReducer } from '@/redux/reducers/profileReducer';
+import useModal from '../modal/useModal';
 
-interface DatePickerModalProps {
+export interface DatePickerModalProps {
   title?: ReactNode;
   doneButtonText: string;
-  onModalVisibityChanged: (visibility: boolean) => void;
+  onModalVisibityChanged: (visibility: boolean, isCurrent: boolean) => void;
   date: Date;
   onDatePicked: (date: Date) => void;
   isCurrent?: boolean;
@@ -22,13 +23,19 @@ interface DatePickerModalProps {
 
 const DatePickerModalContent: React.FC<DatePickerModalProps> = ({
   title,
-  isCurrent = false,
-  setIsCurrent,
+  isCurrent: initialIsCurrent = false,
+  setIsCurrent: osIsCurrentChange,
   isCurrentCheckable = false,
   ...props
 }) => {
   const { theme } = useTheme();
-  
+  const [isCurrent, setIsCurrent] = useState(initialIsCurrent);
+
+  const handleIsCurrentChange = (newValue: boolean) => {
+    setIsCurrent(newValue);
+    osIsCurrentChange?.(newValue);
+  };
+
   return (
     <View
       style={{
@@ -52,12 +59,11 @@ const DatePickerModalContent: React.FC<DatePickerModalProps> = ({
         maximumDate={props.maximumDate}
         minimumDate={props.minimumDate}
       />
-      {isCurrentCheckable && setIsCurrent && (
+      {isCurrentCheckable && (
         <CheckBox
           checked={isCurrent}
           onPress={() => {
-            console.log(isCurrent);
-            setIsCurrent(!isCurrent);
+            handleIsCurrentChange(!isCurrent);
           }}
           checkedIcon={<MaterialIcon name="check-box" size={18} color={theme.colors.primary} />}
           uncheckedIcon={
@@ -73,7 +79,7 @@ const DatePickerModalContent: React.FC<DatePickerModalProps> = ({
           titleStyle={{ color: '#FFFFFF' }}
           buttonStyle={style.buttonStyle}
           onPress={() => {
-            props.onModalVisibityChanged(false);
+            props.onModalVisibityChanged(false, isCurrent);
           }}
         />
       </View>

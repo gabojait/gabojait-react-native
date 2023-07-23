@@ -1,12 +1,15 @@
-export type PortfolioType = 'L' | 'F';
+export type PortfolioType = 'link' | 'file';
 export const PortfolioType = {
-  Url: 'L',
-  File: 'F',
+  Url: 'link',
+  File: 'file',
 } as { [key: string]: PortfolioType };
 
 export default interface Portfolio {
-  name?: string;
   portfolioId?: number;
-  portfolioType?: PortfolioType;
-  url?: string;
+  new?: boolean;
+  createdAt?: string,
+  media: PortfolioType,
+  portfolioName?: string,
+  portfolioUrl: string,
+  updatedAt?: string,
 }

@@ -16,11 +16,8 @@ import { createPortfolio, deletePortfolio, updatePortfolio } from '@/redux/actio
 const EditPortfolio = () => {
   // Todo: Implement Portfolio Reducer
   const { data, loading, error } = useAppSelector(state => state.profileReducer.userProfile);
-  const orgPortfolios = data?.portfolios ?? [];
-  console.log(orgPortfolios);
+  const portfolios = data?.portfolios ?? [];
   const dispatch = useAppDispatch();
-
-  const [portfolios, setPortfolios] = useState(orgPortfolios);
 
   const globalStyles = useGlobalStyles();
 
@@ -34,6 +31,7 @@ const EditPortfolio = () => {
   const handleEdit = (portfolio: Portfolio) => {
     dispatch(updatePortfolio(portfolio.portfolioId!, portfolio));
   };
+  console.log(portfolios);
 
   return (
     <View style={globalStyles.container}>
@@ -43,7 +41,8 @@ const EditPortfolio = () => {
         onAddPortfolio={handleAdd}
         onChangePortfolio={handleEdit}
         onDeletePortfolio={handleDelete}
-        portfolios={portfolios.filter(portfolio => portfolio.portfolioType == PortfolioType.Url)}
+        totalPortfolios={portfolios.length}
+        portfolios={portfolios.filter(portfolio => portfolio.media == PortfolioType.Url)}
       />
       <PortfolioList
         title="파일 업로드"
@@ -51,18 +50,20 @@ const EditPortfolio = () => {
         onAddPortfolio={handleAdd}
         onChangePortfolio={handleEdit}
         onDeletePortfolio={handleDelete}
-        portfolios={portfolios.filter(portfolio => portfolio.portfolioType == PortfolioType.File)}
+        totalPortfolios={portfolios.length}
+        portfolios={portfolios.filter(portfolio => portfolio.media == PortfolioType.File)}
       />
     </View>
   );
 };
 
 const placeHolders = {
-  L: 'URL 주소를 입력해주세요!',
-  F: '.jpg, .jpeg, .png, .pdf 포맷만 가능합니다!',
+  link: 'URL 주소를 입력해주세요!',
+  file: '.jpg, .jpeg, .png, .pdf 포맷만 가능합니다!',
 };
 
 export const PortfolioList = ({
+  totalPortfolios,
   portfolios,
   onChangePortfolio,
   onAddPortfolio,
@@ -70,6 +71,7 @@ export const PortfolioList = ({
   title,
   fieldType,
 }: {
+  totalPortfolios: number;
   portfolios: Portfolio[];
   onChangePortfolio: (portfolio: Portfolio) => void;
   onAddPortfolio: (portfolio: Portfolio) => void;
@@ -79,7 +81,7 @@ export const PortfolioList = ({
 }) => {
   const pickDocument = (portfolio: Portfolio) => {
     void DocumentPicker.pickSingle().then(res => {
-      portfolio.url = res.uri;
+      portfolio.portfolioUrl = res.uri;
       onChangePortfolio(portfolio);
     });
   };
@@ -88,38 +90,33 @@ export const PortfolioList = ({
     <>
       <List
         datas={portfolios}
-        renderItems={portfolio => {
-          let value = portfolio.url ?? '';
-          if (
-            portfolio.url != '' &&
-            portfolio.url &&
-            portfolio.portfolioType == PortfolioType.File
-          ) {
-            const urls = decodeURI(portfolio.url).split('/');
+        renderItems={(portfolio: Portfolio) => {
+          let value = portfolio.portfolioUrl ?? '';
+          if (portfolio.portfolioUrl != '' && portfolio.portfolioUrl && portfolio.media == PortfolioType.File) {
+            const urls = decodeURI(portfolio.portfolioUrl).split('/');
             value = urls[urls.length - 1];
           }
+          console.log(portfolio, 'Type of portfolio: ', portfolio.media);
           return (
             <EditItem
-              id={portfolio.portfolioId}
-              name={portfolio.name}
+              id={portfolio.portfolioId!}
+              name={portfolio.portfolioName}
               titleEditable
               fieldColor="white"
               onDeleteItem={itemId => {
                 onDeletePortfolio(itemId);
               }}
-              onChangeName={text => onChangePortfolio({ ...portfolio, name: text })}
+              onChangeName={text => onChangePortfolio({ ...portfolio, portfolioName: text })}
             >
               <CustomInput
                 textContentType={fieldType == PortfolioType.Url ? 'URL' : undefined}
                 keyboardType={fieldType == PortfolioType.Url ? 'url' : undefined}
-                editable={portfolio.portfolioType == PortfolioType.Url}
-                placeholder={placeHolders[portfolio.portfolioType as PortfolioType]}
+                editable={portfolio.media == PortfolioType.Url}
+                placeholder={placeHolders[portfolio.media as PortfolioType]}
                 onPressOut={
-                  portfolio.portfolioType == PortfolioType.File
-                    ? () => pickDocument(portfolio)
-                    : undefined
+                  portfolio.media == PortfolioType.File ? () => pickDocument(portfolio) : undefined
                 }
-                onChangeText={text => onChangePortfolio({ ...portfolio, url: text })}
+                onChangeText={text => onChangePortfolio({ ...portfolio, portfolioUrl: text })}
                 value={value}
               />
             </EditItem>
@@ -127,10 +124,10 @@ export const PortfolioList = ({
         }}
         onAdd={() =>
           onAddPortfolio({
-            portfolioId: portfolios.length,
-            portfolioType: fieldType,
-            name: '',
-            url: '',
+            portfolioId: totalPortfolios,
+            media: fieldType,
+            portfolioName: '',
+            portfolioUrl: '',
           })
         }
         title={title}

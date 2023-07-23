@@ -45,7 +45,10 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
   const { data, isLoading, error }: UseQueryResult<TeamDetailDto> = useQuery(
     ['GroupDetail', teamId],
     () => getTeam(teamId),
-    { useErrorBoundary: true, retry: 0 },
+    {
+      useErrorBoundary: true,
+      retry: 0,
+    },
   );
   const { mutate: mutateFavorite, data: favoriteResponse } = useMutation(
     'postFavorite',
