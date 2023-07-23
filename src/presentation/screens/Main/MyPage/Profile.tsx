@@ -19,7 +19,8 @@ import { Level } from '@/data/model/Profile/Skill';
 import useGlobalStyles from '@/presentation/styles';
 import { calcMonth } from '@/presentation/utils/util';
 import { isProfileExist } from './ProfileUtils';
-import { Position, PositionText } from '@/data/model/type/Position';
+import { Position } from '@/data/model/type/Position';
+import { KoreanPosition } from '@/presentation/model/type/Position';
 
 const Header = ({ navigation }: StackHeaderProps) => {
   const { theme } = useTheme();
@@ -152,7 +153,7 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
 
               <Text h4>기술스택/직무</Text>
               {profile.position !== 'none' ? (
-                <ToggleButton title={PositionText[profile.position ?? Position.None]} />
+                <ToggleButton title={KoreanPosition[profile.position ?? Position.None]} />
               ) : (
                 <Text>아직 직무 정보를 입력하지 않은 것 같아요.</Text>
               )}
@@ -190,7 +191,7 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
                   <Text>
                     프로젝트 '{team.projectName}' -
                     {
-                      PositionText[
+                      KoreanPosition[
                         team.teamMembers.find(member => member.userId === user?.userId)?.position ??
                           Position.None
                       ]
@@ -431,7 +432,7 @@ const PortfolioView = ({
         />
       </View>
       <Text style={{ fontSize: theme.fontSize.md }}>
-        {PositionText[profile.position ?? Position.None]}
+        {KoreanPosition[profile.position ?? Position.None]}
       </Text>
       <Text style={{ fontSize: theme.fontSize.md }}>{profile.profileDescription}</Text>
       <SolidCard>

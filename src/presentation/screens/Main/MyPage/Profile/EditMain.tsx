@@ -15,13 +15,14 @@ import { ProfileStackParamListProps } from '@/presentation/navigation/types';
 import CardWrapper from '@/presentation/components/CardWrapper';
 import CustomHeader from '@/presentation/components/CustomHeader';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { Position, PositionText } from '@/data/model/type/Position';
+import { Position } from '@/data/model/type/Position';
 import { Level } from '@/data/model/Profile/Skill';
 import useGlobalStyles from '@/presentation/styles';
 import { useMutation } from 'react-query';
 import { updateProfileInfo } from '@/data/api/profile';
 import useModal from '@/presentation/components/modal/useModal';
 import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent';
+import { KoreanPosition } from '@/presentation/model/type/Position';
 
 const useUpdateProfile = () => {
   const { data, loading, error } = useAppSelector(state => state.profileReducer.userProfile);
@@ -185,7 +186,9 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
           }}
         >
           <View style={{ alignItems: 'flex-start' }}>
-            {profile.position && <ToggleButton title={PositionText[profile.position]} />}
+            {profile.position && profile.position !== Position.None && (
+              <ToggleButton title={KoreanPosition[profile.position]} />
+            )}
             {profile.skills?.map((skill, idx) => (
               <>
                 <Text>{skill.isExperienced ? '사용' : '희망'} 기술스택</Text>

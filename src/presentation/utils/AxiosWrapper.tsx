@@ -33,6 +33,7 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
           if (res.headers['refreshToken']) {
             await AsyncStorage.setItem('refreshToken', res.headers['refreshToken']);
           }
+          // Todo: res.status == 200 일 때 responseCode를 이용해 분기처리
           if (!res.data.responseData.data || res.status == 204 || res.status == 201) {
             //Todo: Handle No Content
             //Todo: 빈 리스트(204?)/201 대응
