@@ -4,7 +4,7 @@ import PositionWaveIcon from '@/presentation/components/PositionWaveIcon';
 import { makeStyles, Text, useTheme } from '@rneui/themed';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, View } from 'react-native';
-import { MainStackScreenProps } from '@/presentation/navigation/types';
+import { MainStackParamList, MainStackScreenProps } from '@/presentation/navigation/types';
 import { ModalContext } from '@/presentation/components/modal/context';
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent';
 import { useMutation, useQuery, UseQueryResult } from 'react-query';
@@ -15,6 +15,7 @@ import BriefOfferDto from '@/data/model/Offer/BriefOfferDto';
 import { Position } from '@/data/model/type/Position';
 import { applyToTeam } from '@/data/api/offer';
 import useModal from '@/presentation/components/modal/useModal';
+import { useNavigation } from '@react-navigation/native';
 
 interface ApplyPositionCardProps {
   data: PositionRecruiting;
@@ -35,9 +36,10 @@ const PositionSelector = ({ navigation, route }: MainStackScreenProps<'PositionS
   const { theme } = useTheme();
   const styles = useStyles();
   const modal = useModal();
+  const { teamId } = route.params!;
   const { data, isLoading, error }: UseQueryResult<TeamDetailDto> = useQuery(
-    ['GroupDetail', route.params.teamId],
-    () => getTeam(route.params.teamId),
+    ['GroupDetail', teamId],
+    () => getTeam(teamId),
   );
   const positions = data?.teamMemberCnts || [];
   const { mutate: mutateApply } = useMutation('applyTeam', (args: [Position, number]) =>
@@ -76,7 +78,7 @@ const PositionSelector = ({ navigation, route }: MainStackScreenProps<'PositionS
           data={item}
           offers={data.offers}
           onApplyButtonPressed={(position: Position) => {
-            mutateApply([position, route.params.teamId]);
+            mutateApply([position, teamId]);
           }}
         />
       ))}

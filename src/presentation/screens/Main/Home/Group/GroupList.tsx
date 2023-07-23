@@ -11,6 +11,7 @@ import { useModelList } from '../../../../../reactQuery/util/useModelList';
 import RecruitingTeamDto from '@/data/model/Team/TeamBriefDto';
 import useModal from '@/presentation/components/modal/useModal';
 import { Position } from '@/data/model/type/Position';
+import { TeamOrder } from '@/data/model/type/TeamOrder';
 
 const GroupList = ({ navigation }: BoardStackParamListProps<'GroupList'>) => {
   const { theme } = useTheme();
@@ -18,16 +19,21 @@ const GroupList = ({ navigation }: BoardStackParamListProps<'GroupList'>) => {
   const modal = useModal();
   const GUIDE_MODE_MODAL_KEY = 'guideModeModalKey';
   const GUIDE_MODE_MODAL_VALUE = 'guideModeModalValue';
-  const { data, isLoading, error, fetchNextPage, refetch, param, isRefreshing } = useModelList<
+  const { data, isLoading, error, fetchNextPage, refetch, isRefreshing } = useModelList<
     GetRecruitingProps,
     RecruitingTeamDto
   >({
-    initialParam: { pageFrom: 0, pageSize: 20, position: Position.None, teamOrder: 'created' },
+    initialParam: {
+      pageFrom: 0,
+      pageSize: 20,
+      position: Position.None,
+      teamOrder: TeamOrder.Created,
+    },
     key: 'recruiting',
-    fetcher: async ({ pageParam }) => {
+    fetcher: async ({ pageParam, queryKey: [_, params] }) => {
       console.log('fetch!!');
       console.log('pageParam:', pageParam);
-      return await getRecruiting(pageParam!);
+      return await getRecruiting({ ...params, pageFrom: pageParam });
     },
   });
 
@@ -122,8 +128,8 @@ const GroupList = ({ navigation }: BoardStackParamListProps<'GroupList'>) => {
     >
       {data && (
         <FlatList
-          keyExtractor={item => item.teamId.toString()}
-          data={data?.pages.flat()}
+          keyExtractor={(item, idx) => item?.teamId?.toString() ?? idx.toString()}
+          data={data?.pages.map(page => page.data).flat()}
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() =>
@@ -133,7 +139,10 @@ const GroupList = ({ navigation }: BoardStackParamListProps<'GroupList'>) => {
                 })
               }
             >
-              <TeamBanner teamMembersCnt={item.teamMemberCnts} teamName={item.projectName} />
+              <TeamBanner
+                teamMembersCnt={item?.teamMemberCnts ?? []}
+                teamName={item?.projectName ?? ''}
+              />
             </TouchableOpacity>
           )}
           refreshing={isRefreshing}

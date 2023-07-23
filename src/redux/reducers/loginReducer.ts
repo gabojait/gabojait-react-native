@@ -11,8 +11,8 @@ const initialState: LoginState = { loginResult: asyncState.initial(), user: asyn
 
 export const loginReducer = createReducer<LoginState, LoginAction>(initialState, {
   [SIGN_OUT]: (state, action) => {
-    AsyncStorage.setItem('accessToken', '');
-    AsyncStorage.setItem('refreshToken', '');
+    AsyncStorage.removeItem('accessToken');
+    AsyncStorage.removeItem('refershToken');
     return {
       ...state,
       user: asyncState.initial(),

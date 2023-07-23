@@ -60,7 +60,7 @@ export function createAsyncReducer<S, AC extends AnyAsyncActionCreator, K extend
           ? successAction(state, action)
           : {
               ...state,
-              [key]: {...asyncState.success(action.payload), modified: false},
+              [key]: {...asyncState.success(action.payload.data), modified: false},
             };
       case failure:
         return {

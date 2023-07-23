@@ -1,49 +1,52 @@
-import {useState} from 'react'
-import {QueryFunctionContext, useInfiniteQuery} from 'react-query'
+import { useState } from 'react';
+import { QueryFunctionContext, useInfiniteQuery } from 'react-query';
 
 export interface PageReqeust {
-  pageFrom: number
-  pageSize: number
+  pageFrom: number;
+  pageSize: number;
 }
 
-export function useModelList<P extends PageReqeust & {[key: string]: string | number}, R>({
+export interface PageModel<T> {
+  page: number;
+  total: number;
+  data: T[];
+}
+
+export function useModelList<P extends PageReqeust & { [key: string]: string | number }, R>({
   initialParam,
   key,
   fetcher,
 }: {
-  initialParam: P
-  key: string
+  initialParam: P;
+  key: string;
   fetcher:
-    | ((params: QueryFunctionContext<(string | number)[], P>) => Promise<R[]>)
-    | ((params: QueryFunctionContext<(string | number)[], P>) => R[])
+    | ((params: { pageParam: number; queryKey: any[] }) => Promise<PageModel<R>>)
+    | ((params: { pageParam: number; queryKey: any[] }) => PageModel<R>);
 }) {
-  const [param, setParam] = useState<P>(initialParam)
-  const [isRefreshing, setIsRefreshing] = useState(false)
-  const {data, isLoading, error, fetchNextPage, refetch} = useInfiniteQuery(
-    [key, ...Object.values(initialParam)],
-    async p => {
-      const res = await fetcher({...p, pageParam: param})
-      setIsRefreshing(false)
-      return res ?? []
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const { data, isLoading, error, fetchNextPage, refetch } = useInfiniteQuery(
+    [key, { ...initialParam, pageFrom: undefined }],
+    async ({ pageParam = 0, queryKey }) => {
+      const res = await fetcher({ pageParam, queryKey });
+      setIsRefreshing(false);
+      return res;
     },
     {
       staleTime: 200000,
-      getNextPageParam: (lastPage: R[]) => {
-        if (lastPage.length >= param.pageSize) {
-          return param.pageFrom + 1
-        } else {
-          return undefined
-        }
+      getNextPageParam: (lastPage: PageModel<R>) => {
+        // 현재 페이지의 요소 수가 페이지 크기보다 적을 때 last page!
+        console.log(lastPage.page)
+        if (lastPage.data.length < initialParam.pageSize) return undefined;
+        else return lastPage.page + 1;
       },
     },
-  )
+  );
   return {
     data,
     isLoading: isLoading,
     error,
     fetchNextPage,
     refetch,
-    param,
     isRefreshing,
-  }
+  };
 }

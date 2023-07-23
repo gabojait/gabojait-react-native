@@ -18,6 +18,21 @@ const queryClient = new QueryClient();
 const logger = createLogger();
 const store = createStore(allReducers, applyMiddleware(ReduxThunk, logger));
 
+import NetInfo from '@react-native-community/netinfo'
+import { onlineManager } from 'react-query'
+
+onlineManager.setEventListener(setOnline => {
+  return NetInfo.addEventListener(state => {
+    setOnline(!!state.isConnected)
+  })
+})
+
+if (__DEV__) {
+  import('react-query-native-devtools').then(({ addPlugin }) => {
+    addPlugin({ queryClient });
+  });
+}
+
 const App = () => {
   const backgroundStyle = {
     flex: 1,

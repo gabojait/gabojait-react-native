@@ -40,9 +40,11 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
   const { theme } = useTheme();
   const globalStyles = useGlobalStyles();
   const modal = useModal();
+  const { teamId } = route.params!;
+
   const { data, isLoading, error }: UseQueryResult<TeamDetailDto> = useQuery(
-    ['GroupDetail', route.params.teamId],
-    () => getTeam(route.params.teamId),
+    ['GroupDetail', teamId],
+    () => getTeam(teamId),
     { useErrorBoundary: true, retry: 0 },
   );
   const { mutate: mutateFavorite, data: favoriteResponse } = useMutation(
@@ -138,9 +140,9 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
   //TODO: 200,201 결과로 찜 아이콘 색 분기하기
   function handleFavoriteTeam() {
     if (data?.isFavorite) {
-      mutateFavorite([route.params.teamId, { isAddFavorite: !favoriteState.isAddFavorite }]);
+      mutateFavorite([teamId, { isAddFavorite: !favoriteState.isAddFavorite }]);
     } else {
-      mutateFavorite([route.params.teamId, { isAddFavorite: !favoriteState.isAddFavorite }]);
+      mutateFavorite([teamId, { isAddFavorite: !favoriteState.isAddFavorite }]);
     }
   }
 
@@ -198,9 +200,7 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
             </View>
             <FilledButton
               title={'함께 하기'}
-              onPress={() =>
-                navigation.navigate('PositionSelector', { teamId: route.params.teamId })
-              }
+              onPress={() => navigation.navigate('PositionSelector', { teamId })}
             />
           </View>
         </CardWrapper>

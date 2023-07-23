@@ -1,4 +1,3 @@
-import { TeamRefetchKey, TeamRefetchKeyType } from '@/reactQuery/key/TeamKeys';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import {
   CompositeScreenProps,

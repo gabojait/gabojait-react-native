@@ -31,7 +31,11 @@ export async function getRecruiting(props: GetRecruitingProps) {
     position: position,
     'team-order': teamOrder,
   };
-  return (await client.get('team/recruiting', { params })) as RecruitingTeamDto[];
+  const res = (await client.get('team/recruiting', { params })) as {
+    data: RecruitingTeamDto[];
+    size: number;
+  };
+  return { data: res.data, total: 50, page: pageFrom };
 }
 
 export const getTeam = async (teamId: number) => {
