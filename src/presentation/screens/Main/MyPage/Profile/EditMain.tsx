@@ -23,7 +23,7 @@ import { updateProfileInfo } from '@/data/api/profile';
 import useModal from '@/presentation/components/modal/useModal';
 import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent';
 import { KoreanPosition } from '@/presentation/model/type/Position';
-import { openAppWithUri } from 'react-native-send-intent';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { setDescription } from '@/redux/action/profileActions';
 
 const useUpdateProfile = () => {
@@ -155,21 +155,25 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
             navigation.navigate('EditPortfolio');
           }}
         >
-          <View style={{ flexWrap: 'wrap', flexDirection: 'row' }}>
-            {profile.portfolios?.map(portfolio => (
-              <ToggleButton
-                key={`portfolio_${portfolio.portfolioId}`}
-                title={portfolio.portfolioName}
-                icon={<Icon name={portfolioTypeIconName['pdf']} />}
-                style={{
-                  backgroundColor: 'FFF',
-                }}
-                onClick={async () => {
-                  if (await Linking.canOpenURL(portfolio.portfolioUrl))
-                    Linking.openURL(portfolio.portfolioUrl);
-                }}
-              />
-            ))}
+          <View style={{ flexWrap: 'wrap', flexDirection: 'row', marginTop: 10 }}>
+            {profile.portfolios?.length ?? 0 > 0 ? (
+              profile.portfolios?.map(portfolio => (
+                <ToggleButton
+                  title={portfolio.portfolioName}
+                  icon={<MaterialIcon name={portfolioTypeIconName['pdf']} size={15} />}
+                  style={{
+                    backgroundColor: '#fff',
+                    marginRight: 10,
+                  }}
+                  onClick={async () => {
+                    if (await Linking.canOpenURL(portfolio.portfolioUrl))
+                      Linking.openURL(portfolio.portfolioUrl);
+                  }}
+                />
+              ))
+            ) : (
+              <Text>아직 포트폴리오 정보를 입력하지 않은 것 같아요.</Text>
+            )}
           </View>
         </ArrowCard>
         <ArrowCard
@@ -179,23 +183,26 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
             navigation.navigate('EditSchoolAndWork');
           }}
         >
-          {profile.educations?.length ?? 0 > 0 ? (
-            <>
-              <IconLabel
-                iconName="school"
-                label={profile.educations?.[profile.educations.length - 1].institutionName}
-              />
-              {profile.works
-                ?.map(work => (
-                  <IconLabel
-                    key={`work_${work.workId}`}
-                    iconName="work"
-                    label={work.corporationName}
-                  />
-                ))
-                .slice(0, 2)}
-            </>
-          ) : null}
+          <View style={{ marginTop: 10 }}>
+            {profile.educations?.length ?? 0 > 0 ? (
+              <View style={{ marginBottom: 4 }}>
+                <IconLabel
+                  iconName="school"
+                  label={profile.educations?.[profile.educations.length - 1]?.institutionName ?? ''}
+                  size={20}
+                />
+              </View>
+            ) : (
+              <Text>아직 학교 정보를 입력하지 않은 것 같아요.</Text>
+            )}
+            {profile.works?.length ?? 0 > 0 ? (
+              profile.works
+                ?.map(work => <IconLabel iconName="work" label={work.corporationName} size={20} />)
+                .slice(0, 2)
+            ) : (
+              <Text>아직 경력 정보를 입력하지 않은 것 같아요.</Text>
+            )}
+          </View>
         </ArrowCard>
         <ArrowCard
           title="기술스택/직무"
@@ -205,20 +212,31 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
           }}
         >
           <View style={{ alignItems: 'flex-start' }}>
-            {profile.position && profile.position !== Position.None && (
-              <ToggleButton title={KoreanPosition[profile.position]} />
+            {profile.position !== 'none' ? (
+              <ToggleButton
+                title={KoreanPosition[profile.position ?? Position.None]}
+                titleStyle={{
+                  fontSize: 14,
+                  fontWeight: '500',
+                  margin: 3,
+                }}
+                style={{ borderRadius: 10, marginTop: 10 }}
+              />
+            ) : (
+              <Text>아직 직무 정보를 입력하지 않은 것 같아요.</Text>
             )}
+            <View style={{ height: 20 }}></View>
+
             {profile.skills?.map((skill, idx) => (
               <>
-                <Text key={`skillText_${skill.skillId}`}>
-                  {skill.isExperienced ? '사용' : '희망'} 기술스택
-                </Text>
+                <Text style={{ fontSize: 14, marginBottom: 5 }}>희망 기술스택</Text>
                 <CustomSlider
-                  key={`skillSlider_${skill.skillId}`}
                   text={skill.skillName}
                   value={Level[skill.level ?? 'low']}
+                  onChangeValue={function (value: number | number[]): void {}}
                   minimumTrackTintColor={sliderColors[idx % 3]}
                 />
+                <View style={{ height: 10 }}></View>
               </>
             ))}
           </View>
