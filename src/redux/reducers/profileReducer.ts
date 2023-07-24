@@ -26,6 +26,8 @@ import {
   SET_DESCRIPTION,
   SET_PROFILE_VISIBILITY_SUCCESS,
   SET_PROFILE_VISIBILITY,
+  setProfileImageAsyncAction,
+  SET_PROFILE_IMAGE_SUCCESS,
 } from '../action/profileActions';
 import createAsyncThunk from '@/lib/createAsyncThunk';
 import Work from '@/data/model/Profile/Work';
@@ -212,10 +214,19 @@ export const profileReducer = createReducer<ProfileState, ProfileAction>(initial
     ...state,
     userProfile: asyncState.success({
       ...state.userProfile.data,
-      isSeekingTeam: !(state.userProfile.data?.isSeekingTeam),
+      isSeekingTeam: !state.userProfile.data?.isSeekingTeam,
     }),
   }),
-}).handleAction(
-  [getProfileAsyncAction.request, getProfileAsyncAction.success, getProfileAsyncAction.failure],
-  createAsyncReducer(getProfileAsyncAction, 'userProfile'),
-);
+})
+  .handleAction(
+    [getProfileAsyncAction.request, getProfileAsyncAction.success, getProfileAsyncAction.failure],
+    createAsyncReducer(getProfileAsyncAction, 'userProfile'),
+  )
+  .handleAction(
+    [
+      setProfileImageAsyncAction.request,
+      setProfileImageAsyncAction.success,
+      setProfileImageAsyncAction.failure,
+    ],
+    createAsyncReducer(setProfileImageAsyncAction, 'userProfile'),
+  );

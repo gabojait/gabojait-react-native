@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { CheckBox, makeStyles, Text, useTheme } from '@rneui/themed';
 import {
   ActivityIndicator,
+  ImageBackground,
   Linking,
   RefreshControl,
   ScrollView,
@@ -30,7 +31,8 @@ import { calcMonth } from '@/presentation/utils/util';
 import { isProfileExist } from './ProfileUtils';
 import { Position } from '@/data/model/type/Position';
 import { KoreanPosition } from '@/presentation/model/type/Position';
-
+import { Asset, launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { setProfileImage } from '@/redux/action/profileActions';
 const Header = ({ navigation }: StackHeaderProps) => {
   const { theme } = useTheme();
   return (
@@ -52,6 +54,47 @@ export const portfolioTypeIconName = {
 };
 
 export const sliderColors = ['#FFDB20', '#F06823', '#F04823'];
+const ProfileImage = ({
+  image,
+  setImage,
+}: {
+  image: Asset | null;
+  setImage: (asset: Asset) => void;
+}) => {
+  const styles = useStyles();
+  return !image ? (
+    <View style={styles.profileContainer}>
+      <TouchableOpacity
+        onPress={async () => {
+          const result = await launchImageLibrary({
+            mediaType: 'photo',
+            selectionLimit: 1,
+          });
+          setImage(result.assets?.[0]!);
+          console.log(result.assets?.[0]?.fileName);
+        }}
+        style={styles.profileTouchArea}
+      >
+        <MaterialIcon name="camera-alt" size={25} color="#6C6C6C" />
+      </TouchableOpacity>
+    </View>
+  ) : (
+    <View style={styles.profileContainer}>
+      <ImageBackground source={image} borderRadius={8}>
+        <TouchableOpacity
+          onPress={async () => {
+            const result = await launchImageLibrary({
+              mediaType: 'photo',
+              selectionLimit: 1,
+            });
+            if ((result.assets?.length ?? 0) === 1) setImage(result.assets?.[0]!);
+          }}
+          style={styles.profileTouchArea}
+        ></TouchableOpacity>
+      </ImageBackground>
+    </View>
+  );
+};
 
 const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
   const { theme } = useTheme();
@@ -100,6 +143,25 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
     if (!pageLoading) setRefreshing(false);
   }, [pageLoading]);
 
+  const [image, setImage] = useState<Asset | null>(null);
+
+  useEffect(() => {
+    setImage({
+      uri: profile?.imageUrl,
+    });
+  }, [profile?.imageUrl]);
+
+  useEffect(() => {
+    if (image && image.fileName) {
+      const formData = new FormData();
+      formData.append('image', {
+        name: image?.fileName,
+        uri: image?.uri,
+      });
+      dispatch(setProfileImage(formData));
+    }
+  }, [image]);
+
   return pageLoading && !refreshing ? (
     <View style={globalStyles.container}>
       <ActivityIndicator />
@@ -129,7 +191,7 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
               paddingVertical: 50,
             }}
           >
-            <View style={styles.profileContainer}></View>
+            <ProfileImage image={image} setImage={image => setImage(image)} />
             <PortfolioNotExist />
           </View>
         ) : profileExist && profile ? (
@@ -142,7 +204,7 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
                 paddingVertical: 50,
               }}
             >
-              <View style={styles.profileContainer}></View>
+              <ProfileImage image={image} setImage={image => setImage(image)} />
               <PortfolioView
                 profile={profile}
                 onProfileVisibilityChanged={isPublic => {
@@ -160,50 +222,70 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
                 marginTop: 20,
               }}
             >
-              <Text h4>학력/경력</Text>
+              <Text style={{ marginBottom: 11, fontSize: 17 }}>학력/경력</Text>
               {profile.educations?.length ?? 0 > 0 ? (
-                <IconLabel
-                  iconName="school"
-                  label={profile.educations?.[profile.educations.length - 1]?.institutionName ?? ''}
-                />
+                <View style={{ marginBottom: 4 }}>
+                  <IconLabel
+                    iconName="school"
+                    label={
+                      profile.educations?.[profile.educations.length - 1]?.institutionName ?? ''
+                    }
+                    size={20}
+                  />
+                </View>
               ) : (
                 <Text>아직 학교 정보를 입력하지 않은 것 같아요.</Text>
               )}
               {profile.works?.length ?? 0 > 0 ? (
                 profile.works
-                  ?.map(work => <IconLabel iconName="work" label={work.corporationName} />)
+                  ?.map(work => (
+                    <IconLabel iconName="work" label={work.corporationName} size={20} />
+                  ))
                   .slice(0, 2)
               ) : (
                 <Text>아직 경력 정보를 입력하지 않은 것 같아요.</Text>
               )}
 
-              <Text h4>기술스택/직무</Text>
+              <Text style={{ marginVertical: 11, marginTop: 30, fontSize: 17 }}>기술스택/직무</Text>
               {profile.position !== 'none' ? (
-                <ToggleButton title={KoreanPosition[profile.position ?? Position.None]} />
+                <ToggleButton
+                  title={KoreanPosition[profile.position ?? Position.None]}
+                  titleStyle={{
+                    fontSize: 14,
+                    fontWeight: '500',
+                    margin: 3,
+                  }}
+                  style={{ borderRadius: 10 }}
+                />
               ) : (
                 <Text>아직 직무 정보를 입력하지 않은 것 같아요.</Text>
               )}
+              <View style={{ height: 20 }}></View>
+
               {profile.skills?.map((skill, idx) => (
                 <>
-                  <Text>희망 기술스택</Text>
+                  <Text style={{ fontSize: 14 }}>희망 기술스택</Text>
                   <CustomSlider
                     text={skill.skillName}
                     value={Level[skill.level ?? 'low']}
                     onChangeValue={function (value: number | number[]): void {}}
                     minimumTrackTintColor={sliderColors[idx % 3]}
                   />
+                  <View style={{ height: 10 }}></View>
                 </>
               ))}
-              <Text h4>포트폴리오</Text>
 
-              <View style={{ flexWrap: 'wrap', flexDirection: 'row' }}>
+              <Text style={{ marginVertical: 10, marginTop: 20, fontSize: 17 }}>포트폴리오</Text>
+
+              <View style={{ flexWrap: 'wrap', flexDirection: 'row', marginBottom: 20 }}>
                 {profile.portfolios?.length ?? 0 > 0 ? (
                   profile.portfolios?.map(portfolio => (
                     <ToggleButton
                       title={portfolio.portfolioName}
-                      icon={<MaterialIcon name={portfolioTypeIconName['pdf']} />}
+                      icon={<MaterialIcon name={portfolioTypeIconName['pdf']} size={15} />}
                       style={{
                         backgroundColor: '#fff',
+                        marginRight: 10,
                       }}
                       onClick={async () => {
                         if (await Linking.canOpenURL(portfolio.portfolioUrl))
@@ -215,10 +297,12 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
                   <Text>아직 포트폴리오 정보를 입력하지 않은 것 같아요.</Text>
                 )}
               </View>
-              <Text h4>이전 프로젝트</Text>
+              <View style={{ height: 1, width: '100%', backgroundColor: '#D9D9D9' }}></View>
+
+              <Text style={{ fontSize: 17, marginVertical: 14 }}>이전 프로젝트</Text>
               {profile.completedTeams?.length ?? 0 > 0 ? (
                 profile.completedTeams?.map(team => (
-                  <Text>
+                  <Text style={{ lineHeight: 22, fontSize: 14 }}>
                     프로젝트 '{team.projectName}' -
                     {
                       KoreanPosition[
@@ -229,8 +313,14 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
                   </Text>
                 ))
               ) : (
-                <Text>아직 이전 프로젝트 정보를 입력하지 않은 것 같아요.</Text>
+                <Text style={{ lineHeight: 22, fontSize: 14 }}>
+                  아직 이전 프로젝트 정보를 입력하지 않은 것 같아요.
+                </Text>
               )}
+              <View
+                style={{ height: 1, width: '100%', backgroundColor: '#D9D9D9', marginVertical: 14 }}
+              ></View>
+
               <Text h4>리뷰</Text>
               {profile.reviews?.length ?? 0 > 0 ? (
                 <>
@@ -365,9 +455,17 @@ export const Chip = ({
   );
 };
 
-export const IconLabel = ({ iconName, label }: { iconName: string; label?: string }) => (
+export const IconLabel = ({
+  iconName,
+  size,
+  label,
+}: {
+  iconName: string;
+  size?: number;
+  label?: string;
+}) => (
   <View style={{ flexDirection: 'row' }}>
-    <MaterialIcon name={iconName} />
+    <MaterialIcon name={iconName} size={size} style={{ marginRight: 5 }} />
     <Text>{label}</Text>
   </View>
 );
@@ -449,7 +547,13 @@ const PortfolioView = ({
   return (
     <View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text style={{ fontSize: theme.fontSize.lg, fontWeight: theme.fontWeight.semibold }}>
+        <Text
+          style={{
+            fontSize: theme.fontSize.lg,
+            fontWeight: theme.fontWeight.semibold,
+            marginBottom: 12,
+          }}
+        >
           {profile.nickname}
         </Text>
         <CheckBox
@@ -463,24 +567,40 @@ const PortfolioView = ({
           title="팀 초대 허용"
         />
       </View>
-      <Text style={{ fontSize: theme.fontSize.md }}>
+      <Text style={{ fontSize: theme.fontSize.md, fontWeight: '300' }}>
         {KoreanPosition[profile.position ?? Position.None]}
       </Text>
-      <Text style={{ fontSize: theme.fontSize.md }}>{profile.profileDescription}</Text>
+      {profile.profileDescription ? (
+        <Text style={{ fontSize: theme.fontSize.md, marginVertical: 12 }}>
+          {profile.profileDescription}
+        </Text>
+      ) : (
+        <View style={{ height: 24 }}></View>
+      )}
+
       <SolidCard>
         <View>
-          <Text style={{ fontWeight: theme.fontWeight.light, textAlign: 'center' }}>팀 매칭</Text>
-          <Text style={{ fontWeight: theme.fontWeight.bold, textAlign: 'center' }}>
+          <Text
+            style={{ fontWeight: theme.fontWeight.light, textAlign: 'center', marginBottom: 8 }}
+          >
+            팀 매칭
+          </Text>
+          <Text style={{ fontWeight: theme.fontWeight.bold, textAlign: 'center', fontSize: 17 }}>
             {profile.completedTeams?.length ?? 0}회
           </Text>
         </View>
         <View>
-          <Text style={{ fontWeight: theme.fontWeight.light, textAlign: 'center' }}>리뷰</Text>
+          <Text
+            style={{ fontWeight: theme.fontWeight.light, textAlign: 'center', marginBottom: 8 }}
+          >
+            리뷰
+          </Text>
           <Text
             style={{
               textAlign: 'center',
               fontWeight:
                 profile.reviews?.length ?? 0 > 0 ? theme.fontWeight.medium : theme.fontWeight.bold,
+              fontSize: 17,
             }}
           >
             {profile.reviews?.length ?? 0 > 0 ? (
@@ -494,9 +614,13 @@ const PortfolioView = ({
           </Text>
         </View>
         <View>
-          <Text style={{ fontWeight: theme.fontWeight.light, textAlign: 'center' }}>총 경력</Text>
+          <Text
+            style={{ fontWeight: theme.fontWeight.light, textAlign: 'center', marginBottom: 8 }}
+          >
+            총 경력
+          </Text>
           {
-            <Text style={{ fontWeight: theme.fontWeight.bold, textAlign: 'center' }}>
+            <Text style={{ fontWeight: theme.fontWeight.bold, textAlign: 'center', fontSize: 17 }}>
               {profile.works?.length ?? 0 > 0
                 ? workTime == 0
                   ? '1개월 미만'
@@ -520,6 +644,7 @@ const useCardStyles = makeStyles(theme => ({
     backgroundColor: theme.colors.grey0,
     borderRadius: 20,
     padding: 23,
+    paddingVertical: 40,
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
@@ -539,6 +664,13 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 8,
     top: -(100 - 30),
     left: 20,
+  },
+  profileTouchArea: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 100,
+    height: 100,
   },
 }));
 

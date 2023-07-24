@@ -6,6 +6,8 @@ import Skill from '@/data/model/Profile/Skill';
 import { createSlice } from '@reduxjs/toolkit';
 import { ActionType, createAction, createAsyncAction } from 'typesafe-actions';
 import Work from '@/data/model/Profile/Work';
+import createAsyncThunk from '@/lib/createAsyncThunk';
+import * as profileApi from '@/data/api/profile';
 
 /*------------- Profile View/Edit related --------------*/
 
@@ -167,6 +169,21 @@ export const deletePortfolio = (portfolioId: number): DeletePortfolioAction => (
 export const SET_PROFILE_VISIBILITY = 'SET_PROFILE_VISIBILITY';
 export const SET_PROFILE_VISIBILITY_SUCCESS = 'SET_PROFILE_VISIBILITY_SUCCESS';
 export const SET_PROFILE_VISIBILITY_ERROR = 'SET_PROFILE_VISIBILITY_ERROR';
+
+export const SET_PROFILE_IMAGE = 'SET_PROFILE_IMAGE';
+export const SET_PROFILE_IMAGE_SUCCESS = 'SET_PROFILE_IMAGE_SUCCESS';
+export const SET_PROFILE_IMAGE_ERROR = 'SET_PROFILE_IMAGE_ERROR';
+
+export const setProfileImageAsyncAction = createAsyncAction(
+  SET_PROFILE_IMAGE,
+  SET_PROFILE_IMAGE_SUCCESS,
+  SET_PROFILE_IMAGE_ERROR,
+)<FormData, null, Error>();
+
+export const setProfileImage = createAsyncThunk(
+  setProfileImageAsyncAction,
+  profileApi.setProfileImage,
+);
 
 /*------------- ETC --------------*/
 

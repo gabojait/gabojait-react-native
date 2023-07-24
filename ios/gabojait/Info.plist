@@ -40,7 +40,7 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
+	<string></string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Fonts/Pretendard-Bold.ttf</string>
@@ -79,7 +79,13 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Album permissions to get photos</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Camera access for taking photos</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSFileProviderDomainUsageDescription</key>
+	<string></string>
 </dict>
 </plist>

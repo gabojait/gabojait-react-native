@@ -39,6 +39,10 @@ export const setUserSeekingTeam = async (isSeekingTeam: boolean) => {
   return result;
 };
 
+export const setProfileImage = async (formData: FormData) => {
+  return client.postForm('user/image', formData);
+};
+
 export const updateProfileInfo = async (updateDto: {
   educations: Education[];
   portfolios: Portfolio[];
