@@ -158,7 +158,7 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
           <View style={{ flexWrap: 'wrap', flexDirection: 'row' }}>
             {profile.portfolios?.map(portfolio => (
               <ToggleButton
-                key={portfolio.portfolioId}
+                key={`portfolio_${portfolio.portfolioId}`}
                 title={portfolio.portfolioName}
                 icon={<Icon name={portfolioTypeIconName['pdf']} />}
                 style={{
@@ -187,7 +187,11 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
               />
               {profile.works
                 ?.map(work => (
-                  <IconLabel key={work.workId} iconName="work" label={work.corporationName} />
+                  <IconLabel
+                    key={`work_${work.workId}`}
+                    iconName="work"
+                    label={work.corporationName}
+                  />
                 ))
                 .slice(0, 2)}
             </>
@@ -206,9 +210,11 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
             )}
             {profile.skills?.map((skill, idx) => (
               <>
-                <Text>{skill.isExperienced ? '사용' : '희망'} 기술스택</Text>
+                <Text key={`skillText_${skill.skillId}`}>
+                  {skill.isExperienced ? '사용' : '희망'} 기술스택
+                </Text>
                 <CustomSlider
-                  key={skill.skillId}
+                  key={`skillSlider_${skill.skillId}`}
                   text={skill.skillName}
                   value={Level[skill.level ?? 'low']}
                   minimumTrackTintColor={sliderColors[idx % 3]}
