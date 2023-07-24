@@ -33,8 +33,8 @@ export const getUserSeekingTeam = async (props: GetProfileProps) => {
   return result;
 };
 
-export const setProfileVisibility = async (isPublic: boolean) => {
-  const result = await client.patch('user/profile/visibility', { isPublic });
+export const setUserSeekingTeam = async (isSeekingTeam: boolean) => {
+  const result = await client.patch('user/seeking-team', { isSeekingTeam });
   console.log(result);
   return result;
 };
@@ -47,12 +47,12 @@ export const updateProfileInfo = async (updateDto: {
   works: Work[];
 }) => {
   // Todo: 업로드
-  const filePortfolios = updateDto.portfolios.filter(
-    portfolio => portfolio.media == PortfolioType.File && !portfolio.portfolioId,
-  );
   const axiosInstanceWithOutInterceptor = axios.create(axiosConfig);
   axiosInstanceWithOutInterceptor.interceptors.request.use(reqInterceptor);
-  const filePromises = filePortfolios.map(async portfolio => {
+  const filePromises = updateDto.portfolios.map(async portfolio => {
+    if (portfolio.media != PortfolioType.File || portfolio.portfolioId) {
+      return portfolio;
+    }
     const urlParts = decodeURI(portfolio.portfolioUrl).split('/');
     const fileName = urlParts[urlParts.length - 1];
     const formData = new FormData();
@@ -70,7 +70,7 @@ export const updateProfileInfo = async (updateDto: {
         },
       },
     );
-    return { ...portfolio, portfolioUrl: fileResult.data.responseData.data.portfolioUrl };
+    return { ...portfolio, portfolioUrl: fileResult.data.responseData.portfolioUrl };
   });
   // Todo: 파일 업로드 실패에 따른 콜백 필요!
 

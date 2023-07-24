@@ -1,5 +1,5 @@
-import {ActionType, AsyncActionCreatorBuilder, getType} from 'typesafe-actions';
-import {AnyAction} from 'redux';
+import { ActionType, AsyncActionCreatorBuilder, getType } from 'typesafe-actions';
+import { AnyAction } from 'redux';
 
 export type AsyncState<T, E = any> = {
   data: T | null;
@@ -8,9 +8,8 @@ export type AsyncState<T, E = any> = {
 };
 
 export type AsyncStateModifiable<T, E = any> = AsyncState<T, E> & {
-  modified: boolean;
+  modified?: boolean;
 };
-
 
 export const asyncState = {
   // 다음 코드는 화살표 함수에 Generic 을 설정 한 것입니다.
@@ -60,7 +59,7 @@ export function createAsyncReducer<S, AC extends AnyAsyncActionCreator, K extend
           ? successAction(state, action)
           : {
               ...state,
-              [key]: {...asyncState.success(action.payload.data), modified: false},
+              [key]: { ...asyncState.success(action.payload), modified: false },
             };
       case failure:
         return {

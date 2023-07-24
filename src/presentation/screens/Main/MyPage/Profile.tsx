@@ -1,6 +1,15 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { CheckBox, makeStyles, Text, useTheme } from '@rneui/themed';
-import { ActivityIndicator, ScrollView, StyleProp, TextStyle, View, ViewStyle } from 'react-native';
+import {
+  ActivityIndicator,
+  Linking,
+  RefreshControl,
+  ScrollView,
+  StyleProp,
+  TextStyle,
+  View,
+  ViewStyle,
+} from 'react-native';
 import { FilledButton } from '@/presentation/components/Button';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import ProfileViewDto from '@/data/model/Profile/ProfileViewDto';
@@ -85,15 +94,32 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
       <FilledButton title="만들기" onPress={() => navigation.navigate('EditMain')} />
     </View>
   );
-  return pageLoading ? (
+
+  const [refreshing, setRefreshing] = useState(false);
+  useEffect(() => {
+    if (!pageLoading) setRefreshing(false);
+  }, [pageLoading]);
+
+  return pageLoading && !refreshing ? (
     <View style={globalStyles.container}>
       <ActivityIndicator />
     </View>
-  ) : profile && !profileError ? (
-    <ScrollView style={{ flex: 1 }}>
+  ) : (profile && !profileError) || refreshing ? (
+    <ScrollView
+      style={{ flex: 1 }}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={() => {
+            setRefreshing(true);
+            dispatch(getProfile());
+          }}
+        />
+      }
+    >
       <View style={{ flex: 0.2, backgroundColor: '#f5f5f5', marginBottom: '30%' }} />
       <View style={{ flex: 0.8 }}>
-        {!profileExist ? (
+        {!profileExist && !refreshing ? (
           <View
             style={{
               backgroundColor: 'white',
@@ -106,7 +132,7 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
             <View style={styles.profileContainer}></View>
             <PortfolioNotExist />
           </View>
-        ) : (
+        ) : profileExist && profile ? (
           <>
             <View
               style={{
@@ -179,6 +205,10 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
                       style={{
                         backgroundColor: '#fff',
                       }}
+                      onClick={async () => {
+                        if (await Linking.canOpenURL(portfolio.portfolioUrl))
+                          Linking.openURL(portfolio.portfolioUrl);
+                      }}
                     />
                   ))
                 ) : (
@@ -227,6 +257,8 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
               )}
             </View>
           </>
+        ) : (
+          <></>
         )}
       </View>
     </ScrollView>
@@ -421,8 +453,8 @@ const PortfolioView = ({
           {profile.nickname}
         </Text>
         <CheckBox
-          checked={profile.isPublic ?? false}
-          onPress={() => onProfileVisibilityChanged(!profile.isPublic)}
+          checked={profile.isSeekingTeam ?? false}
+          onPress={() => onProfileVisibilityChanged(!profile.isSeekingTeam)}
           checkedIcon={<MaterialIcon name="check-box" size={18} color={theme.colors.primary} />}
           uncheckedIcon={
             <MaterialIcon name="check-box-outline-blank" size={18} color={theme.colors.grey2} />

@@ -21,7 +21,7 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
       console.info(
         `${res.config.url} \nResponsed: ${res.status}`,
         `\nResponse:`,
-        res.data.responseData.data,
+        res.data.responseData,
       );
       try {
         if (isSuccess(res.status)) {

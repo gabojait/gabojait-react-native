@@ -23,6 +23,9 @@ import {
   DELETE_PORTFOLIO,
   UPDATE_PORTFOLIO,
   SET_POSITION,
+  SET_DESCRIPTION,
+  SET_PROFILE_VISIBILITY_SUCCESS,
+  SET_PROFILE_VISIBILITY,
 } from '../action/profileActions';
 import createAsyncThunk from '@/lib/createAsyncThunk';
 import Work from '@/data/model/Profile/Work';
@@ -39,15 +42,21 @@ const initialState: ProfileState = {
 
 export const getProfile = createAsyncThunk(getProfileAsyncAction, profileApi.getProfile);
 export const setProfileVisibility = createAsyncThunk(
-  getProfileAsyncAction,
-  profileApi.setProfileVisibility,
+  setProfileVisibilityAsyncAction,
+  profileApi.setUserSeekingTeam,
 );
 
 export const profileReducer = createReducer<ProfileState, ProfileAction>(initialState, {
-  // [SET_EDUCATIONS]: (state, action) => {
-  //   console.log(action);
-  //   return { ...state, educations: action.payload as Education[] };
-  // },
+  [SET_DESCRIPTION]: (state, action) => ({
+    ...state,
+    userProfile: {
+      ...state.userProfile,
+      data: {
+        ...state.userProfile.data,
+        profileDescription: action.payload,
+      },
+    },
+  }),
   [SET_POSITION]: (state, action) => ({
     ...state,
     userProfile: {
@@ -64,7 +73,7 @@ export const profileReducer = createReducer<ProfileState, ProfileAction>(initial
       ...state.userProfile,
       data: {
         ...state.userProfile.data,
-        works: [...(state.userProfile.data?.works ?? []), {...action.payload, new: true}],
+        works: [...(state.userProfile.data?.works ?? []), { ...action.payload, new: true }],
       },
     },
   }),
@@ -98,7 +107,10 @@ export const profileReducer = createReducer<ProfileState, ProfileAction>(initial
       ...state.userProfile,
       data: {
         ...state.userProfile.data,
-        educations: [...(state.userProfile.data?.educations ?? []), {...action.payload, new: true}],
+        educations: [
+          ...(state.userProfile.data?.educations ?? []),
+          { ...action.payload, new: true },
+        ],
       },
       modified: true,
     },
@@ -133,7 +145,7 @@ export const profileReducer = createReducer<ProfileState, ProfileAction>(initial
       ...state.userProfile,
       data: {
         ...state.userProfile.data,
-        skills: [...(state.userProfile.data?.skills ?? []), {...action.payload, new: true}],
+        skills: [...(state.userProfile.data?.skills ?? []), { ...action.payload, new: true }],
       },
     },
   }),
@@ -165,7 +177,10 @@ export const profileReducer = createReducer<ProfileState, ProfileAction>(initial
       ...state.userProfile,
       data: {
         ...state.userProfile.data,
-        portfolios: [...(state.userProfile.data?.portfolios ?? []), {...action.payload, new: true}],
+        portfolios: [
+          ...(state.userProfile.data?.portfolios ?? []),
+          { ...action.payload, new: true },
+        ],
       },
     },
   }),
@@ -193,16 +208,14 @@ export const profileReducer = createReducer<ProfileState, ProfileAction>(initial
       },
     },
   }),
-})
-  .handleAction(
-    [getProfileAsyncAction.request, getProfileAsyncAction.success, getProfileAsyncAction.failure],
-    createAsyncReducer(getProfileAsyncAction, 'userProfile'),
-  )
-  .handleAction(
-    [
-      setProfileVisibilityAsyncAction.request,
-      setProfileVisibilityAsyncAction.success,
-      setProfileVisibilityAsyncAction.failure,
-    ],
-    createAsyncReducer(setProfileVisibilityAsyncAction, 'userProfile'),
-  );
+  [SET_PROFILE_VISIBILITY_SUCCESS]: (state, action) => ({
+    ...state,
+    userProfile: asyncState.success({
+      ...state.userProfile.data,
+      isSeekingTeam: !(state.userProfile.data?.isSeekingTeam),
+    }),
+  }),
+}).handleAction(
+  [getProfileAsyncAction.request, getProfileAsyncAction.success, getProfileAsyncAction.failure],
+  createAsyncReducer(getProfileAsyncAction, 'userProfile'),
+);

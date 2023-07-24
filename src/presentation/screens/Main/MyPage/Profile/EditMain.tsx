@@ -24,6 +24,7 @@ import useModal from '@/presentation/components/modal/useModal';
 import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent';
 import { KoreanPosition } from '@/presentation/model/type/Position';
 import { openAppWithUri } from 'react-native-send-intent';
+import { setDescription } from '@/redux/action/profileActions';
 
 const useUpdateProfile = () => {
   const { data, loading, error } = useAppSelector(state => state.profileReducer.userProfile);
@@ -117,7 +118,6 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
   } = useAppSelector(state => state.profileReducer.userProfile);
   const { theme } = useTheme();
   const globalStyles = useGlobalStyles();
-  const [desc, setDesc] = useState(profile?.profileDescription ?? '');
   const dispatch = useAppDispatch();
 
   if (profile && !profileLoading && !profileError)
@@ -142,8 +142,8 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
             placeholderTextColor={theme.colors.disabled}
             containerStyle={{ paddingHorizontal: 0 }}
             multiline
-            value={desc}
-            onChangeText={value => setDesc(value)}
+            value={profile.profileDescription}
+            onChangeText={value => dispatch(setDescription(value))}
             numberOfLines={6}
             inputStyle={{ fontWeight: theme.fontWeight.light }}
           ></Input>

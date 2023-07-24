@@ -12,7 +12,6 @@ export default interface ProfileViewDto {
   profileDescription?: string;
   educations?: Education[];
   imageUrl?: string;
-  isPublic?: boolean;
   nickname?: string;
   portfolios?: Portfolio[];
   reviews?: ReviewResponse[];
@@ -22,4 +21,5 @@ export default interface ProfileViewDto {
   userId?: number;
   works?: Work[];
   teamMemberStatus?: string;
+  isSeekingTeam?: boolean;
 }

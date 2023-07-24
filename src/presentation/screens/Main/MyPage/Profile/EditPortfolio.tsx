@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleProp, View, ViewStyle } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { ToggleButton } from '../Profile';
-import DocumentPicker from 'react-native-document-picker';
+import DocumentPicker, { types } from 'react-native-document-picker';
 import { IconProps } from 'react-native-vector-icons/Icon';
 import { ScreenWidth } from '@rneui/base';
 import { List } from './EditSchoolAndWork';
@@ -80,7 +80,9 @@ export const PortfolioList = ({
   fieldType: PortfolioType;
 }) => {
   const pickDocument = (portfolio: Portfolio) => {
-    void DocumentPicker.pickSingle().then(res => {
+    void DocumentPicker.pickSingle({
+      type: [types.pdf, '.jpeg .jpg .png', types.images],
+    }).then(res => {
       portfolio.portfolioUrl = res.uri;
       onChangePortfolio(portfolio);
     });
@@ -92,7 +94,11 @@ export const PortfolioList = ({
         datas={portfolios}
         renderItems={(portfolio: Portfolio) => {
           let value = portfolio.portfolioUrl ?? '';
-          if (portfolio.portfolioUrl != '' && portfolio.portfolioUrl && portfolio.media == PortfolioType.File) {
+          if (
+            portfolio.portfolioUrl != '' &&
+            portfolio.portfolioUrl &&
+            portfolio.media == PortfolioType.File
+          ) {
             const urls = decodeURI(portfolio.portfolioUrl).split('/');
             value = urls[urls.length - 1];
           }

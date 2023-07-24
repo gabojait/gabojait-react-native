@@ -174,6 +174,17 @@ export const FETCH_USERS_PROFILE_VISIBLE = 'FETCH_USERS_PROFILE_VISIBLE';
 export const FETCH_USERS_PROFILE_VISIBLE_SUCCESS = 'FETCH_USERS_PROFILE_VISIBLE_SUCCESS';
 export const FETCH_USERS_PROFILE_VISIBLE_ERROR = 'FETCH_USERS_PROFILE_VISIBLE_ERROR';
 
+export const SET_DESCRIPTION = 'SET_DESCRIPTION';
+export type SetDescription = {
+  type: typeof SET_DESCRIPTION;
+  payload: string;
+};
+
+export const setDescription = (description: string): SetDescription => ({
+  type: SET_DESCRIPTION,
+  payload: description,
+});
+
 export const getProfileAsyncAction = createAsyncAction(
   GET_PROFILE,
   GET_PROFILE_SUCCESS,
