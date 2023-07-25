@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme, props: DateDropdownProps) => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderWidth: 1,
-    borderColor: theme.colors.grey0,
+    borderColor: theme.colors.grey2,
     padding: 12,
     borderRadius: 4,
   },

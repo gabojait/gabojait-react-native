@@ -12,4 +12,5 @@ export interface CustomInputProps extends TextInputProps {
   label?: string
   shape?: InputShape
   containerStyle?: StyleProp<ViewStyle>
+  inputContainerStyle?: StyleProp<ViewStyle>
 }

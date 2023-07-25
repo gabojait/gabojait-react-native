@@ -1,24 +1,34 @@
-import {Icon, Input, makeStyles} from '@rneui/themed'
-import React, {forwardRef, useState} from 'react'
-import {View} from 'react-native'
-import color from '../res/styles/color'
-import type {CustomInputProps, ValidatorState} from '@/presentation/components/props/StateProps'
+import { Icon, Input, makeStyles } from '@rneui/themed';
+import React, { forwardRef, useState } from 'react';
+import { View } from 'react-native';
+import color from '../res/styles/color';
+import type { CustomInputProps, ValidatorState } from '@/presentation/components/props/StateProps';
 
 const CustomInput = forwardRef(
-  ({size = 'sm', shape = 'underline', placeholder, state, ...props}: CustomInputProps, ref) => {
-    const [secure, setSecure] = useState(true)
-    const styles = useStyles({size, shape, state})
+  (
+    {
+      size = 'sm',
+      shape = 'underline',
+      placeholder,
+      state,
+      inputContainerStyle,
+      ...props
+    }: CustomInputProps,
+    ref,
+  ) => {
+    const [secure, setSecure] = useState(true);
+    const styles = useStyles({ size, shape, state });
     const iconColors = {
       none: color.transparent,
       valid: color.primary,
       invalid: color.transparent,
-    }
+    };
 
     const inputIcon = props.secureTextEntry ? (
       <Icon
         name={secure ? 'eye-off-outline' : 'eye-outline'}
         onPress={() => {
-          setSecure(prevState => !prevState)
+          setSecure(prevState => !prevState);
         }}
         type="ionicon"
         color={color.darkGrey}
@@ -30,16 +40,17 @@ const CustomInput = forwardRef(
         size={18}
         color={iconColors[state ?? 'none']}
       />
-    )
+    );
 
     return (
-      <View style={{width: '100%', justifyContent: 'flex-end'}}>
+      <View style={{ width: '100%', justifyContent: 'flex-end' }}>
         <Input
           {...props}
           containerStyle={[styles.container, props.containerStyle]}
-          inputContainerStyle={
-            shape == 'underline' ? styles.underlineInputContainer : styles.roundInputContainer
-          }
+          inputContainerStyle={[
+            shape == 'underline' ? styles.underlineInputContainer : styles.roundInputContainer,
+            inputContainerStyle,
+          ]}
           style={[shape == 'underline' ? styles.underlineInput : styles.roundInput, props.style]}
           placeholderTextColor={color.grey}
           placeholder={placeholder}
@@ -52,26 +63,26 @@ const CustomInput = forwardRef(
           autoCorrect={false}
         />
       </View>
-    )
+    );
   },
-)
+);
 
-export default CustomInput
+export default CustomInput;
 
 const useStyles = makeStyles(
-  (theme, {shape = 'underline', size = 'md', state = 'none'}: CustomInputProps) => {
+  (theme, { shape = 'underline', size = 'md', state = 'none' }: CustomInputProps) => {
     const shapeToColors = {
       underline: {
         none: color.lightGrey,
         valid: color.primary,
         invalid: color.error,
-      } as {[key in ValidatorState]: string},
+      } as { [key in ValidatorState]: string },
       round: {
         none: color.grey,
         valid: color.primary,
         invalid: color.error,
-      } as {[key in ValidatorState]: string},
-    }
+      } as { [key in ValidatorState]: string },
+    };
     return {
       roundInputContainer: {
         borderWidth: 1.3,
@@ -85,7 +96,7 @@ const useStyles = makeStyles(
         padding: 14,
         flex: 1,
       },
-      container: {paddingHorizontal: 0},
+      container: { paddingHorizontal: 0 },
       underlineInputContainer: {
         borderBottomWidth: 1.3,
         borderBottomColor: shapeToColors[shape][state],
@@ -104,6 +115,6 @@ const useStyles = makeStyles(
         fontSize: 14,
         color: color.grey2,
       },
-    }
+    };
   },
-)
+);

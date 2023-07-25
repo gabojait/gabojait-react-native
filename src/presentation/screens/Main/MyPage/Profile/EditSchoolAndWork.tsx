@@ -243,6 +243,16 @@ export const WorkList = ({
                 style={{
                   minHeight: 6 * 20,
                 }}
+                shape='round'
+                inputContainerStyle={{
+                  borderColor: '#8e8e8e',
+                  borderWidth: 1,
+                  borderBottomColor: "#8e8e8e",
+                  borderRadius: 20
+                }}
+                containerStyle={{
+                  marginTop: 20
+                }}
                 placeholder={
                   '경력에 대한 설명을 적어주세요\nex)어떤 툴을 사용했고 어떤 직무를 했는지'
                 }
@@ -274,7 +284,7 @@ export const List = ({
 }) => {
   return (
     <>
-      <Text h4>{title}</Text>
+      <Text style={{ fontSize: 20, fontWeight: '600', marginBottom: 10 }}>{title}</Text>
       {datas.map(renderItems)}
       <View style={{ alignItems: 'center' }}>
         <SquareIcon

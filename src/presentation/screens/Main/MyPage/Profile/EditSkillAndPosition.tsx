@@ -29,8 +29,8 @@ const EditSkillAndPosition = () => {
 
   return (
     <ScrollView style={{ padding: 20, backgroundColor: 'white', flex: 1 }}>
-      <Text h4>희망 포지션</Text>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+      <Text style={{ fontSize: 20, fontWeight: '600', marginBottom: 13 }}>희망 포지션</Text>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: 25 }}>
         {positions.map(item => {
           return (
             <View style={{ marginEnd: 15 }}>
@@ -52,7 +52,7 @@ const EditSkillAndPosition = () => {
           );
         })}
       </View>
-      <Text h4>기술스택</Text>
+      <Text style={{ marginBottom: 10, fontSize: 20, fontWeight: '600' }}>기술스택</Text>
 
       {skills.map((skill, idx) => (
         <SliderItem
