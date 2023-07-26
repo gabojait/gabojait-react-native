@@ -7,7 +7,7 @@ import {ModalProvider} from './presentation/components/modal/context';
 import {theme} from './presentation/theme';
 import ErrorBoundary from './presentation/components/errorComponent/ErrorBoundary';
 import {Fallback500, Fallback503} from './presentation/components/errorComponent/GeneralFallback';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Provider} from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
 import {QueryClient, QueryClientProvider} from 'react-query';
@@ -20,6 +20,7 @@ const store = createStore(allReducers, applyMiddleware(ReduxThunk, logger));
 
 import NetInfo from '@react-native-community/netinfo'
 import {onlineManager} from 'react-query'
+import {firebase} from "@react-native-firebase/messaging";
 
 onlineManager.setEventListener(setOnline => {
     return NetInfo.addEventListener(state => {
@@ -31,6 +32,7 @@ const App = () => {
     const backgroundStyle = {
         flex: 1,
     };
+    
     // const modalRef = useRef<CustomModalRef>()
 
     return (

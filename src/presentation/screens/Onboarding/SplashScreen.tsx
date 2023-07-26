@@ -58,7 +58,11 @@ const SplashScreen = ({navigation}: RootStackScreenProps<'SplashScreen'>) => {
 
         // If using other push notification providers (ie Amazon SNS, etc)
         // you may need to get the APNs token instead for iOS:
-        // if(Platform.OS == 'ios') { messaging().getAPNSToken().then(token => { return saveTokenToDatabase(token); }); }
+        if (Platform.OS == 'ios') {
+            messaging().getAPNSToken().then(token => {
+                console.log("apn token: ", token )
+            });
+        }
 
         // Listen to whether the token changes
         return messaging().onTokenRefresh(token => {

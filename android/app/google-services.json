@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "205856110984",
+    "project_id": "gabojait",
+    "storage_bucket": "gabojait.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:205856110984:android:f33b6dde630dc17143623d",
+        "android_client_info": {
+          "package_name": "com.gabojait"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUARrIabn6tG_LVVZwBKAkpPVDdbEzakE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,4 +1,5 @@
 apply plugin: "com.android.application"
+apply plugin: 'com.google.gms.google-services' // <- Add this line
 
 import com.android.build.OutputFile
 
@@ -276,6 +277,7 @@ dependencies {
         exclude group:'com.facebook.flipper'
     }
 
+
     if (enableHermes) {
         //noinspection GradleDynamicVersion
         implementation("com.facebook.react:hermes-engine:+") { // From node_modules
@@ -285,7 +287,7 @@ dependencies {
         implementation jscFlavor
     }
     
-    implementation project(':RNSendIntentModule')
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
 }
 
 if (isNewArchitectureEnabled()) {

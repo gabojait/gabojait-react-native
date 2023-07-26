@@ -10,7 +10,11 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.config.ReactFeatureFlags;
 import com.facebook.soloader.SoLoader;
 import com.gabojait.newarchitecture.MainApplicationReactNativeHost;
-import com.burnweb.rnsendintent.RNSendIntentPackage; 
+import com.facebook.flipper.android.utils.FlipperUtils;
+import com.facebook.flipper.android.AndroidFlipperClient;
+import com.facebook.flipper.core.FlipperClient;
+import com.facebook.flipper.plugins.inspector.DescriptorMapping;
+import com.facebook.flipper.plugins.inspector.InspectorFlipperPlugin;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
@@ -56,9 +60,14 @@ public class MainApplication extends Application implements ReactApplication {
     // If you opted-in for the New Architecture, we enable the TurboModule system
     ReactFeatureFlags.useTurboModules = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED;
     SoLoader.init(this, /* native exopackage */ false);
-    initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
-  }
-
+//     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
+//
+//     if (BuildConfig.DEBUG && FlipperUtils.shouldEnableFlipper(this)) {
+//         FlipperClient client = AndroidFlipperClient.getInstance(this);
+//         client.addPlugin(new InspectorFlipperPlugin(this, DescriptorMapping.withDefaults()));
+//         client.start();
+//     }
+   }
   /**
    * Loads Flipper in React Native templates. Call this in the onCreate method with something like
    * initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
