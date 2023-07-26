@@ -8,6 +8,8 @@ production = ENV["PRODUCTION"] == "1"
 
 target 'gabojait' do
   config = use_native_modules!
+  #use_frameworks! :linkage => :static
+
 
   # Flags change depending on the env values.
   flags = get_default_flags()
@@ -17,11 +19,12 @@ target 'gabojait' do
     # to enable hermes on iOS, change `false` to `true` and then install pods
     :production => production,
     :hermes_enabled => true,
-    :fabric_enabled => flags[:fabric_enabled],
+    :fabric_enabled => false,
     :flipper_configuration => FlipperConfiguration.enabled(["Debug"]),
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
+  
 
   target 'gabojaitTests' do
     inherit! :complete

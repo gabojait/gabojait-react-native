@@ -68,3 +68,4 @@ buck-out/
 #vscode
 .vscode/.react/
 .vscode/.react/*
+/ios/GoogleService-Info.plist
