@@ -42,6 +42,7 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
   const modal = useModal();
   const { teamId } = route.params!;
 
+
   const { data, isLoading, error }: UseQueryResult<TeamDetailDto> = useQuery(
     ['GroupDetail', teamId],
     () => getTeam(teamId),

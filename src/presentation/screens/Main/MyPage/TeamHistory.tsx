@@ -5,77 +5,31 @@ import {getTeamToReview} from '@/redux/reducers/teamToReviewGetReducer'
 import React, {useEffect} from 'react'
 import {FlatList, TouchableOpacity, View} from 'react-native'
 
-const TeamHistory = ({navigation}: MainStackScreenProps<'TeamHistory'>) => {
-  const test = [
-    {
-      backends: [
-        {
-          nickname: '류성룡',
-          position: 'backend',
-          rating: 0,
-          reviewCnt: 0,
-          schemaVersion: 'string',
-          userId: 'string',
-        },
-      ],
-      designers: [
-        {
-          nickname: '이하늬',
-          position: 'designer',
-          rating: 0,
-          reviewCnt: 0,
-          schemaVersion: 'string',
-          userId: 'string',
-        },
-      ],
-      frontends: [
-        {
-          nickname: '진선규',
-          position: 'frontend',
-          rating: 0,
-          reviewCnt: 0,
-          schemaVersion: 'string',
-          userId: 'string',
-        },
-      ],
-      projectManagers: [
-        {
-          nickname: '이동휘',
-          position: 'string',
-          rating: 0,
-          reviewCnt: 0,
-          schemaVersion: 'string',
-          userId: 'string',
-        },
-      ],
-      projectName: '치킨배달 앱',
-      teamId: 'string',
-    },
-  ]
-  const dispatch = useAppDispatch()
-  const {data, loading, error} = useAppSelector(
-    state => state.teamToReviewGetReducer.teamToReviewGetResult,
-  )
+export default function TeamHistory({navigation, route}: MainStackScreenProps<'TeamHistory'>) {
+    const dispatch = useAppDispatch()
 
-  useEffect(() => {
-    dispatch(getTeamToReview())
-  }, [])
+    const {data, loading, error} = useAppSelector(
+        state => state.profileReducer.userProfile,
+    )
 
-  return (
-    <View style={{backgroundColor: 'white', flex: 1}}>
-      <FlatList
-        showsHorizontalScrollIndicator={false}
-        keyExtractor={item => item.toString()}
-        data={test}
-        renderItem={({item}) => (
-          <TouchableOpacity
-            onPress={() => navigation.navigate('TeamReview', {teamId: item.teamId})}>
-            <CompletedTeamBanner team={item} />
-          </TouchableOpacity>
-        )}
-      />
-    </View>
-  )
+
+    return <>
+        {
+            !loading && !error && data && data.completedTeams &&
+            (
+                <View style={{backgroundColor: 'white', flex: 1}}>
+                    <FlatList
+                        showsHorizontalScrollIndicator={false}
+                        keyExtractor={item => item.toString()}
+                        data={data.completedTeams}
+                        renderItem={({item}) => (
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate('TeamReview', {teamId: item.teamId})}>
+                                <CompletedTeamBanner team={item}/>
+                            </TouchableOpacity>
+                        )}
+                    />
+                </View>
+            )}
+    </>
 }
-
-export default TeamHistory

@@ -9,7 +9,7 @@ production = ENV["PRODUCTION"] == "1"
 target 'gabojait' do
   config = use_native_modules!
   #use_frameworks! :linkage => :static
-
+  $RNFirebaseAsStaticFramework = true
 
   # Flags change depending on the env values.
   flags = get_default_flags()
@@ -23,6 +23,7 @@ target 'gabojait' do
     :flipper_configuration => FlipperConfiguration.enabled(["Debug"]),
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
+
   )
   
 

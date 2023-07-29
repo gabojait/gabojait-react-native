@@ -6,7 +6,7 @@ export const getTeamsToReview = async () => {
   return result
 }
 
-export const getTeamToReview = async (teamId: String) => {
+export const getTeamToReview = async (teamId: number) => {
   const result = await client.get(`user/team/${teamId}/review`)
   return result
 }

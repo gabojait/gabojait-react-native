@@ -43,7 +43,7 @@ const BottomModalContent: React.FC<BottomSlideModalContentProps> = props => {
           <TouchableOpacity
             style={{paddingVertical: 7}}
             onPress={() => {
-              props.onNeverSeeAgainPress()
+              props.onNeverSeeAgainPress?.()
               console.log('onNeverSeeAgainPress')
             }}>
             <Text style={style.neverSeeText}>다시보지 않기</Text>

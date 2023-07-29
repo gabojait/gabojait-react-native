@@ -1,32 +1,30 @@
-import GroupListCard, { Part } from '@/presentation/components/TeamBanner';
-import { MainStackScreenProps } from '@/presentation/navigation/types';
+import GroupListCard from '@/presentation/components/TeamBanner';
+import {MainStackScreenProps} from '@/presentation/navigation/types';
 import React from 'react';
-import { FlatList, TouchableOpacity, View } from 'react-native';
+import {FlatList, TouchableOpacity, View} from 'react-native';
+import {useAppSelector} from "@/redux/hooks";
+import TeamBriefDto from "@/data/model/Team/TeamBriefDto";
 
-const TeamsApplied = ({ navigation, route }: MainStackScreenProps<'TeamApplied'>) => {
-  const arr = [
-    [
-      new Part('design', 'D', ['KimWash']),
-      new Part('p????', 'P', ['KimWash']),
-      new Part('frontend', 'F', ['KimWash']),
-      new Part('backend', 'B', ['KimWash']),
-    ],
-  ];
-  const { teamId } = route.params!;
-  return (
-    <View style={{ backgroundColor: 'white', flex: 1 }}>
-      <FlatList
-        showsHorizontalScrollIndicator={false}
-        keyExtractor={item => item.toString()}
-        data={arr}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => navigation.navigate('GroupDetail', teamId)}>
-            <GroupListCard title="가보자잇" parts={item} />
-          </TouchableOpacity>
-        )}
-      />
-    </View>
-  );
+const TeamsApplied = ({navigation, route}: MainStackScreenProps<'TeamApplied'>) => {
+
+    // Todo: API 붙이기
+
+    const teams = [] as TeamBriefDto[]
+
+    return (
+        <View style={{backgroundColor: 'white', flex: 1}}>
+            <FlatList
+                showsHorizontalScrollIndicator={false}
+                keyExtractor={item => item.toString()}
+                data={teams}
+                renderItem={({item}) => (
+                    <TouchableOpacity onPress={() => navigation.navigate('GroupDetail', {teamId: item.teamId})}>
+                        <GroupListCard teamMembersCnt={item.teamMemberCnts} teamName={item.projectName}/>
+                    </TouchableOpacity>
+                )}
+            />
+        </View>
+    );
 };
 
 export default TeamsApplied;

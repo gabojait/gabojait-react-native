@@ -48,22 +48,25 @@ const SplashScreen = ({navigation}: RootStackScreenProps<'SplashScreen'>) => {
         requestUserPermission();
     }, []);
 
-    useEffect(() => {
+    const setupFCM = async () => {
+        if (!messaging().isAutoInitEnabled)
+            await messaging().registerDeviceForRemoteMessages()
+
         // Get the device token
-        messaging()
-            .getToken()
-            .then(token => {
-                console.log(token)
-            });
+        const token = await messaging().getToken()
+        console.log(token)
 
         // If using other push notification providers (ie Amazon SNS, etc)
         // you may need to get the APNs token instead for iOS:
         if (Platform.OS == 'ios') {
-            messaging().getAPNSToken().then(token => {
-                console.log("apn token: ", token )
-            });
+            const apnsToken = await messaging().getAPNSToken()
+            console.log(apnsToken)
         }
 
+    }
+
+    useEffect(() => {
+        setupFCM()
         // Listen to whether the token changes
         return messaging().onTokenRefresh(token => {
             // Todo: save token to server
@@ -72,14 +75,13 @@ const SplashScreen = ({navigation}: RootStackScreenProps<'SplashScreen'>) => {
     }, []);
 
     useEffect(() => {
-        console.log("message receiver registration")
         const unsubscribe = messaging().onMessage(async remoteMessage => {
             console.log(remoteMessage)
             Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
         });
-
-        return unsubscribe;
+        return unsubscribe
     }, [])
+
 
     useEffect(handleRefresh, [user]);
     return <View style={[{flex: 1, backgroundColor: ''}]}></View>;

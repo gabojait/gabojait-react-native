@@ -56,3 +56,9 @@ export const findPassword = async (request: FindPasswordDto) => {
   console.log(result)
   return result
 }
+
+export const changePassword = async (request: {password: string; passwordReEntered: string}) => {
+  const result = await client.patch('user/password')
+  console.log(result)
+  return result
+}
