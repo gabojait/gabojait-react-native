@@ -34,6 +34,13 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 @implementation AppDelegate
 
 
+-(void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken: (NSData *)deviceToken
+{
+  [FIRMessaging messaging].APNSToken = deviceToken;
+  NSString *fcmToken = [FIRMessaging messaging].FCMToken;
+  NSLog(@"++APNST deviceToken : %@", deviceToken);
+  NSLog(@"++FCM device token : %@", fcmToken);
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {

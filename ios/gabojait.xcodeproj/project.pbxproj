@@ -16,7 +16,7 @@
 		7491F128297DA89300CD23E4 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		D16FBE7581120A9A23101D55 /* libPods-gabojait-gabojaitTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 57661E2B47701065A200E51B /* libPods-gabojait-gabojaitTests.a */; };
-		D5C6746A2A717F4B0074C8E2 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D5C674692A717F4B0074C8E2 /* GoogleService-Info.plist */; };
+		D5203B472A76372200D9CD72 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D5203B462A76372200D9CD72 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,8 +48,8 @@
 		89C6BE57DB24E9ADA2F236DE /* Pods-gabojait-gabojaitTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gabojait-gabojaitTests.release.xcconfig"; path = "Target Support Files/Pods-gabojait-gabojaitTests/Pods-gabojait-gabojaitTests.release.xcconfig"; sourceTree = "<group>"; };
 		CF62106DE76648EDB49E9BD7 /* fontello.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = fontello.ttf; path = ../src/assets/fonts/fontello.ttf; sourceTree = "<group>"; };
 		D5013BF32A722F4900E6004A /* gabojait.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = gabojait.entitlements; path = gabojait/gabojait.entitlements; sourceTree = "<group>"; };
+		D5203B462A76372200D9CD72 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D58FC3FF289E1A610083569D /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fonts; sourceTree = "<group>"; };
-		D5C674692A717F4B0074C8E2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "gabojait/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -93,8 +93,8 @@
 		13B07FAE1A68108700A75B9A /* gabojait */ = {
 			isa = PBXGroup;
 			children = (
+				D5203B462A76372200D9CD72 /* GoogleService-Info.plist */,
 				D5013BF32A722F4900E6004A /* gabojait.entitlements */,
-				D5C674692A717F4B0074C8E2 /* GoogleService-Info.plist */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -264,9 +264,9 @@
 			files = (
 				7491F128297DA89300CD23E4 /* Images.xcassets in Resources */,
 				748D0B58297D838D00D52108 /* Fonts in Resources */,
+				D5203B472A76372200D9CD72 /* GoogleService-Info.plist in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				15026B7744054AB98891E923 /* fontello.ttf in Resources */,
-				D5C6746A2A717F4B0074C8E2 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -525,9 +525,11 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = gabojait/gabojait.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = JFM39N7Z6U;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 7LF5463DRN;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = gabojait/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -538,9 +540,10 @@
 					"$(inherited)",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.gabojait;
+				PRODUCT_BUNDLE_IDENTIFIER = com.gabojait.app;
 				PRODUCT_NAME = gabojait;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Development Profile";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -555,9 +558,11 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = gabojait/gabojait.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = JFM39N7Z6U;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 7LF5463DRN;
 				INFOPLIST_FILE = gabojait/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -567,9 +572,10 @@
 					"$(inherited)",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.gabojait;
+				PRODUCT_BUNDLE_IDENTIFIER = com.gabojait.app;
 				PRODUCT_NAME = gabojait;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Development Profile";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
