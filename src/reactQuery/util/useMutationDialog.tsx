@@ -16,7 +16,7 @@ import React from 'react';
  */
 export function useMutationDialog<TVariables, TData>(
   mutationKey: MutationKey,
-  mutationFn: MutationFunction<TVariables, TData>,
+  mutationFn: MutationFunction<TData, TVariables>,
   message?: {
     resultToMessage?: (result: unknown) => string;
     errorToMessage?: (error: unknown) => string;
@@ -32,7 +32,7 @@ export function useMutationDialog<TVariables, TData>(
       modal?.show({
         content: (
           <OkDialogModalContent
-          title="완료"
+            title="완료"
             text={message}
             onOkClick={() => {
               modal?.hide();
@@ -47,7 +47,7 @@ export function useMutationDialog<TVariables, TData>(
       modal?.show({
         content: (
           <OkDialogModalContent
-          title="오류"
+            title="오류"
             text={message}
             onOkClick={() => {
               modal?.hide();
