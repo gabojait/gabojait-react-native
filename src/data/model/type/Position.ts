@@ -1,7 +1,7 @@
 export const enum Position {
-  Designer = 'designer',
-  Backend = 'backend',
-  Frontend = 'frontend',
-  Manager = 'manager',
-  None = 'none',
+  Designer = 'DESIGNER',
+  Backend = 'BACKEND',
+  Frontend = 'FRONTEND',
+  Manager = 'MANAGER',
+  None = 'NONE',
 }

@@ -1,6 +1,6 @@
 export const ProfileOrder = {
-  active: 'active',
-  popularity: 'popularity',
-  rating: 'rating',
-}
-export type ProfileOrder = keyof typeof ProfileOrder
+  active: 'ACTIVE',
+  popularity: 'POPULARITY',
+  rating: 'RATING',
+};
+export type ProfileOrder = keyof typeof ProfileOrder;

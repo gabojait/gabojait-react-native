@@ -34,11 +34,11 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
             await AsyncStorage.setItem('refreshToken', res.headers['refreshToken']);
           }
           // Todo: res.status == 200 일 때 responseCode를 이용해 분기처리
-          if (!res.data.responseData || res.status == 204 || res.status == 201) {
+          if (!res.data.responseData || res.status == 204) {
             //Todo: Handle No Content
             //Todo: 빈 리스트(204?)/201 대응
             return [];
-          } else {
+          } else if (res.status == 200 || res.status == 201) {
             return res.data.responseData;
           }
         } else {
@@ -72,8 +72,8 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
       );
       if (e.response?.status == 401 || e.response?.status == 403) {
         // Todo: Try token renew and logout when renew failed
-        AsyncStorage.removeItem("accessToken");
-        AsyncStorage.removeItem("refershToken");
+        AsyncStorage.removeItem('accessToken');
+        AsyncStorage.removeItem('refershToken');
         navigation.navigate('OnboardingNavigation', { screen: 'Login' });
         throw {
           name: 'UNAUTHORIZED',
