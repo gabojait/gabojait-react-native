@@ -43,7 +43,7 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
           }
         } else {
           throw {
-            name: res.data.responseCode ?? 'UNKNOWN_ERROR',
+            name: res.status.toString() ?? 'UNKNOWN_ERROR',
             message: res.data.responseMessage ?? '알 수 없는 오류입니다.',
             stack: Error().stack,
           } as Error;
@@ -85,7 +85,7 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
       const response = e.response?.data as ResponseWrapper<undefined>;
       throw {
         name: e.response?.status.toString() ?? 'UNKNOWN_ERROR',
-        message: response.responseCode ?? '알 수 없는 오류입니다.',
+        message: response.responseMessage ?? '알 수 없는 오류입니다.',
         stack: e.stack,
       } as Error;
     };
