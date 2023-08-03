@@ -30,7 +30,7 @@ const GroupList = ({ navigation }: BoardStackParamListProps<'GroupList'>) => {
       position: Position.None,
       teamOrder: TeamOrder.Created,
     },
-    key: 'recruiting',
+    key: teamKeys.recruiting,
     fetcher: async ({ pageParam, queryKey: [_, params] }) => {
       console.log('fetch!!');
       console.log('pageParam:', pageParam);
@@ -130,7 +130,7 @@ const GroupList = ({ navigation }: BoardStackParamListProps<'GroupList'>) => {
     >
       {data && (
         <FlatList
-          keyExtractor={(item, idx) => item?.teamId?.toString() ?? idx.toString()}
+          keyExtractor={(item, idx) => item?.projectName.concat(item.teamId)}
           data={data?.pages.map(page => page.data).flat()}
           renderItem={({ item }) => (
             <TouchableOpacity

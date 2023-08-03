@@ -11,7 +11,7 @@ import { MainStackScreenProps } from '@/presentation/navigation/types';
 import { makeStyles, Text, useTheme } from '@rneui/themed';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
-import { useMutation, useQuery, UseQueryResult } from 'react-query';
+import { useMutation, useQuery, useQueryClient, UseQueryResult } from 'react-query';
 import useGlobalStyles from '@/presentation/styles';
 import { mapToInitial } from '@/presentation/utils/util';
 import FavoriteUpdateDto from '@/data/model/Favorite/FavoriteUpdateDto';
@@ -20,6 +20,8 @@ import BottomModalContent from '@/presentation/components/modalContent/BottomMod
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent';
 import GetTeamErrorBoundary from '@/presentation/components/errorComponent/GetTeamErrorBoundary';
 import useModal from '@/presentation/components/modal/useModal';
+import { favoriteKeys } from '@/reactQuery/key/FavoriteKeys';
+import { teamKeys } from '@/reactQuery/key/TeamKeys';
 
 const GroupDetail = ({ navigation, route }: MainStackScreenProps<'GroupDetail'>) => {
   return (
@@ -41,10 +43,9 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
   const globalStyles = useGlobalStyles();
   const modal = useModal();
   const { teamId } = route.params!;
-
-
+  const queryClient = useQueryClient();
   const { data, isLoading, error }: UseQueryResult<TeamDetailDto> = useQuery(
-    ['GroupDetail', teamId],
+    [teamKeys.getTeam, teamId],
     () => getTeam(teamId),
     {
       useErrorBoundary: true,
@@ -52,19 +53,16 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
     },
   );
   const { mutate: mutateFavorite, data: favoriteResponse } = useMutation(
-    'postFavorite',
-    (args: [number, FavoriteUpdateDto]) => postFavoriteTeam(...args),
+    favoriteKeys.favoriteByUser,
+    (args: [string, FavoriteUpdateDto]) => postFavoriteTeam(...args),
     {
       useErrorBoundary: true,
       retry: 0,
       onSuccess: () => {
-        console.log(favoriteResponse);
+        queryClient.invalidateQueries([teamKeys.getTeam, teamId]);
       },
     },
   );
-  const [favoriteState, setFavoriteState] = useState<FavoriteUpdateDto>({
-    isAddFavorite: data?.isFavorite || false,
-  });
   const positions: Array<PositionRecruiting> = data?.teamMemberCnts || [];
   const [reportState, setReportState] = useState('');
   const [reportButtonState, setReportButtonState] = useState({
@@ -100,9 +98,9 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
         <BottomModalContent
           title="팀을 신고하시겠습니까?"
           children={
-            <View>
-              <Text style={globalStyles.textLight11}>신고 사유를 적어주세요</Text>
-              <CardWrapper style={[globalStyles.card, { minHeight: 160 }]}>
+            <View style={{ justifyContent: 'center', alignContent: 'center', width: '100%' }}>
+              <Text style={globalStyles.textLight13}>신고 사유를 적어주세요</Text>
+              <CardWrapper style={[globalStyles.card, { minHeight: 70 }]}>
                 <TextInput
                   value={reportState}
                   onChangeText={(text: string) => {
@@ -141,13 +139,12 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
     }
     return 'black';
   }
-  //TODO: 200,201 결과로 찜 아이콘 색 분기하기
+
+  useEffect(() => {
+    isFavorite();
+  }, [data]);
   function handleFavoriteTeam() {
-    if (data?.isFavorite) {
-      mutateFavorite([teamId, { isAddFavorite: !favoriteState.isAddFavorite }]);
-    } else {
-      mutateFavorite([teamId, { isAddFavorite: !favoriteState.isAddFavorite }]);
-    }
+    mutateFavorite([teamId, { isAddFavorite: !data?.isFavorite }]);
   }
 
   // if (isLoading && !data) {
@@ -211,13 +208,13 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
         <View style={[styles.card, globalStyles.FlexStartCardWrapper, { minHeight: 243 }]}>
           <View>
             <Text style={styles.title}>프로젝트 설명</Text>
-            <Text style={globalStyles.textLight11}>{data?.projectDescription}</Text>
+            <Text style={globalStyles.textLight13}>{data?.projectDescription}</Text>
           </View>
         </View>
         <View style={[styles.card, globalStyles.FlexStartCardWrapper, { minHeight: 243 }]}>
           <View>
             <Text style={styles.title}>바라는 점</Text>
-            <Text style={globalStyles.textLight11}>{data?.expectation}</Text>
+            <Text style={globalStyles.textLight13}>{data?.expectation}</Text>
           </View>
         </View>
       </ScrollView>

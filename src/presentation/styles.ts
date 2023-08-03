@@ -131,8 +131,8 @@ const useGlobalStyles = makeStyles(theme => ({
     fontWeight: theme.fontWeight.semibold,
     paddingTop: 10,
   },
-  textLight11: {
-    fontSize: 11,
+  textLight13: {
+    fontSize: 13,
     fontWeight: theme.fontWeight.light,
     color: theme.colors.black,
     lineHeight: 22,

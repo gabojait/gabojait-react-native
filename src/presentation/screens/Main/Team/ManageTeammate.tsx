@@ -74,7 +74,7 @@ export const ManageTeammate = ({ navigation }: MainStackScreenProps<'ManageTeamm
           title="팀원을 신고하시겠습니까?"
           children={
             <View>
-              <Text style={globalStyles.textLight11}>신고 사유를 적어주세요</Text>
+              <Text style={globalStyles.textLight13}>신고 사유를 적어주세요</Text>
               <CardWrapper style={[globalStyles.card, { minHeight: 160 }]}>
                 <TextInput
                   value={reportState}

@@ -15,6 +15,9 @@ import PositionCountDto from '@/data/model/Team/PostionCountDto';
 import { useCreateTeam } from '@/reactQuery/useCreateTeam';
 import useGlobalStyles from '@/presentation/styles';
 import useModal from '@/presentation/components/modal/useModal';
+import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
+import { teamKeys } from '@/reactQuery/key/TeamKeys';
+import { createTeam } from '@/data/api/team';
 
 const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'>) => {
   const { theme } = useTheme();
@@ -28,10 +31,13 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
     teamMemberRecruitCnts: [],
   });
   const globalStyles = useGlobalStyles();
-  const createTeam = useCreateTeam();
+  const { mutation: createTeamMutation } = useMutationDialog<TeamRequestDto, unknown>(
+    teamKeys.createTeam,
+    async (dto: TeamRequestDto) => createTeam(dto),
+  );
 
   function handleCreateTeam() {
-    createTeam.mutate(teamCreateState);
+    createTeamMutation.mutate(teamCreateState);
   }
 
   function updateExpectation(text: string) {

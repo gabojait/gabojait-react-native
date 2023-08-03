@@ -12,25 +12,19 @@ export interface PageModel<T> {
   data: T[];
 }
 
-export function useModelList<
-  P extends PageRequest & { readonly [key: string]: string | number },
-  R,
->({
+export function useModelList<P extends PageRequest & { [key: string]: string | number }, R>({
   initialParam,
   key,
   fetcher,
 }: {
   initialParam: P;
-  key: string | Array<string | {}> | readonly [string];
+  key: string | Array<string | {}>;
   fetcher:
     | ((params: {
         pageParam: number;
-        queryKey: string | Array<string | {}> | readonly [string];
+        queryKey: string | Array<string | {}>;
       }) => Promise<PageModel<R>>)
-    | ((params: {
-        pageParam: number;
-        queryKey: string | Array<string | {}> | readonly [string];
-      }) => PageModel<R>);
+    | ((params: { pageParam: number; queryKey: string | Array<string | {}> }) => PageModel<R>);
 }) {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { data, isLoading, error, fetchNextPage, refetch } = useInfiniteQuery(
