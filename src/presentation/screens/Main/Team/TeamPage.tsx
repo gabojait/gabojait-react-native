@@ -7,7 +7,7 @@ import { OutlinedButton } from '@/presentation/components/Button';
 import { isLeader, mapToInitial } from '@/presentation/utils/util';
 import { MainBottomTabNavigationProps } from '@/presentation/navigation/types';
 import useGlobalStyles from '@/presentation/styles';
-import { useQuery, UseQueryResult } from 'react-query';
+import { useQuery, useQueryClient, UseQueryResult } from 'react-query';
 import TeamDto from '@/data/model/Team/TeamDto';
 import { getMyTeam, incompleteTeam } from '@/data/api/team';
 import { getProfile } from '@/data/api/profile';
@@ -15,6 +15,7 @@ import ProfileViewResponse from '@/data/model/Profile/ProfileViewResponse';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 import { useMutationForm } from '@/reactQuery/util/useMutationForm';
+import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 
 interface LeaderHeaderParams {
   onPressEditor: () => void;
@@ -103,6 +104,7 @@ export const TeamPage = ({ navigation, route }: MainBottomTabNavigationProps<'Te
   const { theme } = useTheme();
   const globalStyles = useGlobalStyles();
   const styles = useStyles();
+  const queryClient = useQueryClient();
   const {
     data: teamData,
     isLoading: isTeamDataLoading,
@@ -115,11 +117,15 @@ export const TeamPage = ({ navigation, route }: MainBottomTabNavigationProps<'Te
     error: errorData,
   }: UseQueryResult<ProfileViewResponse> = useQuery(profileKeys.profile, () => getProfile());
 
-  const deleteTeam = useMutationForm<undefined, unknown>({
-    mutationKey: teamKeys.incompleteTeam,
-    mutationFn: async () => incompleteTeam(),
-    useErrorBoundary: true,
-  });
+  const { mutation: deleteTeamMutation } = useMutationDialog(
+    teamKeys.incompleteTeam,
+    async () => incompleteTeam(),
+    {
+      onSuccessClick(result) {
+        queryClient.invalidateQueries([teamKeys.myTeam]);
+      },
+    },
+  );
 
   return (
     <>
@@ -216,7 +222,7 @@ export const TeamPage = ({ navigation, route }: MainBottomTabNavigationProps<'Te
                 navigation.navigate('MainNavigation', { screen: 'TeamComplete' });
               }}
               onPressDelete={() => {
-                deleteTeam.mutation();
+                deleteTeamMutation.mutate;
               }}
             />
           ) : (

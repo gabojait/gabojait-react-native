@@ -8,7 +8,8 @@ import BottomModalContent from '@/presentation/components/modalContent/BottomMod
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import useGlobalStyles from '@/presentation/styles';
-import { TeamRefetchKey, teamKeys } from '@/reactQuery/key/TeamKeys';
+import { teamKeys } from '@/reactQuery/key/TeamKeys';
+import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { useMutationForm } from '@/reactQuery/util/useMutationForm';
 import { useTheme } from '@rneui/themed';
 import React, { useEffect, useState } from 'react';
@@ -32,20 +33,12 @@ export const ManageTeammate = ({ navigation }: MainStackScreenProps<'ManageTeamm
     error: teamDataError,
   }: UseQueryResult<TeamDto> = useQuery(teamKeys.myTeam, () => getMyTeam());
 
-  //   const teammateFire = useMutationForm<number, unknown>({
-  //     mutationKey: teamKeys.fireTeammate,
-  //     mutationFn: async (userId: number) => fireTeammate(userId),
-  //     useErrorBoundary: false,
-  //   });
-
-  const teammateFire = useMutation(
+  const { mutation: fireTeammateMutation } = useMutationDialog(
     teamKeys.fireTeammate,
     async (userId: number) => fireTeammate(userId),
     {
-      onSuccess: (data, variables, context) => {
-        console.log(`queryClient.invalidateQueries(teamKeys.myTeam);`);
-        //TODO: refetch 후 리렌더링 시킬 방법-> myTeam 404상태만 걸러서 보여주자
-        //queryClient.invalidateQueries(teamKeys.myTeam);
+      onSuccessClick() {
+        queryClient.invalidateQueries(teamKeys.myTeam);
       },
     },
   );
@@ -118,7 +111,7 @@ export const ManageTeammate = ({ navigation }: MainStackScreenProps<'ManageTeamm
           yesButton={{
             title: '확인',
             onPress: () => {
-              teammateFire.mutate(userId);
+              fireTeammateMutation.mutate(userId);
               modal?.hide();
             },
           }}

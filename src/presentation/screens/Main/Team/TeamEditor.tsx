@@ -17,12 +17,15 @@ import useModal from '@/presentation/components/modal/useModal';
 import { mapPositionRecruitingToPositionCount } from '@/presentation/model/mapper/mapPositionRecruitingToPositionCount';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { useMutationForm } from '@/reactQuery/util/useMutationForm';
+import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 
 //TODO: api 수정반영, react query 적용, 요구사항 충족 필요함
 export const TeamEditor = ({ navigation }: MainStackScreenProps<'TeamEditor'>) => {
   const { theme } = useTheme();
   const styles = useStyles({ navigation });
   const modal = useModal();
+  const globalStyles = useGlobalStyles();
+  const queryClient = useQueryClient();
   const {
     data: teamData,
     isLoading: isTeamDataLoading,
@@ -33,6 +36,16 @@ export const TeamEditor = ({ navigation }: MainStackScreenProps<'TeamEditor'>) =
     mutationFn: async (dto: TeamRequestDto) => updateTeam(dto) as Promise<TeamDto>,
     useErrorBoundary: true,
   });
+  const { mutation: updateTeamMutation } = useMutationDialog(
+    teamKeys.updateTeam,
+    async (dto: TeamRequestDto) => updateTeam(dto) as Promise<TeamDto>,
+    {
+      onSuccessClick() {
+        navigation.goBack();
+        queryClient.invalidateQueries(teamKeys.myTeam);
+      },
+    },
+  );
   const [teamUpdateState, setTeamUpdateState] = useState<TeamRequestDto>({
     expectation: '',
     openChatUrl: '',
@@ -40,8 +53,6 @@ export const TeamEditor = ({ navigation }: MainStackScreenProps<'TeamEditor'>) =
     projectName: '',
     teamMemberRecruitCnts: [],
   });
-  const globalStyles = useGlobalStyles();
-  const queryClient = useQueryClient();
 
   useEffect(() => {
     setTeamUpdateState({
@@ -52,12 +63,6 @@ export const TeamEditor = ({ navigation }: MainStackScreenProps<'TeamEditor'>) =
       teamMemberRecruitCnts: initializeTeamMemberRecruitCnts()!,
     });
   }, [teamData]);
-
-  if (teamUpdate.data) {
-    console.log(`updateTeam.data:${teamUpdate.data}`);
-    queryClient.invalidateQueries(teamKeys.myTeam);
-    navigation.navigate('Team');
-  }
 
   function initializeTeamMemberRecruitCnts() {
     const result = teamData?.teamMemberCnts.map(item => {

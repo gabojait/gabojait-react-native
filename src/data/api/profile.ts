@@ -29,8 +29,11 @@ export const getUserSeekingTeam = async (props: GetProfileProps) => {
     position: props.position,
     'profile-order': props.profileOrder,
   };
-  const result = (await client.get('user/seeking-team', { params })) as UserProfileBriefDto[];
-  return result;
+  const res = (await client.get('user/seeking-team', { params })) as {
+    data: UserProfileBriefDto[];
+    size: number;
+  };
+  return { data: res.data, total: 50, page: props.pageFrom };
 };
 
 export const setUserSeekingTeam = async (isSeekingTeam: boolean) => {

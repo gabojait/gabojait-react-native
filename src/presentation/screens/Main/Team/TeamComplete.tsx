@@ -5,20 +5,32 @@ import CustomInput from '@/presentation/components/CustomInput';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import useGlobalStyles from '@/presentation/styles';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
+import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { useMutationForm } from '@/reactQuery/util/useMutationForm';
 import { useTheme } from '@rneui/themed';
 import React, { useState } from 'react';
 import { Text, View } from 'react-native';
+import { useQueryClient } from 'react-query';
 
 export const TeamComplete = ({ navigation }: MainStackScreenProps<'TeamComplete'>) => {
   const [link, setLink] = useState<ProjectUrl>({ projectUrl: '' });
   const globalStyles = useGlobalStyles();
   const { theme } = useTheme();
+  const queryClient = useQueryClient();
   const teamComplete = useMutationForm<ProjectUrl, unknown>({
     mutationKey: teamKeys.completeTeam,
     mutationFn: async (dto: ProjectUrl) => completeTeam(dto),
     useErrorBoundary: true,
   });
+  const { mutation: completeTeamMutation } = useMutationDialog(
+    teamKeys.completeTeam,
+    async (dto: ProjectUrl) => completeTeam(dto),
+    {
+      onSuccessClick() {
+        queryClient.invalidateQueries(teamKeys.myTeam);
+      },
+    },
+  );
 
   if (teamComplete.data) {
     navigation.navigate('CompleteSuccess');
@@ -47,7 +59,7 @@ export const TeamComplete = ({ navigation }: MainStackScreenProps<'TeamComplete'
       />
       <FilledButton
         onPress={() => {
-          teamComplete.mutation(link);
+          completeTeamMutation.mutate(link);
         }}
         title={'제출하기'}
         containerStyle={{ paddingTop: 10 }}

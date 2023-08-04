@@ -2,23 +2,30 @@ import CardWrapper from '@/presentation/components/CardWrapper';
 import Gabojait from '@/presentation/components/icon/Gabojait';
 import { RatingBar } from '@/presentation/components/RatingBar';
 import { makeStyles, useTheme } from '@rneui/themed';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 import UserProfileBriefDto from '@/data/model/User/UserProfileBriefDto';
 import { useModelList } from '@/reactQuery/util/useModelList';
 import { GetProfileProps, getUserSeekingTeam } from '@/data/api/profile';
+import { Position } from '@/data/model/type/Position';
+import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 
 const FrontendList = () => {
   const { theme } = useTheme();
   const styles = useStyles();
-  const { data, isLoading, error, fetchNextPage, refetch, param, isRefreshing } = useModelList<
+  const { data, isLoading, error, fetchNextPage, refetch, isRefreshing } = useModelList<
     GetProfileProps,
     UserProfileBriefDto
   >({
-    initialParam: { pageFrom: 0, pageSize: 20, position: 'frontend', profileOrder: 'active' },
-    key: 'frontendList',
-    fetcher: async ({ pageParam }) => {
-      return await getUserSeekingTeam(pageParam!);
+    initialParam: {
+      pageFrom: 0,
+      pageSize: 20,
+      position: Position.Frontend,
+      profileOrder: 'ACTIVE',
+    },
+    key: profileKeys.frontendSeekingTeam,
+    fetcher: async ({ pageParam, queryKey: [_, params] }) => {
+      return await getUserSeekingTeam({ ...(params as GetProfileProps), pageFrom: pageParam });
     },
   });
 
@@ -46,8 +53,8 @@ const FrontendList = () => {
     >
       <FlatList
         showsVerticalScrollIndicator={false}
-        keyExtractor={item => item.userId.toString()}
-        data={data?.pages.flat()}
+        keyExtractor={item => item.nickname}
+        data={data?.pages.map(page => page.data).flat()}
         renderItem={({ item }) => (
           <CardWrapper
             style={{

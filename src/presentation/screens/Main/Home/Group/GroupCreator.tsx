@@ -34,6 +34,11 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
   const { mutation: createTeamMutation } = useMutationDialog<TeamRequestDto, unknown>(
     teamKeys.createTeam,
     async (dto: TeamRequestDto) => createTeam(dto),
+    {
+      onSuccessClick() {
+        navigation.goBack();
+      },
+    },
   );
 
   function handleCreateTeam() {
@@ -187,7 +192,6 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
     });
   };
 
-  //TODO: useCreateTeam onSuccess일 경우 네비게이션 넣기 + 에러처리 필요함
   return (
     <KeyboardAvoidingView
       behavior="height"
@@ -196,7 +200,7 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
       <ScrollView>
         <View style={styles.item}>
           <Text style={styles.text}>프로젝트 이름</Text>
-          <CardWrapper style={[styles.inputBox, { maxHeight: 90 }]}>
+          <CardWrapper style={[styles.inputBox, { minHeight: 51 }]}>
             <TextInput
               value={teamCreateState?.projectName}
               onChangeText={(text: string) => {
@@ -251,7 +255,7 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
 
         <View style={styles.item}>
           <Text style={styles.text}>오픈채팅 링크</Text>
-          <CardWrapper style={[styles.inputBox, { maxHeight: 50 }]}>
+          <CardWrapper style={[styles.inputBox, { minHeight: 51 }]}>
             <TextInput
               value={teamCreateState?.openChatUrl}
               onChangeText={(text: string) => {
