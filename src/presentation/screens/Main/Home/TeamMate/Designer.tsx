@@ -4,13 +4,18 @@ import UserProfileBriefDto from '@/data/model/User/UserProfileBriefDto';
 import CardWrapper from '@/presentation/components/CardWrapper';
 import Gabojait from '@/presentation/components/icon/Gabojait';
 import { RatingBar } from '@/presentation/components/RatingBar';
+import {
+  PositionTabParamListProps,
+  TeammateStackParamListProps,
+} from '@/presentation/navigation/types';
+
 import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 import { useModelList } from '@/reactQuery/util/useModelList';
 import { makeStyles, Text, useTheme } from '@rneui/themed';
 import React from 'react';
 import { FlatList, TouchableOpacity, View } from 'react-native';
 
-const DesignerList = () => {
+const DesignerList = ({ navigation, route }: TeammateStackParamListProps<'Designer'>) => {
   const { theme } = useTheme();
   const styles = useStyles();
   const { data, isLoading, error, fetchNextPage, refetch, isRefreshing } = useModelList<
@@ -44,37 +49,43 @@ const DesignerList = () => {
         keyExtractor={item => item.nickname}
         data={data?.pages.map(page => page.data).flat()}
         renderItem={({ item }) => (
-          <CardWrapper
-            style={{
-              marginVertical: 5,
-              marginHorizontal: 20,
-              borderWidth: 1,
-              borderColor: theme.colors.disabled,
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('ProfilePreview', { userId: item.userId });
             }}
           >
-            <View
+            <CardWrapper
               style={{
-                flexDirection: 'row',
-                width: '100%',
-                paddingVertical: 32,
-                paddingHorizontal: 10,
-                justifyContent: 'space-between',
-                alignContent: 'center',
+                marginVertical: 5,
+                marginHorizontal: 20,
+                borderWidth: 1,
+                borderColor: theme.colors.disabled,
               }}
             >
-              <View>
-                <Text style={styles.name}>{item.nickname}</Text>
-                <Text style={styles.position}>UI/UX 디자이너</Text>
-                <View style={{ flexDirection: 'row', paddingBottom: 10 }}>
-                  <RatingBar ratingScore={item.rating} />
-                  <Text style={styles.score}>{item.rating}</Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  width: '100%',
+                  paddingVertical: 32,
+                  paddingHorizontal: 10,
+                  justifyContent: 'space-between',
+                  alignContent: 'center',
+                }}
+              >
+                <View>
+                  <Text style={styles.name}>{item.nickname}</Text>
+                  <Text style={styles.position}>UI/UX 디자이너</Text>
+                  <View style={{ flexDirection: 'row', paddingBottom: 10 }}>
+                    <RatingBar ratingScore={item.rating} />
+                    <Text style={styles.score}>{item.rating}</Text>
+                  </View>
                 </View>
+                <TouchableOpacity style={{ justifyContent: 'center' }}>
+                  <Gabojait name="arrow-next" size={28} color={theme.colors.disabled} />
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity style={{ justifyContent: 'center' }}>
-                <Gabojait name="arrow-next" size={28} color={theme.colors.disabled} />
-              </TouchableOpacity>
-            </View>
-          </CardWrapper>
+            </CardWrapper>
+          </TouchableOpacity>
         )}
         refreshing={isRefreshing}
         onRefresh={refetch}

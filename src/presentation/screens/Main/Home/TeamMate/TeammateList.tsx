@@ -1,49 +1,25 @@
-import { PositionTabParamList } from '@/presentation/navigation/types';
+import React, { useEffect } from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { TabActions } from '@react-navigation/native';
-import { useTheme } from '@rneui/themed';
-import React from 'react';
-import { Dimensions, Text, View } from 'react-native';
-import BackendList from './BackendList';
-import DesignerList from './DesignerList';
 import FrontendList from './FrontendList';
+import BackendList from './BackendList';
+import DesignerList from './Designer';
 import PMList from './PMList';
-import { theme } from '@/presentation/theme';
+import { useTheme } from '@rneui/themed';
+import { Dimensions, View } from 'react-native';
+import {
+  BoardStackParamListProps,
+  PositionTabParamList,
+  TeammateStackParamListProps,
+} from '@/presentation/navigation/types';
 
-const ApplyStatus = () => {
+const Tab = createMaterialTopTabNavigator();
+
+const TeammateList = ({ navigation, route }: TeammateStackParamListProps<'TeammateList'>) => {
   const { theme } = useTheme();
-  return (
-    <>
-      <Teamname />
-      <TabScreen />
-    </>
-  );
-};
-
-const Teamname = () => {
-  return (
-    <Text
-      style={{
-        fontSize: 30,
-        fontWeight: theme.fontWeight?.bold,
-        color: 'black',
-        backgroundColor: 'white',
-        paddingTop: 28,
-        paddingLeft: 20,
-      }}
-    >
-      가보자잇
-    </Text>
-  );
-};
-const Tab = createMaterialTopTabNavigator<PositionTabParamList>();
-
-const TabScreen = () => {
-  const { theme } = useTheme();
-
   return (
     <Tab.Navigator
       initialRouteName="Frontend"
+      ß
       initialLayout={{ width: Dimensions.get('window').width }}
       screenOptions={{
         tabBarInactiveTintColor: theme.colors.black,
@@ -73,4 +49,5 @@ const TabScreen = () => {
     </Tab.Navigator>
   );
 };
-export default ApplyStatus;
+
+export default TeammateList;

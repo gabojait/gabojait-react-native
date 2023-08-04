@@ -5,6 +5,8 @@ import {
   ParamListBase,
 } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
+import { BoardStackNavigationProps } from './BoardNavigation';
+import { MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
 
 interface WebViewPageProps {
   url: string;
@@ -81,7 +83,7 @@ export type MainBottomTabNavigationProps<T extends keyof MainBottomTabParamList 
 
 export type BoardStackParamList = {
   GroupList: undefined;
-  TeamMate: undefined;
+  TeamMate: NavigatorScreenParams<TeammateStackParamList>;
   MainNavigation: NavigatorScreenParams<MainStackParamList>;
 };
 
@@ -89,13 +91,6 @@ export type BoardStackParamListProps<T extends keyof BoardStackParamList> = Stac
   BoardStackParamList,
   T
 >;
-
-export type ApplyStatusTabParamList = {
-  Frontend: undefined;
-  Backend: undefined;
-  Designer: undefined;
-  PM: undefined;
-};
 
 export type ProfileStackParamListProps<T extends keyof ProfileStackParamList> = StackScreenProps<
   ProfileStackParamList,
@@ -108,4 +103,32 @@ export type ProfileStackParamList = {
   EditPortfolio: undefined;
   EditSchoolAndWork: undefined;
   EditSkillAndPosition: undefined;
+};
+
+// export type TeammateStackParamListProps<T extends keyof TeammateStackParamList> =
+//   CompositeScreenProps<
+//     MaterialTopTabScreenProps<TeammateStackParamList, T>,
+//     BoardStackParamListProps<keyof BoardStackParamList>
+//   >;
+
+export type TeammateStackParamListProps<T extends keyof TeammateStackParamList> = StackScreenProps<
+  TeammateStackParamList,
+  T
+>;
+
+export type TeammateStackParamList = {
+  TeammateList: NavigatorScreenParams<PositionTabParamList>;
+  ProfilePreview: { userId: string };
+};
+
+export type PositionTabParamListProps<T extends keyof PositionTabParamList> = StackScreenProps<
+  PositionTabParamList,
+  T
+>;
+
+export type PositionTabParamList = {
+  Frontend: undefined;
+  Backend: undefined;
+  Designer: undefined;
+  PM: undefined;
 };

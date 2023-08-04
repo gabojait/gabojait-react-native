@@ -121,7 +121,7 @@ export const TeamPage = ({ navigation, route }: MainBottomTabNavigationProps<'Te
     teamKeys.incompleteTeam,
     async () => incompleteTeam(),
     {
-      onSuccessClick(result) {
+      onSuccessClick() {
         queryClient.invalidateQueries([teamKeys.myTeam]);
       },
     },
@@ -222,7 +222,8 @@ export const TeamPage = ({ navigation, route }: MainBottomTabNavigationProps<'Te
                 navigation.navigate('MainNavigation', { screen: 'TeamComplete' });
               }}
               onPressDelete={() => {
-                deleteTeamMutation.mutate;
+                deleteTeamMutation.mutate(undefined);
+                console.log('워워');
               }}
             />
           ) : (

@@ -9,8 +9,9 @@ import { useModelList } from '@/reactQuery/util/useModelList';
 import { GetProfileProps, getUserSeekingTeam } from '@/data/api/profile';
 import { Position } from '@/data/model/type/Position';
 import { profileKeys } from '@/reactQuery/key/ProfileKeys';
+import { TeammateStackParamListProps } from '@/presentation/navigation/types';
 
-const FrontendList = () => {
+const FrontendList = ({ navigation, route }: TeammateStackParamListProps<'Frontend'>) => {
   const { theme } = useTheme();
   const styles = useStyles();
   const { data, isLoading, error, fetchNextPage, refetch, isRefreshing } = useModelList<

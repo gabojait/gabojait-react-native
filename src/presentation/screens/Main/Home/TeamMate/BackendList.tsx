@@ -4,13 +4,14 @@ import UserProfileBriefDto from '@/data/model/User/UserProfileBriefDto';
 import CardWrapper from '@/presentation/components/CardWrapper';
 import Gabojait from '@/presentation/components/icon/Gabojait';
 import { RatingBar } from '@/presentation/components/RatingBar';
+import { TeammateStackParamListProps } from '@/presentation/navigation/types';
 import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 import { useModelList } from '@/reactQuery/util/useModelList';
 import { makeStyles, Text, useTheme } from '@rneui/themed';
 import React from 'react';
 import { FlatList, TouchableOpacity, View } from 'react-native';
 
-const BackendList = () => {
+const BackendList = ({ navigation, route }: TeammateStackParamListProps<'Backend'>) => {
   const { theme } = useTheme();
   const styles = useStyles();
   const { data, isLoading, error, fetchNextPage, refetch, isRefreshing } = useModelList<
