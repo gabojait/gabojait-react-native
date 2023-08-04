@@ -16,11 +16,13 @@ export type GetProfileProps = {
   profileOrder: ProfileOrder;
 };
 
-export const getProfile = async () => {
+export const getMyProfile = async () => {
   const result = await client.get('user/profile');
   console.log(result);
   return result;
 };
+
+export const getProfile;
 
 export const getUserSeekingTeam = async (props: GetProfileProps) => {
   let params = {

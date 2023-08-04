@@ -10,7 +10,7 @@ import useGlobalStyles from '@/presentation/styles';
 import { useQuery, useQueryClient, UseQueryResult } from 'react-query';
 import TeamDto from '@/data/model/Team/TeamDto';
 import { getMyTeam, incompleteTeam } from '@/data/api/team';
-import { getProfile } from '@/data/api/profile';
+import { getMyProfile } from '@/data/api/profile';
 import ProfileViewResponse from '@/data/model/Profile/ProfileViewResponse';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { profileKeys } from '@/reactQuery/key/ProfileKeys';
@@ -115,7 +115,7 @@ export const TeamPage = ({ navigation, route }: MainBottomTabNavigationProps<'Te
     data: dataUser,
     isLoading: isLoadingData,
     error: errorData,
-  }: UseQueryResult<ProfileViewResponse> = useQuery(profileKeys.profile, () => getProfile());
+  }: UseQueryResult<ProfileViewResponse> = useQuery(profileKeys.profile, () => getMyProfile());
 
   const { mutation: deleteTeamMutation } = useMutationDialog(
     teamKeys.incompleteTeam,
