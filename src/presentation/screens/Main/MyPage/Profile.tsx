@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { CheckBox, makeStyles, Text, useTheme } from '@rneui/themed';
 import {
   ActivityIndicator,
@@ -54,7 +54,7 @@ export const portfolioTypeIconName = {
 };
 
 export const sliderColors = ['#FFDB20', '#F06823', '#F04823'];
-const ProfileImage = ({
+export const ProfileImage = ({
   image,
   setImage,
 }: {
@@ -207,9 +207,26 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
               <ProfileImage image={image} setImage={image => setImage(image)} />
               <PortfolioView
                 profile={profile}
-                onProfileVisibilityChanged={isPublic => {
-                  dispatch(setProfileVisibility(isPublic));
-                }}
+                rightChild={
+                  <>
+                    <CheckBox
+                      checked={profile.isSeekingTeam ?? false}
+                      onPress={() => dispatch(setProfileVisibility(!profile.isSeekingTeam))}
+                      checkedIcon={
+                        <MaterialIcon name="check-box" size={18} color={theme.colors.primary} />
+                      }
+                      uncheckedIcon={
+                        <MaterialIcon
+                          name="check-box-outline-blank"
+                          size={18}
+                          color={theme.colors.grey2}
+                        />
+                      }
+                      containerStyle={{ padding: 0 }}
+                      title="팀 초대 허용"
+                    />
+                  </>
+                }
               />
             </View>
             <View
@@ -530,12 +547,12 @@ export const CustomSlider = ({
   );
 };
 
-const PortfolioView = ({
+export const PortfolioView = ({
   profile,
-  onProfileVisibilityChanged,
+  rightChild,
 }: {
   profile: ProfileViewDto;
-  onProfileVisibilityChanged: (visibility: boolean) => void;
+  rightChild?: ReactNode;
 }) => {
   const { theme } = useTheme();
 
@@ -556,16 +573,7 @@ const PortfolioView = ({
         >
           {profile.nickname}
         </Text>
-        <CheckBox
-          checked={profile.isSeekingTeam ?? false}
-          onPress={() => onProfileVisibilityChanged(!profile.isSeekingTeam)}
-          checkedIcon={<MaterialIcon name="check-box" size={18} color={theme.colors.primary} />}
-          uncheckedIcon={
-            <MaterialIcon name="check-box-outline-blank" size={18} color={theme.colors.grey2} />
-          }
-          containerStyle={{ padding: 0 }}
-          title="팀 초대 허용"
-        />
+        {rightChild}
       </View>
       <Text style={{ fontSize: theme.fontSize.md, fontWeight: '300' }}>
         {KoreanPosition[profile.position ?? Position.None]}
