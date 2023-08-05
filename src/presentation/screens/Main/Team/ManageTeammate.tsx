@@ -95,6 +95,7 @@ export const ManageTeammate = ({ navigation }: MainStackScreenProps<'ManageTeamm
             },
           }}
           neverSeeAgainShow={false}
+          onBackgroundPress={modal?.hide}
         />
       ),
       modalProps: { animationType: 'slide', justifying: 'bottom' },

@@ -206,6 +206,7 @@ export const TeamEditor = ({ navigation }: MainStackScreenProps<'TeamEditor'>) =
               modal.hide();
             },
           }}
+          onBackgroundPress={modal?.hide}
         >
           <View>
             <Text style={{ textAlign: 'center' }}>글 수정을 취소하면</Text>

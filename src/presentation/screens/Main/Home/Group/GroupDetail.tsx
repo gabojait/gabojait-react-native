@@ -10,10 +10,10 @@ import PositionRecruiting from '@/presentation/model/PositionRecruitng';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import { makeStyles, Text, useTheme } from '@rneui/themed';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
+import { KeyboardAvoidingView, ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
 import { useMutation, useQuery, useQueryClient, UseQueryResult } from 'react-query';
 import useGlobalStyles from '@/presentation/styles';
-import { mapToInitial } from '@/presentation/utils/util';
+import { isFavorite, mapToInitial } from '@/presentation/utils/util';
 import FavoriteUpdateDto from '@/data/model/Favorite/FavoriteUpdateDto';
 import { Icon } from '@rneui/base';
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
@@ -49,7 +49,6 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
     () => getTeam(teamId),
     {
       useErrorBoundary: true,
-      retry: 0,
     },
   );
   const { mutate: mutateFavorite, data: favoriteResponse } = useMutation(
@@ -64,7 +63,7 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
     },
   );
   const positions: Array<PositionRecruiting> = data?.teamMemberCnts || [];
-  const [reportState, setReportState] = useState('');
+  const [reportState, setReportState] = useState({ text: '' });
   const [reportButtonState, setReportButtonState] = useState({
     text: '신고하기',
     isDisabled: true,
@@ -99,12 +98,15 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
           title="팀을 신고하시겠습니까?"
           children={
             <View style={{ justifyContent: 'center', alignContent: 'center', width: '100%' }}>
-              <Text style={globalStyles.textLight13}>신고 사유를 적어주세요</Text>
-              <CardWrapper style={[globalStyles.card, { minHeight: 70 }]}>
+              <Text style={[globalStyles.textLight13, { textAlign: 'center', paddingBottom: 10 }]}>
+                신고 사유를 적어주세요
+              </Text>
+              <CardWrapper style={{ minHeight: 75, maxWidth: 400 }}>
                 <TextInput
                   value={reportState}
+                  style={{ width: '100%' }}
                   onChangeText={(text: string) => {
-                    setReportState(text);
+                    setReportState(prevState => ({ ...prevState, text: text }));
                   }}
                   multiline={true}
                   maxLength={500}
@@ -127,22 +129,17 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
             },
           }}
           neverSeeAgainShow={false}
+          onBackgroundPress={modal?.hide}
         />
       ),
       modalProps: { animationType: 'slide', justifying: 'bottom' },
     });
   };
 
-  function isFavorite() {
-    if (data?.isFavorite) {
-      return theme.colors.primary;
-    }
-    return 'black';
-  }
-
   useEffect(() => {
-    isFavorite();
+    isFavorite(data?.isFavorite!);
   }, [data]);
+
   function handleFavoriteTeam() {
     mutateFavorite([teamId, { isAddFavorite: !data?.isFavorite }]);
   }
@@ -168,7 +165,7 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
         rightChildren={
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <TouchableOpacity onPress={handleFavoriteTeam} style={{ paddingRight: 25 }}>
-              <CustomIcon name="heart" size={30} color={isFavorite()} />
+              <CustomIcon name="heart" size={30} color={isFavorite(data?.isFavorite!)} />
             </TouchableOpacity>
             <TouchableOpacity onPress={handleReportModal}>
               <Icon type="entypo" name="dots-three-vertical" size={20} />

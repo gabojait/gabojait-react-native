@@ -181,6 +181,7 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
               modal.hide();
             },
           }}
+          onBackgroundPress={modal?.hide}
         >
           <View>
             <Text style={{ textAlign: 'center' }}>글을 삭제하면</Text>

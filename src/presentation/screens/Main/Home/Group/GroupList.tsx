@@ -94,6 +94,7 @@ const GroupList = ({ navigation }: BoardStackParamListProps<'GroupList'>) => {
               onNeverSeeAgainPress={() => {
                 return handleNeverSeeAgain();
               }}
+              onBackgroundPress={modal?.hide}
             />
           ),
           modalProps: { animationType: 'slide', justifying: 'bottom' },

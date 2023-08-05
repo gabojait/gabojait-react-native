@@ -1,14 +1,10 @@
 import { TeammateStackParamListProps } from '@/presentation/navigation/types';
-
 import React, { useState } from 'react';
 import { Text, useTheme } from '@rneui/themed';
-import { Linking, ScrollView, TouchableOpacity, View } from 'react-native';
-import { useAppDispatch } from '@/redux/hooks';
+import { Linking, ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { RatingBar } from '@/presentation/components/RatingBar';
-import { setProfileVisibility } from '@/redux/reducers/profileReducer';
 import { Level } from '@/data/model/Profile/Skill';
-import useGlobalStyles from '@/presentation/styles';
 import { Position } from '@/data/model/type/Position';
 import { KoreanPosition } from '@/presentation/model/type/Position';
 import { Asset } from 'react-native-image-picker';
@@ -17,11 +13,12 @@ import {
   IconLabel,
   PortfolioView,
   ProfileImage,
+  ReviewItem,
   ToggleButton,
   portfolioTypeIconName,
   sliderColors,
 } from '../../MyPage/Profile';
-import { UseQueryResult, useQuery } from 'react-query';
+import { UseQueryResult, useMutation, useQuery, useQueryClient } from 'react-query';
 import ProfileViewResponse from '@/data/model/Profile/ProfileViewResponse';
 import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 import { getProfile } from '@/data/api/profile';
@@ -29,7 +26,16 @@ import CustomHeader from '@/presentation/components/CustomHeader';
 import CustomIcon from '@/presentation/components/icon/Gabojait';
 import { Icon } from '@rneui/base';
 import { FilledButton } from '@/presentation/components/Button';
-import textStyles from '@/presentation/res/styles/textStyles';
+import { Link } from '@react-navigation/native';
+import { favoriteKeys } from '@/reactQuery/key/FavoriteKeys';
+import FavoriteUpdateDto from '@/data/model/Favorite/FavoriteUpdateDto';
+import { postFavoriteUser } from '@/data/api/favorite';
+import { isFavorite } from '@/presentation/utils/util';
+import useModal from '@/presentation/components/modal/useModal';
+import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent';
+import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
+import useGlobalStyles from '@/presentation/styles';
+import CardWrapper from '@/presentation/components/CardWrapper';
 
 const ProfilePreview = ({ navigation, route }: TeammateStackParamListProps<'ProfilePreview'>) => {
   return <ProfilePreviewComponent navigation={navigation} route={route} />;
@@ -41,40 +47,92 @@ const ProfilePreviewComponent = ({
 }: TeammateStackParamListProps<'ProfilePreview'>) => {
   const { theme } = useTheme();
   const userId = route.params.userId;
+  const modal = useModal();
+  const queryClient = useQueryClient();
+  const globalStyles = useGlobalStyles();
+  const [reportState, setReportState] = useState('');
+  const [reportButtonState, setReportButtonState] = useState({
+    text: '신고하기',
+    isDisabled: true,
+  });
+
   const {
     data: profile,
     isLoading,
     error,
-  }: UseQueryResult<ProfileViewResponse> = useQuery([profileKeys.profile, userId], () =>
+  }: UseQueryResult<ProfileViewResponse> = useQuery([profileKeys.profileUserId], () =>
     getProfile(userId),
   );
-  const dispatch = useAppDispatch();
+  const { mutate: mutateFavorite, data: favoriteResponse } = useMutation(
+    favoriteKeys.favoriteByUser,
+    (args: [string, FavoriteUpdateDto]) => postFavoriteUser(...args),
+    {
+      useErrorBoundary: true,
+      onSuccess: () => {
+        queryClient.invalidateQueries([profileKeys.profileUserId]);
+      },
+    },
+  );
+  const reportCompeletedModal = () => {
+    modal?.show({
+      content: (
+        <SymbolModalContent
+          title="신고완료!"
+          symbol={<Text style={{ fontSize: theme.emojiSize.md, textAlign: 'center' }}>✅</Text>}
+          text={'신고가 완료되었습니다.'}
+          yesButton={{ title: '확인', onPress: () => modal.hide() }}
+        />
+      ),
+      modalProps: { animationType: 'none', justifying: 'center' },
+    });
+  };
 
-  const globalStyles = useGlobalStyles();
-
-  const [refreshing, setRefreshing] = useState(false);
-  //   useEffect(() => {
-  //     if (!pageLoading) setRefreshing(false);
-  //   }, [pageLoading]);
-
+  const handleReportModal = () => {
+    modal?.show({
+      content: (
+        <BottomModalContent
+          title="팀을 신고하시겠습니까?"
+          children={
+            <View style={{ justifyContent: 'center', alignContent: 'center', width: '100%' }}>
+              <Text style={globalStyles.textLight13}>신고 사유를 적어주세요</Text>
+              <CardWrapper style={[globalStyles.card, { minHeight: 70 }]}>
+                <TextInput
+                  value={reportState}
+                  onChangeText={(text: string) => {
+                    setReportState(text);
+                  }}
+                  multiline={true}
+                  maxLength={500}
+                />
+              </CardWrapper>
+            </View>
+          }
+          yesButton={{
+            title: reportButtonState.text,
+            onPress: () => {
+              modal.hide();
+              reportCompeletedModal();
+            },
+            disabled: reportButtonState.isDisabled,
+          }}
+          noButton={{
+            title: '나가기',
+            onPress: () => {
+              modal.hide();
+            },
+          }}
+          neverSeeAgainShow={false}
+          onBackgroundPress={modal?.hide}
+        />
+      ),
+      modalProps: { animationType: 'slide', justifying: 'bottom' },
+    });
+  };
+  function handleFavoriteTeam() {
+    mutateFavorite([userId, { isAddFavorite: !profile?.isFavorite }]);
+  }
   const [image, setImage] = useState<Asset | null>(null);
 
-  //   useEffect(() => {
-  //     setImage({
-  //       uri: profile?.imageUrl,
-  //     });
-  //   }, [profile?.imageUrl]);
-
-  //   useEffect(() => {
-  //     if (image && image.fileName) {
-  //       const formData = new FormData();
-  //       formData.append('image', {
-  //         name: image?.fileName,
-  //         uri: image?.uri,
-  //       });
-  //       dispatch(setProfileImage(formData));
-  //     }
-  //   }, [image]);
   if (isLoading) {
     return <Text>로딩중</Text>;
   }
@@ -90,10 +148,19 @@ const ProfilePreviewComponent = ({
         canGoBack={true}
         rightChildren={
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <TouchableOpacity onPress={() => {}} style={{ paddingRight: 25 }}>
-              <CustomIcon name="heart" size={30} color={'black'} />
+            <TouchableOpacity
+              onPress={() => {
+                handleFavoriteTeam;
+              }}
+              style={{ paddingRight: 25 }}
+            >
+              <CustomIcon name="heart" size={30} color={isFavorite(profile.isFavorite)} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity
+              onPress={() => {
+                handleReportModal;
+              }}
+            >
               <Icon type="entypo" name="dots-three-vertical" size={20} />
             </TouchableOpacity>
           </View>
@@ -236,12 +303,12 @@ const ProfilePreviewComponent = ({
                   </View>
                 </View>
                 <View style={{ marginTop: 25 }}>
-                  {/* {profile.reviews?.map(review => (
-                      <ReviewItem review={review} />
-                    ))}
-                    <Link to={''} style={{ color: theme.colors.primary, textAlign: 'right' }}>
-                      더보기
-                    </Link> */}
+                  {profile.reviews?.map(review => (
+                    <ReviewItem review={review} />
+                  ))}
+                  <Link to={''} style={{ color: theme.colors.primary, textAlign: 'right' }}>
+                    더보기
+                  </Link>
                 </View>
               </>
             ) : (
