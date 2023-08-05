@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 import { ReactNode, useEffect } from 'react';
 import { RootStackNavigationProps } from '../navigation/RootNavigation';
+import { ApiErrorCode } from '@/data/api/ApiErrorCode';
 
 /**
  * @param children
@@ -58,6 +59,7 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
     };
     const errorInterceptor = (error: AxiosError) => {
       const e = error as AxiosError;
+      const response = e.response?.data as ResponseWrapper<undefined>;
       console.error(
         `Path:`,
         e.config?.url,
@@ -70,7 +72,11 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
         `\nResponse:`,
         e.response,
       );
-      if (e.response?.status == 401 || e.response?.status == 403) {
+      //로그인 화면으로 보내야 할 것
+      if (
+        response.responseMessage == ApiErrorCode[401].TOKEN_UNAUTHENTICATED.name ||
+        response.responseMessage == ApiErrorCode[403].TOKEN_UNAUTHORIZED.name
+      ) {
         // Todo: Try token renew and logout when renew failed
         AsyncStorage.removeItem('accessToken');
         AsyncStorage.removeItem('refershToken');
@@ -81,8 +87,6 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
           stack: e.stack,
         };
       }
-
-      const response = e.response?.data as ResponseWrapper<undefined>;
       throw {
         name: e.response?.status.toString() ?? 'UNKNOWN_ERROR',
         message: response.responseMessage ?? '알 수 없는 오류입니다.',

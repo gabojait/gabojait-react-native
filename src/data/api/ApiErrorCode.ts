@@ -11,13 +11,7 @@ export const ApiErrorCodeType = {
 };
 export type ApiErrorCodeType = keyof typeof ApiErrorCodeType;
 
-export const ApiErrorCode: Record<
-  ApiErrorCodeType,
-  {
-    code: ApiErrorCodeType;
-    message: { name: string; text: string }[];
-  }
-> = {
+export const ApiErrorCode = {
   /**
    * 400 UNAUTHORIZED
    */
@@ -37,19 +31,17 @@ export const ApiErrorCode: Record<
    */
   '401': {
     code: '401',
+    TOKEN_UNAUTHENTICATED: {
+      name: 'TOKEN_UNAUTHENTICATED',
+      text: '승인되지 않은 요청입니다. 로그인 후에 다시 시도 해주세요.',
+    },
     message: [
       {
-        name: 'TOKEN_AUTHENTICATION_FAIL',
-        text: '토큰 인증에 실패했습니다. 다시 로그인한 후 이용해주세요.',
-      },
-      { name: 'TOKEN_REQUIRED_FAIL', text: '헤더에 토큰이 없습니다.' },
-      { name: 'LOGIN_FAIL', text: '로그인에 실패했습니다.' },
-      {
-        name: 'USERNAME_EMAIL_NO_MATCH',
-        text: '아이디와 이메일 정보가 일치하지 않습니다.',
+        name: 'LOGIN_UNAUTHENTICATED',
+        text: '아이디 또는 비밀번호가 틀렸습니다.',
       },
       {
-        name: 'PASSWORD_AUTHENTICATION_FAIL',
+        name: 'PASSWORD_UNAUTHENTICATED',
         text: '비밀번호가 틀렸습니다.',
       },
     ],
@@ -59,11 +51,15 @@ export const ApiErrorCode: Record<
    */
   '403': {
     code: '403',
+    TOKEN_UNAUTHORIZED: {
+      name: 'TOKEN_UNAUTHORIZED',
+      text: '권한이 없는 요청입니다. 로그인 후에 다시 시도 해주세요.',
+    },
+
     message: [
-      { name: 'ROLE_NOT_ALLOWED', text: '권한이 없습니다.' },
       {
-        name: 'TOKEN_NOT_ALLOWED',
-        text: '권한이 없는 토큰입니다. 다시 로그인한 후 이용해주세요.',
+        name: 'REQUEST_FORBIDDEN',
+        text: '권한이 없는 요청입니다.',
       },
     ],
   },
