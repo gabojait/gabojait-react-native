@@ -18,9 +18,19 @@ import { mapPositionRecruitingToPositionCount } from '@/presentation/model/mappe
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { useMutationForm } from '@/reactQuery/util/useMutationForm';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
+import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
+import { Fallback404 } from '@/presentation/components/errorComponent/GeneralFallback';
+import { TeamPageComponent } from './TeamPage';
 
-//TODO: api 수정반영, react query 적용, 요구사항 충족 필요함
-export const TeamEditor = ({ navigation }: MainStackScreenProps<'TeamEditor'>) => {
+export const TeamEditor = ({ navigation, route }: MainStackScreenProps<'TeamEditor'>) => {
+  return (
+    <Error404Boundary fallback={Fallback404()}>
+      <TeamEditorComponent navigation={navigation} route={route} />
+    </Error404Boundary>
+  );
+};
+
+export const TeamEditorComponent = ({ navigation, route }: MainStackScreenProps<'TeamEditor'>) => {
   const { theme } = useTheme();
   const styles = useStyles({ navigation });
   const modal = useModal();

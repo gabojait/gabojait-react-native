@@ -7,6 +7,10 @@ export const postFavoriteTeam = async (teamId: string, dto: FavoriteUpdateDto) =
   return await client.post(`user/favorite/team/${teamId}`, dto);
 };
 
+export const postFavoriteUser = async (userId: string, dto: FavoriteUpdateDto) => {
+  return await client.post(`team/favorite/user/${userId}`, dto);
+};
+
 export const getFavoriteTeams = async (pageRequest: PageRequest) => {
   return (await client.get('user/favorite/team', {
     params: {

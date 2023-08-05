@@ -137,5 +137,14 @@ const useGlobalStyles = makeStyles(theme => ({
     color: theme.colors.black,
     lineHeight: 22,
   },
+  profileContainer: {
+    position: 'absolute',
+    width: 100,
+    height: 100,
+    backgroundColor: '#d9d9d9',
+    borderRadius: 8,
+    top: -(100 - 30),
+    left: 20,
+  },
 }));
 export default useGlobalStyles;

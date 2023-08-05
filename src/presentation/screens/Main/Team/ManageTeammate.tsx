@@ -3,6 +3,8 @@ import TeamDto from '@/data/model/Team/TeamDto';
 import { OutlinedButton } from '@/presentation/components/Button';
 import CardWrapper from '@/presentation/components/CardWrapper';
 import { PositionIcon } from '@/presentation/components/PartIcon';
+import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
+import { Fallback404 } from '@/presentation/components/errorComponent/GeneralFallback';
 import useModal from '@/presentation/components/modal/useModal';
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent';
@@ -10,13 +12,23 @@ import { MainStackScreenProps } from '@/presentation/navigation/types';
 import useGlobalStyles from '@/presentation/styles';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
-import { useMutationForm } from '@/reactQuery/util/useMutationForm';
 import { useTheme } from '@rneui/themed';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ScrollView, Text, TextInput, View } from 'react-native';
-import { UseQueryResult, useMutation, useQuery, useQueryClient } from 'react-query';
+import { UseQueryResult, useQuery, useQueryClient } from 'react-query';
 
-export const ManageTeammate = ({ navigation }: MainStackScreenProps<'ManageTeammate'>) => {
+export const ManageTeammate = ({ navigation, route }: MainStackScreenProps<'ManageTeammate'>) => {
+  return (
+    <Error404Boundary fallback={Fallback404()}>
+      <ManageTeammateComponent navigation={navigation} route={route} />
+    </Error404Boundary>
+  );
+};
+
+export const ManageTeammateComponent = ({
+  navigation,
+  route,
+}: MainStackScreenProps<'ManageTeammate'>) => {
   const globalStyles = useGlobalStyles();
   const modal = useModal();
   const { theme } = useTheme();

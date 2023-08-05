@@ -45,11 +45,6 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
       } else if (error?.name == ApiErrorCodeType[503]) {
         return fallback503;
       }
-      return (
-        <>
-          <Text>원인을 알 수 없는 오류</Text>
-        </>
-      );
     }
 
     return children;

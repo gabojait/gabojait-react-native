@@ -18,3 +18,7 @@ export const getOffersFromTeam = async (body: PageRequest) => {
   });
   return result as PageModel<BriefOfferDto>;
 };
+
+export const sendOfferToUser = async (userId: string, position: Position) => {
+  return await client.post(`team/user/${userId}/offer`, { position: position });
+};

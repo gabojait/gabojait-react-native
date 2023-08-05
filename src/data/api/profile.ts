@@ -22,7 +22,10 @@ export const getMyProfile = async () => {
   return result;
 };
 
-export const getProfile;
+export const getProfile = async (userId: string) => {
+  const result = await client.get(`user/${userId}/profile`);
+  return result;
+};
 
 export const getUserSeekingTeam = async (props: GetProfileProps) => {
   let params = {

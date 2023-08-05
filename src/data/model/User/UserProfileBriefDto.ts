@@ -9,5 +9,5 @@ export default interface UserProfileBriefDto {
   rating: number;
   reviewCnt: number;
   updatedAt: string;
-  userId: number;
+  userId: string;
 }

@@ -14,10 +14,9 @@ import { getMyProfile } from '@/data/api/profile';
 import ProfileViewResponse from '@/data/model/Profile/ProfileViewResponse';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { profileKeys } from '@/reactQuery/key/ProfileKeys';
-import { useMutationForm } from '@/reactQuery/util/useMutationForm';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
-import { Fallback404 } from '@/presentation/components/errorComponent/GeneralFallback';
+import { Fallback404, Fallback500 } from '@/presentation/components/errorComponent/GeneralFallback';
 
 interface LeaderHeaderParams {
   onPressEditor: () => void;
@@ -117,13 +116,17 @@ export const TeamPageComponent = ({ navigation, route }: MainBottomTabNavigation
     data: teamData,
     isLoading: isTeamDataLoading,
     error: teamDataError,
-  }: UseQueryResult<TeamDto> = useQuery(teamKeys.myTeam, () => getMyTeam());
+  }: UseQueryResult<TeamDto> = useQuery(teamKeys.myTeam, () => getMyTeam(), {
+    useErrorBoundary: true,
+  });
 
   const {
     data: dataUser,
     isLoading: isLoadingData,
     error: errorData,
-  }: UseQueryResult<ProfileViewResponse> = useQuery(profileKeys.profile, () => getMyProfile());
+  }: UseQueryResult<ProfileViewResponse> = useQuery(profileKeys.profile, () => getMyProfile(), {
+    useErrorBoundary: true,
+  });
 
   const { mutation: deleteTeamMutation } = useMutationDialog(
     teamKeys.incompleteTeam,

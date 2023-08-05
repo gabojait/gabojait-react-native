@@ -17,6 +17,8 @@ import useModal from '@/presentation/components/modal/useModal';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { offerKeys } from '@/reactQuery/key/OfferKeys';
+import { Fallback404 } from '@/presentation/components/errorComponent/GeneralFallback';
+import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 
 interface ApplyPositionCardProps {
   data: PositionRecruiting;
@@ -34,6 +36,17 @@ interface ApplyPositionCardState {
 }
 
 const PositionSelector = ({ navigation, route }: MainStackScreenProps<'PositionSelector'>) => {
+  return (
+    <Error404Boundary fallback={Fallback404()}>
+      <PositionSelectorComponent navigation={navigation} route={route} />
+    </Error404Boundary>
+  );
+};
+
+const PositionSelectorComponent = ({
+  navigation,
+  route,
+}: MainStackScreenProps<'PositionSelector'>) => {
   const { theme } = useTheme();
   const styles = useStyles();
   const modal = useModal();

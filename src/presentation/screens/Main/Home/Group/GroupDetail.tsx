@@ -22,18 +22,14 @@ import GetTeamErrorBoundary from '@/presentation/components/errorComponent/GetTe
 import useModal from '@/presentation/components/modal/useModal';
 import { favoriteKeys } from '@/reactQuery/key/FavoriteKeys';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
+import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
+import { Fallback404 } from '@/presentation/components/errorComponent/GeneralFallback';
 
 const GroupDetail = ({ navigation, route }: MainStackScreenProps<'GroupDetail'>) => {
   return (
-    <GetTeamErrorBoundary
-      fallback={
-        <>
-          <Text>수고</Text>
-        </>
-      }
-    >
+    <Error404Boundary fallback={Fallback404()}>
       <GroupDetailComponent navigation={navigation} route={route} />
-    </GetTeamErrorBoundary>
+    </Error404Boundary>
   );
 };
 
