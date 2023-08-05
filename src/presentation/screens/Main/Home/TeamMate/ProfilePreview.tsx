@@ -1,7 +1,14 @@
 import { TeammateStackParamListProps } from '@/presentation/navigation/types';
 import React, { useState } from 'react';
 import { Text, useTheme } from '@rneui/themed';
-import { Linking, ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  ImageBackground,
+  Linking,
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { RatingBar } from '@/presentation/components/RatingBar';
 import { Level } from '@/data/model/Profile/Skill';
@@ -12,7 +19,6 @@ import {
   CustomSlider,
   IconLabel,
   PortfolioView,
-  ProfileImage,
   ReviewItem,
   ToggleButton,
   portfolioTypeIconName,
@@ -26,7 +32,6 @@ import CustomHeader from '@/presentation/components/CustomHeader';
 import CustomIcon from '@/presentation/components/icon/Gabojait';
 import { Icon } from '@rneui/base';
 import { FilledButton } from '@/presentation/components/Button';
-import { Link } from '@react-navigation/native';
 import { favoriteKeys } from '@/reactQuery/key/FavoriteKeys';
 import FavoriteUpdateDto from '@/data/model/Favorite/FavoriteUpdateDto';
 import { postFavoriteUser } from '@/data/api/favorite';
@@ -36,9 +41,18 @@ import SymbolModalContent from '@/presentation/components/modalContent/SymbolMod
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
 import useGlobalStyles from '@/presentation/styles';
 import CardWrapper from '@/presentation/components/CardWrapper';
+import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
+import { offerKeys } from '@/reactQuery/key/OfferKeys';
+import { sendOfferToUser } from '@/data/api/offer';
+import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
+import { Fallback404 } from '@/presentation/components/errorComponent/GeneralFallback';
 
 const ProfilePreview = ({ navigation, route }: TeammateStackParamListProps<'ProfilePreview'>) => {
-  return <ProfilePreviewComponent navigation={navigation} route={route} />;
+  return (
+    <Error404Boundary fallback={Fallback404()}>
+      <ProfilePreviewComponent navigation={navigation} route={route} />;
+    </Error404Boundary>
+  );
 };
 
 const ProfilePreviewComponent = ({
@@ -50,12 +64,11 @@ const ProfilePreviewComponent = ({
   const modal = useModal();
   const queryClient = useQueryClient();
   const globalStyles = useGlobalStyles();
-  const [reportState, setReportState] = useState('');
+  const [reportState, setReportState] = useState({ text: '' });
   const [reportButtonState, setReportButtonState] = useState({
     text: '신고하기',
     isDisabled: true,
   });
-
   const {
     data: profile,
     isLoading,
@@ -64,13 +77,20 @@ const ProfilePreviewComponent = ({
     getProfile(userId),
   );
   const { mutate: mutateFavorite, data: favoriteResponse } = useMutation(
-    favoriteKeys.favoriteByUser,
+    favoriteKeys.favoriteByTeam,
     (args: [string, FavoriteUpdateDto]) => postFavoriteUser(...args),
     {
       useErrorBoundary: true,
       onSuccess: () => {
         queryClient.invalidateQueries([profileKeys.profileUserId]);
       },
+    },
+  );
+  const { mutation: sendOfferMutation } = useMutationDialog(
+    offerKeys.offerToUser,
+    (args: [string, Position]) => sendOfferToUser(...args),
+    {
+      resultToMessage: _ => '팀원 초대장이 보내졌습니다! 답장을 기다려주세요',
     },
   );
   const reportCompeletedModal = () => {
@@ -94,12 +114,15 @@ const ProfilePreviewComponent = ({
           title="팀을 신고하시겠습니까?"
           children={
             <View style={{ justifyContent: 'center', alignContent: 'center', width: '100%' }}>
-              <Text style={globalStyles.textLight13}>신고 사유를 적어주세요</Text>
-              <CardWrapper style={[globalStyles.card, { minHeight: 70 }]}>
+              <Text style={[globalStyles.textLight13, { textAlign: 'center', paddingBottom: 10 }]}>
+                신고 사유를 적어주세요
+              </Text>
+              <CardWrapper style={{ minHeight: 75, maxWidth: 400 }}>
                 <TextInput
                   value={reportState}
+                  style={{ width: '100%' }}
                   onChangeText={(text: string) => {
-                    setReportState(text);
+                    setReportState(prevState => ({ ...prevState, text: text }));
                   }}
                   multiline={true}
                   maxLength={500}
@@ -133,6 +156,13 @@ const ProfilePreviewComponent = ({
   }
   const [image, setImage] = useState<Asset | null>(null);
 
+  function isOfferButtonDisabled() {
+    if (profile && profile.offers.length > 0) {
+      return true;
+    }
+    return false;
+  }
+
   if (isLoading) {
     return <Text>로딩중</Text>;
   }
@@ -150,7 +180,7 @@ const ProfilePreviewComponent = ({
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <TouchableOpacity
               onPress={() => {
-                handleFavoriteTeam;
+                handleFavoriteTeam();
               }}
               style={{ paddingRight: 25 }}
             >
@@ -158,7 +188,7 @@ const ProfilePreviewComponent = ({
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                handleReportModal;
+                handleReportModal();
               }}
             >
               <Icon type="entypo" name="dots-three-vertical" size={20} />
@@ -177,14 +207,20 @@ const ProfilePreviewComponent = ({
               paddingVertical: 50,
             }}
           >
-            <ProfileImage image={image} setImage={image => setImage(image)} />
+            <View style={globalStyles.profileContainer}>
+              <ImageBackground source={image} borderRadius={8} />
+            </View>
             <PortfolioView
               profile={profile}
               rightChild={
                 <FilledButton
+                  onPress={() => {
+                    sendOfferMutation.mutate([userId, profile.position]);
+                  }}
                   title={'초대하기'}
                   style={{ minWidth: 123, minHeight: 40, borderRadius: 10 }}
                   titleStyle={{ fontSize: 14, fontWeight: '400' }}
+                  disabled={isOfferButtonDisabled()}
                 />
               }
             />
@@ -299,16 +335,15 @@ const ProfilePreviewComponent = ({
                   </Text>
                   <View>
                     <RatingBar ratingScore={profile.rating} />
-                    <Text>{profile.reviews?.length ?? 0}개 리뷰</Text>
+                    <Text style={{ color: '#9A9A9A', fontSize: 11 }}>
+                      {profile.reviews?.length ?? 0}개 리뷰
+                    </Text>
                   </View>
                 </View>
                 <View style={{ marginTop: 25 }}>
                   {profile.reviews?.map(review => (
                     <ReviewItem review={review} />
                   ))}
-                  <Link to={''} style={{ color: theme.colors.primary, textAlign: 'right' }}>
-                    더보기
-                  </Link>
                 </View>
               </>
             ) : (

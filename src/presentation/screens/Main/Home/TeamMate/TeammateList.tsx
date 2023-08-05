@@ -1,16 +1,12 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import FrontendList from './FrontendList';
 import BackendList from './BackendList';
 import DesignerList from './Designer';
 import PMList from './PMList';
 import { useTheme } from '@rneui/themed';
-import { Dimensions, View } from 'react-native';
-import {
-  BoardStackParamListProps,
-  PositionTabParamList,
-  TeammateStackParamListProps,
-} from '@/presentation/navigation/types';
+import { Dimensions } from 'react-native';
+import { TeammateStackParamListProps } from '@/presentation/navigation/types';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -19,7 +15,6 @@ const TeammateList = ({ navigation, route }: TeammateStackParamListProps<'Teamma
   return (
     <Tab.Navigator
       initialRouteName="Frontend"
-      ß
       initialLayout={{ width: Dimensions.get('window').width }}
       screenOptions={{
         tabBarInactiveTintColor: theme.colors.black,

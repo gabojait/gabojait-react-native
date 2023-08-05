@@ -15,7 +15,7 @@ import { makeStyles, Text, useTheme } from '@rneui/themed';
 import React from 'react';
 import { FlatList, TouchableOpacity, View } from 'react-native';
 
-const DesignerList = ({ navigation, route }: TeammateStackParamListProps<'Designer'>) => {
+const DesignerList = ({ navigation, route }: PositionTabParamListProps<'Designer'>) => {
   const { theme } = useTheme();
   const styles = useStyles();
   const { data, isLoading, error, fetchNextPage, refetch, isRefreshing } = useModelList<

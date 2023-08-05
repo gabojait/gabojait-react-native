@@ -376,17 +376,37 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
   );
 };
 
-const ReviewItem = ({ review }: { review: Review }) => {
+export const ReviewItem = ({ review }: { review: Review }) => {
   const { theme } = useTheme();
   return (
-    <View style={{ marginBottom: 20 }}>
-      <View style={{ marginBottom: 10, flexDirection: 'row', alignItems: 'center' }}>
-        <Text
-          style={{ fontSize: theme.fontSize.md, fontWeight: theme.fontWeight.bold, marginEnd: 10 }}
-        >
-          {review.reviewerId}
-        </Text>
-        <RatingBar ratingScore={2.5} size={20} />
+    <View
+      style={{
+        marginBottom: 20,
+        width: '100%',
+      }}
+    >
+      <View
+        style={{
+          marginBottom: 10,
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}
+      >
+        <View style={{ flexDirection: 'row', width: '100%' }}>
+          <Text
+            style={{
+              fontSize: 14,
+              fontStyle: 'normal',
+              fontWeight: '700',
+              color: 'black',
+              paddingEnd: 7,
+              paddingTop: 4,
+            }}
+          >
+            {review.reviewerNickname}
+          </Text>
+          <RatingBar ratingScore={2.5} size={20} />
+        </View>
       </View>
       <Text
         style={{ fontWeight: theme.fontWeight.light, color: theme.colors.grey1, lineHeight: 25 }}
