@@ -16,6 +16,8 @@ import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 import { useMutationForm } from '@/reactQuery/util/useMutationForm';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
+import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
+import { Fallback404 } from '@/presentation/components/errorComponent/GeneralFallback';
 
 interface LeaderHeaderParams {
   onPressEditor: () => void;
@@ -99,8 +101,14 @@ const LeaderFooter = ({ onPressComplete, onPressDelete }: LeaderFooterParams) =>
     </View>
   );
 };
-
 export const TeamPage = ({ navigation, route }: MainBottomTabNavigationProps<'Team'>) => {
+  return (
+    <Error404Boundary fallback={Fallback404()}>
+      <TeamPageComponent navigation={navigation} route={route} />
+    </Error404Boundary>
+  );
+};
+export const TeamPageComponent = ({ navigation, route }: MainBottomTabNavigationProps<'Team'>) => {
   const { theme } = useTheme();
   const globalStyles = useGlobalStyles();
   const styles = useStyles();
