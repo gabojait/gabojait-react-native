@@ -1,4 +1,4 @@
-package com.gabojait.newarchitecture.modules;
+package com.gabojait.app.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;

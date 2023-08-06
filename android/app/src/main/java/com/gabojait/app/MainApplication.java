@@ -1,4 +1,4 @@
-package com.gabojait;
+package com.gabojait.app;
 
 import android.app.Application;
 import android.content.Context;
@@ -9,7 +9,7 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.config.ReactFeatureFlags;
 import com.facebook.soloader.SoLoader;
-import com.gabojait.newarchitecture.MainApplicationReactNativeHost;
+import com.gabojait.app.newarchitecture.MainApplicationReactNativeHost;
 import com.facebook.flipper.android.utils.FlipperUtils;
 import com.facebook.flipper.android.AndroidFlipperClient;
 import com.facebook.flipper.core.FlipperClient;

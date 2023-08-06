@@ -1,4 +1,4 @@
-package com.gabojait.newarchitecture;
+package com.gabojait.app.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.gabojait.BuildConfig;
-import com.gabojait.newarchitecture.components.MainComponentsRegistry;
-import com.gabojait.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.gabojait.app.BuildConfig;
+import com.gabojait.app.newarchitecture.components.MainComponentsRegistry;
+import com.gabojait.app.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 
