@@ -7,21 +7,22 @@ import {useModelList} from '@/reactQuery/util/useModelList';
 import {makeStyles, Text, useTheme} from '@rneui/themed';
 import React from 'react';
 import {FlatList, TouchableOpacity, View} from 'react-native';
-import {ProfileOrder} from "@/data/model/type/ProfileOrder";
 import {Position} from "@/data/model/type/Position";
+import {ProfileOrder} from "@/data/model/type/ProfileOrder";
+import {PositionTabParamListProps} from '@/presentation/navigation/types';
 
 const QueryKey = {
     all: 'managerList',
     filtered: (filter: GetProfileProps) => [...QueryKey.all, 'filtered', filter]
 }
-const PMList = () => {
+const PMList = ({navigation, route}: PositionTabParamListProps<'PM'>) => {
     const {theme} = useTheme();
     const styles = useStyles();
     const initialParam = {
         pageFrom: 0,
         pageSize: 20,
         position: Position.Manager,
-        profileOrder: ProfileOrder.active as ProfileOrder
+        profileOrder: ProfileOrder.ACTIVE as ProfileOrder
     }
     const {data, isLoading, error, fetchNextPage, refetch, isRefreshing} = useModelList<
         GetProfileProps,
@@ -34,62 +35,68 @@ const PMList = () => {
         },
     });
 
-    return (
-        <View
-            style={{
-                flex: 1,
-                flexGrow: 1,
-                backgroundColor: 'white',
-                justifyContent: 'flex-end',
-                paddingVertical: 15,
+  return (
+    <View
+      style={{
+        flex: 1,
+        flexGrow: 1,
+        backgroundColor: 'white',
+        justifyContent: 'flex-end',
+        paddingVertical: 15,
+      }}
+    >
+      <FlatList
+        showsVerticalScrollIndicator={false}
+        keyExtractor={item => item.nickname}
+        data={data?.pages.map(page => page.data).flat()}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('ProfilePreview', { userId: item.userId });
             }}
-        >
-            <FlatList
-                showsVerticalScrollIndicator={false}
-                keyExtractor={item => item.userId.toString()}
-                data={data?.pages.map(page => page.data).flat()}
-                renderItem={({item}) => (
-                    <CardWrapper
-                        style={{
-                            marginVertical: 5,
-                            marginHorizontal: 20,
-                            borderWidth: 1,
-                            borderColor: theme.colors.disabled,
-                        }}
-                    >
-                        <View
-                            style={{
-                                flexDirection: 'row',
-                                width: '100%',
-                                paddingVertical: 32,
-                                paddingHorizontal: 10,
-                                justifyContent: 'space-between',
-                                alignContent: 'center',
-                            }}
-                        >
-                            <View>
-                                <Text style={styles.name}>{item.nickname}</Text>
-                                <Text style={styles.position}>PM</Text>
-                                <View style={{flexDirection: 'row', paddingBottom: 10}}>
-                                    <RatingBar ratingScore={item.rating}/>
-                                    <Text style={styles.score}>{item.rating}</Text>
-                                </View>
-                            </View>
-                            <TouchableOpacity style={{justifyContent: 'center'}}>
-                                <Gabojait name="arrow-next" size={28} color={theme.colors.disabled}/>
-                            </TouchableOpacity>
-                        </View>
-                    </CardWrapper>
-                )}
-                refreshing={isRefreshing}
-                onRefresh={refetch}
-                onEndReached={() => {
-                    fetchNextPage();
+          >
+            <CardWrapper
+              style={{
+                marginVertical: 5,
+                marginHorizontal: 20,
+                borderWidth: 1,
+                borderColor: theme.colors.disabled,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: 'row',
+                  width: '100%',
+                  paddingVertical: 32,
+                  paddingHorizontal: 10,
+                  justifyContent: 'space-between',
+                  alignContent: 'center',
                 }}
-                onEndReachedThreshold={0.6}
-            />
-        </View>
-    );
+              >
+                <View>
+                  <Text style={styles.name}>{item.nickname}</Text>
+                  <Text style={styles.position}>PM</Text>
+                  <View style={{ flexDirection: 'row', paddingBottom: 10 }}>
+                    <RatingBar ratingScore={item.rating} />
+                    <Text style={styles.score}>{item.rating}</Text>
+                  </View>
+                </View>
+                <TouchableOpacity style={{ justifyContent: 'center' }}>
+                  <Gabojait name="arrow-next" size={28} color={theme.colors.disabled} />
+                </TouchableOpacity>
+              </View>
+            </CardWrapper>
+          </TouchableOpacity>
+        )}
+        refreshing={isRefreshing}
+        onRefresh={refetch}
+        onEndReached={() => {
+          fetchNextPage();
+        }}
+        onEndReachedThreshold={0.6}
+      />
+    </View>
+  );
 };
 
 const useStyles = makeStyles(theme => ({

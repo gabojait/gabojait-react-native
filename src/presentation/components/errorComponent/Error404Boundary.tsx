@@ -3,13 +3,14 @@ import { ReactNode } from 'react';
 import { ErrorBoundaryState } from './ErrorBoundary';
 import { ApiErrorCode, ApiErrorCodeType } from '@/data/api/ApiErrorCode';
 
-interface GetTeamErrorBoundaryProps {
-  children?: ReactNode;
-  fallback: ReactNode;
-}
-
-class GetTeamErrorBoundary extends React.Component<GetTeamErrorBoundaryProps, ErrorBoundaryState> {
-  constructor(props: GetTeamErrorBoundaryProps) {
+class Error404Boundary extends React.Component<
+  {
+    children?: ReactNode;
+    fallback: ReactNode;
+  },
+  ErrorBoundaryState
+> {
+  constructor(props: { children?: ReactNode; fallback: ReactNode }) {
     super(props);
     this.state = {
       hasError: false,
@@ -19,16 +20,17 @@ class GetTeamErrorBoundary extends React.Component<GetTeamErrorBoundaryProps, Er
   }
 
   static getDerivedStateFromError(error: Error) {
-    if (error.name == ApiErrorCodeType[500] || error.name == ApiErrorCodeType[503]) {
+    console.log(`errorCode:${error?.name}, errorMessage:${error?.message}`);
+    if (error.name == ApiErrorCodeType[404]) {
       return {
         hasError: true,
-        isPropagated: true,
+        isPropagated: false,
         error: error,
       };
     }
     return {
       hasError: true,
-      isPropagated: false,
+      isPropagated: true,
       error: error,
     };
   }
@@ -52,4 +54,4 @@ class GetTeamErrorBoundary extends React.Component<GetTeamErrorBoundaryProps, Er
   }
 }
 
-export default GetTeamErrorBoundary;
+export default Error404Boundary;

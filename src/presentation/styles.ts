@@ -131,11 +131,20 @@ const useGlobalStyles = makeStyles(theme => ({
     fontWeight: theme.fontWeight.semibold,
     paddingTop: 10,
   },
-  textLight11: {
-    fontSize: 11,
+  textLight13: {
+    fontSize: 13,
     fontWeight: theme.fontWeight.light,
     color: theme.colors.black,
     lineHeight: 22,
+  },
+  profileContainer: {
+    position: 'absolute',
+    width: 100,
+    height: 100,
+    backgroundColor: '#d9d9d9',
+    borderRadius: 8,
+    top: -(100 - 30),
+    left: 20,
   },
 }));
 export default useGlobalStyles;

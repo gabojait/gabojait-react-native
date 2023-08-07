@@ -5,9 +5,8 @@
 // }
 // export type TeamOrder = keyof typeof TeamOrder
 
-
 export enum TeamOrder {
-  Created = "created",
-  Active = "active",
-  Popularity = "popularity"
+  Created = 'CREATED',
+  Active = 'ACTIVE',
+  Popularity = 'POPULARITY',
 }

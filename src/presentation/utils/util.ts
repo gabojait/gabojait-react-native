@@ -79,7 +79,7 @@ export const DiffType = {
   VALUE_DELETED: 'deleted',
   VALUE_UNCHANGED: 'unchanged',
 } as const;
-export type DiffType = typeof DiffType[keyof typeof DiffType];
+export type DiffType = (typeof DiffType)[keyof typeof DiffType];
 
 type Diff<T> = {
   [key in keyof T]: { type: DiffType; data: any } | { type: DiffType; data: any }[] | Diff<any>;
@@ -211,3 +211,10 @@ export var DiffUtil = (function <T extends {}>() {
     },
   };
 })();
+
+export function isFavorite(isFavorite: boolean) {
+  if (isFavorite) {
+    return '#1CDF71';
+  }
+  return 'black';
+}

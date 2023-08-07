@@ -42,7 +42,7 @@ const initialState: ProfileState = {
   // position: 'none',
 };
 
-export const getProfile = createAsyncThunk(getProfileAsyncAction, profileApi.getProfile);
+export const getProfile = createAsyncThunk(getProfileAsyncAction, profileApi.getMyProfile);
 export const setProfileVisibility = createAsyncThunk(
   setProfileVisibilityAsyncAction,
   profileApi.setUserSeekingTeam,

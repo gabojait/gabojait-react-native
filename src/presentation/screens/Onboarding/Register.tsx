@@ -1,5 +1,5 @@
 import { CheckBox, makeStyles, Text, useTheme } from '@rneui/themed';
-import React, { useEffect, useState, useTransition } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { FilledButton, OutlinedButton } from '@/presentation/components/Button';
 import { OnboardingScreenProps } from '@/presentation/navigation/types';
@@ -20,11 +20,9 @@ import { ValidatorState } from '@/presentation/components/props/StateProps';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import AgreementItem, { AgreementState } from '@/presentation/components/Agreement';
 import DropdownButton from '@/presentation/components/DropdownWithoutItem';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { ModalContext } from '@/presentation/components/modal/context';
-import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent';
-import ErrorCode from '@/data/api/ErrorCode';
+import { useAppDispatch } from '@/redux/hooks';
 import useModal from '@/presentation/components/modal/useModal';
+import { signOut } from '@/redux/action/login';
 import {setToken, signOut} from '@/redux/action/login';
 import { MutationFunction, MutationKey, QueryFunction, useMutation } from 'react-query';
 import {

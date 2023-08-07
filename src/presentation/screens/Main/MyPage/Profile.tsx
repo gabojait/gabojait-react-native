@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { CheckBox, makeStyles, Text, useTheme } from '@rneui/themed';
 import {
   ActivityIndicator,
@@ -54,7 +54,7 @@ export const portfolioTypeIconName = {
 };
 
 export const sliderColors = ['#FFDB20', '#F06823', '#F04823'];
-const ProfileImage = ({
+export const ProfileImage = ({
   image,
   setImage,
 }: {
@@ -207,9 +207,26 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
               <ProfileImage image={image} setImage={image => setImage(image)} />
               <PortfolioView
                 profile={profile}
-                onProfileVisibilityChanged={isPublic => {
-                  dispatch(setProfileVisibility(isPublic));
-                }}
+                rightChild={
+                  <>
+                    <CheckBox
+                      checked={profile.isSeekingTeam ?? false}
+                      onPress={() => dispatch(setProfileVisibility(!profile.isSeekingTeam))}
+                      checkedIcon={
+                        <MaterialIcon name="check-box" size={18} color={theme.colors.primary} />
+                      }
+                      uncheckedIcon={
+                        <MaterialIcon
+                          name="check-box-outline-blank"
+                          size={18}
+                          color={theme.colors.grey2}
+                        />
+                      }
+                      containerStyle={{ padding: 0 }}
+                      title="팀 초대 허용"
+                    />
+                  </>
+                }
               />
             </View>
             <View
@@ -359,17 +376,37 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
   );
 };
 
-const ReviewItem = ({ review }: { review: Review }) => {
+export const ReviewItem = ({ review }: { review: Review }) => {
   const { theme } = useTheme();
   return (
-    <View style={{ marginBottom: 20 }}>
-      <View style={{ marginBottom: 10, flexDirection: 'row', alignItems: 'center' }}>
-        <Text
-          style={{ fontSize: theme.fontSize.md, fontWeight: theme.fontWeight.bold, marginEnd: 10 }}
-        >
-          {review.reviewerId}
-        </Text>
-        <RatingBar ratingScore={2.5} size={20} />
+    <View
+      style={{
+        marginBottom: 20,
+        width: '100%',
+      }}
+    >
+      <View
+        style={{
+          marginBottom: 10,
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}
+      >
+        <View style={{ flexDirection: 'row', width: '100%' }}>
+          <Text
+            style={{
+              fontSize: 14,
+              fontStyle: 'normal',
+              fontWeight: '700',
+              color: 'black',
+              paddingEnd: 7,
+              paddingTop: 4,
+            }}
+          >
+            {review.reviewerNickname}
+          </Text>
+          <RatingBar ratingScore={2.5} size={20} />
+        </View>
       </View>
       <Text
         style={{ fontWeight: theme.fontWeight.light, color: theme.colors.grey1, lineHeight: 25 }}
@@ -530,12 +567,12 @@ export const CustomSlider = ({
   );
 };
 
-const PortfolioView = ({
+export const PortfolioView = ({
   profile,
-  onProfileVisibilityChanged,
+  rightChild,
 }: {
   profile: ProfileViewDto;
-  onProfileVisibilityChanged: (visibility: boolean) => void;
+  rightChild?: ReactNode;
 }) => {
   const { theme } = useTheme();
 
@@ -556,16 +593,7 @@ const PortfolioView = ({
         >
           {profile.nickname}
         </Text>
-        <CheckBox
-          checked={profile.isSeekingTeam ?? false}
-          onPress={() => onProfileVisibilityChanged(!profile.isSeekingTeam)}
-          checkedIcon={<MaterialIcon name="check-box" size={18} color={theme.colors.primary} />}
-          uncheckedIcon={
-            <MaterialIcon name="check-box-outline-blank" size={18} color={theme.colors.grey2} />
-          }
-          containerStyle={{ padding: 0 }}
-          title="팀 초대 허용"
-        />
+        {rightChild}
       </View>
       <Text style={{ fontSize: theme.fontSize.md, fontWeight: '300' }}>
         {KoreanPosition[profile.position ?? Position.None]}

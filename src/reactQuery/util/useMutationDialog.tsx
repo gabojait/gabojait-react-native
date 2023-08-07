@@ -2,6 +2,7 @@ import useModal from '@/presentation/components/modal/useModal';
 import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent';
 import { MutationKey, MutationFunction, useMutation } from 'react-query';
 import React from 'react';
+import { ApiErrorCode, ApiErrorCodeType } from '@/data/api/ApiErrorCode';
 
 /**
  * 회원가입에서와 같이 Mutation의 결과로 다이얼로그를 띄우는 커스텀 훅입니다.
@@ -16,7 +17,7 @@ import React from 'react';
  */
 export function useMutationDialog<TVariables, TData>(
   mutationKey: MutationKey,
-  mutationFn: MutationFunction<TVariables, TData>,
+  mutationFn: MutationFunction<TData, TVariables>,
   message?: {
     resultToMessage?: (result: unknown) => string;
     errorToMessage?: (error: unknown) => string;
@@ -32,7 +33,7 @@ export function useMutationDialog<TVariables, TData>(
       modal?.show({
         content: (
           <OkDialogModalContent
-          title="완료"
+            title="완료"
             text={message}
             onOkClick={() => {
               modal?.hide();
@@ -42,13 +43,12 @@ export function useMutationDialog<TVariables, TData>(
         ),
       });
     },
-    onError(error, variables, context) {
-      const message = errorToMessage?.(error) ?? '요청에 실패했습니다.';
+    onError(error: Error, variables, context) {
       modal?.show({
         content: (
           <OkDialogModalContent
-          title="오류"
-            text={message}
+            title="오류"
+            text={error.message ?? '요청에 실패했습니다'}
             onOkClick={() => {
               modal?.hide();
               onFailureClick?.(error);

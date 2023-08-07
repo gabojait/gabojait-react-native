@@ -4,10 +4,9 @@ import PositionWaveIcon from '@/presentation/components/PositionWaveIcon';
 import { makeStyles, Text, useTheme } from '@rneui/themed';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, View } from 'react-native';
-import { MainStackParamList, MainStackScreenProps } from '@/presentation/navigation/types';
-import { ModalContext } from '@/presentation/components/modal/context';
+import { MainStackScreenProps } from '@/presentation/navigation/types';
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent';
-import { useMutation, useQuery, UseQueryResult } from 'react-query';
+import { useQuery, useQueryClient, UseQueryResult } from 'react-query';
 import TeamDetailDto from '@/data/model/Team/TeamDetailDto';
 import { getTeam } from '@/data/api/team';
 import PositionRecruiting from '@/presentation/model/PositionRecruitng';
@@ -15,7 +14,11 @@ import BriefOfferDto from '@/data/model/Offer/BriefOfferDto';
 import { Position } from '@/data/model/type/Position';
 import { applyToTeam } from '@/data/api/offer';
 import useModal from '@/presentation/components/modal/useModal';
-import { useNavigation } from '@react-navigation/native';
+import { teamKeys } from '@/reactQuery/key/TeamKeys';
+import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
+import { offerKeys } from '@/reactQuery/key/OfferKeys';
+import { Fallback404 } from '@/presentation/components/errorComponent/GeneralFallback';
+import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 
 interface ApplyPositionCardProps {
   data: PositionRecruiting;
@@ -33,17 +36,36 @@ interface ApplyPositionCardState {
 }
 
 const PositionSelector = ({ navigation, route }: MainStackScreenProps<'PositionSelector'>) => {
+  return (
+    <Error404Boundary fallback={Fallback404()}>
+      <PositionSelectorComponent navigation={navigation} route={route} />
+    </Error404Boundary>
+  );
+};
+
+const PositionSelectorComponent = ({
+  navigation,
+  route,
+}: MainStackScreenProps<'PositionSelector'>) => {
   const { theme } = useTheme();
   const styles = useStyles();
   const modal = useModal();
   const { teamId } = route.params!;
   const { data, isLoading, error }: UseQueryResult<TeamDetailDto> = useQuery(
-    ['GroupDetail', teamId],
+    [teamKeys.getTeam, teamId],
     () => getTeam(teamId),
   );
   const positions = data?.teamMemberCnts || [];
-  const { mutate: mutateApply } = useMutation('applyTeam', (args: [Position, number]) =>
-    applyToTeam(...args),
+  const queryClient = useQueryClient();
+  const { mutation: offerMutation } = useMutationDialog<[Position, string], unknown>(
+    offerKeys.offerToTeam,
+    (args: [Position, string]) => applyToTeam(...args),
+    {
+      resultToMessage: _ => '함께하기 요청이 전달되었습니다\n 결과를 기다려주세요',
+      onSuccessClick() {
+        queryClient.invalidateQueries(teamKeys.getTeam);
+      },
+    },
   );
   //TODO: 에러처리결과-> 버튼 상태분기, 모달 띄우기
   function applyCompletedModal() {
@@ -78,7 +100,7 @@ const PositionSelector = ({ navigation, route }: MainStackScreenProps<'PositionS
           data={item}
           offers={data.offers}
           onApplyButtonPressed={(position: Position) => {
-            mutateApply([position, teamId]);
+            offerMutation.mutate([position, teamId]);
           }}
         />
       ))}

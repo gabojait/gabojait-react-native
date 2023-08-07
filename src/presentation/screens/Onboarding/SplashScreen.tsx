@@ -6,7 +6,6 @@ import {Alert, PermissionsAndroid, Platform, View} from 'react-native';
 import Splash from 'react-native-splash-screen';
 import messaging from '@react-native-firebase/messaging';
 
-
 const SplashScreen = ({navigation}: RootStackScreenProps<'SplashScreen'>) => {
     const handleRefresh = () => {
         console.log(user);
@@ -49,38 +48,36 @@ const SplashScreen = ({navigation}: RootStackScreenProps<'SplashScreen'>) => {
     }, []);
 
     const setupFCM = async () => {
-        if (!messaging().isAutoInitEnabled)
-            await messaging().registerDeviceForRemoteMessages()
+        if (!messaging().isAutoInitEnabled) await messaging().registerDeviceForRemoteMessages();
 
         // Get the device token
-        const token = await messaging().getToken()
-        console.log('token: ', token)
+        const token = await messaging().getToken();
+        console.log(token);
 
         // If using other push notification providers (ie Amazon SNS, etc)
         // you may need to get the APNs token instead for iOS:
         if (Platform.OS == 'ios') {
-            const apnsToken = await messaging().getAPNSToken()
-            console.log('apnsToken: ', apnsToken)
+            const apnsToken = await messaging().getAPNSToken();
+            console.log(apnsToken);
         }
-
-    }
+    };
 
     useEffect(() => {
-        setupFCM()
+        setupFCM();
         // Listen to whether the token changes
         return messaging().onTokenRefresh(token => {
             // Todo: save token to server
-            console.log(token)
+            console.log(token);
         });
     }, []);
 
     useEffect(() => {
         const unsubscribe = messaging().onMessage(async remoteMessage => {
-            console.log(remoteMessage)
+            console.log(remoteMessage);
             Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
         });
-        return unsubscribe
-    }, [])
+        return unsubscribe;
+    }, []);
 
     useEffect(handleRefresh, [user]);
     return <View style={[{flex: 1, backgroundColor: ''}]}></View>;

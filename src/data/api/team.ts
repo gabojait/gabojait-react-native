@@ -38,7 +38,7 @@ export async function getRecruiting(props: GetRecruitingProps) {
   return { data: res.data, total: 50, page: pageFrom };
 }
 
-export const getTeam = async (teamId: number) => {
+export const getTeam = async (teamId: string) => {
   return await client.get(`team/${teamId}`);
 };
 

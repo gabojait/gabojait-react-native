@@ -7,14 +7,16 @@ import { OutlinedButton } from '@/presentation/components/Button';
 import { isLeader, mapToInitial } from '@/presentation/utils/util';
 import { MainBottomTabNavigationProps } from '@/presentation/navigation/types';
 import useGlobalStyles from '@/presentation/styles';
-import { useQuery, UseQueryResult } from 'react-query';
+import { useQuery, useQueryClient, UseQueryResult } from 'react-query';
 import TeamDto from '@/data/model/Team/TeamDto';
 import { getMyTeam, incompleteTeam } from '@/data/api/team';
-import { getProfile } from '@/data/api/profile';
+import { getMyProfile } from '@/data/api/profile';
 import ProfileViewResponse from '@/data/model/Profile/ProfileViewResponse';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { profileKeys } from '@/reactQuery/key/ProfileKeys';
-import { useMutationForm } from '@/reactQuery/util/useMutationForm';
+import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
+import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
+import { Fallback404, Fallback500 } from '@/presentation/components/errorComponent/GeneralFallback';
 
 interface LeaderHeaderParams {
   onPressEditor: () => void;
@@ -98,28 +100,43 @@ const LeaderFooter = ({ onPressComplete, onPressDelete }: LeaderFooterParams) =>
     </View>
   );
 };
-
 export const TeamPage = ({ navigation, route }: MainBottomTabNavigationProps<'Team'>) => {
+  return (
+    <Error404Boundary fallback={Fallback404()}>
+      <TeamPageComponent navigation={navigation} route={route} />
+    </Error404Boundary>
+  );
+};
+export const TeamPageComponent = ({ navigation, route }: MainBottomTabNavigationProps<'Team'>) => {
   const { theme } = useTheme();
   const globalStyles = useGlobalStyles();
   const styles = useStyles();
+  const queryClient = useQueryClient();
   const {
     data: teamData,
     isLoading: isTeamDataLoading,
     error: teamDataError,
-  }: UseQueryResult<TeamDto> = useQuery(teamKeys.myTeam, () => getMyTeam());
+  }: UseQueryResult<TeamDto> = useQuery(teamKeys.myTeam, () => getMyTeam(), {
+    useErrorBoundary: true,
+  });
 
   const {
     data: dataUser,
     isLoading: isLoadingData,
     error: errorData,
-  }: UseQueryResult<ProfileViewResponse> = useQuery(profileKeys.profile, () => getProfile());
-
-  const deleteTeam = useMutationForm<undefined, unknown>({
-    mutationKey: teamKeys.incompleteTeam,
-    mutationFn: async () => incompleteTeam(),
+  }: UseQueryResult<ProfileViewResponse> = useQuery(profileKeys.profile, () => getMyProfile(), {
     useErrorBoundary: true,
   });
+
+  const { mutation: deleteTeamMutation } = useMutationDialog(
+    teamKeys.incompleteTeam,
+    async () => incompleteTeam(),
+    {
+      onSuccessClick() {
+        queryClient.invalidateQueries([teamKeys.myTeam]);
+      },
+    },
+  );
 
   return (
     <>
@@ -216,7 +233,8 @@ export const TeamPage = ({ navigation, route }: MainBottomTabNavigationProps<'Te
                 navigation.navigate('MainNavigation', { screen: 'TeamComplete' });
               }}
               onPressDelete={() => {
-                deleteTeam.mutation();
+                deleteTeamMutation.mutate(undefined);
+                console.log('워워');
               }}
             />
           ) : (

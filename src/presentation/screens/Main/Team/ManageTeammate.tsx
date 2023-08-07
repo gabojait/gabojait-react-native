@@ -3,19 +3,32 @@ import TeamDto from '@/data/model/Team/TeamDto';
 import { OutlinedButton } from '@/presentation/components/Button';
 import CardWrapper from '@/presentation/components/CardWrapper';
 import { PositionIcon } from '@/presentation/components/PartIcon';
+import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
+import { Fallback404 } from '@/presentation/components/errorComponent/GeneralFallback';
 import useModal from '@/presentation/components/modal/useModal';
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import useGlobalStyles from '@/presentation/styles';
-import { TeamRefetchKey, teamKeys } from '@/reactQuery/key/TeamKeys';
-import { useMutationForm } from '@/reactQuery/util/useMutationForm';
+import { teamKeys } from '@/reactQuery/key/TeamKeys';
+import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { useTheme } from '@rneui/themed';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ScrollView, Text, TextInput, View } from 'react-native';
-import { UseQueryResult, useMutation, useQuery, useQueryClient } from 'react-query';
+import { UseQueryResult, useQuery, useQueryClient } from 'react-query';
 
-export const ManageTeammate = ({ navigation }: MainStackScreenProps<'ManageTeammate'>) => {
+export const ManageTeammate = ({ navigation, route }: MainStackScreenProps<'ManageTeammate'>) => {
+  return (
+    <Error404Boundary fallback={Fallback404()}>
+      <ManageTeammateComponent navigation={navigation} route={route} />
+    </Error404Boundary>
+  );
+};
+
+export const ManageTeammateComponent = ({
+  navigation,
+  route,
+}: MainStackScreenProps<'ManageTeammate'>) => {
   const globalStyles = useGlobalStyles();
   const modal = useModal();
   const { theme } = useTheme();
@@ -32,20 +45,12 @@ export const ManageTeammate = ({ navigation }: MainStackScreenProps<'ManageTeamm
     error: teamDataError,
   }: UseQueryResult<TeamDto> = useQuery(teamKeys.myTeam, () => getMyTeam());
 
-  //   const teammateFire = useMutationForm<number, unknown>({
-  //     mutationKey: teamKeys.fireTeammate,
-  //     mutationFn: async (userId: number) => fireTeammate(userId),
-  //     useErrorBoundary: false,
-  //   });
-
-  const teammateFire = useMutation(
+  const { mutation: fireTeammateMutation } = useMutationDialog(
     teamKeys.fireTeammate,
     async (userId: number) => fireTeammate(userId),
     {
-      onSuccess: (data, variables, context) => {
-        console.log(`queryClient.invalidateQueries(teamKeys.myTeam);`);
-        //TODO: refetch 후 리렌더링 시킬 방법-> myTeam 404상태만 걸러서 보여주자
-        //queryClient.invalidateQueries(teamKeys.myTeam);
+      onSuccessClick() {
+        queryClient.invalidateQueries(teamKeys.myTeam);
       },
     },
   );
@@ -74,7 +79,7 @@ export const ManageTeammate = ({ navigation }: MainStackScreenProps<'ManageTeamm
           title="팀원을 신고하시겠습니까?"
           children={
             <View>
-              <Text style={globalStyles.textLight11}>신고 사유를 적어주세요</Text>
+              <Text style={globalStyles.textLight13}>신고 사유를 적어주세요</Text>
               <CardWrapper style={[globalStyles.card, { minHeight: 160 }]}>
                 <TextInput
                   value={reportState}
@@ -102,6 +107,7 @@ export const ManageTeammate = ({ navigation }: MainStackScreenProps<'ManageTeamm
             },
           }}
           neverSeeAgainShow={false}
+          onBackgroundPress={modal?.hide}
         />
       ),
       modalProps: { animationType: 'slide', justifying: 'bottom' },
@@ -118,7 +124,7 @@ export const ManageTeammate = ({ navigation }: MainStackScreenProps<'ManageTeamm
           yesButton={{
             title: '확인',
             onPress: () => {
-              teammateFire.mutate(userId);
+              fireTeammateMutation.mutate(userId);
               modal?.hide();
             },
           }}
