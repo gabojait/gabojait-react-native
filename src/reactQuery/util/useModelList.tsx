@@ -2,7 +2,7 @@ import {useState} from 'react';
 import {QueryFunctionContext, useInfiniteQuery} from 'react-query';
 
 export interface PageRequest {
-    pageFrom: number;
+    pageFrom?: number;
     pageSize: number;
 }
 
@@ -12,7 +12,7 @@ export interface PageModel<T> {
     data: T[];
 }
 
-export function useModelList<P extends PageRequest & { [key: string]: string | number }, R>({
+export function useModelList<P extends (PageRequest & { [key: string]: string | number }), R>({
   initialParam,
   key,
   fetcher,

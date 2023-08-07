@@ -15,5 +15,6 @@ messaging()
 // Handle background messages using setBackgroundMessageHandler
 messaging().setBackgroundMessageHandler(async remoteMessage => {
     console.log('Message handled in the background!', remoteMessage);
+    // Todo: Save noti
 });
 AppRegistry.registerComponent(appName, () => HeadlessCheck);

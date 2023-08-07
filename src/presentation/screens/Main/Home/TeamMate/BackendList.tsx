@@ -66,7 +66,7 @@ const BackendList = ({navigation, route}: PositionTabParamListProps<'Backend'>) 
                 renderItem={({item}) => (
                     <TouchableOpacity
                         onPress={() => {
-                            navigation.navigate('ProfilePreview', {userId: item.userId});
+                            navigation.getParent()?.navigate('ProfilePreview', {userId: item.userId});
                         }}
                     >
                         <CardWrapper
