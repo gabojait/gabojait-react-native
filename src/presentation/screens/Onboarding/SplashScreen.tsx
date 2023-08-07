@@ -54,13 +54,13 @@ const SplashScreen = ({navigation}: RootStackScreenProps<'SplashScreen'>) => {
 
         // Get the device token
         const token = await messaging().getToken()
-        console.log(token)
+        console.log('token: ', token)
 
         // If using other push notification providers (ie Amazon SNS, etc)
         // you may need to get the APNs token instead for iOS:
         if (Platform.OS == 'ios') {
             const apnsToken = await messaging().getAPNSToken()
-            console.log(apnsToken)
+            console.log('apnsToken: ', apnsToken)
         }
 
     }
@@ -81,7 +81,6 @@ const SplashScreen = ({navigation}: RootStackScreenProps<'SplashScreen'>) => {
         });
         return unsubscribe
     }, [])
-
 
     useEffect(handleRefresh, [user]);
     return <View style={[{flex: 1, backgroundColor: ''}]}></View>;

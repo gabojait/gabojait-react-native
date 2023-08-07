@@ -25,7 +25,7 @@ import { ModalContext } from '@/presentation/components/modal/context';
 import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent';
 import ErrorCode from '@/data/api/ErrorCode';
 import useModal from '@/presentation/components/modal/useModal';
-import { signOut } from '@/redux/action/login';
+import {setToken, signOut} from '@/redux/action/login';
 import { MutationFunction, MutationKey, QueryFunction, useMutation } from 'react-query';
 import {
   checkNicknameDuplicate,
@@ -38,6 +38,7 @@ import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import '@/lib/date';
+import {loginReducer} from "@/redux/reducers/loginReducer";
 
 const agreementItems = [
   {
