@@ -1,32 +1,38 @@
 import { GetProfileProps, getUserSeekingTeam } from '@/data/api/profile';
-import { Position } from '@/data/model/type/Position';
 import UserProfileBriefDto from '@/data/model/User/UserProfileBriefDto';
 import CardWrapper from '@/presentation/components/CardWrapper';
 import Gabojait from '@/presentation/components/icon/Gabojait';
 import { RatingBar } from '@/presentation/components/RatingBar';
-import { PositionTabParamListProps } from '@/presentation/navigation/types';
-import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 import { useModelList } from '@/reactQuery/util/useModelList';
 import { makeStyles, Text, useTheme } from '@rneui/themed';
 import React from 'react';
 import { FlatList, TouchableOpacity, View } from 'react-native';
+import { Position } from '@/data/model/type/Position';
+import { ProfileOrder } from '@/data/model/type/ProfileOrder';
+import { PositionTabParamListProps } from '@/presentation/navigation/types';
+import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 
+const QueryKey = {
+  all: 'PMList',
+  filtered: (filter: GetProfileProps) => [...QueryKey.all, 'filtered', filter],
+};
 const PMList = ({ navigation, route }: PositionTabParamListProps<'PM'>) => {
   const { theme } = useTheme();
   const styles = useStyles();
+  const initialParam: GetProfileProps = {
+    pageFrom: 0,
+    pageSize: 20,
+    position: Position.Manager,
+    profileOrder: 'ACTIVE',
+  };
   const { data, isLoading, error, fetchNextPage, refetch, isRefreshing } = useModelList<
     GetProfileProps,
     UserProfileBriefDto
   >({
-    initialParam: {
-      pageFrom: 0,
-      pageSize: 20,
-      position: Position.Manager,
-      profileOrder: 'ACTIVE',
-    },
+    initialParam,
     key: profileKeys.pmSeekingTeam,
     fetcher: async ({ pageParam, queryKey: [_, params] }) => {
-      return await getUserSeekingTeam({ ...(params as GetProfileProps), pageFrom: pageParam });
+      return await getUserSeekingTeam({ ...(params as GetProfileProps), pageFrom: pageParam! });
     },
   });
 
@@ -47,7 +53,7 @@ const PMList = ({ navigation, route }: PositionTabParamListProps<'PM'>) => {
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate('ProfilePreview', { userId: item.userId });
+              navigation.getParent()?.navigate('ProfilePreview', { userId: item.userId });
             }}
           >
             <CardWrapper

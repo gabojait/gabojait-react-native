@@ -58,7 +58,7 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
     // you may need to get the APNs token instead for iOS:
     if (Platform.OS == 'ios') {
       const apnsToken = await messaging().getAPNSToken();
-      console.log(apnsToken);
+      console.log('apnsToken: ', apnsToken);
     }
   };
 
@@ -76,7 +76,6 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
       console.log(remoteMessage);
       Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
     });
-
     return unsubscribe;
   }, []);
 

@@ -1,5 +1,6 @@
 import { Position } from '@/data/model/type/Position';
 import { PositionSymbol } from '../model/type/Position';
+import { Dimensions } from 'react-native';
 
 export const usernameRegex = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{5,15}$/; //5~15자 영문, 숫자 조합
 export const passwordRegex =
@@ -25,6 +26,8 @@ export const isDataAvailable = (loading: any, data: any, contentData: any) => {
   if (!loading && contentData != null && data != null) return true;
   else return false;
 };
+export const WIDTH = Dimensions.get('window').width;
+export const HEIGHT = Dimensions.get('window').height;
 
 /**
  * endDate 부터 startDate 까지의 시간차를 월 단위로 반환합니다.

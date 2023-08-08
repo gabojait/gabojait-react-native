@@ -3,17 +3,18 @@
  */
 
 import { AppRegistry } from 'react-native';
-import App from './src/App';
-import messaging from '@react-native-firebase/messaging';
+import App, { HeadlessCheck } from './src/App';
 import { name as appName } from './app.json';
+import messaging from '@react-native-firebase/messaging';
 
-function getMessageFromBackground() {
-  const messageNewArrived = messaging().setBackgroundMessageHandler(async remoteMessage => {
-    return remoteMessage;
-  });
-  console.log(`MessageFromBackground!!!!!!!!!!!!------>${messageNewArrived}`);
-}
+console.log('messaging registered: ', messaging().isDeviceRegisteredForRemoteMessages);
 
-getMessageFromBackground();
-
-AppRegistry.registerComponent(appName, () => App);
+messaging()
+  .subscribeToTopic('com.gabojait.app')
+  .then(() => console.log('Subscribed to topic!'));
+// Handle background messages using setBackgroundMessageHandler
+messaging().setBackgroundMessageHandler(async remoteMessage => {
+  console.log('Message handled in the background!', remoteMessage);
+  // Todo: Save noti
+});
+AppRegistry.registerComponent(appName, () => HeadlessCheck);

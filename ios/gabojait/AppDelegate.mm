@@ -1,6 +1,8 @@
 #import "AppDelegate.h"
 #import <Firebase.h>
 
+#import <RNFBMessagingModule.h>
+
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
@@ -41,11 +43,44 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
   NSLog(@"++APNST deviceToken : %@", deviceToken);
   NSLog(@"++FCM device token : %@", fcmToken);
 }
+//
+//// Receive displayed notifications for iOS 10 devices.
+//// Handle incoming notification messages while app is in the foreground.
+//- (void)userNotificationCenter:(UNUserNotificationCenter *)center
+//       willPresentNotification:(UNNotification *)notification
+//         withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler {
+//  NSDictionary *userInfo = notification.request.content.userInfo;
+//
+//  // With swizzling disabled you must let Messaging know about the message, for Analytics
+//  // [[FIRMessaging messaging] appDidReceiveMessage:userInfo];
+//
+//  // ...
+//
+//  // Print full message.
+//  NSLog(@"%@", userInfo);
+//
+//  // Change this to your preferred presentation option
+//  completionHandler(UNNotificationPresentationOptionBadge | UNNotificationPresentationOptionAlert);
+//}
+
+//-(void) userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler {
+//
+//  [[RNFirebaseMessaging instance] didReceiveRemoteNotification:response.notification.request.content.userInfo];
+//  completionHandler();
+//}
+//
+//- (void)application:(UIApplication *)application
+//didReceiveRemoteNotification:(NSDictionary *)userInfo
+//fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
+//  [[FIRMessaging messaging] appDidReceiveMessage:userInfo];
+//  completionHandler(UIBackgroundFetchResultNoData);
+//}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   [FIRApp configure];
   RCTAppSetupPrepareApp(application);
+
 
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
 
@@ -58,7 +93,12 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 #endif
 
   NSDictionary *initProps = [self prepareInitialProps];
-  UIView *rootView = RCTAppSetupDefaultRootView(bridge, @"gabojait", initProps);
+//  NSDictionary *appProperties = [RNFBMessagingModule addCustomPropsToUserProps:nil withLaunchOptions:launchOptions];
+  NSMutableDictionary *initialProps = [initProps mutableCopy];
+//  [initialProps addEntriesFromDictionary:appProperties];
+    
+  // AppRegistry.registerComponent에 명시된 이름으로 꼭!! 세팅 요망
+  UIView *rootView = RCTAppSetupDefaultRootView(bridge, @"gabojait", initialProps);
 
   if (@available(iOS 13.0, *)) {
     rootView.backgroundColor = [UIColor systemBackgroundColor];

@@ -8,13 +8,14 @@ import Skill from '../model/Profile/Skill';
 import Work from '../model/Profile/Work';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {PageModel} from "@/reactQuery/util/useModelList";
 
 export type GetProfileProps = {
-  pageFrom: number;
-  pageSize: number;
-  position: Position;
-  profileOrder: ProfileOrder;
-};
+    pageSize: number;
+    pageFrom?: number;
+    position: Position;
+    profileOrder: ProfileOrder
+}
 
 export const getMyProfile = async () => {
   const result = await client.get('user/profile');
@@ -28,17 +29,13 @@ export const getProfile = async (userId: string) => {
 };
 
 export const getUserSeekingTeam = async (props: GetProfileProps) => {
-  let params = {
-    'page-from': props.pageFrom,
-    'page-size': props.pageSize,
-    position: props.position,
-    'profile-order': props.profileOrder,
-  };
-  const res = (await client.get('user/seeking-team', { params })) as {
-    data: UserProfileBriefDto[];
-    size: number;
-  };
-  return { data: res.data, total: 50, page: props.pageFrom };
+    let params = {
+        'page-from': props.pageFrom,
+        'page-size': props.pageSize,
+        position: props.position,
+        'profile-order': props.profileOrder,
+    };
+    return (await client.get('user/seeking-team', {params})) as PageModel<UserProfileBriefDto>;
 };
 
 export const setUserSeekingTeam = async (isSeekingTeam: boolean) => {

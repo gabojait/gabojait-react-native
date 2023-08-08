@@ -1,4 +1,4 @@
-import {SafeAreaView} from 'react-native';
+import {AppRegistry, SafeAreaView} from 'react-native';
 import {ThemeProvider} from '@rneui/themed';
 import {RootNavigation} from './presentation/navigation/RootNavigation';
 import allReducers from '@/redux/reducers';
@@ -20,7 +20,7 @@ const store = createStore(allReducers, applyMiddleware(ReduxThunk, logger));
 
 import NetInfo from '@react-native-community/netinfo'
 import {onlineManager} from 'react-query'
-import {firebase} from "@react-native-firebase/messaging";
+import messaging, {firebase} from "@react-native-firebase/messaging";
 
 onlineManager.setEventListener(setOnline => {
     return NetInfo.addEventListener(state => {
@@ -28,11 +28,22 @@ onlineManager.setEventListener(setOnline => {
     })
 })
 
+// Check if app was launched in the background and conditionally render null if so
+export function HeadlessCheck({isHeadless}: { isHeadless: boolean }) {
+    if (isHeadless) {
+        // App has been launched in the background by iOS, ignore
+        return null;
+    }
+
+    // Render the app component on foreground launch
+    return <App/>;
+}
+
 const App = () => {
     const backgroundStyle = {
         flex: 1,
     };
-    
+
     // const modalRef = useRef<CustomModalRef>()
 
     return (
@@ -51,5 +62,6 @@ const App = () => {
         </Provider>
     );
 };
+
 
 export default App;

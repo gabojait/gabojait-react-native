@@ -1,5 +1,5 @@
 export const profileKeys = {
-  profile: ['profile'] as const,
+  myProfile: ['myProfile'] as const,
   profileUserId: ['profile', 'userId'],
   frontendSeekingTeam: 'frontend',
   backendSeekingTeam: 'backend',

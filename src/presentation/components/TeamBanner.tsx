@@ -14,7 +14,6 @@ const TeamBanner: React.FC<
     const {theme} = useTheme();
 
     const IsRecruitDone = (item: PositionRecruiting) => {
-        console.log(`teamMembers:${teamMembers}`);
         return item.currentCnt == item.recruitCnt;
     };
 

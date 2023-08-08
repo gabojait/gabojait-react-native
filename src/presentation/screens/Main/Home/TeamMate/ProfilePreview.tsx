@@ -50,7 +50,7 @@ import { Fallback404 } from '@/presentation/components/errorComponent/GeneralFal
 const ProfilePreview = ({ navigation, route }: TeammateStackParamListProps<'ProfilePreview'>) => {
   return (
     <Error404Boundary fallback={Fallback404()}>
-      <ProfilePreviewComponent navigation={navigation} route={route} />;
+      <ProfilePreviewComponent navigation={navigation} route={route} />
     </Error404Boundary>
   );
 };
@@ -106,7 +106,6 @@ const ProfilePreviewComponent = ({
       modalProps: { animationType: 'none', justifying: 'center' },
     });
   };
-
   const handleReportModal = () => {
     modal?.show({
       content: (
@@ -119,7 +118,7 @@ const ProfilePreviewComponent = ({
               </Text>
               <CardWrapper style={{ minHeight: 75, maxWidth: 400 }}>
                 <TextInput
-                  value={reportState}
+                  value={reportState.text}
                   style={{ width: '100%' }}
                   onChangeText={(text: string) => {
                     setReportState(prevState => ({ ...prevState, text: text }));
@@ -155,22 +154,18 @@ const ProfilePreviewComponent = ({
     mutateFavorite([userId, { isAddFavorite: !profile?.isFavorite }]);
   }
   const [image, setImage] = useState<Asset | null>(null);
-
   function isOfferButtonDisabled() {
     if (profile && profile.offers.length > 0) {
       return true;
     }
     return false;
   }
-
   if (isLoading) {
     return <Text>로딩중</Text>;
   }
-
   if (!profile) {
     return null;
   }
-
   return (
     <>
       <CustomHeader
@@ -254,7 +249,6 @@ const ProfilePreviewComponent = ({
             ) : (
               <Text>아직 경력 정보를 입력하지 않은 것 같아요.</Text>
             )}
-
             <Text style={{ marginVertical: 11, marginTop: 30, fontSize: 17 }}>기술스택/직무</Text>
             <ToggleButton
               title={KoreanPosition[profile.position ?? Position.None]}
@@ -266,7 +260,6 @@ const ProfilePreviewComponent = ({
               style={{ borderRadius: 10 }}
             />
             <View style={{ height: 20 }}></View>
-
             {profile.skills?.map((skill, idx) => (
               <>
                 <Text style={{ fontSize: 14 }}>희망 기술스택</Text>
@@ -279,9 +272,7 @@ const ProfilePreviewComponent = ({
                 <View style={{ height: 10 }}></View>
               </>
             ))}
-
             <Text style={{ marginVertical: 10, marginTop: 20, fontSize: 17 }}>포트폴리오</Text>
-
             <View style={{ flexWrap: 'wrap', flexDirection: 'row', marginBottom: 20 }}>
               {profile.portfolios?.length ?? 0 > 0 ? (
                 profile.portfolios?.map(portfolio => (
@@ -303,7 +294,6 @@ const ProfilePreviewComponent = ({
               )}
             </View>
             <View style={{ height: 1, width: '100%', backgroundColor: '#D9D9D9' }}></View>
-
             <Text style={{ fontSize: 17, marginVertical: 14 }}>이전 프로젝트</Text>
             {profile.completedTeams?.length ?? 0 > 0 ? (
               profile.completedTeams?.map(team => (
@@ -325,7 +315,6 @@ const ProfilePreviewComponent = ({
             <View
               style={{ height: 1, width: '100%', backgroundColor: '#D9D9D9', marginVertical: 14 }}
             ></View>
-
             <Text h4>리뷰</Text>
             {profile.reviews?.length ?? 0 > 0 ? (
               <>

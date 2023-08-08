@@ -2,7 +2,7 @@ import React from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import FrontendList from './FrontendList';
 import BackendList from './BackendList';
-import DesignerList from './Designer';
+import DesignerList from './DesignerList';
 import PMList from './PMList';
 import { useTheme } from '@rneui/themed';
 import { Dimensions } from 'react-native';
