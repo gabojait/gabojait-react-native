@@ -5,42 +5,25 @@ import {useEffect, useState} from "react";
 import React from 'react'
 import {FlatList, TouchableOpacity, View} from "react-native";
 import TeamBanner from "@/presentation/components/TeamBanner";
+import {useDB} from "@/data/localdb/dbProvider";
 
 export function useNotification() {
     const [notifications, setNotifications] = useState([] as Notification[])
     const [isRefreshing, setIsRefreshing] = useState(false)
-    const [refetch, setRefetch] = useState<((page: number) => Promise<void>) | null>(null)
     const [page, setPage] = useState(0)
 
+    const db = useDB();
+
+    const refetch = () => db ? getNotifications(db, page) : {}
     const fetchNextPage = () => {
         setPage(prev => prev + 1)
-        console.log('refetch: ', refetch)
-        refetch?.(page)
+        refetch()
     }
+
     useEffect(() => {
-        let isMounted = true;
-
-        async function fetchDataAndOpenDB(page: number) {
-            const db = await getDBConnection();
-
-            if (db && isMounted) {
-                // Component is still mounted, safe to set the DB connection to state or perform other operations
-                setIsRefreshing(true)
-                setNotifications(await getNotifications(db, page))
-                setIsRefreshing(false)
-            } else {
-                db?.close()
-            }
-        }
-
-        setRefetch(() => fetchDataAndOpenDB)
-        fetchDataAndOpenDB(0);
-
-        return () => {
-            isMounted = false;
-            // Close database connection if needed
-        };
-    }, []);
+        if (db)
+            getNotifications(db, 0).then(res => setNotifications(res))
+    }, [db]);
 
     return {
         notifications,
@@ -69,7 +52,7 @@ export default function AlertPage() {
                     fetchNextPage();
                 }}
                 onRefresh={() => {
-                    refetch?.(0)
+                    refetch()
                 }}
                 onEndReachedThreshold={0.6}
             />

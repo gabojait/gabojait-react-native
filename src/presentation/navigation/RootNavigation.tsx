@@ -8,6 +8,7 @@ import WebViewPage from '../components/WebView';
 import SplashScreen from '../screens/Onboarding/SplashScreen';
 import MainNavigation from './MainNavigation';
 import AxiosWrapper from '../utils/AxiosWrapper';
+import {DBProvider} from "@/data/localdb/dbProvider";
 
 export type RootStackNavigationProps<T extends keyof RootStackParamList = 'default'> =
     StackNavigationProp<RootStackParamList, T>;
@@ -17,7 +18,8 @@ const RootStack = createStackNavigator<RootStackParamList>();
 export const RootNavigation = () => {
     return (
         <NavigationContainer>
-                {/* initialRouteName은 일시적. 추후 자동로그인 가능 여부에 따라 OnboardingNavigation, MainNavigation으로 라우팅될 예정 */}
+            {/* initialRouteName은 일시적. 추후 자동로그인 가능 여부에 따라 OnboardingNavigation, MainNavigation으로 라우팅될 예정 */}
+            <DBProvider>
                 <AxiosWrapper>
                     <RootStack.Navigator initialRouteName={'SplashScreen'}>
                         <RootStack.Screen
@@ -37,6 +39,7 @@ export const RootNavigation = () => {
                         </RootStack.Group>
                     </RootStack.Navigator>
                 </AxiosWrapper>
+            </DBProvider>
         </NavigationContainer>
     );
 };

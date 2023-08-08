@@ -66,7 +66,7 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
   });
 
   useEffect(() => {
-    if (reportState.length > 0) {
+    if (reportState.text.length > 0) {
       setReportButtonState({ text: '완료', isDisabled: false });
     } else {
       setReportButtonState({ text: '신고하기', isDisabled: true });
@@ -99,7 +99,7 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
               </Text>
               <CardWrapper style={{ minHeight: 75, maxWidth: 400 }}>
                 <TextInput
-                  value={reportState}
+                  value={reportState.text}
                   style={{ width: '100%' }}
                   onChangeText={(text: string) => {
                     setReportState(prevState => ({ ...prevState, text: text }));

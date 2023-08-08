@@ -264,7 +264,7 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
               )}
 
               <Text style={{ marginVertical: 11, marginTop: 30, fontSize: 17 }}>기술스택/직무</Text>
-              {profile.position !== 'none' ? (
+              {profile.position !== Position.None ? (
                 <ToggleButton
                   title={KoreanPosition[profile.position ?? Position.None]}
                   titleStyle={{
