@@ -85,7 +85,6 @@ const SplashScreen = ({navigation}: RootStackScreenProps<'SplashScreen'>) => {
                 body: remoteMessage.data?.body ?? "",
                 time: remoteMessage.data?.time ?? ""
             });
-            console.log(await getNotifications(db));
 
             await db.close();
 
