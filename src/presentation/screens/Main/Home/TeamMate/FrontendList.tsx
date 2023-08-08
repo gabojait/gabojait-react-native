@@ -59,7 +59,7 @@ const FrontendList = ({ navigation, route }: PositionTabParamListProps<'Frontend
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate('ProfilePreview', { userId: item.userId });
+              navigation.getParent()?.navigate('ProfilePreview', { userId: item.userId });
             }}
           >
             <CardWrapper

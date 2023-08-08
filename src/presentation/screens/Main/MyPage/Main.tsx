@@ -9,22 +9,24 @@ import { RatingBar } from '@/presentation/components/RatingBar';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import ProfileViewDto from '@/data/model/Profile/ProfileViewDto';
 import { getProfile } from '@/redux/reducers/profileReducer';
-import { chagneToOfficialWord, isEmptyArray } from '@/presentation/utils/util';
+import { WIDTH, chagneToOfficialWord, isEmptyArray } from '@/presentation/utils/util';
+import { UseQueryResult, useQuery } from 'react-query';
+import TeamDetailDto from '@/data/model/Team/TeamDetailDto';
+import { teamKeys } from '@/reactQuery/key/TeamKeys';
+import { profileKeys } from '@/reactQuery/key/ProfileKeys';
+import { getMyProfile } from '@/data/api/profile';
+import ProfileViewResponse from '@/data/model/Profile/ProfileViewResponse';
 
 const Main = ({ navigation }: MainBottomTabNavigationProps<'MyPage'>) => {
   const { theme } = useTheme();
   const styles = useStyles();
-  const dispatch = useAppDispatch();
   const {
     data: profileData,
-    loading: profileLoading,
-    error: profileError,
-  } = useAppSelector(state => state.profileReducer.userProfile);
-
-  useEffect(() => {
-    dispatch(getProfile());
-    console.log(`profileData.nickname: ${profileData?.nickname}`);
-  }, []);
+    isLoading,
+    error,
+  }: UseQueryResult<ProfileViewResponse> = useQuery([profileKeys.myProfile], () => getMyProfile(), {
+    useErrorBoundary: true,
+  });
 
   return (
     <ScrollView style={styles.scrollView}>
@@ -42,7 +44,7 @@ const Main = ({ navigation }: MainBottomTabNavigationProps<'MyPage'>) => {
             >
               {profileData?.nickname}
             </Text>
-            {profileData?.teamMemberStatus == 'LEADER' ? (
+            {profileData?.isLeader ? (
               <Text
                 style={{
                   fontSize: theme.fontSize.md,
@@ -104,7 +106,7 @@ const Main = ({ navigation }: MainBottomTabNavigationProps<'MyPage'>) => {
         </CardWrapper>
       </View>
       <View style={styles.divider}>
-        {profileData?.teamMemberStatus === 'leader' ? (
+        {profileData?.isLeader ? (
           <LeaderComponent
             onPressApply={() => navigation.navigate('MainNavigation', { screen: 'ApplyStatus' })}
             onPressTeam={() => {}}
@@ -139,13 +141,17 @@ interface ReviewItemProps {
   score: number;
   content: string;
 }
+
 const ReviewItem = ({ name, score, content }: ReviewItemProps) => {
   const { theme } = useTheme();
+  useEffect(() => {
+    console.log(WIDTH);
+  }, []);
   return (
     <CardWrapper
       style={{
         minHeight: 180,
-        maxWidth: 256,
+        width: WIDTH / 1.2,
         marginHorizontal: 10,
         padding: 20,
         marginVertical: 10,
@@ -153,7 +159,11 @@ const ReviewItem = ({ name, score, content }: ReviewItemProps) => {
         borderColor: theme.colors.disabled,
       }}
     >
-      <View>
+      <View
+        style={{
+          width: '100%',
+        }}
+      >
         <View style={{ flexDirection: 'row', paddingBottom: 10 }}>
           <Text
             style={{
@@ -259,7 +269,7 @@ const MyReview = ({ data }: { data: ProfileViewDto }) => {
           horizontal={true}
           data={data?.reviews}
           renderItem={({ item }) => (
-            <ReviewItem name={item.revieweeNickname} score={2.5} content={item.post} />
+            <ReviewItem name={item.reviewerNickname} score={2.5} content={item.post} />
           )}
         />
       </View>

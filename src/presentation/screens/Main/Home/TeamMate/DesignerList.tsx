@@ -3,26 +3,31 @@ import UserProfileBriefDto from '@/data/model/User/UserProfileBriefDto';
 import CardWrapper from '@/presentation/components/CardWrapper';
 import Gabojait from '@/presentation/components/icon/Gabojait';
 import { RatingBar } from '@/presentation/components/RatingBar';
+import {
+  PositionTabParamListProps,
+  TeammateStackParamListProps,
+} from '@/presentation/navigation/types';
+
 import { useModelList } from '@/reactQuery/util/useModelList';
 import { makeStyles, Text, useTheme } from '@rneui/themed';
-import { PositionTabParamListProps } from '@/presentation/navigation/types';
 import React from 'react';
 import { FlatList, TouchableOpacity, View } from 'react-native';
 import { Position } from '@/data/model/type/Position';
+import { ProfileOrder } from '@/data/model/type/ProfileOrder';
 import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 
 const QueryKey = {
-  all: 'backendList',
+  all: 'designerList',
   filtered: (filter: GetProfileProps) => [...QueryKey.all, 'filtered', filter],
 };
 
-const BackendList = ({ navigation, route }: PositionTabParamListProps<'Backend'>) => {
+const DesignerList = ({ navigation, route }: PositionTabParamListProps<'Designer'>) => {
   const { theme } = useTheme();
   const styles = useStyles();
   const initialParam: GetProfileProps = {
     pageFrom: 0,
     pageSize: 20,
-    position: Position.Backend,
+    position: Position.Designer,
     profileOrder: 'ACTIVE',
   };
   const { data, isLoading, error, fetchNextPage, refetch, isRefreshing } = useModelList<
@@ -30,23 +35,11 @@ const BackendList = ({ navigation, route }: PositionTabParamListProps<'Backend'>
     UserProfileBriefDto
   >({
     initialParam,
-    key: profileKeys.backendSeekingTeam,
-    fetcher: async ({ pageParam, queryKey: [_, param] }) => {
-      return await getUserSeekingTeam({ ...(param as GetProfileProps), pageFrom: pageParam });
+    key: QueryKey.filtered(initialParam),
+    fetcher: async ({ pageParam, queryKey: [_, params] }) => {
+      return await getUserSeekingTeam({ ...(params as GetProfileProps), pageFrom: pageParam }!);
     },
   });
-
-  if (isLoading && !data) {
-    return <Text>로딩 중</Text>;
-  }
-
-  if (error) {
-    return <Text>에러 발생</Text>;
-  }
-
-  if (!data) {
-    return null;
-  }
 
   return (
     <View
@@ -88,7 +81,7 @@ const BackendList = ({ navigation, route }: PositionTabParamListProps<'Backend'>
               >
                 <View>
                   <Text style={styles.name}>{item.nickname}</Text>
-                  <Text style={styles.position}>벡엔드 개발자</Text>
+                  <Text style={styles.position}>UI/UX 디자이너</Text>
                   <View style={{ flexDirection: 'row', paddingBottom: 10 }}>
                     <RatingBar ratingScore={item.rating} />
                     <Text style={styles.score}>{item.rating}</Text>
@@ -131,4 +124,5 @@ const useStyles = makeStyles(theme => ({
     paddingLeft: 10,
   },
 }));
-export default BackendList;
+
+export default DesignerList;
