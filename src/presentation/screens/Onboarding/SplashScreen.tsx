@@ -5,6 +5,7 @@ import React, {useEffect} from 'react';
 import {Alert, PermissionsAndroid, Platform, View} from 'react-native';
 import Splash from 'react-native-splash-screen';
 import messaging from '@react-native-firebase/messaging';
+import {createTable, getDBConnection, getNotifications, saveNotification} from "@/data/localdb";
 
 const SplashScreen = ({navigation}: RootStackScreenProps<'SplashScreen'>) => {
     const handleRefresh = () => {
@@ -75,6 +76,19 @@ const SplashScreen = ({navigation}: RootStackScreenProps<'SplashScreen'>) => {
         const unsubscribe = messaging().onMessage(async remoteMessage => {
             console.log(remoteMessage);
             Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+            const db = await getDBConnection();
+            if (!db) return;
+            await createTable(db);
+            await saveNotification(db, {
+                id: parseInt(remoteMessage.messageId ?? "99999") ?? 0,
+                title: remoteMessage.data?.title ?? "",
+                body: remoteMessage.data?.body ?? "",
+                time: remoteMessage.data?.time ?? ""
+            });
+            console.log(await getNotifications(db));
+
+            await db.close();
+
         });
         return unsubscribe;
     }, []);
