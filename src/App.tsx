@@ -10,7 +10,7 @@ import { Fallback500, Fallback503 } from './presentation/components/errorCompone
 import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider, useQueryErrorResetBoundary } from 'react-query';
 import { createLogger } from 'redux-logger';
 import './assets/locales/index';
 
@@ -45,11 +45,11 @@ const App = () => {
   };
 
   // const modalRef = useRef<CustomModalRef>()
-
+  const { reset } = useQueryErrorResetBoundary();
   return (
     <Provider store={store}>
       <ThemeProvider theme={theme}>
-        <GeneralErrorBoundary fallback500={Fallback500()} fallback503={Fallback503()}>
+        <GeneralErrorBoundary onReset={reset}>
           <QueryClientProvider client={queryClient}>
             <ModalProvider>
               <SafeAreaView style={backgroundStyle}>
