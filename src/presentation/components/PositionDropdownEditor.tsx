@@ -46,10 +46,10 @@ export const PositionDropdownEditor = ({
   });
   const [teamMemberRecruit, setTeamMemberRecruit] = useState<PositionCountDto[]>([]);
   const [positionState, setPositionState] = useState<PositionDropdownContent[]>([
-    { key: Position.Backend, value: KoreanPosition.backend, disabled: false },
-    { key: Position.Frontend, value: KoreanPosition.frontend, disabled: false },
-    { key: Position.Designer, value: KoreanPosition.designer, disabled: false },
-    { key: Position.Manager, value: KoreanPosition.manager, disabled: false },
+    { key: Position.Backend, value: KoreanPosition.BACKEND, disabled: false },
+    { key: Position.Frontend, value: KoreanPosition.FRONTEND, disabled: false },
+    { key: Position.Designer, value: KoreanPosition.DESIGNER, disabled: false },
+    { key: Position.Manager, value: KoreanPosition.MANAGER, disabled: false },
   ]);
 
   const AlertCantRemoveView = () => {
@@ -119,7 +119,7 @@ export const PositionDropdownEditor = ({
         return item;
       });
       setTeamMemberRecruit(updatedTeamMembers);
-    } else if (selectedData.position != 'none') {
+    } else if (selectedData.position != Position.None) {
       setTeamMemberRecruit(prevState => [...prevState, selectedData]);
     }
   }

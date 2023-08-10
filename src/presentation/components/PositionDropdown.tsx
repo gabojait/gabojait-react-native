@@ -186,11 +186,12 @@ export const PositionDropdown = ({
             backgroundColor: theme.colors.grey0,
           }}
         >
-          {defaultData.position == 'none' ? (
+          {defaultData.position == Position.None ? (
             <SelectList
               placeholder={initializePlaceHolderText(placeholdeText).toString()}
               inputStyles={{ fontSize: theme.fontSize.xs }}
               setSelected={(value: string) => {
+                console.log(value);
                 setPlaceholdText(value);
                 onPositionSelected(value);
               }}
