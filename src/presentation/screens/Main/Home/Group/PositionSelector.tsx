@@ -19,6 +19,7 @@ import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { offerKeys } from '@/reactQuery/key/OfferKeys';
 import { Fallback404 } from '@/presentation/components/errorComponent/Fallback';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
+import { use } from 'i18next';
 
 interface ApplyPositionCardProps {
   data: PositionRecruiting;
@@ -69,19 +70,6 @@ const PositionSelectorComponent = ({
       },
     },
   );
-  //TODO: 에러처리결과-> 버튼 상태분기, 모달 띄우기
-  function applyCompletedModal() {
-    modal?.show({
-      content: (
-        <SymbolModalContent
-          title="지원 완료!"
-          symbol={<Text style={{ fontSize: theme.emojiSize.md, textAlign: 'center' }}>👏</Text>}
-          text={'함께하기 요청이 전달되었습니다\n 결과를 기다려주세요'}
-          yesButton={{ title: '확인', onPress: () => modal.hide() }}
-        />
-      ),
-    });
-  }
 
   if (isLoading && !data) {
     return <Text>로딩 중</Text>;
@@ -119,6 +107,11 @@ const ApplyPositionCard = ({ data, offers, onApplyButtonPressed }: ApplyPosition
   });
 
   useEffect(() => {
+    const buttonTitle = handleButtonState();
+    setState(prevState => ({ ...prevState, buttonState: buttonTitle }));
+  }, [offers]);
+
+  useEffect(() => {
     if (state.buttonState == '함께하기') {
       setState(prevState => ({ ...prevState, buttonDisabled: false }));
     } else {
@@ -140,7 +133,7 @@ const ApplyPositionCard = ({ data, offers, onApplyButtonPressed }: ApplyPosition
 
   function handleButtonState(): RecruitStatusType {
     const offerThisPosition = offers.some(item => item.position == data.position);
-
+    console.log(`offerThisPosition:${offerThisPosition}, position:${data.position}`);
     if (data.currentCnt == data.recruitCnt) {
       return '모집완료';
     } else if (offerThisPosition) {

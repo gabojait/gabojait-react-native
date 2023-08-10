@@ -104,6 +104,7 @@ export const TeamPageComponent = ({ navigation, route }: MainBottomTabNavigation
     error: teamDataError,
   }: UseQueryResult<TeamDto> = useQuery(teamKeys.myTeam, () => getMyTeam(), {
     useErrorBoundary: true,
+    retry: 1,
   });
 
   const {
@@ -112,6 +113,7 @@ export const TeamPageComponent = ({ navigation, route }: MainBottomTabNavigation
     error: errorData,
   }: UseQueryResult<ProfileViewResponse> = useQuery(profileKeys.myProfile, () => getMyProfile(), {
     useErrorBoundary: true,
+    retry: 1,
   });
 
   const { mutation: deleteTeamMutation } = useMutationDialog(
@@ -159,11 +161,17 @@ export const TeamPageComponent = ({ navigation, route }: MainBottomTabNavigation
                   />
                 ))}
               </View>
-              <TouchableOpacity
-                onPress={() => navigation.navigate('MainNavigation', { screen: 'ManageTeammate' })}
-              >
-                <Text style={styles.text2}>팀원관리</Text>
-              </TouchableOpacity>
+              {isLeader(dataUser?.isLeader) ? (
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('MainNavigation', { screen: 'ManageTeammate' })
+                  }
+                >
+                  <Text style={styles.text2}>팀원관리</Text>
+                </TouchableOpacity>
+              ) : (
+                <></>
+              )}
             </View>
           </CardWrapper>
           <TouchableOpacity
