@@ -17,6 +17,7 @@
 		7491F128297DA89300CD23E4 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		D5203B472A76372200D9CD72 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D5203B462A76372200D9CD72 /* GoogleService-Info.plist */; };
+		D55236F62A821AB300A19875 /* www in Resources */ = {isa = PBXBuildFile; fileRef = D55236F52A821AB300A19875 /* www */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +53,7 @@
 		D5013BF32A722F4900E6004A /* gabojait.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = gabojait.entitlements; path = gabojait/gabojait.entitlements; sourceTree = "<group>"; };
 		D5203B462A76372200D9CD72 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D52D9D712A77E908004F5FF1 /* AppDelegateProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegateProxy.h; sourceTree = "<group>"; };
+		D55236F52A821AB300A19875 /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; path = www; sourceTree = "<group>"; };
 		D58FC3FF289E1A610083569D /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fonts; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -96,6 +98,7 @@
 		13B07FAE1A68108700A75B9A /* gabojait */ = {
 			isa = PBXGroup;
 			children = (
+				D55236F52A821AB300A19875 /* www */,
 				D5203B462A76372200D9CD72 /* GoogleService-Info.plist */,
 				D5013BF32A722F4900E6004A /* gabojait.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -268,6 +271,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D55236F62A821AB300A19875 /* www in Resources */,
 				7491F128297DA89300CD23E4 /* Images.xcassets in Resources */,
 				748D0B58297D838D00D52108 /* Fonts in Resources */,
 				D5203B472A76372200D9CD72 /* GoogleService-Info.plist in Resources */,

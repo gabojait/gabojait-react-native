@@ -212,7 +212,7 @@ const EditMain = ({navigation}: ProfileStackParamListProps<'EditMain'>) => {
                     }}
                 >
                     <View style={{alignItems: 'flex-start'}}>
-                        {profile.position !== 'none' ? (
+                        {profile.position !== Position.None ? (
                             <ToggleButton
                                 title={KoreanPosition[profile.position ?? Position.None]}
                                 titleStyle={{

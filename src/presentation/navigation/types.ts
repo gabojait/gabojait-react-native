@@ -5,6 +5,8 @@ import {
   ParamListBase,
 } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
+import { BoardStackNavigationProps } from './BoardNavigation';
+import { MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
 
 interface WebViewPageProps {
   url: string;
