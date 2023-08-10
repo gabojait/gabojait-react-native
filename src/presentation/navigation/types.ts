@@ -5,8 +5,6 @@ import {
   ParamListBase,
 } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
-import { BoardStackNavigationProps } from './BoardNavigation';
-import { MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
 
 interface WebViewPageProps {
   url: string;
@@ -47,7 +45,8 @@ export type MainStackScreenProps<T extends keyof MainStackParamList> = StackScre
 
 export type MainStackParamList = {
   Profile: NavigatorScreenParams<ProfileStackParamList>;
-  ApplyStatus: undefined;
+  ApplyStatus: NavigatorScreenParams<PositionTabParamList> &
+    NavigatorScreenParams<TeammateStackParamList>;
   TeamHistory: undefined;
   TeamReview: { teamId: string };
   BookMark: undefined;
@@ -66,6 +65,7 @@ export type MainStackParamList = {
   TeamComplete: undefined;
   CompleteSuccess: undefined;
   ManageTeammate: undefined;
+  ProfilePreview: { userId: string };
 };
 
 export type MainBottomTabParamList = {
@@ -104,12 +104,6 @@ export type ProfileStackParamList = {
   EditSchoolAndWork: undefined;
   EditSkillAndPosition: undefined;
 };
-
-// export type TeammateStackParamListProps<T extends keyof TeammateStackParamList> =
-//   CompositeScreenProps<
-//     MaterialTopTabScreenProps<TeammateStackParamList, T>,
-//     BoardStackParamListProps<keyof BoardStackParamList>
-//   >;
 
 export type TeammateStackParamListProps<T extends keyof TeammateStackParamList> = StackScreenProps<
   TeammateStackParamList,

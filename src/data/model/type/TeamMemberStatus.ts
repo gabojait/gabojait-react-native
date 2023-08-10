@@ -1,5 +1,5 @@
 export const TeamMemberStatus = {
-  leader: "leader",
-  member: "member",
-}
-export type TeamMemberStatus = keyof typeof TeamMemberStatus
+  LEADER: 'LEADER',
+  MEMBER: 'MEMBER',
+};
+export type TeamMemberStatus = keyof typeof TeamMemberStatus;

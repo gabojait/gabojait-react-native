@@ -23,6 +23,7 @@ import Header from '../screens/Headers/CloseHeader';
 import { OpenChatingPage } from '../screens/Main/Team/OpenChatingPage';
 import { TeamEditor } from '../screens/Main/Team/TeamEditor';
 import { ManageTeammate } from '../screens/Main/Team/ManageTeammate';
+import ProfilePreview from '../screens/Main/Home/TeamMate/ProfilePreview';
 const Main = createStackNavigator<MainStackParamList>();
 
 const MainNavigation = () => {
@@ -41,6 +42,11 @@ const MainNavigation = () => {
             header: TitleWithCloseHeader,
             headerTitle: '지원현황',
           }}
+        />
+        <Main.Screen
+          name="ProfilePreview"
+          options={{ headerShown: false }}
+          component={ProfilePreview}
         />
         <Main.Screen
           name="TeamHistory"
