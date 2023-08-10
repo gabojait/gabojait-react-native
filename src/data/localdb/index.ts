@@ -21,6 +21,7 @@ export type Notification = {
     title: string;
     body: string;
     time: string;
+    type: string;
 }
 
 export const createTable = async (db: SQLiteDatabase) => {
@@ -28,7 +29,8 @@ export const createTable = async (db: SQLiteDatabase) => {
         id int NOT NULL PRIMARY KEY,
         title VARCHAR(30) NOT NULL,
         body VARCHAR(100) NOT NULL,
-        time DATETIME(6) NOT NULL
+        time DATETIME(6) NOT NULL,
+        type VARCHAR(10) NOT NULL
     )`)
 }
 export const getNotifications = async (db: SQLiteDatabase, page: number): Promise<Notification[]> => {
@@ -52,8 +54,8 @@ export const getNotifications = async (db: SQLiteDatabase, page: number): Promis
 
 export const saveNotification = async (db: SQLiteDatabase, notification: Notification) => {
     const insertQuery =
-        `INSERT OR REPLACE INTO TNotification(id, title, body, time) values(
-${notification.id}, '${notification.title}', '${notification.body}', '${notification.time}'
+        `INSERT OR REPLACE INTO TNotification(id, title, body, time, type) values(
+${notification.id}, '${notification.title}', '${notification.body}', '${notification.time}', '${notification.type}'
 )`
 
     return db.executeSql(insertQuery);
@@ -63,3 +65,9 @@ export const deleteNotification = async (db: SQLiteDatabase, id: number) => {
     const deleteQuery = `DELETE from TNotification where id = ${id}`;
     await db.executeSql(deleteQuery);
 };
+
+export const clearNotificationTable = async (db: SQLiteDatabase) => {
+    const deleteQuery = `DROP TABLE TNotification`;
+    await db.executeSql(deleteQuery);
+}
+

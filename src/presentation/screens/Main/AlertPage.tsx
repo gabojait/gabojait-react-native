@@ -3,7 +3,7 @@ import {getDBConnection, getNotifications, Notification} from "@/data/localdb";
 import {Text} from "@rneui/themed";
 import {useEffect, useState} from "react";
 import React from 'react'
-import {FlatList, TouchableOpacity, View} from "react-native";
+import {DevSettings, FlatList, TouchableOpacity, View} from "react-native";
 import TeamBanner from "@/presentation/components/TeamBanner";
 import {useDB} from "@/data/localdb/dbProvider";
 
@@ -23,6 +23,7 @@ export function useNotification() {
     useEffect(() => {
         if (db)
             getNotifications(db, 0).then(res => setNotifications(res))
+
     }, [db]);
 
     return {
