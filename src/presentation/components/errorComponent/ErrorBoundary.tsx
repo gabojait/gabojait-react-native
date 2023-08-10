@@ -10,12 +10,18 @@ export interface ErrorBoundaryState {
 
 export interface ErrorBoundaryProps {
   children?: ReactNode;
+  onReset?: () => void;
+  fallback?: ReactNode;
+  message?: string;
+}
+
+interface GeneralErrorBoundaryProps extends ErrorBoundaryProps {
   fallback500: ReactNode;
   fallback503: ReactNode;
 }
 
-class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  constructor(props: ErrorBoundaryProps) {
+class GeneralErrorBoundary extends React.Component<GeneralErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: GeneralErrorBoundaryProps) {
     super(props);
     this.state = {
       hasError: false,
@@ -51,4 +57,4 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 }
 
-export default ErrorBoundary;
+export default GeneralErrorBoundary;

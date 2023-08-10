@@ -4,7 +4,7 @@ import { OutlinedButton } from '@/presentation/components/Button';
 import CardWrapper from '@/presentation/components/CardWrapper';
 import { PositionIcon } from '@/presentation/components/PartIcon';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
-import { Fallback404 } from '@/presentation/components/errorComponent/GeneralFallback';
+import { Fallback404 } from '@/presentation/components/errorComponent/Fallback';
 import useModal from '@/presentation/components/modal/useModal';
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent';
@@ -15,11 +15,13 @@ import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { useTheme } from '@rneui/themed';
 import React, { useState } from 'react';
 import { ScrollView, Text, TextInput, View } from 'react-native';
-import { UseQueryResult, useQuery, useQueryClient } from 'react-query';
+import { UseQueryResult, useQuery, useQueryClient, useQueryErrorResetBoundary } from 'react-query';
 
 export const ManageTeammate = ({ navigation, route }: MainStackScreenProps<'ManageTeammate'>) => {
+  const { reset } = useQueryErrorResetBoundary();
+
   return (
-    <Error404Boundary fallback={Fallback404()}>
+    <Error404Boundary onReset={reset}>
       <ManageTeammateComponent navigation={navigation} route={route} />
     </Error404Boundary>
   );

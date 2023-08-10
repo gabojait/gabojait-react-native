@@ -8,7 +8,7 @@ import { MainStackScreenProps } from '@/presentation/navigation/types';
 import useGlobalStyles from '@/presentation/styles';
 import PositionCountDto from '@/data/model/Team/PostionCountDto';
 import { getMyTeam, updateTeam } from '@/data/api/team';
-import { useQuery, useQueryClient, UseQueryResult } from 'react-query';
+import { useQuery, useQueryClient, useQueryErrorResetBoundary, UseQueryResult } from 'react-query';
 import TeamDto from '@/data/model/Team/TeamDto';
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent';
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
@@ -19,12 +19,12 @@ import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { useMutationForm } from '@/reactQuery/util/useMutationForm';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
-import { Fallback404 } from '@/presentation/components/errorComponent/GeneralFallback';
-import { TeamPageComponent } from './TeamPage';
 
 export const TeamEditor = ({ navigation, route }: MainStackScreenProps<'TeamEditor'>) => {
+  const { reset } = useQueryErrorResetBoundary();
+
   return (
-    <Error404Boundary fallback={Fallback404()}>
+    <Error404Boundary onReset={reset}>
       <TeamEditorComponent navigation={navigation} route={route} />
     </Error404Boundary>
   );

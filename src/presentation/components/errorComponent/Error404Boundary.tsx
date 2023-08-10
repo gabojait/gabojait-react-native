@@ -1,22 +1,19 @@
 import React from 'react';
 import { ReactNode } from 'react';
-import { ErrorBoundaryState } from './ErrorBoundary';
-import { ApiErrorCode, ApiErrorCodeType } from '@/data/api/ApiErrorCode';
+import { ErrorBoundaryProps, ErrorBoundaryState } from './ErrorBoundary';
+import { ApiErrorCodeType } from '@/data/api/ApiErrorCode';
+import { Fallback404 } from './Fallback';
 
-class Error404Boundary extends React.Component<
-  {
-    children?: ReactNode;
-    fallback: ReactNode;
-  },
-  ErrorBoundaryState
-> {
-  constructor(props: { children?: ReactNode; fallback: ReactNode }) {
+const initialState: ErrorBoundaryState = {
+  hasError: false,
+  isPropagated: false,
+  error: null,
+};
+
+class Error404Boundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
     super(props);
-    this.state = {
-      hasError: false,
-      isPropagated: false,
-      error: null,
-    };
+    this.state = initialState;
   }
 
   static getDerivedStateFromError(error: Error) {
@@ -37,9 +34,19 @@ class Error404Boundary extends React.Component<
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {}
 
+  onResetErrorBoundary = () => {
+    const { onReset } = this.props;
+    onReset == null ? void 0 : onReset();
+    this.reset();
+  };
+
+  reset() {
+    this.setState(initialState);
+  }
+
   render(): React.ReactNode {
     const { hasError, isPropagated, error } = this.state;
-    const { children, fallback } = this.props;
+    const { children } = this.props;
 
     if (hasError && isPropagated) {
       throw error;
@@ -47,7 +54,7 @@ class Error404Boundary extends React.Component<
 
     if (hasError && !isPropagated) {
       console.log(`errorCode:${error?.name}, errorMessage:${error?.message}`);
-      return fallback;
+      return <Fallback404 onPressReset={this.onResetErrorBoundary} />;
     }
 
     return children;

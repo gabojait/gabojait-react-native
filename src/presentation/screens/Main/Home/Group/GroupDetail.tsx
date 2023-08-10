@@ -10,24 +10,30 @@ import PositionRecruiting from '@/presentation/model/PositionRecruitng';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import { makeStyles, Text, useTheme } from '@rneui/themed';
 import React, { useEffect, useState } from 'react';
-import { KeyboardAvoidingView, ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
-import { useMutation, useQuery, useQueryClient, UseQueryResult } from 'react-query';
+import { ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useQueryErrorResetBoundary,
+  UseQueryResult,
+} from 'react-query';
 import useGlobalStyles from '@/presentation/styles';
 import { isFavorite, mapToInitial } from '@/presentation/utils/util';
 import FavoriteUpdateDto from '@/data/model/Favorite/FavoriteUpdateDto';
 import { Icon } from '@rneui/base';
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent';
-import GetTeamErrorBoundary from '@/presentation/components/errorComponent/GetTeamErrorBoundary';
 import useModal from '@/presentation/components/modal/useModal';
 import { favoriteKeys } from '@/reactQuery/key/FavoriteKeys';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
-import { Fallback404 } from '@/presentation/components/errorComponent/GeneralFallback';
 
 const GroupDetail = ({ navigation, route }: MainStackScreenProps<'GroupDetail'>) => {
+  const { reset } = useQueryErrorResetBoundary();
+
   return (
-    <Error404Boundary fallback={Fallback404()}>
+    <Error404Boundary onReset={reset}>
       <GroupDetailComponent navigation={navigation} route={route} />
     </Error404Boundary>
   );

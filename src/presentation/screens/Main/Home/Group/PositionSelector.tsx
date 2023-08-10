@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent';
-import { useQuery, useQueryClient, UseQueryResult } from 'react-query';
+import { useQuery, useQueryClient, useQueryErrorResetBoundary, UseQueryResult } from 'react-query';
 import TeamDetailDto from '@/data/model/Team/TeamDetailDto';
 import { getTeam } from '@/data/api/team';
 import PositionRecruiting from '@/presentation/model/PositionRecruitng';
@@ -17,7 +17,7 @@ import useModal from '@/presentation/components/modal/useModal';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { offerKeys } from '@/reactQuery/key/OfferKeys';
-import { Fallback404 } from '@/presentation/components/errorComponent/GeneralFallback';
+import { Fallback404 } from '@/presentation/components/errorComponent/Fallback';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 
 interface ApplyPositionCardProps {
@@ -36,8 +36,10 @@ interface ApplyPositionCardState {
 }
 
 const PositionSelector = ({ navigation, route }: MainStackScreenProps<'PositionSelector'>) => {
+  const { reset } = useQueryErrorResetBoundary();
+
   return (
-    <Error404Boundary fallback={Fallback404()}>
+    <Error404Boundary onReset={reset}>
       <PositionSelectorComponent navigation={navigation} route={route} />
     </Error404Boundary>
   );

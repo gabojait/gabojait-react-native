@@ -24,7 +24,13 @@ import {
   portfolioTypeIconName,
   sliderColors,
 } from '../../MyPage/Profile';
-import { UseQueryResult, useMutation, useQuery, useQueryClient } from 'react-query';
+import {
+  UseQueryResult,
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useQueryErrorResetBoundary,
+} from 'react-query';
 import ProfileViewResponse from '@/data/model/Profile/ProfileViewResponse';
 import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 import { getProfile } from '@/data/api/profile';
@@ -45,11 +51,12 @@ import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { offerKeys } from '@/reactQuery/key/OfferKeys';
 import { sendOfferToUser } from '@/data/api/offer';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
-import { Fallback404 } from '@/presentation/components/errorComponent/GeneralFallback';
 
 const ProfilePreview = ({ navigation, route }: TeammateStackParamListProps<'ProfilePreview'>) => {
+  const { reset } = useQueryErrorResetBoundary();
+
   return (
-    <Error404Boundary fallback={Fallback404()}>
+    <Error404Boundary onReset={reset}>
       <ProfilePreviewComponent navigation={navigation} route={route} />
     </Error404Boundary>
   );
