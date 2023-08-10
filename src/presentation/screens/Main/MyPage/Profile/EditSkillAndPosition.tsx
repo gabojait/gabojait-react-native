@@ -18,7 +18,7 @@ import {
 } from '@/redux/action/profileActions';
 
 const EditSkillAndPosition = () => {
-  const positions = ['PM', 'Designer', 'Frontend', 'Backend'];
+  const positions = ['Manager', 'Designer', 'Frontend', 'Backend'];
   const { data, loading, error } = useAppSelector(state => state.profileReducer.userProfile);
   const dispatch = useAppDispatch();
 
@@ -42,10 +42,10 @@ const EditSkillAndPosition = () => {
                   padding: 10,
                   width: ScreenWidth * 0.26,
                   marginBottom: 10,
-                  backgroundColor: position == item.toLowerCase() ? theme.colors.primary : 'white',
+                  backgroundColor: position == item.toUpperCase() ? theme.colors.primary : 'white',
                 }}
                 onClick={() => {
-                  dispatch(setPosition(item.toLowerCase() as Position));
+                  dispatch(setPosition(item.toUpperCase() as Position));
                 }}
               />
             </View>
