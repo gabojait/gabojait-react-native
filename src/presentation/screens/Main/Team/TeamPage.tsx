@@ -1,13 +1,13 @@
 import CardWrapper from '@/presentation/components/CardWrapper';
 import { makeStyles, Text, useTheme } from '@rneui/themed';
-import React from 'react';
+import React, { useState } from 'react';
 import { Platform, ScrollView, TouchableOpacity, View } from 'react-native';
 import PositionWaveIcon from '@/presentation/components/PositionWaveIcon';
 import { OutlinedButton } from '@/presentation/components/Button';
 import { isLeader, mapToInitial } from '@/presentation/utils/util';
 import { MainBottomTabNavigationProps } from '@/presentation/navigation/types';
 import useGlobalStyles from '@/presentation/styles';
-import { useQuery, useQueryClient, UseQueryResult } from 'react-query';
+import { useQuery, useQueryClient, useQueryErrorResetBoundary, UseQueryResult } from 'react-query';
 import TeamDto from '@/data/model/Team/TeamDto';
 import { getMyTeam, incompleteTeam } from '@/data/api/team';
 import { getMyProfile } from '@/data/api/profile';
@@ -16,7 +16,7 @@ import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
-import { Fallback404, Fallback500 } from '@/presentation/components/errorComponent/GeneralFallback';
+import { Fallback404, Fallback500 } from '@/presentation/components/errorComponent/Fallback';
 
 interface LeaderHeaderParams {
   onPressEditor: () => void;
@@ -26,22 +26,6 @@ interface LeaderFooterParams {
   onPressComplete: () => void;
   onPressDelete: () => void;
 }
-
-//TODO: 에러처리 결과 404로 보여줘야 됨
-const NoProcessingTeam = () => (
-  <View
-    style={{
-      flex: 1,
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: 'white',
-    }}
-  >
-    <Text style={{ fontSize: 100, alignContent: 'center' }}>🫥</Text>
-    <Text h4>현재 진행 중인 팀이 없어요</Text>
-  </View>
-);
 
 const LeaderHeader = ({ onPressEditor }: LeaderHeaderParams) => {
   const styles = useStyles();
@@ -101,8 +85,10 @@ const LeaderFooter = ({ onPressComplete, onPressDelete }: LeaderFooterParams) =>
   );
 };
 export const TeamPage = ({ navigation, route }: MainBottomTabNavigationProps<'Team'>) => {
+  const { reset } = useQueryErrorResetBoundary();
+
   return (
-    <Error404Boundary fallback={Fallback404()}>
+    <Error404Boundary onReset={reset}>
       <TeamPageComponent navigation={navigation} route={route} />
     </Error404Boundary>
   );
@@ -118,14 +104,16 @@ export const TeamPageComponent = ({ navigation, route }: MainBottomTabNavigation
     error: teamDataError,
   }: UseQueryResult<TeamDto> = useQuery(teamKeys.myTeam, () => getMyTeam(), {
     useErrorBoundary: true,
+    retry: 1,
   });
 
   const {
     data: dataUser,
     isLoading: isLoadingData,
     error: errorData,
-  }: UseQueryResult<ProfileViewResponse> = useQuery(profileKeys.profile, () => getMyProfile(), {
+  }: UseQueryResult<ProfileViewResponse> = useQuery(profileKeys.myProfile, () => getMyProfile(), {
     useErrorBoundary: true,
+    retry: 1,
   });
 
   const { mutation: deleteTeamMutation } = useMutationDialog(
@@ -133,7 +121,7 @@ export const TeamPageComponent = ({ navigation, route }: MainBottomTabNavigation
     async () => incompleteTeam(),
     {
       onSuccessClick() {
-        queryClient.invalidateQueries([teamKeys.myTeam]);
+        queryClient.invalidateQueries([teamKeys.myTeam, profileKeys.myProfile]);
       },
     },
   );
@@ -173,11 +161,17 @@ export const TeamPageComponent = ({ navigation, route }: MainBottomTabNavigation
                   />
                 ))}
               </View>
-              <TouchableOpacity
-                onPress={() => navigation.navigate('MainNavigation', { screen: 'ManageTeammate' })}
-              >
-                <Text style={styles.text2}>팀원관리</Text>
-              </TouchableOpacity>
+              {isLeader(dataUser?.isLeader) ? (
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('MainNavigation', { screen: 'ManageTeammate' })
+                  }
+                >
+                  <Text style={styles.text2}>팀원관리</Text>
+                </TouchableOpacity>
+              ) : (
+                <></>
+              )}
             </View>
           </CardWrapper>
           <TouchableOpacity

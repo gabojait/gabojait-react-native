@@ -35,7 +35,7 @@ const DesignerList = ({ navigation, route }: PositionTabParamListProps<'Designer
     UserProfileBriefDto
   >({
     initialParam,
-    key: QueryKey.filtered(initialParam),
+    key: profileKeys.designerSeekingTeam,
     fetcher: async ({ pageParam, queryKey: [_, params] }) => {
       return await getUserSeekingTeam({ ...(params as GetProfileProps), pageFrom: pageParam }!);
     },

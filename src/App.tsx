@@ -1,16 +1,15 @@
-import {AppRegistry, SafeAreaView} from 'react-native';
+import {SafeAreaView} from 'react-native';
 import {ThemeProvider} from '@rneui/themed';
 import {RootNavigation} from './presentation/navigation/RootNavigation';
 import allReducers from '@/redux/reducers';
 import ReduxThunk from 'redux-thunk';
 import {ModalProvider} from './presentation/components/modal/context';
 import {theme} from './presentation/theme';
-import ErrorBoundary from './presentation/components/errorComponent/ErrorBoundary';
-import {Fallback500, Fallback503} from './presentation/components/errorComponent/GeneralFallback';
-import React, {useEffect, useState} from 'react';
+import GeneralErrorBoundary from './presentation/components/errorComponent/ErrorBoundary';
+import React, {useEffect} from 'react';
 import {Provider} from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
-import {QueryClient, QueryClientProvider} from 'react-query';
+import {QueryClient, QueryClientProvider, useQueryErrorResetBoundary} from 'react-query';
 import {createLogger} from 'redux-logger';
 import './assets/locales/index';
 
@@ -20,7 +19,6 @@ const store = createStore(allReducers, applyMiddleware(ReduxThunk, logger));
 
 import NetInfo from '@react-native-community/netinfo'
 import {onlineManager} from 'react-query'
-import messaging, {firebase} from "@react-native-firebase/messaging";
 import CodePush, {CodePushOptions, DownloadProgress, LocalPackage} from "react-native-code-push";
 
 onlineManager.setEventListener(setOnline => {
@@ -53,11 +51,11 @@ const App = () => {
     };
 
     // const modalRef = useRef<CustomModalRef>()
-
+    const {reset} = useQueryErrorResetBoundary();
     return (
         <Provider store={store}>
             <ThemeProvider theme={theme}>
-                <ErrorBoundary fallback500={Fallback500()} fallback503={Fallback503()}>
+                <GeneralErrorBoundary onReset={reset}>
                     <QueryClientProvider client={queryClient}>
                         <ModalProvider>
                             <SafeAreaView style={backgroundStyle}>
@@ -65,7 +63,7 @@ const App = () => {
                             </SafeAreaView>
                         </ModalProvider>
                     </QueryClientProvider>
-                </ErrorBoundary>
+                </GeneralErrorBoundary>
             </ThemeProvider>
         </Provider>
     );

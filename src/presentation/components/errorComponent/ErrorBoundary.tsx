@@ -1,6 +1,7 @@
 import { ApiErrorCode, ApiErrorCodeType } from '@/data/api/ApiErrorCode';
 import React, { ReactNode } from 'react';
 import { Text } from 'react-native';
+import { Fallback500, Fallback503 } from './Fallback';
 
 export interface ErrorBoundaryState {
   hasError: boolean;
@@ -10,18 +11,21 @@ export interface ErrorBoundaryState {
 
 export interface ErrorBoundaryProps {
   children?: ReactNode;
-  fallback500: ReactNode;
-  fallback503: ReactNode;
+  onReset?: () => void;
+  fallback?: ReactNode;
+  message?: string;
 }
 
-class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+const initialState: ErrorBoundaryState = {
+  hasError: false,
+  isPropagated: false,
+  error: null,
+};
+
+class GeneralErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
-    this.state = {
-      hasError: false,
-      isPropagated: false,
-      error: null,
-    };
+    this.state = initialState;
   }
 
   static getDerivedStateFromError(error: Error) {
@@ -35,15 +39,25 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {}
 
+  onResetErrorBoundary = () => {
+    const { onReset } = this.props;
+    onReset == null ? void 0 : onReset();
+    this.reset();
+  };
+
+  reset() {
+    this.setState(initialState);
+  }
+
   render(): React.ReactNode {
     const { hasError, isPropagated, error } = this.state;
-    const { children, fallback500, fallback503 } = this.props;
+    const { children } = this.props;
 
     if (hasError) {
       if (error?.name == ApiErrorCodeType[500]) {
-        return fallback500;
+        return <Fallback500 onPressReset={this.onResetErrorBoundary} />;
       } else if (error?.name == ApiErrorCodeType[503]) {
-        return fallback503;
+        return <Fallback503 />;
       }
     }
 
@@ -51,4 +65,4 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 }
 
-export default ErrorBoundary;
+export default GeneralErrorBoundary;

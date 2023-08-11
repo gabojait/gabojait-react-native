@@ -2,10 +2,10 @@ import { Position } from '@/data/model/type/Position';
 import { PositionText, KoreanPosition } from '../model/type/Position';
 
 export function mapKoreanToPosition(position: string) {
-  if (position == KoreanPosition.backend) return Position.Backend;
-  else if (position == KoreanPosition.frontend) return Position.Frontend;
-  else if (position == KoreanPosition.designer) return Position.Designer;
-  else if (position == KoreanPosition.manager) return Position.Manager;
+  if (position == KoreanPosition.BACKEND) return Position.Backend;
+  else if (position == KoreanPosition.FRONTEND) return Position.Frontend;
+  else if (position == KoreanPosition.DESIGNER) return Position.Designer;
+  else if (position == KoreanPosition.MANAGER) return Position.Manager;
 }
 
 export function mapPositionToTextName(position: Position) {
