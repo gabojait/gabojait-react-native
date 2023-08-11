@@ -7,7 +7,7 @@ import {ModalProvider} from './presentation/components/modal/context';
 import {theme} from './presentation/theme';
 import ErrorBoundary from './presentation/components/errorComponent/ErrorBoundary';
 import {Fallback500, Fallback503} from './presentation/components/errorComponent/GeneralFallback';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Provider} from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
 import {QueryClient, QueryClientProvider} from 'react-query';
@@ -21,12 +21,20 @@ const store = createStore(allReducers, applyMiddleware(ReduxThunk, logger));
 import NetInfo from '@react-native-community/netinfo'
 import {onlineManager} from 'react-query'
 import messaging, {firebase} from "@react-native-firebase/messaging";
+import CodePush, {CodePushOptions, DownloadProgress, LocalPackage} from "react-native-code-push";
 
 onlineManager.setEventListener(setOnline => {
     return NetInfo.addEventListener(state => {
         setOnline(!!state.isConnected)
     })
 })
+
+const codePushOptions: CodePushOptions = {
+    checkFrequency: CodePush.CheckFrequency.ON_APP_START,
+    installMode: CodePush.InstallMode.IMMEDIATE,
+    mandatoryInstallMode: CodePush.InstallMode.IMMEDIATE,
+};
+
 
 // Check if app was launched in the background and conditionally render null if so
 export function HeadlessCheck({isHeadless}: { isHeadless: boolean }) {
@@ -36,7 +44,7 @@ export function HeadlessCheck({isHeadless}: { isHeadless: boolean }) {
     }
 
     // Render the app component on foreground launch
-    return <App/>;
+    return CodePush(codePushOptions)(App);
 }
 
 const App = () => {
@@ -64,4 +72,4 @@ const App = () => {
 };
 
 
-export default App;
+export default CodePush(codePushOptions)(App);
