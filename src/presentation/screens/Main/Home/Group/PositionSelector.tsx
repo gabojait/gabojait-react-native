@@ -1,11 +1,7 @@
-import { FilledButton } from '@/presentation/components/Button';
-import CardWrapper from '@/presentation/components/CardWrapper';
-import PositionWaveIcon from '@/presentation/components/PositionWaveIcon';
 import { makeStyles, Text, useTheme } from '@rneui/themed';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
-import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent';
 import { useQuery, useQueryClient, useQueryErrorResetBoundary, UseQueryResult } from 'react-query';
 import TeamDetailDto from '@/data/model/Team/TeamDetailDto';
 import { getTeam } from '@/data/api/team';
@@ -17,24 +13,17 @@ import useModal from '@/presentation/components/modal/useModal';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { offerKeys } from '@/reactQuery/key/OfferKeys';
-import { Fallback404 } from '@/presentation/components/errorComponent/Fallback';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
-import { use } from 'i18next';
-
-interface ApplyPositionCardProps {
-  data: PositionRecruiting;
-  offers: BriefOfferDto[];
-  onApplyButtonPressed: (position: Position) => void;
-}
-
-type RecruitStatusType = '함께하기' | '모집완료' | '지원완료';
-type PositionTextNameType = '디자이너' | '기획자' | '프론트엔드' | '백엔드';
-
-interface ApplyPositionCardState {
-  title: PositionTextNameType;
-  buttonState: RecruitStatusType;
-  buttonDisabled: boolean;
-}
+import {
+  ApplyPositionCard,
+  ApplyPositionCardProps,
+  ApplyPositionCardState,
+  PositionTextNameType,
+  RecruitStatusType,
+} from '@/presentation/components/ApplyPositionCard';
+import { FilledButton } from '@/presentation/components/Button';
+import CardWrapper from '@/presentation/components/CardWrapper';
+import PositionWaveIcon from '@/presentation/components/PositionWaveIcon';
 
 const PositionSelector = ({ navigation, route }: MainStackScreenProps<'PositionSelector'>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -66,7 +55,7 @@ const PositionSelectorComponent = ({
     {
       resultToMessage: _ => '함께하기 요청이 전달되었습니다\n 결과를 기다려주세요',
       onSuccessClick() {
-        queryClient.invalidateQueries(teamKeys.getTeam);
+        queryClient.invalidateQueries([teamKeys.getTeam, teamId]);
       },
     },
   );
@@ -86,10 +75,10 @@ const PositionSelectorComponent = ({
   return (
     <ScrollView style={styles.scrollView}>
       {positions.map((item, index) => (
-        <ApplyPositionCard
+        <PositionSelectWrapper
           data={item}
           offers={data.offers}
-          onApplyButtonPressed={(position: Position) => {
+          onButtonPressed={(position: Position) => {
             offerMutation.mutate([position, teamId]);
           }}
         />
@@ -98,36 +87,41 @@ const PositionSelectorComponent = ({
   );
 };
 
-const ApplyPositionCard = ({ data, offers, onApplyButtonPressed }: ApplyPositionCardProps) => {
+const PositionSelectWrapper = ({
+  data,
+  offers,
+  onButtonPressed,
+}: {
+  data: PositionRecruiting;
+  offers: BriefOfferDto[];
+  onButtonPressed: (position: Position) => void;
+}) => {
   const styles = useStyles();
-  const [state, setState] = useState<ApplyPositionCardState>({
-    title: handleTitle(),
-    buttonState: handleButtonState(),
-    buttonDisabled: true,
+  const [state, setState] = useState({
+    buttonTitle: handleButtonState(),
+    buttonDisabled: false,
   });
 
   useEffect(() => {
     const buttonTitle = handleButtonState();
-    setState(prevState => ({ ...prevState, buttonState: buttonTitle }));
+    const buttonDisabled = handleButtonDisabled();
+    setState(prevState => ({ ...prevState, buttonTitle: buttonTitle }));
+    setState(prevState => ({ ...prevState, buttonDisabled: buttonDisabled }));
   }, [offers]);
 
   useEffect(() => {
-    if (state.buttonState == '함께하기') {
+    if (state.buttonTitle == '함께하기') {
       setState(prevState => ({ ...prevState, buttonDisabled: false }));
     } else {
       setState(prevState => ({ ...prevState, buttonDisabled: true }));
     }
-  }, [state.buttonState]);
+  }, [state.buttonTitle]);
 
-  function handleTitle(): PositionTextNameType {
-    if (data.position == Position.Backend) {
-      return '백엔드';
-    } else if (data.position == Position.Designer) {
-      return '디자이너';
-    } else if (data.position == Position.Frontend) {
-      return '프론트엔드';
+  function handleButtonDisabled() {
+    if (state.buttonTitle == '함께하기') {
+      return false;
     } else {
-      return '기획자';
+      return true;
     }
   }
 
@@ -143,29 +137,15 @@ const ApplyPositionCard = ({ data, offers, onApplyButtonPressed }: ApplyPosition
   }
 
   return (
-    <CardWrapper style={[styles.card]}>
-      <View style={styles.container}>
-        <View style={{ alignItems: 'center' }}>
-          <PositionWaveIcon
-            currentCnt={data.currentCnt}
-            recruitNumber={data.recruitCnt}
-            textView={
-              <Text style={styles.posiionText}>
-                {data.currentCnt}/{data.recruitCnt}
-              </Text>
-            }
-            key={data.position}
-          />
-          <Text style={styles.text}>{data.position}</Text>
-        </View>
-        <FilledButton
-          title={state.buttonState}
-          size="sm"
-          disabled={state.buttonDisabled}
-          onPress={() => onApplyButtonPressed(data.position)}
-        />
-      </View>
-    </CardWrapper>
+    <ApplyPositionCard
+      data={data}
+      offers={offers}
+      buttonTitle={state.buttonTitle}
+      isButtonDisabled={state.buttonDisabled}
+      onApplyButtonPressed={(position: Position) => {
+        onButtonPressed(position);
+      }}
+    />
   );
 };
 
