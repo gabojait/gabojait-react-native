@@ -7,6 +7,7 @@ import {
 import { StackScreenProps } from '@react-navigation/stack';
 import { BoardStackNavigationProps } from './BoardNavigation';
 import { MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
+import { Position } from '@/data/model/type/Position';
 
 interface WebViewPageProps {
   url: string;
@@ -52,7 +53,9 @@ export type MainStackParamList = {
   TeamHistory: undefined;
   TeamReview: { teamId: string };
   BookMark: undefined;
-  OfferPage: undefined;
+  OfferFromTeamPage: undefined;
+  TeamDetail: { teamId: string; targetPosition: Position; offerId: number };
+  JoinTeam: { teamId: string; targetPosition: Position; offerId: number };
   TeamApplied: undefined;
   GroupDetail: { teamId: string };
   GroupCreator: undefined;

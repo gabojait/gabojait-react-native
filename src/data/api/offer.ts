@@ -2,7 +2,7 @@ import client from '@/lib/axiosInstance';
 import { Position } from '@/data/model/type/Position';
 import { PageModel, PageRequest } from '@/reactQuery/util/useModelList';
 import BriefOfferDto from '@/data/model/Offer/BriefOfferDto';
-import OffersFromUserDto from '../model/Offer/OffersFromUserDto';
+import OffersFromOtherDto from '../model/Offer/OffersFromUserDto';
 
 export type GetOfferFromUsersProps = {
   pageSize: number;
@@ -17,28 +17,32 @@ export const applyToTeam = async (position: string, teamId: string) => {
 };
 
 export const getOffersFromTeam = async (body: PageRequest) => {
-  const result = await client.get('user/offer', {
+  const result = await client.get('user/offer/received', {
     params: {
       'page-from': body.pageFrom,
       'page-size': body.pageSize,
     },
   });
-  return result as PageModel<BriefOfferDto>;
+  return result as PageModel<OffersFromOtherDto>;
 };
 
 export const getOffersFromUser = async (params: GetOfferFromUsersProps) => {
-  const result = await client.get('team/offer', {
+  const result = await client.get('team/offer/received', {
     params: {
       'page-from': params.pageFrom,
       'page-size': params.pageSize,
       position: params.position,
     },
   });
-  return result as PageModel<OffersFromUserDto>;
+  return result as PageModel<OffersFromOtherDto>;
 };
 
 export const sendOfferToUser = async (userId: string, position: Position) => {
   return await client.post(`team/user/${userId}/offer`, { position: position });
+};
+
+export const decideOfferFromTeam = async (offerId: number, isAccepted: boolean) => {
+  return await client.patch(`user/offer/${offerId}`, { isAccepted: isAccepted });
 };
 
 export const rejectOfferFromUser = async (offerId: number) => {

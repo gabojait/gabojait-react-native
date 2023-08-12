@@ -7,4 +7,5 @@ export const offerKeys = {
   getOffersFromManager: 'manager',
   rejectOfferFromUser: 'rejectOfferFromUser',
   acceptOfferFromUser: 'acceptOfferFromUser',
+  decideOfferFromTeam: 'decideOfferFromTeam',
 };

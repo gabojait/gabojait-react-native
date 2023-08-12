@@ -8,7 +8,7 @@ import TeamHistory from '../screens/Main/MyPage/TeamHistory';
 import TitleWithCloseHeader from '../screens/Headers/TitleWithCloseHeader';
 import TeamReview from '../screens/Main/MyPage/TeamReview';
 import BookMark from '../screens/Main/MyPage/BookMark';
-import OfferPage from '../screens/Main/MyPage/OfferPage';
+import OfferFromTeamPage from '../screens/Main/MyPage/OfferFromTeam/OfferFromTeamPage';
 import TeamsApplied from '../screens/Main/MyPage/TeamsApplied';
 import Setting from '../screens/Main/MyPage/Setting/Setting';
 import AlarmSetting from '../screens/Main/MyPage/Setting/AlarmSetting';
@@ -24,6 +24,8 @@ import { OpenChatingPage } from '../screens/Main/Team/OpenChatingPage';
 import { TeamEditor } from '../screens/Main/Team/TeamEditor';
 import { ManageTeammate } from '../screens/Main/Team/ManageTeammate';
 import ProfilePreview from '../screens/Main/Home/TeamMate/ProfilePreview';
+import TeamDetail from '../screens/Main/MyPage/OfferFromTeam/TeamDetail';
+import JoinTeam from '../screens/Main/MyPage/OfferFromTeam/JoinTeam';
 const Main = createStackNavigator<MainStackParamList>();
 
 const MainNavigation = () => {
@@ -72,11 +74,27 @@ const MainNavigation = () => {
           }}
         />
         <Main.Screen
-          name="OfferPage"
-          component={OfferPage}
+          name="OfferFromTeamPage"
+          component={OfferFromTeamPage}
           options={{
             header: TitleWithCloseHeader,
             headerTitle: '제안서',
+          }}
+        />
+        <Main.Screen
+          name="TeamDetail"
+          component={TeamDetail}
+          options={{
+            header: TitleWithCloseHeader,
+            headerTitle: '',
+          }}
+        />
+        <Main.Screen
+          name="JoinTeam"
+          component={JoinTeam}
+          options={{
+            header: TitleWithCloseHeader,
+            headerTitle: '팀에 합류하기',
           }}
         />
         <Main.Screen

@@ -9,11 +9,21 @@ import DesignerList from './DesignerList';
 import FrontendList from './FrontendList';
 import PMList from './PMList';
 import { theme } from '@/presentation/theme';
+import { getMyTeam, getTeam } from '@/data/api/team';
+import TeamDetailDto from '@/data/model/Team/TeamDetailDto';
+import { teamKeys } from '@/reactQuery/key/TeamKeys';
+import { UseQueryResult, useQuery } from 'react-query';
 
 const ApplyStatus = ({ navigation, route }: MainStackScreenProps<'ApplyStatus'>) => {
   const Tab = createMaterialTopTabNavigator<PositionTabParamList>();
   const { theme } = useTheme();
-
+  const { data, isLoading, error }: UseQueryResult<TeamDetailDto> = useQuery(
+    [teamKeys.myTeam],
+    () => getMyTeam(),
+    {
+      useErrorBoundary: true,
+    },
+  );
   return (
     <>
       <Text
@@ -26,7 +36,7 @@ const ApplyStatus = ({ navigation, route }: MainStackScreenProps<'ApplyStatus'>)
           paddingLeft: 20,
         }}
       >
-        가보자잇
+        {data?.projectName}
       </Text>
       <Tab.Navigator
         initialRouteName="Frontend"

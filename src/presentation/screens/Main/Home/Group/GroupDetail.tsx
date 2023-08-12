@@ -200,7 +200,7 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
             </View>
             <FilledButton
               title={'함께 하기'}
-              onPress={() => navigation.navigate('PositionSelector', { teamId })}
+              onPress={() => navigation.navigate('PositionSelector', { teamId: teamId })}
             />
           </View>
         </CardWrapper>
