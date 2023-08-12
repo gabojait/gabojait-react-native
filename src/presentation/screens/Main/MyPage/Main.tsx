@@ -113,7 +113,9 @@ const Main = ({ navigation }: MainBottomTabNavigationProps<'MyPage'>) => {
             onPressApply={() =>
               navigation.navigate('MainNavigation', { screen: 'OfferFromTeamPage' })
             }
-            onPressTeam={() => navigation.navigate('MainNavigation', { screen: 'TeamApplied' })}
+            onPressTeam={() =>
+              navigation.navigate('MainNavigation', { screen: 'OfferToTeamHistory' })
+            }
             onPressHistory={() => navigation.navigate('MainNavigation', { screen: 'TeamHistory' })}
           />
         )}

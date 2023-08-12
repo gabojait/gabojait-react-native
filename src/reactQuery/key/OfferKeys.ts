@@ -8,4 +8,5 @@ export const offerKeys = {
   rejectOfferFromUser: 'rejectOfferFromUser',
   acceptOfferFromUser: 'acceptOfferFromUser',
   decideOfferFromTeam: 'decideOfferFromTeam',
+  offersSentToTeam: 'offersSentToTeam',
 };

@@ -56,7 +56,7 @@ export type MainStackParamList = {
   OfferFromTeamPage: undefined;
   TeamDetail: { teamId: string; targetPosition: Position; offerId: number };
   JoinTeam: { teamId: string; targetPosition: Position; offerId: number };
-  TeamApplied: undefined;
+  OfferToTeamHistory: undefined;
   GroupDetail: { teamId: string };
   GroupCreator: undefined;
   OpenChatingPage: { uri: string };

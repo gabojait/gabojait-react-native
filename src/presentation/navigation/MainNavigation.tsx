@@ -9,7 +9,7 @@ import TitleWithCloseHeader from '../screens/Headers/TitleWithCloseHeader';
 import TeamReview from '../screens/Main/MyPage/TeamReview';
 import BookMark from '../screens/Main/MyPage/BookMark';
 import OfferFromTeamPage from '../screens/Main/MyPage/OfferFromTeam/OfferFromTeamPage';
-import TeamsApplied from '../screens/Main/MyPage/TeamsApplied';
+import OfferToTeamHistory from '../screens/Main/MyPage/OfferToTeamHistory';
 import Setting from '../screens/Main/MyPage/Setting/Setting';
 import AlarmSetting from '../screens/Main/MyPage/Setting/AlarmSetting';
 import UserModifier from '../screens/Main/MyPage/Setting/UserModifier';
@@ -98,11 +98,11 @@ const MainNavigation = () => {
           }}
         />
         <Main.Screen
-          name="TeamApplied"
-          component={TeamsApplied}
+          name="OfferToTeamHistory"
+          component={OfferToTeamHistory}
           options={{
             header: TitleWithCloseHeader,
-            headerTitle: '지원서',
+            headerTitle: '지원한 팀',
           }}
         />
       </Main.Group>

@@ -1,22 +1,24 @@
-import { Position } from '@/data/model/type/Position';
-import PositionRecruiting from '@/presentation/model/PositionRecruitng';
+import GroupListCard from '@/presentation/components/TeamBanner';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import React, { useState } from 'react';
 import { FlatList, TouchableOpacity, View } from 'react-native';
-import { PageRequest, useModelList } from '@/reactQuery/util/useModelList';
-import { getOffersFromTeam } from '@/data/api/offer';
+import { useAppSelector } from '@/redux/hooks';
+import TeamBriefDto from '@/data/model/Team/TeamBriefDto';
 import TeamBanner from '@/presentation/components/TeamBanner';
+import { getOffersFromTeam, getOffersSentToTeam } from '@/data/api/offer';
+import { useModelList, PageRequest } from '@/reactQuery/util/useModelList';
+import { offerKeys } from '@/reactQuery/key/OfferKeys';
 
-const QueryKey = {
-  all: ['GetOffers'],
-  filtered: (filter: PageRequest) => [
-    ...QueryKey.all,
-    'filtered',
-    { ...filter, pageFrom: undefined },
-  ],
-};
-
-const OfferFromTeamPage = ({ navigation }: MainStackScreenProps<'OfferFromTeamPage'>) => {
+const OfferToTeamHistory = ({ navigation, route }: MainStackScreenProps<'OfferToTeamHistory'>) => {
+  // Todo: API 붙이기
+  const QueryKey = {
+    all: offerKeys.offersSentToTeam,
+    filtered: (filter: PageRequest) => [
+      ...QueryKey.all,
+      'filtered',
+      { ...filter, pageFrom: undefined },
+    ],
+  };
   const [params, setParams] = useState({ pageFrom: 0, pageSize: 20 } as PageRequest);
   const { data, isLoading, error, fetchNextPage, refetch, isRefreshing } = useModelList({
     initialParam: {
@@ -24,8 +26,7 @@ const OfferFromTeamPage = ({ navigation }: MainStackScreenProps<'OfferFromTeamPa
       pageSize: 20,
     },
     fetcher: ({ pageParam, queryKey }) => {
-      console.log(pageParam, queryKey);
-      return getOffersFromTeam({
+      return getOffersSentToTeam({
         ...(params as PageRequest),
         pageFrom: pageParam,
       });
@@ -34,20 +35,14 @@ const OfferFromTeamPage = ({ navigation }: MainStackScreenProps<'OfferFromTeamPa
   });
 
   return (
-    <View style={{ backgroundColor: 'white', flex: 1, padding: 20 }}>
+    <View style={{ backgroundColor: 'white', flex: 1 }}>
       <FlatList
         showsHorizontalScrollIndicator={false}
         keyExtractor={item => item.toString()}
         data={data?.pages?.map(page => page.data).flat()}
         renderItem={({ item }) => (
           <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('TeamDetail', {
-                teamId: item.team.teamId,
-                targetPosition: item.position,
-                offerId: item.offerId,
-              });
-            }}
+            onPress={() => navigation.navigate('GroupDetail', { teamId: item.team.teamId })}
           >
             <TeamBanner
               teamMembersCnt={item?.team.teamMemberCnts ?? []}
@@ -55,14 +50,9 @@ const OfferFromTeamPage = ({ navigation }: MainStackScreenProps<'OfferFromTeamPa
             />
           </TouchableOpacity>
         )}
-        refreshing={isRefreshing}
-        onRefresh={refetch}
-        onEndReached={() => {
-          fetchNextPage();
-        }}
-        onEndReachedThreshold={0.6}
       />
     </View>
   );
 };
-export default OfferFromTeamPage;
+
+export default OfferToTeamHistory;

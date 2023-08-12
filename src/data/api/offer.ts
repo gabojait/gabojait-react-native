@@ -45,6 +45,16 @@ export const decideOfferFromTeam = async (offerId: number, isAccepted: boolean) 
   return await client.patch(`user/offer/${offerId}`, { isAccepted: isAccepted });
 };
 
+export const getOffersSentToTeam = async (body: PageRequest) => {
+  const result = await client.get('user/offer/sent', {
+    params: {
+      'page-from': body.pageFrom,
+      'page-size': body.pageSize,
+    },
+  });
+  return result as PageModel<OffersFromOtherDto>;
+};
+
 export const rejectOfferFromUser = async (offerId: number) => {
   return await client.delete(`team/offer/${offerId}`);
 };
