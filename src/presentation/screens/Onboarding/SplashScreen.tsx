@@ -1,11 +1,12 @@
 import {RootStackScreenProps} from '@/presentation/navigation/types';
 import {getUser} from '@/redux/action/login';
 import {useAppDispatch, useAppSelector} from '@/redux/hooks';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Alert, PermissionsAndroid, Platform, View} from 'react-native';
 import Splash from 'react-native-splash-screen';
 import messaging from '@react-native-firebase/messaging';
 import {createTable, getDBConnection, getNotifications, saveNotification} from "@/data/localdb";
+import CodePush, {DownloadProgress, LocalPackage} from "react-native-code-push";
 
 const SplashScreen = ({navigation}: RootStackScreenProps<'SplashScreen'>) => {
     const handleRefresh = () => {
@@ -83,7 +84,8 @@ const SplashScreen = ({navigation}: RootStackScreenProps<'SplashScreen'>) => {
                 id: parseInt(remoteMessage.messageId ?? "99999") ?? 0,
                 title: remoteMessage.data?.title ?? "",
                 body: remoteMessage.data?.body ?? "",
-                time: remoteMessage.data?.time ?? ""
+                time: remoteMessage.data?.time ?? "",
+                type: remoteMessage.data?.type ?? ""
             });
 
             await db.close();
@@ -91,8 +93,33 @@ const SplashScreen = ({navigation}: RootStackScreenProps<'SplashScreen'>) => {
         });
         return unsubscribe;
     }, []);
+    const [hasUpdate, setHasUpdate] = useState(true);
+    const [syncProgress, setSyncProgress] = useState<DownloadProgress>();
 
-    useEffect(handleRefresh, [user]);
+    useEffect(() => {
+        const checkCodePush = async () => {
+            try {
+                const update = await CodePush.checkForUpdate('nuR6I96BFy8COksJ3oinvr8ObCLxl4QA9R76d')
+                if (update) {
+                    update
+                        .download((progress: DownloadProgress) => setSyncProgress(progress))
+                        .then((newPackage: LocalPackage) =>
+                            newPackage
+                                .install(CodePush.InstallMode.IMMEDIATE)
+                                .then(() => CodePush.restartApp())
+                        );
+                    return;
+                }
+                throw new Error("업데이트 없음")
+            } catch {
+                handleRefresh()
+                setHasUpdate(false);
+            }
+        };
+
+        checkCodePush();
+    }, [user]);
+
     return <View style={[{flex: 1, backgroundColor: ''}]}></View>;
 };
 export default SplashScreen;
