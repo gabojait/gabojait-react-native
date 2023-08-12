@@ -1,13 +1,7 @@
 import BriefOfferDto from '../Offer/BriefOfferDto';
 import { Position } from '../type/Position';
+import UserProfileDto from './UserProfileDto';
 
-export default interface UserProfileBriefDto {
-  createdAt: string;
-  nickname: string;
+export default interface UserProfileOfferDto extends UserProfileDto {
   offers: BriefOfferDto[];
-  position: Position;
-  rating: number;
-  reviewCnt: number;
-  updatedAt: string;
-  userId: string;
 }

@@ -1,21 +1,21 @@
 import client, { axiosConfig, reqInterceptor } from '@/lib/axiosInstance';
 import { Position } from '../model/type/Position';
 import { ProfileOrder } from '../model/type/ProfileOrder';
-import UserProfileBriefDto from '../model/User/UserProfileBriefDto';
+import UserProfileOfferDto from '../model/User/UserProfileBriefDto';
 import Education from '../model/Profile/Education';
 import Portfolio, { PortfolioType } from '../model/Profile/Portfolio';
 import Skill from '../model/Profile/Skill';
 import Work from '../model/Profile/Work';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {PageModel} from "@/reactQuery/util/useModelList";
+import { PageModel } from '@/reactQuery/util/useModelList';
 
 export type GetProfileProps = {
-    pageSize: number;
-    pageFrom?: number;
-    position: Position;
-    profileOrder: ProfileOrder
-}
+  pageSize: number;
+  pageFrom?: number;
+  position: Position;
+  profileOrder: ProfileOrder;
+};
 
 export const getMyProfile = async () => {
   const result = await client.get('user/profile');
@@ -29,13 +29,13 @@ export const getProfile = async (userId: string) => {
 };
 
 export const getUserSeekingTeam = async (props: GetProfileProps) => {
-    let params = {
-        'page-from': props.pageFrom,
-        'page-size': props.pageSize,
-        position: props.position,
-        'profile-order': props.profileOrder,
-    };
-    return (await client.get('user/seeking-team', {params})) as PageModel<UserProfileBriefDto>;
+  let params = {
+    'page-from': props.pageFrom,
+    'page-size': props.pageSize,
+    position: props.position,
+    'profile-order': props.profileOrder,
+  };
+  return (await client.get('user/seeking-team', { params })) as PageModel<UserProfileOfferDto>;
 };
 
 export const setUserSeekingTeam = async (isSeekingTeam: boolean) => {

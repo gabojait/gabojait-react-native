@@ -52,7 +52,7 @@ export type MainStackParamList = {
     NavigatorScreenParams<TeammateStackParamList>;
   TeamHistory: undefined;
   TeamReview: { teamId: string };
-  BookMark: undefined;
+  BookMark: { isLeader: boolean };
   OfferFromTeamPage: undefined;
   TeamDetail: { teamId: string; targetPosition: Position; offerId: number };
   JoinTeam: { teamId: string; targetPosition: Position; offerId: number };

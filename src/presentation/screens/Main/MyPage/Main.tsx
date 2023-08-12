@@ -81,7 +81,12 @@ const Main = ({ navigation }: MainBottomTabNavigationProps<'MyPage'>) => {
       <View style={{ flexDirection: 'row', marginHorizontal: 20, marginTop: 20 }}>
         <CardWrapper style={[{ flex: 1, minHeight: 93, justifyContent: 'center', marginRight: 7 }]}>
           <TouchableOpacity
-            onPress={() => navigation.navigate('MainNavigation', { screen: 'BookMark' })}
+            onPress={() =>
+              navigation.navigate('MainNavigation', {
+                screen: 'BookMark',
+                params: { isLeader: profileData?.isLeader ?? false },
+              })
+            }
           >
             <Icon type="ionicon" size={43} name="heart-circle-outline" />
             <Text style={{ textAlign: 'center' }}>찜</Text>
