@@ -42,7 +42,7 @@ export function HeadlessCheck({isHeadless}: { isHeadless: boolean }) {
     }
 
     // Render the app component on foreground launch
-    return CodePush(codePushOptions)(App);
+    return <App/>
 }
 
 const App = () => {

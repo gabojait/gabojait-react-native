@@ -99,8 +99,10 @@ const SplashScreen = ({navigation}: RootStackScreenProps<'SplashScreen'>) => {
     useEffect(() => {
         const checkCodePush = async () => {
             try {
+                console.log("checking update")
                 const update = await CodePush.checkForUpdate('nuR6I96BFy8COksJ3oinvr8ObCLxl4QA9R76d')
                 if (update) {
+                    console.log("update exists")
                     update
                         .download((progress: DownloadProgress) => setSyncProgress(progress))
                         .then((newPackage: LocalPackage) =>
@@ -110,8 +112,13 @@ const SplashScreen = ({navigation}: RootStackScreenProps<'SplashScreen'>) => {
                         );
                     return;
                 }
+                console.log("update not exists")
+
+                handleRefresh()
                 throw new Error("업데이트 없음")
             } catch {
+                console.log("update not exists")
+
                 handleRefresh()
                 setHasUpdate(false);
             }
