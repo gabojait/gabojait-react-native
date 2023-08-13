@@ -39,6 +39,7 @@ const FavoriteTeams = ({ navigation, route }: MainStackScreenProps<'BookMark'>) 
   const [params, setParams] = useState({ pageFrom: 0, pageSize: 20 } as PageRequest);
   const { data, isLoading, error, fetchNextPage, refetch, isRefreshing } = useModelList({
     initialParam: { ...params },
+    idName: "teamId",
     key: QueryKey.filtered(params),
     fetcher: ({ pageParam, queryKey: [_, __, params] }) => {
       return getFavoriteTeams({ ...(params as PageRequest), pageFrom: pageParam });
@@ -82,6 +83,7 @@ const FavoriteUsers = ({ navigation, route }: MainStackScreenProps<'BookMark'>) 
   const [params, setParams] = useState({ pageFrom: 0, pageSize: 20 } as PageRequest);
   const { data, isLoading, error, fetchNextPage, refetch, isRefreshing } = useModelList({
     initialParam: { ...params },
+    idName: "userId",
     key: QueryKey.filtered(params),
     fetcher: ({ pageParam, queryKey: [_, __, params] }) => {
       return getFavoriteUsers({ ...(params as PageRequest), pageFrom: pageParam });

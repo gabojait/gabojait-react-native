@@ -27,6 +27,7 @@ const FrontendList = ({ navigation, route }: PositionTabParamListProps<'Frontend
       pageSize: 20,
       position: Position.Frontend,
     },
+      idName: "offerId",
     key: offerKeys.getOffersFromFrontend,
     fetcher: async ({ pageParam, queryKey: [_, params] }) => {
       console.log('fetch!!');

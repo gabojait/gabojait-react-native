@@ -23,6 +23,7 @@ const OfferFromTeamPage = ({ navigation }: MainStackScreenProps<'OfferFromTeamPa
       pageFrom: 0,
       pageSize: 20,
     },
+    idName: "offerId",
     fetcher: ({ pageParam, queryKey }) => {
       console.log(pageParam, queryKey);
       return getOffersFromTeam({

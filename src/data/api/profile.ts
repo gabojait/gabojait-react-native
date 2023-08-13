@@ -35,7 +35,7 @@ export const getUserSeekingTeam = async (props: GetProfileProps) => {
     position: props.position,
     'profile-order': props.profileOrder,
   };
-  return (await client.get('user/seeking-team', { params })) as PageModel<UserProfileOfferDto>;
+  return ((await client.get('user/seeking-team', { params })) as any ) as PageModel<UserProfileOfferDto>;
 };
 
 export const setUserSeekingTeam = async (isSeekingTeam: boolean) => {

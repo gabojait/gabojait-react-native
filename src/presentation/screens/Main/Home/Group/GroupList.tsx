@@ -30,6 +30,7 @@ const GroupList = ({ navigation }: BoardStackParamListProps<'GroupList'>) => {
       position: Position.None,
       teamOrder: TeamOrder.Created,
     },
+    idName: "teamId",
     key: teamKeys.recruiting,
     fetcher: async ({ pageParam, queryKey: [_, params] }) => {
       console.log('fetch!!');
