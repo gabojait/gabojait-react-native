@@ -6,35 +6,64 @@ import {nicknameRegex, passwordRegex} from '@/presentation/utils/util';
 import {Text, useTheme} from '@rneui/themed';
 import React, {useState} from 'react';
 import {View} from 'react-native';
-import {changePassword, checkNicknameDuplicate, checkUsernameDuplicate} from "@/data/api/accounts";
+import {changeNickname, changePassword, checkNicknameDuplicate, checkUsernameDuplicate} from "@/data/api/accounts";
 import {useMutation} from "react-query";
 import {useMutationDialog} from "@/reactQuery/util/useMutationDialog";
+import {useTranslation} from "react-i18next";
+import {useAppDispatch} from "@/redux/hooks";
+import {signOut} from "@/redux/action/login";
 
 const UserModifier = ({navigation}: MainStackScreenProps<'UserModifier'>) => {
     const {theme} = useTheme();
 
+    const dispatch = useAppDispatch();
+
     const [nickname, setNickname] = useState('');
     const [passwords, setPasswords] = useState<string[]>([]);
-    const {mutation: checkNicknameDuplicateMutation} = useMutationDialog(['checkNicknameDuplicate', nickname], checkNicknameDuplicate)
-    const {mutation: changePwMutation} = useMutationDialog(['changePassword', passwords], changePassword)
+    const [dupChecked, setDupChecked] = useState(false);
 
+    const {mutation: checkNicknameDuplicateMutation} = useMutationDialog(['checkNicknameDuplicate', nickname], checkNicknameDuplicate, {
+        onSuccessClick: () => {
+            setDupChecked(true);
+        },
+        resultToMessage: () => t("nicknameDupOk")
+    })
+    const {mutation: changeNicknameMutation} = useMutationDialog(['changeNickName', nickname], changeNickname, {
+        onSuccessClick: () => {
+            setDupChecked(true);
+        },
+        resultToMessage: () => t("result_nicknameChangeOk")
+    })
+
+    const {mutation: changePwMutation} = useMutationDialog(['changePassword', passwords], changePassword, {
+        onSuccessClick: () => {
+            dispatch(signOut());
+            navigation.getParent()?.navigate("OnboardingNavigation", {screen: "Login"})
+        },
+        resultToMessage: () => t("result_passwordChangeOk")
+    })
+    const {t} = useTranslation();
     return (
         <View style={{backgroundColor: 'white', flex: 1, padding: 20}}>
             <Text h4 style={{marginBottom: theme.spacing.md}}>
-                닉네임 변경
+                {t("changeNickNm")}
             </Text>
             <CustomInput
                 containerStyle={{marginBottom: theme.spacing.md}}
                 shape="round"
                 value={nickname}
+                disabled={dupChecked}
                 onChangeText={value => setNickname(value)}
             />
             <FilledButton
                 style={{marginBottom: theme.spacing.md}}
-                title="중복확인"
+                title={dupChecked ? t("action_confirm") : t("action_checkDup")}
                 disabled={!nicknameRegex.test(nickname)}
                 onPress={() => {
-                    checkNicknameDuplicateMutation.mutate(nickname)
+                    if (!dupChecked)
+                        checkNicknameDuplicateMutation.mutate(nickname)
+                    else
+                        changeNicknameMutation.mutate({nickname})
                 }}
             />
             <Text h4 style={{marginBottom: theme.spacing.md}}>

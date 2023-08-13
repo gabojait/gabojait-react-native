@@ -13,4 +13,5 @@ export interface CustomInputProps extends TextInputProps {
   shape?: InputShape
   containerStyle?: StyleProp<ViewStyle>
   inputContainerStyle?: StyleProp<ViewStyle>
+  disabled?: boolean
 }

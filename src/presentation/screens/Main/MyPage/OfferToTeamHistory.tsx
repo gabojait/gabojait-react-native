@@ -25,6 +25,7 @@ const OfferToTeamHistory = ({ navigation, route }: MainStackScreenProps<'OfferTo
       pageFrom: 0,
       pageSize: 20,
     },
+    idName: "offerId",
     fetcher: ({ pageParam, queryKey }) => {
       return getOffersSentToTeam({
         ...(params as PageRequest),
