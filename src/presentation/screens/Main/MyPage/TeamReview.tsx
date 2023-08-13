@@ -6,55 +6,56 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import CustomInput from '@/presentation/components/CustomInput';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { getReviewQuestions } from '@/redux/reducers/reviewQuestionsGetReducer';
-import { ReviewType } from '@/data/model/Review/ReviewQuestion';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
-import { getTeamToReview } from '@/redux/reducers/teamToReviewGetReducer';
 import PagerView from 'react-native-pager-view';
 import ReviewAnswer from '@/data/model/Review/ReviewAnswer';
-import { ModalContext } from '@/presentation/components/modal/context';
 import SymbolCenteredModalContent from '@/presentation/components/modalContent/SymbolCenteredModalContent';
-import { createReview } from '@/redux/reducers/reviewCreateReducer';
-import { changeToTitleCase, getFirstAlphabet } from '@/presentation/utils/util';
+import { changeToTitleCase } from '@/presentation/utils/util';
 import useModal from '@/presentation/components/modal/useModal';
-import { Position } from '@/data/model/type/Position';
 import { PositionIcon } from '@/presentation/components/PartIcon';
-import { getMyTeam } from '@/data/api/team';
+import { getTeam } from '@/data/api/team';
 import TeamDto from '@/data/model/Team/TeamDto';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
-import { UseQueryResult, useQuery } from 'react-query';
+import { UseQueryResult, useQuery, useQueryClient } from 'react-query';
+import { offerKeys } from '@/reactQuery/key/OfferKeys';
+import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
+import { reviewKeys } from '@/reactQuery/key/ReviewKeys';
+import { createReview } from '@/data/api/review';
+import Reviews from '@/data/model/Review/Reviews';
 
 const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) => {
   const { theme } = useTheme();
   const modal = useModal();
   const dispatch = useAppDispatch();
   const pagerViewRef = useRef<PagerView>(null);
-
+  const queryClient = useQueryClient();
   const {
     data: teamData,
     isLoading: isTeamDataLoading,
     error: teamDataError,
-  }: UseQueryResult<TeamDto> = useQuery(teamKeys.myTeam, () => getMyTeam(), {
-    useErrorBoundary: true,
-    retry: 1,
-  });
+  }: UseQueryResult<TeamDto> = useQuery(
+    [teamKeys.getTeam, route.params.teamId],
+    () => getTeam(route.params.teamId),
+    {
+      useErrorBoundary: true,
+      retry: 1,
+    },
+  );
+  const { mutation: reviewMutation } = useMutationDialog(
+    offerKeys.offerToTeam,
+    (args: [Reviews, string]) => createReview(...args),
+    {
+      onSuccessClick() {
+        queryClient.invalidateQueries([reviewKeys.reviewAvailableTeam]);
+      },
+    },
+  );
 
-  const {
-    data: reviewQuestions,
-    loading: reviewQuestionsLoading,
-    error: reviewQuestionsError,
-  } = useAppSelector(state => state.reviewQuestionsGetReducer.reviewQuestionsResult);
-  const {
-    data: teamToReview,
-    loading: teamToReviewLoading,
-    error: teamToReviewError,
-  } = useAppSelector(state => state.teamToReviewGetReducer.teamToReviewGetResult);
-  const teammateArray = [
-    ...[teamToReview?.teamMemberCnts.filter(item => item.position === Position.Backend)],
-    ...[teamToReview?.teamMemberCnts.filter(item => item.position === Position.Designer)],
-    ...[teamToReview?.teamMemberCnts.filter(item => item.position === Position.Frontend)],
-    ...[teamToReview?.teamMemberCnts.filter(item => item.position === Position.Manager)],
+  const reviewQuestions: ReviewAnswer[] = [
+    { post: '', rate: '', userId: '' },
+    { post: '', rate: '', userId: '' },
   ];
+
   const [reviewResultState, setReviewResultState] = useState<ReviewAnswer[]>([]);
   const [reviewState, setReviewState] = useState<ReviewAnswer[]>([]);
   const [pageCount, setPageCount] = useState<number>(1);
@@ -139,7 +140,7 @@ const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) =
   }, []);
 
   return (
-    <>
+    <View style={{ justifyContent: 'space-between' }}>
       <Text
         style={{
           fontSize: theme.fontSize.lg,
@@ -153,7 +154,10 @@ const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) =
         {teamData?.projectName}
       </Text>
       <PagerView
-        style={{ flex: 1, backgroundColor: 'white' }}
+        style={{
+          flex: 1,
+          backgroundColor: 'white',
+        }}
         orientation="horizontal"
         initialPage={0}
         ref={pagerViewRef}
@@ -162,7 +166,7 @@ const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) =
       >
         {teamData?.teamMembers.map((item, index) => (
           <View key={item.nickname}>
-            <ScrollView style={{ flex: 1 }}>
+            <ScrollView style={{ flex: 1, alignContent: 'center' }}>
               <CardWrapper
                 style={{ marginLeft: 20, minWidth: 300, marginBottom: 10, marginTop: 2 }}
               >
@@ -229,8 +233,9 @@ const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) =
                       size={'sm'}
                       multiline={true}
                       numberOfLines={4}
-                      style={{ minHeight: 90 }}
+                      style={{ minHeight: 90, fontSize: 14 }}
                       maxLength={200}
+                      placeholder="팀원에 대한 리뷰를 남겨주세요"
                     />
                   </View>
                 </View>
@@ -250,7 +255,7 @@ const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) =
                       `item.answer:${item.post}, item.rate:${item.rate}, item.revieweeUserId:${item.userId}`,
                     );
                   });
-                  //dispatch(createReview({ reviews: reviewResultState }, teamId));
+                  reviewMutation.mutate([{ reviews: reviewResultState } as Reviews, teamId]);
                   navigation.goBack();
                 }}
               />
@@ -262,7 +267,6 @@ const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) =
                 disabled={buttonDisabled}
                 onPress={() => {
                   setReviewResultState(prevState => [...prevState, ...reviewState]);
-                  //초기화
                   reviewQuestions?.map((item, index) =>
                     setReviewState(prevState => [...prevState, { post: '', rate: '', userId: '' }]),
                   );
@@ -274,7 +278,7 @@ const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) =
           </View>
         ))}
       </PagerView>
-    </>
+    </View>
   );
 };
 
