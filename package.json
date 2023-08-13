@@ -10,7 +10,9 @@
     "start": "react-native start",
     "test": "jest",
     "debug:simulator": "react-native run-ios --configuration 'Debug' --simulator 'iPhone 14 Pro'",
-    "debug:device": "react-native run-ios --configuration 'Debug' --device"
+    "debug:device": "react-native run-ios --configuration 'Debug' --device",
+    "codepush:android": "appcenter codepush release-react -a INU_Gabojait/Gabojait -d Staging",
+    "codepush:ios": "appcenter codepush release-react -a INU_Gabojait/Gabojait -d Staging"
   },
   "dependencies": {
     "@miblanchard/react-native-slider": "^2.3.0",

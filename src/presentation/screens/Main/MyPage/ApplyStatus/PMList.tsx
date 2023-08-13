@@ -14,8 +14,9 @@ import {useMutationDialog} from '@/reactQuery/util/useMutationDialog';
 import {makeStyles, useTheme} from '@rneui/themed';
 import React from 'react';
 import {FlatList, Text, TouchableOpacity, View} from 'react-native';
+import {PositionTabParamListProps} from "@/presentation/navigation/types";
 
-const PMList = () => {
+const PMList = ({navigation: {navigation}}: { navigation: PositionTabParamListProps<"PM"> })  => {
     const {theme} = useTheme();
     const styles = useStyles();
     const {data, isLoading, error, fetchNextPage, refetch, isRefreshing} = useModelList({

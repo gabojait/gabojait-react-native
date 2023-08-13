@@ -2,11 +2,39 @@ import {RootStackScreenProps} from '@/presentation/navigation/types';
 import {getUser} from '@/redux/action/login';
 import {useAppDispatch, useAppSelector} from '@/redux/hooks';
 import React, {useEffect, useState} from 'react';
-import {Alert, PermissionsAndroid, Platform, View} from 'react-native';
+import {Alert, Dimensions, PermissionsAndroid, Platform, SafeAreaView, View} from 'react-native';
 import Splash from 'react-native-splash-screen';
 import messaging from '@react-native-firebase/messaging';
 import {createTable, getDBConnection, getNotifications, saveNotification} from "@/data/localdb";
 import CodePush, {DownloadProgress, LocalPackage} from "react-native-code-push";
+import {Text} from "@rneui/themed";
+import styles from "@/presentation/styles";
+import useGlobalStyles from "@/presentation/styles";
+
+interface SyncProgressViewProps {
+    syncProgress: DownloadProgress;
+}
+
+function SyncProgressView({syncProgress}: SyncProgressViewProps) {
+    const globalStyle = useGlobalStyles()
+    return (
+        <SafeAreaView style={globalStyle.container}>
+            <View>
+                <Text>안정적인 서비스 사용을 위해 내부 업데이트를 진행합니다.</Text>
+                <Text>재시작까지 잠시만 기다려주세요.</Text>
+                <View style={{width: Dimensions.get("screen").width}}>
+                    <View
+                        style={{
+                            width:
+                                (syncProgress.receivedBytes / syncProgress.totalBytes) *
+                                Dimensions.get("screen").width,
+                        }}
+                    />
+                </View>
+            </View>
+        </SafeAreaView>
+    );
+}
 
 const SplashScreen = ({navigation}: RootStackScreenProps<'SplashScreen'>) => {
     const handleRefresh = () => {
@@ -45,8 +73,34 @@ const SplashScreen = ({navigation}: RootStackScreenProps<'SplashScreen'>) => {
     }
 
     useEffect(() => {
-        dispatch(getUser());
-        requestUserPermission();
+        const checkCodePush = async () => {
+            try {
+                console.log("checking update")
+                const update = await CodePush.checkForUpdate('nuR6I96BFy8COksJ3oinvr8ObCLxl4QA9R76d')
+                if (update) {
+                    console.log("update exists: ", update)
+                    Alert.alert("업데이트 알림", `새로운 ${update.appVersion} 버전이 존재합니다. 업데이트 후 앱을 재시작합니다.`)
+                    update
+                        .download((progress: DownloadProgress) => setSyncProgress(progress))
+                        .then((newPackage: LocalPackage) =>
+                            newPackage
+                                .install(CodePush.InstallMode.IMMEDIATE)
+                                .then(() => CodePush.restartApp())
+                        );
+                    return;
+                }
+                console.log("update not exists1")
+                throw new Error("업데이트 없음")
+            } catch {
+                console.log("update not exists2")
+                setHasUpdate(false);
+                await dispatch(getUser());
+                await requestUserPermission();
+            }
+        };
+
+        checkCodePush();
+
     }, []);
 
     const setupFCM = async () => {
@@ -97,36 +151,14 @@ const SplashScreen = ({navigation}: RootStackScreenProps<'SplashScreen'>) => {
     const [syncProgress, setSyncProgress] = useState<DownloadProgress>();
 
     useEffect(() => {
-        const checkCodePush = async () => {
-            try {
-                console.log("checking update")
-                const update = await CodePush.checkForUpdate('nuR6I96BFy8COksJ3oinvr8ObCLxl4QA9R76d')
-                if (update) {
-                    console.log("update exists")
-                    update
-                        .download((progress: DownloadProgress) => setSyncProgress(progress))
-                        .then((newPackage: LocalPackage) =>
-                            newPackage
-                                .install(CodePush.InstallMode.IMMEDIATE)
-                                .then(() => CodePush.restartApp())
-                        );
-                    return;
-                }
-                console.log("update not exists")
-
-                handleRefresh()
-                throw new Error("업데이트 없음")
-            } catch {
-                console.log("update not exists")
-
-                handleRefresh()
-                setHasUpdate(false);
-            }
-        };
-
-        checkCodePush();
+        handleRefresh()
     }, [user]);
 
-    return <View style={[{flex: 1, backgroundColor: ''}]}></View>;
+    return <View style={[{flex: 1, backgroundColor: ''}]}>
+        {
+            syncProgress &&
+            <SyncProgressView syncProgress={syncProgress}/>
+        }
+    </View>;
 };
 export default SplashScreen;

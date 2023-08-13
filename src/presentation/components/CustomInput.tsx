@@ -46,6 +46,7 @@ const CustomInput = forwardRef(
       <View style={{ width: '100%', justifyContent: 'flex-end' }}>
         <Input
           {...props}
+            disabled={props.disabled}
           containerStyle={[styles.container, props.containerStyle]}
           inputContainerStyle={[
             shape == 'underline' ? styles.underlineInputContainer : styles.roundInputContainer,

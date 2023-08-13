@@ -69,3 +69,8 @@ export const changePassword = async (request: { password: string; passwordReEnte
     console.log(result)
     return result
 }
+export const changeNickname = async (request: { nickname: string }) => {
+    const result = await client.patch('user/nickname', request)
+    console.log(result)
+    return result
+}
