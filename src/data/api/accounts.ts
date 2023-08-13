@@ -75,8 +75,14 @@ export const changeNickname = async (request: { nickname: string }) => {
     return result
 }
 
-export const verifyPassword = async (request: {password: string}) => {
+export const verifyPassword = async (request: { password: string }) => {
     const result = await client.post('user/password/verify', request)
+    console.log(result)
+    return result;
+}
+
+export const refreshToken = async (request: { fcmToken: string }) => {
+    const result = await client.post('user/password/token', request)
     console.log(result)
     return result;
 }

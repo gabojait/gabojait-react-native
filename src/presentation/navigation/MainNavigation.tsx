@@ -144,7 +144,7 @@ const MainNavigation = () => {
           component={AlarmSetting}
           options={{
             header: TitleWithCloseHeader,
-            headerTitle: '알람 설정',
+            headerTitle: '알림 설정',
           }}
         />
         <Main.Screen

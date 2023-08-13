@@ -10,6 +10,10 @@ import CodePush, {DownloadProgress, LocalPackage} from "react-native-code-push";
 import {Text} from "@rneui/themed";
 import styles from "@/presentation/styles";
 import useGlobalStyles from "@/presentation/styles";
+import {loginReducer} from "@/redux/reducers/loginReducer";
+import {refreshToken} from "@/data/api/accounts";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {AsyncStorageKey} from "@/lib/asyncStorageKey";
 
 interface SyncProgressViewProps {
     syncProgress: DownloadProgress;
@@ -121,9 +125,13 @@ const SplashScreen = ({navigation}: RootStackScreenProps<'SplashScreen'>) => {
     useEffect(() => {
         setupFCM();
         // Listen to whether the token changes
-        return messaging().onTokenRefresh(token => {
+        return messaging().onTokenRefresh(async token => {
             // Todo: save token to server
-            console.log(token);
+            console.log("New FCM token: ", token);
+            if (((await AsyncStorage.getItem(AsyncStorageKey.accessToken))?.length ?? 0) > 0
+                && await refreshToken({fcmToken: token})) {
+                console.info("FCM 토큰 리프레시 성공")
+            }
         });
     }, []);
 

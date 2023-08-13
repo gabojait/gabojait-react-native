@@ -12,6 +12,7 @@ import {useTranslation} from "react-i18next";
 import CustomInput from "@/presentation/components/CustomInput";
 import {verifyPassword} from "@/data/api/accounts";
 import OkDialogModalContent from "@/presentation/components/modalContent/OkDialogModalContent";
+import {useAppDispatch} from "@/redux/hooks";
 
 const MenuItem = ({title, text, onClick}: { title: string; text?: string; onClick?: () => void }) => {
     const {theme} = useTheme()
@@ -49,6 +50,7 @@ const Setting = ({navigation}: MainStackScreenProps<'Setting'>) => {
 
     const modal = useModal();
     const {t} = useTranslation();
+    const dispatch = useAppDispatch()
 
     const [currentPassword, setCurrentPassword] = useState("");
 
@@ -96,8 +98,8 @@ const Setting = ({navigation}: MainStackScreenProps<'Setting'>) => {
             <MenuItem title="알림 설정" onClick={() => navigation.navigate('AlarmSetting')}/>
             <MenuItem title="기타" onClick={() => navigation.navigate('Etc')}/>
             <MenuItem title="로그아웃" onClick={() => {
-                signOut()
-                navigation.getParent<RootStackNavigationProps>()?.navigate('OnboardingNavigation', {screen: 'Login'})
+                dispatch(signOut())
+                navigation.getParent()?.navigate('OnboardingNavigation', {screen: 'Login'})
             }}/>
             <MenuItem title="버전" text="1.0.0."/>
         </View>
