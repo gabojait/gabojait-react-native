@@ -78,6 +78,10 @@ import com.android.build.OutputFile
  * ]
  */
 
+ def Properties properties = new Properties()
+ properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+
 project.ext.react = [
     enableHermes: false,  // clean and rebuild if changing
 ]
@@ -229,6 +233,7 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
+            resValue "string", "CodePushDeploymentKey", properties.getProperty("CODE_PUSH_STAGING_KEY")
         }
         release {
             // Caution! In production, you need to generate your own keystore file.
@@ -236,7 +241,14 @@ android {
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            resValue "string", "CodePushDeploymentKey", properties.getProperty("CODE_PUSH_PRODUCTION_KEY")
         }
+            releaseStaging {
+                    resValue "string", "CodePushDeploymentKey", properties.getProperty("CODE_PUSH_STAGING_KEY")
+                    // Note: It's a good idea to provide matchingFallbacks for the new buildType you create to prevent build issues
+                    // Add the following line if not already there
+                    matchingFallbacks = ['release']
+                }
     }
 
     // applicationVariants are e.g. debug, release
@@ -251,7 +263,6 @@ android {
                 output.versionCodeOverride =
                         defaultConfig.versionCode * 1000 + versionCodes.get(abi)
             }
-
         }
     }
 }
@@ -322,3 +333,5 @@ def isNewArchitectureEnabled() {
     // - Set an environment variable `ORG_GRADLE_PROJECT_newArchEnabled=true`
     return project.hasProperty("newArchEnabled") && project.newArchEnabled == "true"
 }
+
+apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
