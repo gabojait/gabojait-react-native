@@ -38,9 +38,10 @@ export const HEIGHT = Dimensions.get('window').height;
 export const calcMonth = (endDate: Date, startDate: Date) =>
   Math.floor((endDate.getTime() - startDate.getTime()) / 1000 / 60 / 60 / 24 / 31);
 
-export const changeFirstLetterToCapital = (text: string) => {
-  const firstLetter = text.charAt(0).toUpperCase();
-  const otherLetters = text.slice(1);
+export const changeToTitleCase = (text: string) => {
+  const title = text.toLowerCase();
+  const firstLetter = title.charAt(0).toUpperCase();
+  const otherLetters = title.slice(1);
   return firstLetter + otherLetters;
 };
 

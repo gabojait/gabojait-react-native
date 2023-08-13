@@ -15,67 +15,30 @@ import ReviewAnswer from '@/data/model/Review/ReviewAnswer';
 import { ModalContext } from '@/presentation/components/modal/context';
 import SymbolCenteredModalContent from '@/presentation/components/modalContent/SymbolCenteredModalContent';
 import { createReview } from '@/redux/reducers/reviewCreateReducer';
-import { changeFirstLetterToCapital, getFirstAlphabet } from '@/presentation/utils/util';
+import { changeToTitleCase, getFirstAlphabet } from '@/presentation/utils/util';
 import useModal from '@/presentation/components/modal/useModal';
 import { Position } from '@/data/model/type/Position';
 import { PositionIcon } from '@/presentation/components/PartIcon';
+import { getMyTeam } from '@/data/api/team';
+import TeamDto from '@/data/model/Team/TeamDto';
+import { teamKeys } from '@/reactQuery/key/TeamKeys';
+import { UseQueryResult, useQuery } from 'react-query';
 
 const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) => {
-  const teamToReviewTest = {
-    backends: [
-      {
-        nickname: '류승룡',
-        position: Position.Backend,
-        rating: 0,
-        reviewCnt: 0,
-        schemaVersion: 'string',
-        userId: 'string1',
-      },
-    ],
-    designers: [
-      {
-        nickname: '이하늬',
-        position: Position.Designer,
-        rating: 0,
-        reviewCnt: 0,
-        schemaVersion: 'string',
-        userId: 'string2',
-      },
-    ],
-    frontends: [
-      {
-        nickname: '진선규',
-        position: Position.Frontend,
-        rating: 0,
-        reviewCnt: 0,
-        schemaVersion: 'string',
-        userId: 'string3',
-      },
-    ],
-    projectManagers: [
-      {
-        nickname: '이동휘',
-        position: Position.Manager,
-        rating: 0,
-        reviewCnt: 0,
-        schemaVersion: 'string',
-        userId: 'string4',
-      },
-    ],
-    projectName: '치킨 배달 앱',
-    teamId: 'string',
-  };
-  const teammateArrayTest = [
-    ...teamToReviewTest.backends,
-    ...teamToReviewTest.designers,
-    ...teamToReviewTest.frontends,
-    ...teamToReviewTest.projectManagers,
-  ];
-
   const { theme } = useTheme();
   const modal = useModal();
   const dispatch = useAppDispatch();
   const pagerViewRef = useRef<PagerView>(null);
+
+  const {
+    data: teamData,
+    isLoading: isTeamDataLoading,
+    error: teamDataError,
+  }: UseQueryResult<TeamDto> = useQuery(teamKeys.myTeam, () => getMyTeam(), {
+    useErrorBoundary: true,
+    retry: 1,
+  });
+
   const {
     data: reviewQuestions,
     loading: reviewQuestionsLoading,
@@ -97,31 +60,23 @@ const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) =
   const [pageCount, setPageCount] = useState<number>(1);
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(true);
 
-  const updateTextReview = (questionId: string, userId: string, text: string) => {
-    const newReview = { answer: text, questionId: questionId, rate: '', revieweeUserId: userId };
-    const otherReviews = reviewState.filter(item => item.questionId != questionId);
+  function updateTextReview(userId: string, text: string) {
+    const newReview = { post: text, rate: '', userId: userId };
+    const otherReviews = reviewState.filter(item => item != newReview);
 
     const result = [...otherReviews, newReview];
     console.log(`updateTextReview----------------`);
-    result.map(item =>
-      console.log(
-        `answer: ${item.answer}, questionId: ${item.questionId}, rate: ${item.rate}, revieweeUserId: ${userId}`,
-      ),
-    );
+    result.map(item => console.log(`answer: ${item.post}, rate: ${item.rate}, userId: ${userId}`));
     setReviewState([...otherReviews, newReview]);
-  };
+  }
 
-  const updateRatingReview = (questionId: string, userId: string, score: string) => {
-    const newReview = { answer: '', questionId: questionId, rate: score, revieweeUserId: userId };
-    const otherReviews = reviewState.filter(item => item.questionId != questionId);
+  const updateRatingReview = (userId: string, score: string) => {
+    const newReview = { post: '', rate: score, userId: userId };
+    const otherReviews = reviewState.filter(item => item != newReview);
 
     const result = [...otherReviews, newReview];
     console.log(`updateRatingReview----------------`);
-    result.map(item =>
-      console.log(
-        `answer: ${item.answer}, questionId: ${item.questionId}, rate: ${item.rate}, revieweeUserId: ${userId}`,
-      ),
-    );
+    result.map(item => console.log(`answer: ${item.post}, rate: ${item.rate}, userId: ${userId}`));
     setReviewState([...otherReviews, newReview]);
   };
 
@@ -131,7 +86,7 @@ const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) =
   };
 
   const isLastindex = (index: number) => {
-    if (index == teammateArray.length - 1) return true;
+    if (index == teamData?.teamMembers.length! - 1) return true;
     else false;
   };
 
@@ -148,38 +103,38 @@ const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) =
     });
   };
 
-  useEffect(() => {
-    let answeredCount = 0;
-    reviewState.map(item => {
-      //공백 제거
-      const answer = item.answer.replace(/ /gi, '');
-      console.log(`answer: ${item.answer}, rate: ${item.rate}`);
-      if (answer.length != 0 || item.rate != '') {
-        answeredCount += 1;
-      }
-    });
-    console.log(`answeredCount: ${answeredCount}`);
-    if (reviewState != null && answeredCount == reviewState.length) setButtonDisabled(false);
-    else setButtonDisabled(true);
-  });
-  useEffect(() => {
-    reviewQuestions?.map((item, index) =>
-      setReviewState(prevState => [
-        ...prevState,
-        { answer: '', questionId: item.questionId, rate: '', revieweeUserId: '' },
-      ]),
-    );
-    console.log(`reviewQuestions: ${reviewQuestions}`);
-    console.log(`reviewState: ${reviewState}`);
-  }, [reviewQuestions]);
+  // useEffect(() => {
+  //   let answeredCount = 0;
+  //   reviewState.map(item => {
+  //     //공백 제거
+  //     const answer = item.answer.replace(/ /gi, '');
+  //     console.log(`answer: ${item.answer}, rate: ${item.rate}`);
+  //     if (answer.length != 0 || item.rate != '') {
+  //       answeredCount += 1;
+  //     }
+  //   });
+  //   console.log(`answeredCount: ${answeredCount}`);
+  //   if (reviewState != null && answeredCount == reviewState.length) setButtonDisabled(false);
+  //   else setButtonDisabled(true);
+  // });
+  // useEffect(() => {
+  //   reviewQuestions?.map((item, index) =>
+  //     setReviewState(prevState => [
+  //       ...prevState,
+  //       { answer: '', questionId: item.questionId, rate: '', revieweeUserId: '' },
+  //     ]),
+  //   );
+  //   console.log(`reviewQuestions: ${reviewQuestions}`);
+  //   console.log(`reviewState: ${reviewState}`);
+  // }, [reviewQuestions]);
 
   const { teamId } = route.params!;
 
   useEffect(() => {
     console.log(`초기렌더링 시작`);
     beforeReviewModal();
-    dispatch(getTeamToReview(teamId));
-    dispatch(getReviewQuestions());
+    // dispatch(getTeamToReview(teamId));
+    // dispatch(getReviewQuestions());
     setReviewState([]);
   }, []);
 
@@ -195,7 +150,7 @@ const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) =
           backgroundColor: 'white',
         }}
       >
-        치킨배달 앱
+        {teamData?.projectName}
       </Text>
       <PagerView
         style={{ flex: 1, backgroundColor: 'white' }}
@@ -205,8 +160,8 @@ const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) =
         collapsable={false}
         scrollEnabled={false}
       >
-        {teammateArrayTest.map((teamMateItem, teamMateIndex) => (
-          <View key={teamMateIndex}>
+        {teamData?.teamMembers.map((item, index) => (
+          <View key={item.nickname}>
             <ScrollView style={{ flex: 1 }}>
               <CardWrapper
                 style={{ marginLeft: 20, minWidth: 300, marginBottom: 10, marginTop: 2 }}
@@ -215,7 +170,7 @@ const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) =
                   <View
                     style={{ flexDirection: 'row', paddingVertical: 20, paddingHorizontal: 20 }}
                   >
-                    <PositionIcon position={teamMateItem.position} isRecruitDone={true} />
+                    <PositionIcon position={item.position} isRecruitDone={true} />
                     <View style={{ paddingHorizontal: 10, justifyContent: 'center' }}>
                       <Text
                         style={{
@@ -224,7 +179,7 @@ const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) =
                           color: 'black',
                         }}
                       >
-                        {teamMateItem.nickname}
+                        {item.nickname}
                       </Text>
                       <Text
                         style={{
@@ -233,80 +188,55 @@ const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) =
                           color: theme.colors.grey1,
                         }}
                       >
-                        {changeFirstLetterToCapital(teamMateItem.position)}
+                        {changeToTitleCase(item.position)}
                       </Text>
                     </View>
                   </View>
-                  {reviewQuestions != null &&
-                    reviewQuestions.map((item, index) =>
-                      reviewQuestions[index].reviewType == ReviewType.RATING ? (
-                        <View
-                          style={{
-                            paddingVertical: 20,
-                            borderTopWidth: 1,
-                            borderTopColor: theme.colors.disabled,
-                          }}
-                        >
-                          <Text
-                            style={{
-                              textAlign: 'center',
-                              fontSize: theme.fontSize.md,
-                              fontWeight: theme.fontWeight.bold,
-                              color: 'black',
-                              paddingBottom: 10,
-                            }}
-                          >
-                            {item.context}
-                          </Text>
-                          <RatingInput
-                            updateRatingScore={score =>
-                              updateRatingReview(
-                                item.questionId,
-                                teamMateItem.userId,
-                                score.toString(),
-                              )
-                            }
-                            size={theme.ratingBarSize.xl}
-                          />
-                        </View>
-                      ) : (
-                        <View
-                          style={{
-                            paddingVertical: 20,
-                            borderTopWidth: 1,
-                            borderTopColor: theme.colors.disabled,
-                          }}
-                        >
-                          <Text
-                            style={{
-                              textAlign: 'center',
-                              fontSize: theme.fontSize.md,
-                              fontWeight: theme.fontWeight.bold,
-                              color: 'black',
-                              paddingBottom: 10,
-                            }}
-                          >
-                            {item.context}
-                          </Text>
-                          <CustomInput
-                            onChangeText={(text: string) =>
-                              updateTextReview(item.questionId, teamMateItem.userId, text)
-                            }
-                            shape="round"
-                            containerStyle={{ paddingHorizontal: 20 }}
-                            size={'sm'}
-                            multiline={true}
-                            numberOfLines={4}
-                            style={{ minHeight: 90 }}
-                            maxLength={200}
-                          />
-                        </View>
-                      ),
-                    )}
+                  <View
+                    style={{
+                      paddingVertical: 20,
+                      borderTopWidth: 1,
+                      borderTopColor: theme.colors.disabled,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        textAlign: 'center',
+                        fontSize: theme.fontSize.md,
+                        fontWeight: theme.fontWeight.bold,
+                        color: 'black',
+                        paddingBottom: 10,
+                      }}
+                    >
+                      함께한 팀원은 어떠셨나요?
+                    </Text>
+                    <RatingInput
+                      updateRatingScore={score => updateRatingReview(item.userId, score.toString())}
+                      size={theme.ratingBarSize.xl}
+                    />
+                  </View>
+                  <View
+                    style={{
+                      paddingVertical: 20,
+                      borderTopWidth: 1,
+                      borderTopColor: theme.colors.disabled,
+                    }}
+                  >
+                    <CustomInput
+                      onChangeText={(text: string) => updateTextReview(item.userId, text)}
+                      shape="round"
+                      containerStyle={{ paddingHorizontal: 20 }}
+                      size={'sm'}
+                      multiline={true}
+                      numberOfLines={4}
+                      style={{ minHeight: 90 }}
+                      maxLength={200}
+                    />
+                  </View>
                 </View>
               </CardWrapper>
             </ScrollView>
-            {isLastindex(teamMateIndex) ? (
+            {isLastindex(index) ? (
               <FilledButton
                 title={'완료'}
                 buttonStyle={{ backgroundColor: theme.colors.primary }}
@@ -315,13 +245,12 @@ const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) =
                 onPress={() => {
                   setReviewResultState(prevState => [...prevState, ...reviewState]);
                   setReviewState([]);
-                  console.log(`완료 버튼 클릭----------------`);
                   reviewResultState.map(item => {
                     console.log(
-                      `item.answer:${item.answer}, item.questionId:${item.questionId}, item.rate:${item.rate}, item.revieweeUserId:${item.revieweeUserId}`,
+                      `item.answer:${item.post}, item.rate:${item.rate}, item.revieweeUserId:${item.userId}`,
                     );
                   });
-                  dispatch(createReview({ reviews: reviewResultState }, teamId));
+                  //dispatch(createReview({ reviews: reviewResultState }, teamId));
                   navigation.goBack();
                 }}
               />
@@ -335,10 +264,7 @@ const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) =
                   setReviewResultState(prevState => [...prevState, ...reviewState]);
                   //초기화
                   reviewQuestions?.map((item, index) =>
-                    setReviewState(prevState => [
-                      ...prevState,
-                      { answer: '', questionId: item.questionId, rate: '', revieweeUserId: '' },
-                    ]),
+                    setReviewState(prevState => [...prevState, { post: '', rate: '', userId: '' }]),
                   );
                   moveToNextPage(pageCount);
                   setButtonDisabled(true); //초기화
