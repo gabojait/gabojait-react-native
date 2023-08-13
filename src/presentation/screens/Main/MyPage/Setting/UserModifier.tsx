@@ -10,13 +10,18 @@ import {changeNickname, changePassword, checkNicknameDuplicate, checkUsernameDup
 import {useMutation} from "react-query";
 import {useMutationDialog} from "@/reactQuery/util/useMutationDialog";
 import {useTranslation} from "react-i18next";
+import {useAppDispatch} from "@/redux/hooks";
+import {signOut} from "@/redux/action/login";
 
 const UserModifier = ({navigation}: MainStackScreenProps<'UserModifier'>) => {
     const {theme} = useTheme();
 
+    const dispatch = useAppDispatch();
+
     const [nickname, setNickname] = useState('');
     const [passwords, setPasswords] = useState<string[]>([]);
     const [dupChecked, setDupChecked] = useState(false);
+
     const {mutation: checkNicknameDuplicateMutation} = useMutationDialog(['checkNicknameDuplicate', nickname], checkNicknameDuplicate, {
         onSuccessClick: () => {
             setDupChecked(true);
@@ -30,7 +35,13 @@ const UserModifier = ({navigation}: MainStackScreenProps<'UserModifier'>) => {
         resultToMessage: () => t("result_nicknameChangeOk")
     })
 
-    const {mutation: changePwMutation} = useMutationDialog(['changePassword', passwords], changePassword)
+    const {mutation: changePwMutation} = useMutationDialog(['changePassword', passwords], changePassword, {
+        onSuccessClick: () => {
+            dispatch(signOut());
+            navigation.getParent()?.navigate("OnboardingNavigation", {screen: "Login"})
+        },
+        resultToMessage: () => t("result_passwordChangeOk")
+    })
     const {t} = useTranslation();
     return (
         <View style={{backgroundColor: 'white', flex: 1, padding: 20}}>

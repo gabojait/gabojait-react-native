@@ -28,7 +28,8 @@ export const RootNavigation = () => {
                             options={{headerBackTitleVisible: false}}
                         />
                         <RootStack.Group screenOptions={{headerShown: false}}>
-                            <RootStack.Screen name="OnboardingNavigation" component={OnboardingNavigation}/>
+                            <RootStack.Screen name="OnboardingNavigation" component={OnboardingNavigation}
+                                              options={{gestureEnabled: false}}/>
                             <RootStack.Screen name="SplashScreen" component={SplashScreen}/>
                             <RootStack.Screen name="MainNavigation" component={MainNavigation}/>
                             <RootStack.Screen
