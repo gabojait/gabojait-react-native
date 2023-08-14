@@ -16,7 +16,6 @@ import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
-import { Fallback404, Fallback500 } from '@/presentation/components/errorComponent/Fallback';
 
 interface LeaderHeaderParams {
   onPressEditor: () => void;

@@ -33,6 +33,9 @@ const TeamDetailComponent = ({ navigation, route }: MainStackScreenProps<'JoinTe
   const { data, isLoading, error }: UseQueryResult<TeamDetailDto> = useQuery(
     [teamKeys.getTeam, teamId],
     () => getTeam(teamId),
+    {
+      useErrorBoundary: true,
+    },
   );
   const positions = data?.teamMemberCnts || [];
   const { mutation: decideMutation } = useMutationDialog<[number, boolean], unknown>(

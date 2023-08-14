@@ -29,6 +29,7 @@ class GeneralErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
   }
 
   static getDerivedStateFromError(error: Error) {
+    console.log(`errorCode:${error?.name}, errorMessage:${error?.message}`);
     const result: ErrorBoundaryState = {
       hasError: true,
       isPropagated: false,

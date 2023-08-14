@@ -1,6 +1,5 @@
 export default interface ReviewAnswer {
-  answer: string;
-  questionId: string;
+  post: string;
   rate: string;
-  revieweeUserId: string;
+  userId: string;
 }

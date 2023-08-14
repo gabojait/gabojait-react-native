@@ -4,7 +4,7 @@ import { PageModel, PageRequest } from '@/reactQuery/util/useModelList';
 import BriefOfferDto from '@/data/model/Offer/BriefOfferDto';
 import OffersFromOtherDto from '../model/Offer/OffersFromUserDto';
 
-export type GetOfferFromUsersProps = {
+export type GetOfferFromOthersProps = {
   pageSize: number;
   pageFrom?: number;
   position: Position;
@@ -26,7 +26,7 @@ export const getOffersFromTeam = async (body: PageRequest) => {
   return result as PageModel<OffersFromOtherDto>;
 };
 
-export const getOffersFromUser = async (params: GetOfferFromUsersProps) => {
+export const getOffersFromUser = async (params: GetOfferFromOthersProps) => {
   const result = await client.get('team/offer/received', {
     params: {
       'page-from': params.pageFrom,
@@ -41,6 +41,10 @@ export const sendOfferToUser = async (userId: string, position: Position) => {
   return await client.post(`team/user/${userId}/offer`, { position: position });
 };
 
+export const cancelOfferToUser = async (offerId: number) => {
+  return await client.delete(`team/offer/${offerId}`);
+};
+
 export const decideOfferFromTeam = async (offerId: number, isAccepted: boolean) => {
   return await client.patch(`user/offer/${offerId}`, { isAccepted: isAccepted });
 };
@@ -53,6 +57,17 @@ export const getOffersSentToTeam = async (body: PageRequest) => {
     },
   });
   return result as PageModel<OffersFromOtherDto>;
+};
+
+export const getOfferSentToUser = async (params: GetOfferFromOthersProps) => {
+  const result = await client.get(`team/offer/sent`, {
+    params: {
+      'page-from': params.pageFrom,
+      'page-size': params.pageSize,
+      position: params.position,
+    },
+  });
+  return result as any as PageModel<OffersFromOtherDto>;
 };
 
 export const rejectOfferFromUser = async (offerId: number) => {

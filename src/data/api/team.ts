@@ -4,7 +4,6 @@ import TeamRequestDto from '@/data/model/Team/TeamRequestDto';
 import { Position } from '@/data/model/type/Position';
 import { TeamOrder } from '@/data/model/type/TeamOrder';
 import ProjectUrl from '../model/Team/ProjectUrl';
-import TeamDto from '../model/Team/TeamDto';
 
 export type GetRecruitingProps = {
   pageFrom: number;

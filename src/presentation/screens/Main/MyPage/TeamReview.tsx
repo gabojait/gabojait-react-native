@@ -6,123 +6,110 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import CustomInput from '@/presentation/components/CustomInput';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { getReviewQuestions } from '@/redux/reducers/reviewQuestionsGetReducer';
-import { ReviewType } from '@/data/model/Review/ReviewQuestion';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
-import { getTeamToReview } from '@/redux/reducers/teamToReviewGetReducer';
 import PagerView from 'react-native-pager-view';
 import ReviewAnswer from '@/data/model/Review/ReviewAnswer';
-import { ModalContext } from '@/presentation/components/modal/context';
 import SymbolCenteredModalContent from '@/presentation/components/modalContent/SymbolCenteredModalContent';
-import { createReview } from '@/redux/reducers/reviewCreateReducer';
-import { changeFirstLetterToCapital, getFirstAlphabet } from '@/presentation/utils/util';
+import { HEIGHT, WIDTH, changeToTitleCase } from '@/presentation/utils/util';
 import useModal from '@/presentation/components/modal/useModal';
-import { Position } from '@/data/model/type/Position';
 import { PositionIcon } from '@/presentation/components/PartIcon';
+import { getMyTeam, getTeam } from '@/data/api/team';
+import TeamDto from '@/data/model/Team/TeamDto';
+import { teamKeys } from '@/reactQuery/key/TeamKeys';
+import { UseQueryResult, useQuery, useQueryClient } from 'react-query';
+import { offerKeys } from '@/reactQuery/key/OfferKeys';
+import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
+import { reviewKeys } from '@/reactQuery/key/ReviewKeys';
+import { createReview, getTeamToReview } from '@/data/api/review';
+import Reviews from '@/data/model/Review/Reviews';
+import { getMyProfile } from '@/data/api/profile';
+import ProfileViewResponse from '@/data/model/Profile/ProfileViewResponse';
+import { profileKeys } from '@/reactQuery/key/ProfileKeys';
+
+interface ReviewQuestionsProps extends ReviewAnswer {
+  questionId: number;
+}
 
 const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) => {
-  const teamToReviewTest = {
-    backends: [
-      {
-        nickname: '류승룡',
-        position: Position.Backend,
-        rating: 0,
-        reviewCnt: 0,
-        schemaVersion: 'string',
-        userId: 'string1',
-      },
-    ],
-    designers: [
-      {
-        nickname: '이하늬',
-        position: Position.Designer,
-        rating: 0,
-        reviewCnt: 0,
-        schemaVersion: 'string',
-        userId: 'string2',
-      },
-    ],
-    frontends: [
-      {
-        nickname: '진선규',
-        position: Position.Frontend,
-        rating: 0,
-        reviewCnt: 0,
-        schemaVersion: 'string',
-        userId: 'string3',
-      },
-    ],
-    projectManagers: [
-      {
-        nickname: '이동휘',
-        position: Position.Manager,
-        rating: 0,
-        reviewCnt: 0,
-        schemaVersion: 'string',
-        userId: 'string4',
-      },
-    ],
-    projectName: '치킨 배달 앱',
-    teamId: 'string',
-  };
-  const teammateArrayTest = [
-    ...teamToReviewTest.backends,
-    ...teamToReviewTest.designers,
-    ...teamToReviewTest.frontends,
-    ...teamToReviewTest.projectManagers,
-  ];
-
   const { theme } = useTheme();
   const modal = useModal();
   const dispatch = useAppDispatch();
   const pagerViewRef = useRef<PagerView>(null);
+  const queryClient = useQueryClient();
+  const { teamId } = route.params!;
   const {
-    data: reviewQuestions,
-    loading: reviewQuestionsLoading,
-    error: reviewQuestionsError,
-  } = useAppSelector(state => state.reviewQuestionsGetReducer.reviewQuestionsResult);
+    data: teamData,
+    isLoading: isTeamDataLoading,
+    error: teamDataError,
+  }: UseQueryResult<TeamDto> = useQuery([teamKeys.getTeam, teamId], () => getTeamToReview(teamId), {
+    useErrorBoundary: true,
+    retry: 1,
+  });
   const {
-    data: teamToReview,
-    loading: teamToReviewLoading,
-    error: teamToReviewError,
-  } = useAppSelector(state => state.teamToReviewGetReducer.teamToReviewGetResult);
-  const teammateArray = [
-    ...[teamToReview?.teamMemberCnts.filter(item => item.position === Position.Backend)],
-    ...[teamToReview?.teamMemberCnts.filter(item => item.position === Position.Designer)],
-    ...[teamToReview?.teamMemberCnts.filter(item => item.position === Position.Frontend)],
-    ...[teamToReview?.teamMemberCnts.filter(item => item.position === Position.Manager)],
-  ];
+    data: profileData,
+    isLoading,
+    error,
+  }: UseQueryResult<ProfileViewResponse> = useQuery([profileKeys.myProfile], () => getMyProfile(), {
+    useErrorBoundary: true,
+  });
+  const { mutation: reviewMutation } = useMutationDialog(
+    offerKeys.offerToTeam,
+    (args: [Reviews, string]) => createReview(...args),
+    {
+      onSuccessClick() {
+        queryClient.invalidateQueries([reviewKeys.reviewAvailableTeams]);
+        navigation.goBack();
+      },
+    },
+  );
+
   const [reviewResultState, setReviewResultState] = useState<ReviewAnswer[]>([]);
-  const [reviewState, setReviewState] = useState<ReviewAnswer[]>([]);
+  const [reviewState, setReviewState] = useState<ReviewQuestionsProps[]>([]);
   const [pageCount, setPageCount] = useState<number>(1);
-  const [buttonDisabled, setButtonDisabled] = useState<boolean>(true);
+  const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
 
-  const updateTextReview = (questionId: string, userId: string, text: string) => {
-    const newReview = { answer: text, questionId: questionId, rate: '', revieweeUserId: userId };
-    const otherReviews = reviewState.filter(item => item.questionId != questionId);
+  function updateTextReview(userId: string, text: string) {
+    const questionId = 0;
+    const otherQuestionId = 1;
+    const newReview: ReviewQuestionsProps = {
+      post: text,
+      rate: '',
+      userId: userId,
+      questionId: questionId,
+    };
+    const otherReviews: ReviewQuestionsProps = reviewState.find(
+      item => item.questionId != questionId,
+    ) ?? { post: '', rate: '', userId: userId, questionId: otherQuestionId };
 
-    const result = [...otherReviews, newReview];
+    const result: ReviewAnswer[] = [
+      { post: otherReviews.post, rate: otherReviews.rate, userId: otherReviews.userId },
+      newReview,
+    ];
     console.log(`updateTextReview----------------`);
-    result.map(item =>
-      console.log(
-        `answer: ${item.answer}, questionId: ${item.questionId}, rate: ${item.rate}, revieweeUserId: ${userId}`,
-      ),
-    );
-    setReviewState([...otherReviews, newReview]);
-  };
+    result.map(item => console.log(`answer: ${item.post}, rate: ${item.rate}, userId: ${userId}`));
+    setReviewState([otherReviews, newReview]);
+  }
 
-  const updateRatingReview = (questionId: string, userId: string, score: string) => {
-    const newReview = { answer: '', questionId: questionId, rate: score, revieweeUserId: userId };
-    const otherReviews = reviewState.filter(item => item.questionId != questionId);
+  const updateRatingReview = (userId: string, score: string) => {
+    const questionId = 0;
+    const otherQuestionId = 1;
+    const newReview: ReviewQuestionsProps = {
+      post: '',
+      rate: score,
+      userId: userId,
+      questionId: questionId,
+    };
+    const otherReviews: ReviewQuestionsProps = reviewState.find(
+      item => item.questionId != questionId,
+    ) ?? { post: '', rate: '', userId: userId, questionId: otherQuestionId };
 
-    const result = [...otherReviews, newReview];
+    const result: ReviewAnswer[] = [
+      { post: otherReviews.post, rate: otherReviews.rate, userId: otherReviews.userId },
+      newReview,
+    ];
     console.log(`updateRatingReview----------------`);
-    result.map(item =>
-      console.log(
-        `answer: ${item.answer}, questionId: ${item.questionId}, rate: ${item.rate}, revieweeUserId: ${userId}`,
-      ),
-    );
-    setReviewState([...otherReviews, newReview]);
+    result.map(item => console.log(`answer: ${item.post}, rate: ${item.rate}, userId: ${userId}`));
+    setReviewState([otherReviews, newReview]);
   };
 
   const moveToNextPage = (index: number) => {
@@ -131,7 +118,7 @@ const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) =
   };
 
   const isLastindex = (index: number) => {
-    if (index == teammateArray.length - 1) return true;
+    if (index == teamData?.teamMembers.length! - 1) return true;
     else false;
   };
 
@@ -148,41 +135,6 @@ const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) =
     });
   };
 
-  useEffect(() => {
-    let answeredCount = 0;
-    reviewState.map(item => {
-      //공백 제거
-      const answer = item.answer.replace(/ /gi, '');
-      console.log(`answer: ${item.answer}, rate: ${item.rate}`);
-      if (answer.length != 0 || item.rate != '') {
-        answeredCount += 1;
-      }
-    });
-    console.log(`answeredCount: ${answeredCount}`);
-    if (reviewState != null && answeredCount == reviewState.length) setButtonDisabled(false);
-    else setButtonDisabled(true);
-  });
-  useEffect(() => {
-    reviewQuestions?.map((item, index) =>
-      setReviewState(prevState => [
-        ...prevState,
-        { answer: '', questionId: item.questionId, rate: '', revieweeUserId: '' },
-      ]),
-    );
-    console.log(`reviewQuestions: ${reviewQuestions}`);
-    console.log(`reviewState: ${reviewState}`);
-  }, [reviewQuestions]);
-
-  const { teamId } = route.params!;
-
-  useEffect(() => {
-    console.log(`초기렌더링 시작`);
-    beforeReviewModal();
-    dispatch(getTeamToReview(teamId));
-    dispatch(getReviewQuestions());
-    setReviewState([]);
-  }, []);
-
   return (
     <>
       <Text
@@ -195,19 +147,22 @@ const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) =
           backgroundColor: 'white',
         }}
       >
-        치킨배달 앱
+        {teamData?.projectName}
       </Text>
       <PagerView
-        style={{ flex: 1, backgroundColor: 'white' }}
+        style={{
+          flex: 1,
+          marginTop: HEIGHT / 7,
+        }}
         orientation="horizontal"
         initialPage={0}
         ref={pagerViewRef}
         collapsable={false}
         scrollEnabled={false}
       >
-        {teammateArrayTest.map((teamMateItem, teamMateIndex) => (
-          <View key={teamMateIndex}>
-            <ScrollView style={{ flex: 1 }}>
+        {teamData?.teamMembers.map((item, index) => (
+          <View key={item.nickname}>
+            {item.userId != profileData?.userId.toString() ? (
               <CardWrapper
                 style={{ marginLeft: 20, minWidth: 300, marginBottom: 10, marginTop: 2 }}
               >
@@ -215,7 +170,7 @@ const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) =
                   <View
                     style={{ flexDirection: 'row', paddingVertical: 20, paddingHorizontal: 20 }}
                   >
-                    <PositionIcon position={teamMateItem.position} isRecruitDone={true} />
+                    <PositionIcon position={item.position} isRecruitDone={true} />
                     <View style={{ paddingHorizontal: 10, justifyContent: 'center' }}>
                       <Text
                         style={{
@@ -224,7 +179,7 @@ const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) =
                           color: 'black',
                         }}
                       >
-                        {teamMateItem.nickname}
+                        {item.nickname}
                       </Text>
                       <Text
                         style={{
@@ -233,118 +188,133 @@ const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) =
                           color: theme.colors.grey1,
                         }}
                       >
-                        {changeFirstLetterToCapital(teamMateItem.position)}
+                        {changeToTitleCase(item.position)}
                       </Text>
                     </View>
                   </View>
-                  {reviewQuestions != null &&
-                    reviewQuestions.map((item, index) =>
-                      reviewQuestions[index].reviewType == ReviewType.RATING ? (
-                        <View
-                          style={{
-                            paddingVertical: 20,
-                            borderTopWidth: 1,
-                            borderTopColor: theme.colors.disabled,
-                          }}
-                        >
-                          <Text
-                            style={{
-                              textAlign: 'center',
-                              fontSize: theme.fontSize.md,
-                              fontWeight: theme.fontWeight.bold,
-                              color: 'black',
-                              paddingBottom: 10,
-                            }}
-                          >
-                            {item.context}
-                          </Text>
-                          <RatingInput
-                            updateRatingScore={score =>
-                              updateRatingReview(
-                                item.questionId,
-                                teamMateItem.userId,
-                                score.toString(),
-                              )
-                            }
-                            size={theme.ratingBarSize.xl}
-                          />
-                        </View>
-                      ) : (
-                        <View
-                          style={{
-                            paddingVertical: 20,
-                            borderTopWidth: 1,
-                            borderTopColor: theme.colors.disabled,
-                          }}
-                        >
-                          <Text
-                            style={{
-                              textAlign: 'center',
-                              fontSize: theme.fontSize.md,
-                              fontWeight: theme.fontWeight.bold,
-                              color: 'black',
-                              paddingBottom: 10,
-                            }}
-                          >
-                            {item.context}
-                          </Text>
-                          <CustomInput
-                            onChangeText={(text: string) =>
-                              updateTextReview(item.questionId, teamMateItem.userId, text)
-                            }
-                            shape="round"
-                            containerStyle={{ paddingHorizontal: 20 }}
-                            size={'sm'}
-                            multiline={true}
-                            numberOfLines={4}
-                            style={{ minHeight: 90 }}
-                            maxLength={200}
-                          />
-                        </View>
-                      ),
-                    )}
+                  <View
+                    style={{
+                      paddingVertical: 20,
+                      borderTopWidth: 1,
+                      borderTopColor: theme.colors.disabled,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        textAlign: 'center',
+                        fontSize: theme.fontSize.md,
+                        fontWeight: theme.fontWeight.bold,
+                        color: 'black',
+                        paddingBottom: 10,
+                      }}
+                    >
+                      함께한 팀원은 어떠셨나요?
+                    </Text>
+                    <RatingInput
+                      updateRatingScore={score => updateRatingReview(item.userId, score.toString())}
+                      size={theme.ratingBarSize.xl}
+                    />
+                  </View>
+                  <View
+                    style={{
+                      paddingVertical: 20,
+                      borderTopWidth: 1,
+                      borderTopColor: theme.colors.disabled,
+                    }}
+                  >
+                    <CustomInput
+                      onChangeText={(text: string) => updateTextReview(item.userId, text)}
+                      shape="round"
+                      containerStyle={{ paddingHorizontal: 20 }}
+                      size={'sm'}
+                      multiline={true}
+                      numberOfLines={4}
+                      style={{ minHeight: 90, fontSize: 14 }}
+                      maxLength={200}
+                      placeholder="팀원에 대한 리뷰를 남겨주세요"
+                    />
+                  </View>
                 </View>
               </CardWrapper>
-            </ScrollView>
-            {isLastindex(teamMateIndex) ? (
-              <FilledButton
-                title={'완료'}
-                buttonStyle={{ backgroundColor: theme.colors.primary }}
-                containerStyle={{ marginHorizontal: 70 }}
-                disabled={buttonDisabled}
-                onPress={() => {
-                  setReviewResultState(prevState => [...prevState, ...reviewState]);
-                  setReviewState([]);
-                  console.log(`완료 버튼 클릭----------------`);
-                  reviewResultState.map(item => {
-                    console.log(
-                      `item.answer:${item.answer}, item.questionId:${item.questionId}, item.rate:${item.rate}, item.revieweeUserId:${item.revieweeUserId}`,
-                    );
-                  });
-                  dispatch(createReview({ reviews: reviewResultState }, teamId));
-                  navigation.goBack();
-                }}
-              />
             ) : (
-              <FilledButton
-                title={'다음'}
-                buttonStyle={{ backgroundColor: theme.colors.primary }}
-                containerStyle={{ marginHorizontal: 70 }}
-                disabled={buttonDisabled}
-                onPress={() => {
-                  setReviewResultState(prevState => [...prevState, ...reviewState]);
-                  //초기화
-                  reviewQuestions?.map((item, index) =>
-                    setReviewState(prevState => [
-                      ...prevState,
-                      { answer: '', questionId: item.questionId, rate: '', revieweeUserId: '' },
-                    ]),
-                  );
-                  moveToNextPage(pageCount);
-                  setButtonDisabled(true); //초기화
-                }}
-              />
+              <>
+                <View
+                  style={[
+                    {
+                      display: 'flex',
+                      backgroundColor: 'white',
+                      borderRadius: 38,
+                      padding: 20,
+                      width: WIDTH * 0.6,
+                      marginLeft: 70,
+                    },
+                  ]}
+                >
+                  <Text style={{ fontSize: 22, fontWeight: 'bold', textAlign: 'center' }}>
+                    잠깐
+                  </Text>
+                  <Text
+                    style={{
+                      textAlign: 'center',
+                      paddingVertical: 16,
+                      fontSize: 12,
+                      fontWeight: 'bold',
+                      lineHeight: 25,
+                    }}
+                  >
+                    {`리뷰는 수정이 어려우니\n 신중하게 선택해주세요`}
+                  </Text>
+                  <Text style={{ fontSize: 40, textAlign: 'center' }}>🥺</Text>
+                  <FilledButton title={'확인'} onPress={() => moveToNextPage(pageCount)} />
+                </View>
+              </>
             )}
+            <View>
+              {item.userId != profileData?.userId.toString() ? (
+                <View>
+                  {isLastindex(index) ? (
+                    <FilledButton
+                      title={'완료'}
+                      buttonStyle={{ backgroundColor: theme.colors.primary }}
+                      containerStyle={{ marginHorizontal: 70 }}
+                      disabled={buttonDisabled}
+                      onPress={() => {
+                        setReviewResultState(prevState => [...prevState, ...reviewState]);
+                        setReviewState([]);
+                        console.log(`reviewResultState:`);
+                        reviewResultState.map(item => {
+                          console.log(
+                            `item.answer:${item.post}, item.rate:${item.rate}, item.revieweeUserId:${item.userId}`,
+                          );
+                        });
+                        reviewMutation.mutate([{ reviews: reviewResultState } as Reviews, teamId]);
+                      }}
+                    />
+                  ) : (
+                    <FilledButton
+                      title={'다음'}
+                      buttonStyle={{ backgroundColor: theme.colors.primary }}
+                      containerStyle={{ marginHorizontal: 70 }}
+                      disabled={buttonDisabled}
+                      onPress={() => {
+                        setReviewResultState(prevState => [...prevState, ...reviewState]);
+                        console.log(`reviewResultState:`);
+                        reviewResultState.map(item => {
+                          console.log(
+                            `item.answer:${item.post}, item.rate:${item.rate}, item.revieweeUserId:${item.userId}`,
+                          );
+                        });
+                        setReviewState([]);
+                        moveToNextPage(pageCount);
+                        //setButtonDisabled(true); //초기화
+                      }}
+                    />
+                  )}
+                </View>
+              ) : (
+                <></>
+              )}
+            </View>
           </View>
         ))}
       </PagerView>
