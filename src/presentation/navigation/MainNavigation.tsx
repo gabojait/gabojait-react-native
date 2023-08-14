@@ -26,6 +26,7 @@ import { ManageTeammate } from '../screens/Main/Team/ManageTeammate';
 import ProfilePreview from '../screens/Main/Home/TeamMate/ProfilePreview';
 import TeamDetail from '../screens/Main/MyPage/OfferFromTeam/TeamDetail';
 import JoinTeam from '../screens/Main/MyPage/OfferFromTeam/JoinTeam';
+import OfferSentUser from '../screens/Main/MyPage/OfferSentUser/OfferSentUser';
 const Main = createStackNavigator<MainStackParamList>();
 
 const MainNavigation = () => {
@@ -36,6 +37,14 @@ const MainNavigation = () => {
           name="Profile"
           options={{ headerShown: false }}
           component={ProfileNavigation}
+        />
+        <Main.Screen
+          name="OfferSentUser"
+          component={OfferSentUser}
+          options={{
+            header: TitleWithCloseHeader,
+            headerTitle: '보낸제안',
+          }}
         />
         <Main.Screen
           name="ApplyStatus"

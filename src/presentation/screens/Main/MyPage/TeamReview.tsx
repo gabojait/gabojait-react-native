@@ -10,18 +10,25 @@ import { MainStackScreenProps } from '@/presentation/navigation/types';
 import PagerView from 'react-native-pager-view';
 import ReviewAnswer from '@/data/model/Review/ReviewAnswer';
 import SymbolCenteredModalContent from '@/presentation/components/modalContent/SymbolCenteredModalContent';
-import { changeToTitleCase } from '@/presentation/utils/util';
+import { HEIGHT, WIDTH, changeToTitleCase } from '@/presentation/utils/util';
 import useModal from '@/presentation/components/modal/useModal';
 import { PositionIcon } from '@/presentation/components/PartIcon';
-import { getTeam } from '@/data/api/team';
+import { getMyTeam, getTeam } from '@/data/api/team';
 import TeamDto from '@/data/model/Team/TeamDto';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { UseQueryResult, useQuery, useQueryClient } from 'react-query';
 import { offerKeys } from '@/reactQuery/key/OfferKeys';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { reviewKeys } from '@/reactQuery/key/ReviewKeys';
-import { createReview } from '@/data/api/review';
+import { createReview, getTeamToReview } from '@/data/api/review';
 import Reviews from '@/data/model/Review/Reviews';
+import { getMyProfile } from '@/data/api/profile';
+import ProfileViewResponse from '@/data/model/Profile/ProfileViewResponse';
+import { profileKeys } from '@/reactQuery/key/ProfileKeys';
+
+interface ReviewQuestionsProps extends ReviewAnswer {
+  questionId: number;
+}
 
 const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) => {
   const { theme } = useTheme();
@@ -29,56 +36,80 @@ const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) =
   const dispatch = useAppDispatch();
   const pagerViewRef = useRef<PagerView>(null);
   const queryClient = useQueryClient();
+  const { teamId } = route.params!;
   const {
     data: teamData,
     isLoading: isTeamDataLoading,
     error: teamDataError,
-  }: UseQueryResult<TeamDto> = useQuery(
-    [teamKeys.getTeam, route.params.teamId],
-    () => getTeam(route.params.teamId),
-    {
-      useErrorBoundary: true,
-      retry: 1,
-    },
-  );
+  }: UseQueryResult<TeamDto> = useQuery([teamKeys.getTeam, teamId], () => getTeamToReview(teamId), {
+    useErrorBoundary: true,
+    retry: 1,
+  });
+  const {
+    data: profileData,
+    isLoading,
+    error,
+  }: UseQueryResult<ProfileViewResponse> = useQuery([profileKeys.myProfile], () => getMyProfile(), {
+    useErrorBoundary: true,
+  });
   const { mutation: reviewMutation } = useMutationDialog(
     offerKeys.offerToTeam,
     (args: [Reviews, string]) => createReview(...args),
     {
       onSuccessClick() {
-        queryClient.invalidateQueries([reviewKeys.reviewAvailableTeam]);
+        queryClient.invalidateQueries([reviewKeys.reviewAvailableTeams]);
+        navigation.goBack();
       },
     },
   );
 
-  const reviewQuestions: ReviewAnswer[] = [
-    { post: '', rate: '', userId: '' },
-    { post: '', rate: '', userId: '' },
-  ];
-
   const [reviewResultState, setReviewResultState] = useState<ReviewAnswer[]>([]);
-  const [reviewState, setReviewState] = useState<ReviewAnswer[]>([]);
+  const [reviewState, setReviewState] = useState<ReviewQuestionsProps[]>([]);
   const [pageCount, setPageCount] = useState<number>(1);
-  const [buttonDisabled, setButtonDisabled] = useState<boolean>(true);
+  const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
 
   function updateTextReview(userId: string, text: string) {
-    const newReview = { post: text, rate: '', userId: userId };
-    const otherReviews = reviewState.filter(item => item != newReview);
+    const questionId = 0;
+    const otherQuestionId = 1;
+    const newReview: ReviewQuestionsProps = {
+      post: text,
+      rate: '',
+      userId: userId,
+      questionId: questionId,
+    };
+    const otherReviews: ReviewQuestionsProps = reviewState.find(
+      item => item.questionId != questionId,
+    ) ?? { post: '', rate: '', userId: userId, questionId: otherQuestionId };
 
-    const result = [...otherReviews, newReview];
+    const result: ReviewAnswer[] = [
+      { post: otherReviews.post, rate: otherReviews.rate, userId: otherReviews.userId },
+      newReview,
+    ];
     console.log(`updateTextReview----------------`);
     result.map(item => console.log(`answer: ${item.post}, rate: ${item.rate}, userId: ${userId}`));
-    setReviewState([...otherReviews, newReview]);
+    setReviewState([otherReviews, newReview]);
   }
 
   const updateRatingReview = (userId: string, score: string) => {
-    const newReview = { post: '', rate: score, userId: userId };
-    const otherReviews = reviewState.filter(item => item != newReview);
+    const questionId = 0;
+    const otherQuestionId = 1;
+    const newReview: ReviewQuestionsProps = {
+      post: '',
+      rate: score,
+      userId: userId,
+      questionId: questionId,
+    };
+    const otherReviews: ReviewQuestionsProps = reviewState.find(
+      item => item.questionId != questionId,
+    ) ?? { post: '', rate: '', userId: userId, questionId: otherQuestionId };
 
-    const result = [...otherReviews, newReview];
+    const result: ReviewAnswer[] = [
+      { post: otherReviews.post, rate: otherReviews.rate, userId: otherReviews.userId },
+      newReview,
+    ];
     console.log(`updateRatingReview----------------`);
     result.map(item => console.log(`answer: ${item.post}, rate: ${item.rate}, userId: ${userId}`));
-    setReviewState([...otherReviews, newReview]);
+    setReviewState([otherReviews, newReview]);
   };
 
   const moveToNextPage = (index: number) => {
@@ -104,43 +135,8 @@ const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) =
     });
   };
 
-  // useEffect(() => {
-  //   let answeredCount = 0;
-  //   reviewState.map(item => {
-  //     //공백 제거
-  //     const answer = item.answer.replace(/ /gi, '');
-  //     console.log(`answer: ${item.answer}, rate: ${item.rate}`);
-  //     if (answer.length != 0 || item.rate != '') {
-  //       answeredCount += 1;
-  //     }
-  //   });
-  //   console.log(`answeredCount: ${answeredCount}`);
-  //   if (reviewState != null && answeredCount == reviewState.length) setButtonDisabled(false);
-  //   else setButtonDisabled(true);
-  // });
-  // useEffect(() => {
-  //   reviewQuestions?.map((item, index) =>
-  //     setReviewState(prevState => [
-  //       ...prevState,
-  //       { answer: '', questionId: item.questionId, rate: '', revieweeUserId: '' },
-  //     ]),
-  //   );
-  //   console.log(`reviewQuestions: ${reviewQuestions}`);
-  //   console.log(`reviewState: ${reviewState}`);
-  // }, [reviewQuestions]);
-
-  const { teamId } = route.params!;
-
-  useEffect(() => {
-    console.log(`초기렌더링 시작`);
-    beforeReviewModal();
-    // dispatch(getTeamToReview(teamId));
-    // dispatch(getReviewQuestions());
-    setReviewState([]);
-  }, []);
-
   return (
-    <View style={{ justifyContent: 'space-between' }}>
+    <>
       <Text
         style={{
           fontSize: theme.fontSize.lg,
@@ -156,7 +152,7 @@ const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) =
       <PagerView
         style={{
           flex: 1,
-          backgroundColor: 'white',
+          marginTop: HEIGHT / 7,
         }}
         orientation="horizontal"
         initialPage={0}
@@ -166,7 +162,7 @@ const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) =
       >
         {teamData?.teamMembers.map((item, index) => (
           <View key={item.nickname}>
-            <ScrollView style={{ flex: 1, alignContent: 'center' }}>
+            {item.userId != profileData?.userId.toString() ? (
               <CardWrapper
                 style={{ marginLeft: 20, minWidth: 300, marginBottom: 10, marginTop: 2 }}
               >
@@ -240,45 +236,89 @@ const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) =
                   </View>
                 </View>
               </CardWrapper>
-            </ScrollView>
-            {isLastindex(index) ? (
-              <FilledButton
-                title={'완료'}
-                buttonStyle={{ backgroundColor: theme.colors.primary }}
-                containerStyle={{ marginHorizontal: 70 }}
-                disabled={buttonDisabled}
-                onPress={() => {
-                  setReviewResultState(prevState => [...prevState, ...reviewState]);
-                  setReviewState([]);
-                  reviewResultState.map(item => {
-                    console.log(
-                      `item.answer:${item.post}, item.rate:${item.rate}, item.revieweeUserId:${item.userId}`,
-                    );
-                  });
-                  reviewMutation.mutate([{ reviews: reviewResultState } as Reviews, teamId]);
-                  navigation.goBack();
-                }}
-              />
             ) : (
-              <FilledButton
-                title={'다음'}
-                buttonStyle={{ backgroundColor: theme.colors.primary }}
-                containerStyle={{ marginHorizontal: 70 }}
-                disabled={buttonDisabled}
-                onPress={() => {
-                  setReviewResultState(prevState => [...prevState, ...reviewState]);
-                  reviewQuestions?.map((item, index) =>
-                    setReviewState(prevState => [...prevState, { post: '', rate: '', userId: '' }]),
-                  );
-                  moveToNextPage(pageCount);
-                  setButtonDisabled(true); //초기화
-                }}
-              />
+              <>
+                <View
+                  style={[
+                    {
+                      display: 'flex',
+                      backgroundColor: 'white',
+                      borderRadius: 38,
+                      padding: 20,
+                      width: WIDTH * 0.6,
+                      marginLeft: 70,
+                    },
+                  ]}
+                >
+                  <Text style={{ fontSize: 22, fontWeight: 'bold', textAlign: 'center' }}>
+                    잠깐
+                  </Text>
+                  <Text
+                    style={{
+                      textAlign: 'center',
+                      paddingVertical: 16,
+                      fontSize: 12,
+                      fontWeight: 'bold',
+                      lineHeight: 25,
+                    }}
+                  >
+                    {`리뷰는 수정이 어려우니\n 신중하게 선택해주세요`}
+                  </Text>
+                  <Text style={{ fontSize: 40, textAlign: 'center' }}>🥺</Text>
+                  <FilledButton title={'확인'} onPress={() => moveToNextPage(pageCount)} />
+                </View>
+              </>
             )}
+            <View>
+              {item.userId != profileData?.userId.toString() ? (
+                <View>
+                  {isLastindex(index) ? (
+                    <FilledButton
+                      title={'완료'}
+                      buttonStyle={{ backgroundColor: theme.colors.primary }}
+                      containerStyle={{ marginHorizontal: 70 }}
+                      disabled={buttonDisabled}
+                      onPress={() => {
+                        setReviewResultState(prevState => [...prevState, ...reviewState]);
+                        setReviewState([]);
+                        console.log(`reviewResultState:`);
+                        reviewResultState.map(item => {
+                          console.log(
+                            `item.answer:${item.post}, item.rate:${item.rate}, item.revieweeUserId:${item.userId}`,
+                          );
+                        });
+                        reviewMutation.mutate([{ reviews: reviewResultState } as Reviews, teamId]);
+                      }}
+                    />
+                  ) : (
+                    <FilledButton
+                      title={'다음'}
+                      buttonStyle={{ backgroundColor: theme.colors.primary }}
+                      containerStyle={{ marginHorizontal: 70 }}
+                      disabled={buttonDisabled}
+                      onPress={() => {
+                        setReviewResultState(prevState => [...prevState, ...reviewState]);
+                        console.log(`reviewResultState:`);
+                        reviewResultState.map(item => {
+                          console.log(
+                            `item.answer:${item.post}, item.rate:${item.rate}, item.revieweeUserId:${item.userId}`,
+                          );
+                        });
+                        setReviewState([]);
+                        moveToNextPage(pageCount);
+                        //setButtonDisabled(true); //초기화
+                      }}
+                    />
+                  )}
+                </View>
+              ) : (
+                <></>
+              )}
+            </View>
           </View>
         ))}
       </PagerView>
-    </View>
+    </>
   );
 };
 

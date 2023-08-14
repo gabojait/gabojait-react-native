@@ -110,7 +110,9 @@ const Main = ({ navigation }: MainBottomTabNavigationProps<'MyPage'>) => {
         {profileData?.isLeader ? (
           <LeaderComponent
             onPressApply={() => navigation.navigate('MainNavigation', { screen: 'ApplyStatus' })}
-            onPressTeam={() => {}}
+            onPressTeam={() => {
+              navigation.navigate('MainNavigation', { screen: 'OfferSentUser' });
+            }}
             onPressHistory={() => navigation.navigate('MainNavigation', { screen: 'TeamHistory' })}
           />
         ) : (
@@ -244,7 +246,7 @@ const LeaderComponent = ({ onPressApply, onPressTeam, onPressHistory }: Componen
       <View>
         <TouchableOpacity onPress={() => onPressTeam()}>
           <Icon type="ionicon" size={43} name="document-text-outline" />
-          <Text style={{ textAlign: 'center', paddingTop: 5 }}>팀원관리</Text>
+          <Text style={{ textAlign: 'center', paddingTop: 5 }}>보낸제안</Text>
         </TouchableOpacity>
       </View>
       <View>

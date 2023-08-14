@@ -1,4 +1,4 @@
 export const reviewKeys = {
   postReview: 'postReview',
-  reviewAvailableTeam: 'reviewAvailableTeam',
+  reviewAvailableTeams: 'reviewAvailableTeam',
 };

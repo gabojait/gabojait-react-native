@@ -71,6 +71,7 @@ export type MainStackParamList = {
   CompleteSuccess: undefined;
   ManageTeammate: undefined;
   ProfilePreview: { userId: string };
+  OfferSentUser: NavigatorScreenParams<PositionTabParamList>;
 };
 
 export type MainBottomTabParamList = {
