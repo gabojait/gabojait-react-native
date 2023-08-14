@@ -26,13 +26,6 @@ export default function TeamHistory({ navigation, route }: MainStackScreenProps<
       { ...filter, pageFrom: undefined },
     ],
   };
-  const {
-    data: profileData,
-    isLoading: profileIsLoading,
-    error: profileError,
-  }: UseQueryResult<ProfileViewResponse> = useQuery([profileKeys.myProfile], () => getMyProfile(), {
-    useErrorBoundary: true,
-  });
   const [params, setParams] = useState({ pageFrom: 0, pageSize: 20 } as PageRequest);
   const { data, isLoading, error }: UseQueryResult<TeamDto[]> = useQuery(
     [reviewKeys.reviewAvailableTeams],
