@@ -6,8 +6,12 @@
   "registerOk": "회원가입 완료",
   "result_nicknameChangeOk": "닉네임 변경 완료",
   "result_passwordChangeOk": "비밀번호가 변경됐습니다. 로그아웃됩니다. ",
+  "result_passwordNotVerified": "비밀번호가 올바르지 않습니다.",
 
   "changeNickNm": "닉네임 변경",
   "action_checkDup": "중복확인",
-  "action_confirm": "확인"
+  "action_confirm": "확인",
+  "action_goBack": "돌아가기",
+
+  "order_enterCurrentPassword": "현재 비밀번호 입력",
 }

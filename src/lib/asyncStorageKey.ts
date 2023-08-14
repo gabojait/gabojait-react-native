@@ -1,4 +1,5 @@
 export const AsyncStorageKey = {
     accessToken: 'accessToken',
-    refreshToken: 'refreshToken'
+    refreshToken: 'refreshToken',
+    alertEnabled: 'alertEnabled'
 }

@@ -1,4 +1,4 @@
-import { FlatList, ScrollView, TouchableOpacity, View } from 'react-native';
+import { FlatList, RefreshControl, ScrollView, TouchableOpacity, View } from 'react-native';
 import React, { useEffect } from 'react';
 import { Icon, makeStyles, Text, useTheme } from '@rneui/themed';
 import { MainBottomTabNavigationProps } from '@/presentation/navigation/types';
@@ -12,6 +12,9 @@ import { UseQueryResult, useQuery } from 'react-query';
 import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 import { getMyProfile } from '@/data/api/profile';
 import ProfileViewResponse from '@/data/model/Profile/ProfileViewResponse';
+import { useAppDispatch } from '@/redux/hooks';
+import { getUser } from '@/redux/action/login';
+import { getProfile } from '@/redux/reducers/profileReducer';
 
 const Main = ({ navigation }: MainBottomTabNavigationProps<'MyPage'>) => {
   const { theme } = useTheme();
@@ -23,6 +26,8 @@ const Main = ({ navigation }: MainBottomTabNavigationProps<'MyPage'>) => {
   }: UseQueryResult<ProfileViewResponse> = useQuery([profileKeys.myProfile], () => getMyProfile(), {
     useErrorBoundary: true,
   });
+
+  const dispatch = useAppDispatch();
 
   return (
     <ScrollView style={styles.scrollView}>
@@ -110,9 +115,7 @@ const Main = ({ navigation }: MainBottomTabNavigationProps<'MyPage'>) => {
         {profileData?.isLeader ? (
           <LeaderComponent
             onPressApply={() => navigation.navigate('MainNavigation', { screen: 'ApplyStatus' })}
-            onPressTeam={() => {
-              navigation.navigate('MainNavigation', { screen: 'OfferSentUser' });
-            }}
+            onPressTeam={() => {}}
             onPressHistory={() => navigation.navigate('MainNavigation', { screen: 'TeamHistory' })}
           />
         ) : (
@@ -205,6 +208,7 @@ interface Component {
   onPressTeam: () => void;
   onPressHistory: () => void;
 }
+
 const MemberComponent = ({ onPressApply, onPressTeam, onPressHistory }: Component) => {
   const styles = useStyles();
 
