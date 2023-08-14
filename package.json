@@ -11,8 +11,8 @@
     "test": "jest",
     "debug:simulator": "react-native run-ios --configuration 'Debug' --simulator 'iPhone 14 Pro'",
     "debug:device": "react-native run-ios --configuration 'Debug' --device",
-    "codepush:android": "appcenter codepush release-react -a INU_Gabojait/Gabojait -d Staging",
-    "codepush:ios": "appcenter codepush release-react -a INU_Gabojait/Gabojait -d Staging"
+    "codepush:android": "appcenter codepush release-react -a Gabojait/Gabojait_Android -d Staging",
+    "codepush:ios": "appcenter codepush release-react -a Gabojait/Gabojait_iOS -d Staging"
   },
   "dependencies": {
     "@miblanchard/react-native-slider": "^2.3.0",
@@ -40,7 +40,6 @@
     "react-native-date-picker": "^4.2.5",
     "react-native-document-picker": "^8.1.3",
     "react-native-dropdown-select-list": "^2.0.4",
-    "react-native-flipper": "^0.207.0",
     "react-native-gesture-handler": "^2.9.0",
     "react-native-image-picker": "5.4.0",
     "react-native-localize": "^3.0.2",

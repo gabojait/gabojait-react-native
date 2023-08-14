@@ -2,8 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.gabojait.app</string>
+	</array>
 	<key>CFBundleDevelopmentRegion</key>
-	<string>en</string>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
 	<string>gabojait</string>
 	<key>CFBundleExecutable</key>
@@ -24,6 +28,11 @@
 	<string>1</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<false/>
+	<key>Information Property List</key>
+	<dict>
+		<key>CodePushDeploymentKey</key>
+		<string>$(CODEPUSH_KEY)</string>
+	</dict>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>kakaoopen</string>

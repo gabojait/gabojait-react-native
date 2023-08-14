@@ -13,7 +13,6 @@ import {profileKeys} from '@/reactQuery/key/ProfileKeys';
 import {getMyProfile} from '@/data/api/profile';
 import ProfileViewResponse from '@/data/model/Profile/ProfileViewResponse';
 import {useAppDispatch} from "@/redux/hooks";
-import {getUser} from "@/redux/action/login";
 import {getProfile} from "@/redux/reducers/profileReducer";
 
 const Main = ({navigation}: MainBottomTabNavigationProps<'MyPage'>) => {

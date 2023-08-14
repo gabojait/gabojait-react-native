@@ -20,6 +20,7 @@ const store = createStore(allReducers, applyMiddleware(ReduxThunk, logger));
 import NetInfo from '@react-native-community/netinfo'
 import {onlineManager} from 'react-query'
 import CodePush, {CodePushOptions, DownloadProgress, LocalPackage} from "react-native-code-push";
+import DEFAULT_UPDATE_DIALOG = CodePush.DEFAULT_UPDATE_DIALOG;
 
 onlineManager.setEventListener(setOnline => {
     return NetInfo.addEventListener(state => {
@@ -31,6 +32,7 @@ const codePushOptions: CodePushOptions = {
     checkFrequency: CodePush.CheckFrequency.ON_APP_START,
     installMode: CodePush.InstallMode.IMMEDIATE,
     mandatoryInstallMode: CodePush.InstallMode.IMMEDIATE,
+    updateDialog: DEFAULT_UPDATE_DIALOG
 };
 
 

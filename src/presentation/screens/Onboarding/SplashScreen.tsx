@@ -76,34 +76,37 @@ const SplashScreen = ({navigation}: RootStackScreenProps<'SplashScreen'>) => {
         }
     }
 
-    useEffect(() => {
-        const checkCodePush = async () => {
-            try {
-                console.log("checking update")
-                const update = await CodePush.checkForUpdate('nuR6I96BFy8COksJ3oinvr8ObCLxl4QA9R76d')
-                if (update) {
-                    console.log("update exists: ", update)
-                    Alert.alert("업데이트 알림", `새로운 ${update.appVersion} 버전이 존재합니다. 업데이트 후 앱을 재시작합니다.`)
-                    update
-                        .download((progress: DownloadProgress) => setSyncProgress(progress))
-                        .then((newPackage: LocalPackage) =>
-                            newPackage
-                                .install(CodePush.InstallMode.IMMEDIATE)
-                                .then(() => CodePush.restartApp())
-                        );
-                    return;
-                }
-                console.log("update not exists1")
-                throw new Error("업데이트 없음")
-            } catch {
-                console.log("update not exists2")
-                setHasUpdate(false);
-                await dispatch(getUser());
-                await requestUserPermission();
-            }
-        };
 
-        checkCodePush();
+    useEffect(() => {
+        // const checkCodePush = async () => {
+        //     try {
+        //         console.log("checking update")
+        //         // Todo: 플랫폼별 업데이트 체크
+        //         const update = await CodePush.checkForUpdate()
+        //         if (update) {
+        //             console.log("update exists: ", update)
+        //             Alert.alert("업데이트 알림", `새로운 ${update.appVersion} 버전이 존재합니다. 업데이트 후 앱을 재시작합니다.`)
+        //             update
+        //                 .download((progress: DownloadProgress) => setSyncProgress(progress))
+        //                 .then((newPackage: LocalPackage) =>
+        //                     newPackage
+        //                         .install(CodePush.InstallMode.IMMEDIATE)
+        //                         .then(() => CodePush.restartApp())
+        //                 );
+        //             return;
+        //         }
+        //         console.log("update not exists1")
+        //         throw new Error("업데이트 없음")
+        //     } catch {
+        //         console.log("update not exists2")
+        //         setHasUpdate(false);
+        //         await dispatch(getUser());
+        //         await requestUserPermission();
+        //     }
+        // };
+        dispatch(getUser());
+         requestUserPermission();
+        // checkCodePush();
 
     }, []);
 
