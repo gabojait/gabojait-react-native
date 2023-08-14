@@ -1,5 +1,5 @@
 import {
-  GetOfferFromUsersProps,
+  GetOfferFromOthersProps,
   acceptOfferFromUser,
   getOffersFromUser,
   rejectOfferFromUser,
@@ -27,13 +27,13 @@ const FrontendList = ({ navigation, route }: PositionTabParamListProps<'Frontend
       pageSize: 20,
       position: Position.Frontend,
     },
-      idName: "offerId",
+    idName: 'offerId',
     key: offerKeys.getOffersFromFrontend,
     fetcher: async ({ pageParam, queryKey: [_, params] }) => {
       console.log('fetch!!');
       console.log('pageParam:', pageParam);
       return await getOffersFromUser({
-        ...(params as GetOfferFromUsersProps),
+        ...(params as GetOfferFromOthersProps),
         pageFrom: pageParam,
       });
     },

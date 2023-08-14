@@ -49,7 +49,7 @@ import useGlobalStyles from '@/presentation/styles';
 import CardWrapper from '@/presentation/components/CardWrapper';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { offerKeys } from '@/reactQuery/key/OfferKeys';
-import { sendOfferToUser } from '@/data/api/offer';
+import { cancelOfferToUser, sendOfferToUser } from '@/data/api/offer';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 
 const ProfilePreview = ({ navigation, route }: TeammateStackParamListProps<'ProfilePreview'>) => {
@@ -62,6 +62,8 @@ const ProfilePreview = ({ navigation, route }: TeammateStackParamListProps<'Prof
   );
 };
 
+type buttonTitle = '초대하기' | '취소하기';
+
 const ProfilePreviewComponent = ({
   navigation,
   route,
@@ -71,10 +73,15 @@ const ProfilePreviewComponent = ({
   const modal = useModal();
   const queryClient = useQueryClient();
   const globalStyles = useGlobalStyles();
+  const [image, setImage] = useState<Asset | null>(null);
   const [reportState, setReportState] = useState({ text: '' });
   const [reportButtonState, setReportButtonState] = useState({
     text: '신고하기',
     isDisabled: true,
+  });
+  const [buttonState, setButtonState] = useState<{ color: string; title: buttonTitle }>({
+    color: theme.colors.primary,
+    title: '초대하기',
   });
   const {
     data: profile,
@@ -98,6 +105,19 @@ const ProfilePreviewComponent = ({
     (args: [string, Position]) => sendOfferToUser(...args),
     {
       resultToMessage: _ => '팀원 초대장이 보내졌습니다! 답장을 기다려주세요',
+      onSuccessClick() {
+        setButtonState({ title: '취소하기', color: theme.colors.disabled });
+      },
+    },
+  );
+  const { mutation: cancelOfferMutation } = useMutationDialog(
+    offerKeys.cancelOfferToUser,
+    (args: number) => cancelOfferToUser(args),
+    {
+      resultToMessage: _ => '팀원 초대를 취소하셨습니다.',
+      onSuccessClick() {
+        setButtonState({ title: '초대하기', color: theme.colors.primary });
+      },
     },
   );
   const reportCompeletedModal = () => {
@@ -157,10 +177,20 @@ const ProfilePreviewComponent = ({
       modalProps: { animationType: 'slide', justifying: 'bottom' },
     });
   };
+
   function handleFavoriteTeam() {
     mutateFavorite([userId, { isAddFavorite: !profile?.isFavorite }]);
   }
-  const [image, setImage] = useState<Asset | null>(null);
+
+  function handleOfferMutation(profile: ProfileViewResponse) {
+    if (buttonState.title == '초대하기') {
+      sendOfferMutation.mutate([userId, profile.position]);
+    } else if (buttonState.title == '취소하기' && profile.offers) {
+      const offer = profile.offers.find(item => item.position == profile.position);
+      cancelOfferMutation.mutate(offer?.offerId!);
+    }
+  }
+
   function isOfferButtonDisabled() {
     if (profile && profile.offers.length > 0) {
       return true;
@@ -217,12 +247,12 @@ const ProfilePreviewComponent = ({
               rightChild={
                 <FilledButton
                   onPress={() => {
-                    sendOfferMutation.mutate([userId, profile.position]);
+                    handleOfferMutation(profile);
                   }}
-                  title={'초대하기'}
+                  title={buttonState.title}
                   style={{ minWidth: 123, minHeight: 40, borderRadius: 10 }}
+                  buttonStyle={{ backgroundColor: buttonState.color }}
                   titleStyle={{ fontSize: 14, fontWeight: '400' }}
-                  disabled={isOfferButtonDisabled()}
                 />
               }
             />

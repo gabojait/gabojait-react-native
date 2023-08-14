@@ -1,6 +1,6 @@
 import { makeStyles, Text, useTheme } from '@rneui/themed';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { ScrollView } from 'react-native';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import { useQuery, useQueryClient, useQueryErrorResetBoundary, UseQueryResult } from 'react-query';
 import TeamDetailDto from '@/data/model/Team/TeamDetailDto';
@@ -14,16 +14,7 @@ import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { offerKeys } from '@/reactQuery/key/OfferKeys';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
-import {
-  ApplyPositionCard,
-  ApplyPositionCardProps,
-  ApplyPositionCardState,
-  PositionTextNameType,
-  RecruitStatusType,
-} from '@/presentation/components/ApplyPositionCard';
-import { FilledButton } from '@/presentation/components/Button';
-import CardWrapper from '@/presentation/components/CardWrapper';
-import PositionWaveIcon from '@/presentation/components/PositionWaveIcon';
+import { ApplyPositionCard, RecruitStatusType } from '@/presentation/components/ApplyPositionCard';
 
 const PositionSelector = ({ navigation, route }: MainStackScreenProps<'PositionSelector'>) => {
   const { reset } = useQueryErrorResetBoundary();
