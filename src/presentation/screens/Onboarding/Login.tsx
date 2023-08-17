@@ -74,6 +74,7 @@ const Login = ({ navigation }: OnboardingScreenProps<'Login'>) => {
           onPress={async () => {
             console.log(loginState.username, loginState.password);
             await AsyncStorage.setItem('accessToken', '');
+            await AsyncStorage.setItem('refreshToken', '');
             dispatch(
               login({
                 username: loginState.username,

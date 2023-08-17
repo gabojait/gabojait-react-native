@@ -56,7 +56,7 @@ export const reqInterceptor = async (req: AdaptAxiosRequestConfig) => {
   const accessToken = await AsyncStorage.getItem('accessToken');
   const refreshToken = await AsyncStorage.getItem('refreshToken');
   if (accessToken) req.headers.Authorization = `Bearer ${accessToken}`;
-  if (refreshToken) req.headers['Refresh-Token'] = `Bearer ${refreshToken}`;
+  if (refreshToken) req.headers['refresh-token'] = `Bearer ${refreshToken}`;
   console.info(`'${req.url}'\nHeader:`, req.headers, req);
   return req;
 };
