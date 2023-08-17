@@ -3,7 +3,14 @@ import client, { axiosConfig, isSuccess } from '@/lib/axiosInstance';
 import { useAppDispatch } from '@/redux/hooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
+import axios, {
+  Axios,
+  AxiosError,
+  AxiosHeaders,
+  AxiosInstance,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from 'axios';
 import { ReactNode, useEffect } from 'react';
 import { RootStackNavigationProps } from '../navigation/RootNavigation';
 import { ApiErrorCode } from '@/data/api/ApiErrorCode';
@@ -19,7 +26,7 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
   const navigation = useNavigation<RootStackNavigationProps>();
   const dispatch = useAppDispatch();
 
-  async function requestRefreshToken() {
+  async function requestRefreshToken(originalRequest: InternalAxiosRequestConfig) {
     let refreshTokenValue = '';
     let fcmToken = await messaging().getToken();
 
@@ -35,22 +42,23 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
       },
       body: JSON.stringify({ fcmToken: fcmToken }),
     };
-    console.log('리프레시 토큰 재요청 실행');
+
     fetch(`${axiosConfig.baseURL}/user/token`, request)
-      .then(res => {
+      .then(async res => {
+        const headers = res.headers as unknown as AxiosHeaders;
         if (res.status === 200 || res.status === 201) {
-          res.json().then(async (data: AxiosResponse) => {
-            console.log('리프레시 성공!!!!!!!!!!');
-            const newAccessToken = data.headers['authorization']!;
-            const newRefreshToken = data.headers['refresh-Token'];
-            AsyncStorage.setItem('accessToken', newAccessToken!);
-            AsyncStorage.setItem('refreshToken', newRefreshToken!);
-          });
+          await AsyncStorage.setItem('accessToken', res.headers.get('authorization')!);
+          await AsyncStorage.setItem('refreshToken', res.headers.get('refresh-token')!);
+          const newRequest = JSON.parse(JSON.stringify(originalRequest));
+          newRequest.headers = {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${res.headers.get('authorization')}`,
+            'refresh-token': `Bearer ${headers['refresh-token']}`,
+          };
+          new Axios(newRequest);
         }
       })
       .catch(async err => {
-        console.log('리프레시 실패---------------', err);
-
         AsyncStorage.removeItem('accessToken');
         AsyncStorage.removeItem('refreshToken');
         navigation.navigate('OnboardingNavigation', { screen: 'Login' });
@@ -75,11 +83,9 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
           console.log(res.headers);
           if (res.headers['authorization']) {
             await AsyncStorage.setItem('accessToken', res.headers['authorization']);
-            console.log(`========================'authorization':${res.headers['authorization']}`);
           }
           if (res.headers['refresh-token']) {
             await AsyncStorage.setItem('refreshToken', res.headers['refresh-token']);
-            console.log(`========================'refresh-token':${res.headers['refresh-token']}`);
           }
           // Todo: res.status == 200 일 때 responseCode를 이용해 분기처리
           if (!res.data.responseData || res.status == 204) {
@@ -104,7 +110,7 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
         } as Error;
       }
     };
-    const errorInterceptor = async (error: AxiosError) => {
+    const errorInterceptor = (error: AxiosError) => {
       const e = error as AxiosError;
       const response = e.response?.data as ResponseWrapper<undefined>;
       console.error(
@@ -122,7 +128,7 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
       //재요청 필요한 것
       if (response.responseCode == ApiErrorCode[401].TOKEN_UNAUTHENTICATED.name) {
         console.log(`------------refreshToken needs-----------------------------------`);
-        requestRefreshToken();
+        requestRefreshToken(e.config!);
       }
       //로그인 화면으로 보내야 할 것
       if (response.responseCode == ApiErrorCode[403].TOKEN_UNAUTHORIZED.name) {
