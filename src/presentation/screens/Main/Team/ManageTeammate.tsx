@@ -34,7 +34,7 @@ export const ManageTeammateComponent = ({
   const globalStyles = useGlobalStyles();
   const modal = useModal();
   const { theme } = useTheme();
-  const [reportState, setReportState] = useState('');
+  const [reportState, setReportState] = useState({ text: '' });
   const [reportButtonState, setReportButtonState] = useState({
     text: '신고하기',
     isDisabled: true,
@@ -80,13 +80,16 @@ export const ManageTeammateComponent = ({
         <BottomModalContent
           title="팀원을 신고하시겠습니까?"
           children={
-            <View>
-              <Text style={globalStyles.textLight13}>신고 사유를 적어주세요</Text>
-              <CardWrapper style={[globalStyles.card, { minHeight: 160 }]}>
+            <View style={{ justifyContent: 'center', alignContent: 'center', width: '100%' }}>
+              <Text style={[globalStyles.textLight13, { textAlign: 'center', paddingBottom: 10 }]}>
+                신고 사유를 적어주세요
+              </Text>
+              <CardWrapper style={{ minHeight: 75, maxWidth: 400 }}>
                 <TextInput
-                  value={reportState}
+                  value={reportState.text}
+                  style={{ width: '100%' }}
                   onChangeText={(text: string) => {
-                    setReportState(text);
+                    setReportState(prevState => ({ ...prevState, text: text }));
                   }}
                   multiline={true}
                   maxLength={500}
@@ -125,9 +128,9 @@ export const ManageTeammateComponent = ({
           text={'팀원을 추방하면 팀에서 제외됩니다.'}
           yesButton={{
             title: '확인',
-            onPress: () => {
+            onPress: async () => {
+              await modal?.hide();
               fireTeammateMutation.mutate(userId);
-              modal?.hide();
             },
           }}
         />
