@@ -27,6 +27,7 @@ import ProfilePreview from '../screens/Main/Home/TeamMate/ProfilePreview';
 import TeamDetail from '../screens/Main/MyPage/OfferFromTeam/TeamDetail';
 import JoinTeam from '../screens/Main/MyPage/OfferFromTeam/JoinTeam';
 import OfferSentUser from '../screens/Main/MyPage/OfferSentUser/OfferSentUser';
+import AlertPage from '../screens/Main/AlertPage';
 const Main = createStackNavigator<MainStackParamList>();
 
 const MainNavigation = () => {
@@ -136,6 +137,14 @@ const MainNavigation = () => {
           component={GroupCreator}
           options={{
             headerShown: false,
+          }}
+        />
+        <Main.Screen
+          name="AlertPage"
+          component={AlertPage}
+          options={{
+            header: TitleWithCloseHeader,
+            headerTitle: '알람',
           }}
         />
       </Main.Group>

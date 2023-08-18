@@ -63,6 +63,7 @@ export type MainStackParamList = {
   PositionSelector: { teamId: string };
   Setting: undefined;
   AlarmSetting: undefined;
+  AlertPage: undefined;
   Etc: undefined;
   OpenSourcePage: undefined;
   UserModifier: undefined;

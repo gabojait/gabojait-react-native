@@ -1,5 +1,5 @@
 import { FlatList, RefreshControl, ScrollView, TouchableOpacity, View } from 'react-native';
-import React, { useEffect } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { Icon, makeStyles, Text, useTheme } from '@rneui/themed';
 import { MainBottomTabNavigationProps } from '@/presentation/navigation/types';
 import CardWrapper from '@/presentation/components/CardWrapper';
@@ -8,15 +8,28 @@ import DivideWrapper from '@/presentation/components/DivideWrapper';
 import { RatingBar } from '@/presentation/components/RatingBar';
 import ProfileViewDto from '@/data/model/Profile/ProfileViewDto';
 import { WIDTH, chagneToOfficialWord, isEmptyArray } from '@/presentation/utils/util';
-import { UseQueryResult, useQuery } from 'react-query';
+import { UseQueryResult, useQuery, useQueryErrorResetBoundary } from 'react-query';
 import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 import { getMyProfile } from '@/data/api/profile';
 import ProfileViewResponse from '@/data/model/Profile/ProfileViewResponse';
 import { useAppDispatch } from '@/redux/hooks';
 import { getUser } from '@/redux/action/login';
 import { getProfile } from '@/redux/reducers/profileReducer';
+import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
+import Loading from '../../Loading';
 
-const Main = ({ navigation }: MainBottomTabNavigationProps<'MyPage'>) => {
+const Main = ({ navigation, route }: MainBottomTabNavigationProps<'MyPage'>) => {
+  const { reset } = useQueryErrorResetBoundary();
+
+  return (
+    <Suspense fallback={Loading()}>
+      <Error404Boundary onReset={reset}>
+        <MainComponent navigation={navigation} route={route} />
+      </Error404Boundary>
+    </Suspense>
+  );
+};
+const MainComponent = ({ navigation, route }: MainBottomTabNavigationProps<'MyPage'>) => {
   const { theme } = useTheme();
   const styles = useStyles();
   const {

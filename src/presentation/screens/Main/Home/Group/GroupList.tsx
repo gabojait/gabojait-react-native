@@ -133,6 +133,7 @@ const GroupListComponent = ({ navigation }: BoardStackParamListProps<'GroupList'
         backgroundColor: 'white',
         justifyContent: 'flex-end',
         position: 'relative',
+        paddingHorizontal: 20,
       }}
     >
       {data && (
@@ -170,7 +171,7 @@ const GroupListComponent = ({ navigation }: BoardStackParamListProps<'GroupList'
           flexDirection: 'column-reverse',
           justifyContent: 'flex-start',
           alignItems: 'flex-end',
-          width: '95%',
+          width: '100%',
           backgroundColor: theme.colors.disabled,
         }}
       >
