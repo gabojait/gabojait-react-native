@@ -3,7 +3,7 @@ import CardWrapper from '@/presentation/components/CardWrapper';
 import { RatingInput } from '@/presentation/components/RatingInput';
 import { useTheme } from '@rneui/themed';
 import React, { Suspense, useRef, useState } from 'react';
-import { Text, View } from 'react-native';
+import { Text, TextInput, View } from 'react-native';
 import CustomInput from '@/presentation/components/CustomInput';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import PagerView from 'react-native-pager-view';
@@ -46,6 +46,7 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
   const pagerViewRef = useRef<PagerView>(null);
   const queryClient = useQueryClient();
   const { teamId } = route.params!;
+  const ref_input1 = useRef<TextInput | null>(null);
   const {
     data: teamData,
     isLoading: isTeamDataLoading,
@@ -94,7 +95,6 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
       { post: otherReviews.post, rate: otherReviews.rate, userId: otherReviews.userId },
       newReview,
     ];
-    console.log(`updateTextReview----------------`);
     result.map(item => console.log(`answer: ${item.post}, rate: ${item.rate}, userId: ${userId}`));
     setReviewState([otherReviews, newReview]);
   }
@@ -116,7 +116,6 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
       { post: otherReviews.post, rate: otherReviews.rate, userId: otherReviews.userId },
       newReview,
     ];
-    console.log(`updateRatingReview----------------`);
     result.map(item => console.log(`answer: ${item.post}, rate: ${item.rate}, userId: ${userId}`));
     setReviewState([otherReviews, newReview]);
   };
@@ -129,19 +128,6 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
   const isLastindex = (index: number) => {
     if (index == teamData?.teamMembers.length! - 1) return true;
     else false;
-  };
-
-  const beforeReviewModal = () => {
-    modal?.show({
-      content: (
-        <SymbolCenteredModalContent
-          title="잠깐!"
-          text={'리뷰는 수정이 어려우니\n 신중하게 선택해주세요'}
-          symbol={<Text style={{ fontSize: theme.emojiSize.sm, textAlign: 'center' }}>🥺</Text>}
-          yesButton={{ title: '확인', onPress: () => modal.hide(), buttonStyle: { minWidth: 189 } }}
-        />
-      ),
-    });
   };
 
   if (!teamData) {
@@ -245,6 +231,10 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
                       style={{ minHeight: 90, fontSize: 14 }}
                       maxLength={200}
                       placeholder="팀원에 대한 리뷰를 남겨주세요"
+                      onPressIn={() => {
+                        ref_input1.current?.focus();
+                      }}
+                      ref={ref_input1}
                     />
                   </View>
                 </View>

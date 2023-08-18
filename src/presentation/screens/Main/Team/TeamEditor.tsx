@@ -1,6 +1,14 @@
-import React, { Suspense, useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
 import { makeStyles, Text, useTheme } from '@rneui/themed';
-import { KeyboardAvoidingView, ScrollView, TextInput, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  TextInput,
+  TextInputProps,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import TeamRequestDto from '@/data/model/Team/TeamRequestDto';
 import CardWrapper from '@/presentation/components/CardWrapper';
 import { FilledButton } from '@/presentation/components/Button';
@@ -39,16 +47,15 @@ export const TeamEditorComponent = ({ navigation, route }: MainStackScreenProps<
   const modal = useModal();
   const globalStyles = useGlobalStyles();
   const queryClient = useQueryClient();
+  const ref_input1 = useRef<TextInput | null>(null);
+  const ref_input2 = useRef<TextInput | null>(null);
+  const ref_input3 = useRef<TextInput | null>(null);
+  const ref_input4 = useRef<TextInput | null>(null);
   const {
     data: teamData,
     isLoading: isTeamDataLoading,
     error: teamDataError,
   }: UseQueryResult<TeamDto> = useQuery(teamKeys.myTeam, () => getMyTeam());
-  const teamUpdate = useMutationForm<TeamRequestDto, TeamDto>({
-    mutationKey: teamKeys.updateTeam,
-    mutationFn: async (dto: TeamRequestDto) => updateTeam(dto) as Promise<TeamDto>,
-    useErrorBoundary: true,
-  });
   const { mutation: updateTeamMutation } = useMutationDialog(
     teamKeys.updateTeam,
     async (dto: TeamRequestDto) => updateTeam(dto) as Promise<TeamDto>,
@@ -237,37 +244,50 @@ export const TeamEditorComponent = ({ navigation, route }: MainStackScreenProps<
 
   return (
     <KeyboardAvoidingView
-      behavior="height"
+      keyboardVerticalOffset={50}
+      behavior={Platform.select({ android: undefined, ios: 'padding' })}
       style={{ backgroundColor: 'white', flex: 1, paddingTop: 29, paddingHorizontal: 20 }}
     >
       <ScrollView>
         <View style={styles.item}>
           <Text style={styles.text}>프로젝트 이름</Text>
-          <CardWrapper style={[styles.inputBox, { maxHeight: 90 }]}>
-            <TextInput
-              value={teamUpdateState?.projectName}
-              onChangeText={(text: string) => {
-                updateProjectName(text);
-              }}
-              multiline={false}
-              maxLength={20}
-              placeholder="최대 20자"
-            />
-          </CardWrapper>
+          <TouchableOpacity
+            onPress={() => ref_input1.current?.focus()}
+            style={{ flex: 1, width: '100%' }}
+          >
+            <CardWrapper style={[styles.inputBox, { minHeight: 51 }]}>
+              <TextInput
+                ref={ref_input1}
+                value={teamUpdateState?.projectName}
+                onChangeText={(text: string) => {
+                  updateProjectName(text);
+                }}
+                multiline={false}
+                maxLength={20}
+                placeholder="최대 20자"
+              />
+            </CardWrapper>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.item}>
           <Text style={styles.text}>프로젝트 설명</Text>
-          <CardWrapper style={[globalStyles.card, styles.inputBox, { minHeight: 160 }]}>
-            <TextInput
-              value={teamUpdateState?.projectDescription}
-              onChangeText={(text: string) => {
-                updateProjectDescription(text);
-              }}
-              multiline={true}
-              maxLength={500}
-            />
-          </CardWrapper>
+          <TouchableOpacity
+            onPress={() => ref_input2.current?.focus()}
+            style={{ flex: 1, width: '100%' }}
+          >
+            <CardWrapper style={[globalStyles.card, styles.inputBox, { minHeight: 160 }]}>
+              <TextInput
+                value={teamUpdateState?.projectDescription}
+                onChangeText={(text: string) => {
+                  updateProjectDescription(text);
+                }}
+                ref={ref_input2}
+                multiline={true}
+                maxLength={500}
+              />
+            </CardWrapper>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.item}>
@@ -285,31 +305,43 @@ export const TeamEditorComponent = ({ navigation, route }: MainStackScreenProps<
 
         <View style={styles.item}>
           <Text style={styles.text}>바라는 점</Text>
-          <CardWrapper style={[globalStyles.card, styles.inputBox, { minHeight: 95 }]}>
-            <TextInput
-              value={teamUpdateState?.expectation}
-              onChangeText={(text: string) => {
-                updateExpectation(text);
-              }}
-              multiline={true}
-              maxLength={200}
-            />
-          </CardWrapper>
+          <TouchableOpacity
+            onPress={() => ref_input3.current?.focus()}
+            style={{ flex: 1, width: '100%' }}
+          >
+            <CardWrapper style={[globalStyles.card, styles.inputBox, { minHeight: 95 }]}>
+              <TextInput
+                value={teamUpdateState?.expectation}
+                onChangeText={(text: string) => {
+                  updateExpectation(text);
+                }}
+                ref={ref_input3}
+                multiline={true}
+                maxLength={200}
+              />
+            </CardWrapper>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.item}>
           <Text style={styles.text}>오픈채팅 링크</Text>
-          <CardWrapper style={[styles.inputBox, { maxHeight: 50 }]}>
-            <TextInput
-              value={teamUpdateState?.openChatUrl}
-              onChangeText={(text: string) => {
-                updateOpenchatUrl(text);
-              }}
-              multiline={true}
-              maxLength={100}
-              placeholder="카카오톡 오픈채팅 링크"
-            />
-          </CardWrapper>
+          <TouchableOpacity
+            onPress={() => ref_input4.current?.focus()}
+            style={{ flex: 1, width: '100%' }}
+          >
+            <CardWrapper style={[styles.inputBox, { minHeight: 50 }]}>
+              <TextInput
+                value={teamUpdateState?.openChatUrl}
+                onChangeText={(text: string) => {
+                  updateOpenchatUrl(text);
+                }}
+                multiline={true}
+                maxLength={100}
+                placeholder="카카오톡 오픈채팅 링크"
+                ref={ref_input4}
+              />
+            </CardWrapper>
+          </TouchableOpacity>
         </View>
 
         <View style={{ paddingHorizontal: 30 }}>
@@ -318,7 +350,7 @@ export const TeamEditorComponent = ({ navigation, route }: MainStackScreenProps<
             disabled={false}
             onPress={() => {
               if (isAllInputValidate()) {
-                teamUpdate.mutation(teamUpdateState);
+                updateTeamMutation.mutate(teamUpdateState);
               }
             }}
           />

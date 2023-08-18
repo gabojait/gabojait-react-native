@@ -2,8 +2,8 @@ import { FilledButton } from '@/presentation/components/Button';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import color from '@/presentation/res/styles/color';
 import { Text, useTheme, makeStyles } from '@rneui/themed';
-import React, { useState } from 'react';
-import { KeyboardAvoidingView, TextInput, View } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { KeyboardAvoidingView, Platform, TextInput, TouchableOpacity, View } from 'react-native';
 import TeamRequestDto from '@/data/model/Team/TeamRequestDto';
 import { ModalContext } from '@/presentation/components/modal/context';
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent';
@@ -18,6 +18,7 @@ import useModal from '@/presentation/components/modal/useModal';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { createTeam } from '@/data/api/team';
+import { HEIGHT } from '@/presentation/utils/util';
 
 const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'>) => {
   const { theme } = useTheme();
@@ -31,6 +32,10 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
     teamMemberRecruitCnts: [],
   });
   const globalStyles = useGlobalStyles();
+  const ref_input1 = useRef<TextInput | null>(null);
+  const ref_input2 = useRef<TextInput | null>(null);
+  const ref_input3 = useRef<TextInput | null>(null);
+  const ref_input4 = useRef<TextInput | null>(null);
   const { mutation: createTeamMutation } = useMutationDialog<TeamRequestDto, unknown>(
     teamKeys.createTeam,
     async (dto: TeamRequestDto) => createTeam(dto),
@@ -195,37 +200,51 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
 
   return (
     <KeyboardAvoidingView
-      behavior="height"
+      keyboardVerticalOffset={50}
+      behavior={Platform.select({ android: undefined, ios: 'padding' })}
       style={{ backgroundColor: 'white', flex: 1, paddingTop: 29, paddingHorizontal: 20 }}
+      enabled
     >
       <ScrollView>
         <View style={styles.item}>
           <Text style={styles.text}>프로젝트 이름</Text>
-          <CardWrapper style={[styles.inputBox, { minHeight: 51 }]}>
-            <TextInput
-              value={teamCreateState?.projectName}
-              onChangeText={(text: string) => {
-                updateProjectName(text);
-              }}
-              multiline={false}
-              maxLength={20}
-              placeholder="최대 20자"
-            />
-          </CardWrapper>
+          <TouchableOpacity
+            onPress={() => ref_input1.current?.focus()}
+            style={{ flex: 1, width: '100%' }}
+          >
+            <CardWrapper style={[styles.inputBox, { minHeight: 51 }]}>
+              <TextInput
+                value={teamCreateState?.projectName}
+                onChangeText={(text: string) => {
+                  updateProjectName(text);
+                }}
+                ref={ref_input1}
+                multiline={false}
+                maxLength={20}
+                placeholder="최대 20자"
+              />
+            </CardWrapper>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.item}>
           <Text style={styles.text}>프로젝트 설명</Text>
-          <CardWrapper style={[globalStyles.card, styles.inputBox, { minHeight: 160 }]}>
-            <TextInput
-              value={teamCreateState?.projectDescription}
-              onChangeText={(text: string) => {
-                updateProjectDescription(text);
-              }}
-              multiline={true}
-              maxLength={500}
-            />
-          </CardWrapper>
+          <TouchableOpacity
+            onPress={() => ref_input2.current?.focus()}
+            style={{ flex: 1, width: '100%' }}
+          >
+            <CardWrapper style={[globalStyles.card, styles.inputBox, { minHeight: 160 }]}>
+              <TextInput
+                value={teamCreateState?.projectDescription}
+                onChangeText={(text: string) => {
+                  updateProjectDescription(text);
+                }}
+                multiline={true}
+                maxLength={500}
+                ref={ref_input2}
+              />
+            </CardWrapper>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.item}>
@@ -242,31 +261,43 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
 
         <View style={styles.item}>
           <Text style={styles.text}>바라는 점</Text>
-          <CardWrapper style={[globalStyles.card, styles.inputBox, { minHeight: 95 }]}>
-            <TextInput
-              value={teamCreateState?.expectation}
-              onChangeText={(text: string) => {
-                updateExpectation(text);
-              }}
-              multiline={true}
-              maxLength={200}
-            />
-          </CardWrapper>
+          <TouchableOpacity
+            onPress={() => ref_input3.current?.focus()}
+            style={{ flex: 1, width: '100%' }}
+          >
+            <CardWrapper style={[globalStyles.card, styles.inputBox, { minHeight: 95 }]}>
+              <TextInput
+                value={teamCreateState?.expectation}
+                onChangeText={(text: string) => {
+                  updateExpectation(text);
+                }}
+                multiline={true}
+                maxLength={200}
+                ref={ref_input3}
+              />
+            </CardWrapper>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.item}>
           <Text style={styles.text}>오픈채팅 링크</Text>
-          <CardWrapper style={[styles.inputBox, { minHeight: 51 }]}>
-            <TextInput
-              value={teamCreateState?.openChatUrl}
-              onChangeText={(text: string) => {
-                updateOpenchatUrl(text);
-              }}
-              multiline={true}
-              maxLength={100}
-              placeholder="카카오톡 오픈채팅 링크"
-            />
-          </CardWrapper>
+          <TouchableOpacity
+            onPress={() => ref_input4.current?.focus()}
+            style={{ flex: 1, width: '100%' }}
+          >
+            <CardWrapper style={[styles.inputBox, { minHeight: 51 }]}>
+              <TextInput
+                value={teamCreateState?.openChatUrl}
+                onChangeText={(text: string) => {
+                  updateOpenchatUrl(text);
+                }}
+                multiline={true}
+                maxLength={100}
+                placeholder="카카오톡 오픈채팅 링크"
+                ref={ref_input4}
+              />
+            </CardWrapper>
+          </TouchableOpacity>
         </View>
 
         <View style={{ paddingHorizontal: 30 }}>
