@@ -27,8 +27,6 @@ const Main = ({ navigation }: MainBottomTabNavigationProps<'MyPage'>) => {
     useErrorBoundary: true,
   });
 
-  const dispatch = useAppDispatch();
-
   return (
     <ScrollView style={styles.scrollView}>
       <View

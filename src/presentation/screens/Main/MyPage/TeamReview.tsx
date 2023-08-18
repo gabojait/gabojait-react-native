@@ -2,10 +2,9 @@ import { FilledButton } from '@/presentation/components/Button';
 import CardWrapper from '@/presentation/components/CardWrapper';
 import { RatingInput } from '@/presentation/components/RatingInput';
 import { useTheme } from '@rneui/themed';
-import React, { useEffect, useRef, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import React, { Suspense, useRef, useState } from 'react';
+import { Text, View } from 'react-native';
 import CustomInput from '@/presentation/components/CustomInput';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import PagerView from 'react-native-pager-view';
 import ReviewAnswer from '@/data/model/Review/ReviewAnswer';
@@ -13,7 +12,6 @@ import SymbolCenteredModalContent from '@/presentation/components/modalContent/S
 import { HEIGHT, WIDTH, changeToTitleCase } from '@/presentation/utils/util';
 import useModal from '@/presentation/components/modal/useModal';
 import { PositionIcon } from '@/presentation/components/PartIcon';
-import { getMyTeam, getTeam } from '@/data/api/team';
 import TeamDto from '@/data/model/Team/TeamDto';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { UseQueryResult, useQuery, useQueryClient } from 'react-query';
@@ -25,15 +23,26 @@ import Reviews from '@/data/model/Review/Reviews';
 import { getMyProfile } from '@/data/api/profile';
 import ProfileViewResponse from '@/data/model/Profile/ProfileViewResponse';
 import { profileKeys } from '@/reactQuery/key/ProfileKeys';
+import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
+import { Loading } from '../../Loading';
 
 interface ReviewQuestionsProps extends ReviewAnswer {
   questionId: number;
 }
 
 const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) => {
+  return (
+    <Suspense fallback={Loading()}>
+      <Error404Boundary onReset={reset}>
+        <TeamReviewComponent navigation={navigation} route={route} />
+      </Error404Boundary>
+    </Suspense>
+  );
+};
+
+const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) => {
   const { theme } = useTheme();
   const modal = useModal();
-  const dispatch = useAppDispatch();
   const pagerViewRef = useRef<PagerView>(null);
   const queryClient = useQueryClient();
   const { teamId } = route.params!;
@@ -134,6 +143,10 @@ const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) =
       ),
     });
   };
+
+  if (!teamData) {
+    return null;
+  }
 
   return (
     <>

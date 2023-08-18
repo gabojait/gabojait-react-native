@@ -1,5 +1,5 @@
 import { TeammateStackParamListProps } from '@/presentation/navigation/types';
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import { Text, useTheme } from '@rneui/themed';
 import {
   ImageBackground,
@@ -51,14 +51,17 @@ import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { offerKeys } from '@/reactQuery/key/OfferKeys';
 import { cancelOfferToUser, sendOfferToUser } from '@/data/api/offer';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
+import { Loading } from '@/presentation/screens/Loading';
 
 const ProfilePreview = ({ navigation, route }: TeammateStackParamListProps<'ProfilePreview'>) => {
   const { reset } = useQueryErrorResetBoundary();
 
   return (
-    <Error404Boundary onReset={reset}>
-      <ProfilePreviewComponent navigation={navigation} route={route} />
-    </Error404Boundary>
+    <Suspense fallback={Loading()}>
+      <Error404Boundary onReset={reset}>
+        <ProfilePreviewComponent navigation={navigation} route={route} />
+      </Error404Boundary>
+    </Suspense>
   );
 };
 
@@ -191,18 +194,10 @@ const ProfilePreviewComponent = ({
     }
   }
 
-  function isOfferButtonDisabled() {
-    if (profile && profile.offers.length > 0) {
-      return true;
-    }
-    return false;
-  }
-  if (isLoading) {
-    return <Text>로딩중</Text>;
-  }
   if (!profile) {
     return null;
   }
+
   return (
     <>
       <CustomHeader

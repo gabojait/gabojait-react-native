@@ -13,17 +13,20 @@ import useGlobalStyles from '@/presentation/styles';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { useTheme } from '@rneui/themed';
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import { ScrollView, Text, TextInput, View } from 'react-native';
 import { UseQueryResult, useQuery, useQueryClient, useQueryErrorResetBoundary } from 'react-query';
+import { Loading } from '../../Loading';
 
 export const ManageTeammate = ({ navigation, route }: MainStackScreenProps<'ManageTeammate'>) => {
   const { reset } = useQueryErrorResetBoundary();
 
   return (
-    <Error404Boundary onReset={reset}>
-      <ManageTeammateComponent navigation={navigation} route={route} />
-    </Error404Boundary>
+    <Suspense fallback={Loading()}>
+      <Error404Boundary onReset={reset}>
+        <ManageTeammateComponent navigation={navigation} route={route} />
+      </Error404Boundary>
+    </Suspense>
   );
 };
 

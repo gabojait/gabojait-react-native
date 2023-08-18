@@ -9,7 +9,7 @@ import CustomIcon from '@/presentation/components/icon/Gabojait';
 import PositionRecruiting from '@/presentation/model/PositionRecruitng';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import { makeStyles, Text, useTheme } from '@rneui/themed';
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
 import {
   useMutation,
@@ -28,14 +28,17 @@ import useModal from '@/presentation/components/modal/useModal';
 import { favoriteKeys } from '@/reactQuery/key/FavoriteKeys';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
+import { Loading } from '@/presentation/screens/Loading';
 
 const GroupDetail = ({ navigation, route }: MainStackScreenProps<'GroupDetail'>) => {
   const { reset } = useQueryErrorResetBoundary();
 
   return (
-    <Error404Boundary onReset={reset}>
-      <GroupDetailComponent navigation={navigation} route={route} />
-    </Error404Boundary>
+    <Suspense fallback={Loading()}>
+      <Error404Boundary onReset={reset}>
+        <GroupDetailComponent navigation={navigation} route={route} />
+      </Error404Boundary>
+    </Suspense>
   );
 };
 
@@ -146,17 +149,9 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
     mutateFavorite([teamId, { isAddFavorite: !data?.isFavorite }]);
   }
 
-  // if (isLoading && !data) {
-  //   return <Text>로딩 중</Text>
-  // }
-
-  // if (error) {
-  //   return <Text>에러 발생</Text>
-  // }
-
-  // if (!data) {
-  //   return null
-  // }
+  if (!data) {
+    return null;
+  }
 
   //TODO: BookMarkHeader로 묶어서 팀원찾기/프로필미리보기 에서 사용하기
   return (

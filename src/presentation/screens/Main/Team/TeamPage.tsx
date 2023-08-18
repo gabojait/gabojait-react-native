@@ -1,6 +1,6 @@
 import CardWrapper from '@/presentation/components/CardWrapper';
 import { makeStyles, Text, useTheme } from '@rneui/themed';
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import { Platform, ScrollView, TouchableOpacity, View } from 'react-native';
 import PositionWaveIcon from '@/presentation/components/PositionWaveIcon';
 import { OutlinedButton } from '@/presentation/components/Button';
@@ -16,6 +16,7 @@ import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
+import { Loading } from '../../Loading';
 
 interface LeaderHeaderParams {
   onPressEditor: () => void;
@@ -87,9 +88,11 @@ export const TeamPage = ({ navigation, route }: MainBottomTabNavigationProps<'Te
   const { reset } = useQueryErrorResetBoundary();
 
   return (
-    <Error404Boundary onReset={reset}>
-      <TeamPageComponent navigation={navigation} route={route} />
-    </Error404Boundary>
+    <Suspense fallback={Loading()}>
+      <Error404Boundary onReset={reset}>
+        <TeamPageComponent navigation={navigation} route={route} />
+      </Error404Boundary>
+    </Suspense>
   );
 };
 export const TeamPageComponent = ({ navigation, route }: MainBottomTabNavigationProps<'Team'>) => {

@@ -9,14 +9,22 @@ import { OutlinedButton } from '@/presentation/components/Button';
 import CardWrapper from '@/presentation/components/CardWrapper';
 import { RatingBar } from '@/presentation/components/RatingBar';
 import { PositionTabParamListProps } from '@/presentation/navigation/types';
+import { Loading } from '@/presentation/screens/Loading';
 import { offerKeys } from '@/reactQuery/key/OfferKeys';
 import { PageRequest, useModelList } from '@/reactQuery/util/useModelList';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { makeStyles, useTheme } from '@rneui/themed';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 
 const BackendList = ({ navigation, route }: PositionTabParamListProps<'Backend'>) => {
+  return (
+    <Suspense fallback={Loading()}>
+      <BackendListComponent navigation={navigation} route={route} />
+    </Suspense>
+  );
+};
+const BackendListComponent = ({ navigation, route }: PositionTabParamListProps<'Backend'>) => {
   const { theme } = useTheme();
   const styles = useStyles();
   const { data, isLoading, error, fetchNextPage, refetch, isRefreshing } = useModelList({
@@ -46,6 +54,10 @@ const BackendList = ({ navigation, route }: PositionTabParamListProps<'Backend'>
     offerKeys.acceptOfferFromUser,
     async (args: [number, boolean]) => acceptOfferFromUser(...args),
   );
+
+  if (!data) {
+    return null;
+  }
 
   return (
     <View

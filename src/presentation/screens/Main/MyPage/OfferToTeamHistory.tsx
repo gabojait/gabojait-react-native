@@ -1,6 +1,6 @@
 import GroupListCard from '@/presentation/components/TeamBanner';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import { FlatList, TouchableOpacity, View } from 'react-native';
 import { useAppSelector } from '@/redux/hooks';
 import TeamBriefDto from '@/data/model/Team/TeamBriefDto';
@@ -8,9 +8,26 @@ import TeamBanner from '@/presentation/components/TeamBanner';
 import { getOffersFromTeam, getOffersSentToTeam } from '@/data/api/offer';
 import { useModelList, PageRequest } from '@/reactQuery/util/useModelList';
 import { offerKeys } from '@/reactQuery/key/OfferKeys';
+import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
+import { useQueryErrorResetBoundary } from 'react-query';
+import { Loading } from '../../Loading';
 
 const OfferToTeamHistory = ({ navigation, route }: MainStackScreenProps<'OfferToTeamHistory'>) => {
-  // Todo: API 붙이기
+  const { reset } = useQueryErrorResetBoundary();
+
+  return (
+    <Suspense fallback={Loading()}>
+      <Error404Boundary onReset={reset}>
+        <OfferToTeamHistoryComponent navigation={navigation} route={route} />
+      </Error404Boundary>
+    </Suspense>
+  );
+};
+
+const OfferToTeamHistoryComponent = ({
+  navigation,
+  route,
+}: MainStackScreenProps<'OfferToTeamHistory'>) => {
   const QueryKey = {
     all: offerKeys.offersSentToTeam,
     filtered: (filter: PageRequest) => [
@@ -25,7 +42,7 @@ const OfferToTeamHistory = ({ navigation, route }: MainStackScreenProps<'OfferTo
       pageFrom: 0,
       pageSize: 20,
     },
-    idName: "offerId",
+    idName: 'offerId',
     fetcher: ({ pageParam, queryKey }) => {
       return getOffersSentToTeam({
         ...(params as PageRequest),
@@ -34,6 +51,10 @@ const OfferToTeamHistory = ({ navigation, route }: MainStackScreenProps<'OfferTo
     },
     key: QueryKey.filtered(params),
   });
+
+  if (!data) {
+    return null;
+  }
 
   return (
     <View style={{ backgroundColor: 'white', flex: 1 }}>

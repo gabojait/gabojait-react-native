@@ -1,5 +1,5 @@
 import { makeStyles, Text, useTheme } from '@rneui/themed';
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { ScrollView } from 'react-native';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import { useQuery, useQueryClient, useQueryErrorResetBoundary, UseQueryResult } from 'react-query';
@@ -15,14 +15,17 @@ import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { offerKeys } from '@/reactQuery/key/OfferKeys';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 import { ApplyPositionCard, RecruitStatusType } from '@/presentation/components/ApplyPositionCard';
+import { Loading } from '@/presentation/screens/Loading';
 
 const PositionSelector = ({ navigation, route }: MainStackScreenProps<'PositionSelector'>) => {
   const { reset } = useQueryErrorResetBoundary();
 
   return (
-    <Error404Boundary onReset={reset}>
-      <PositionSelectorComponent navigation={navigation} route={route} />
-    </Error404Boundary>
+    <Suspense fallback={Loading()}>
+      <Error404Boundary onReset={reset}>
+        <PositionSelectorComponent navigation={navigation} route={route} />
+      </Error404Boundary>
+    </Suspense>
   );
 };
 
@@ -51,14 +54,6 @@ const PositionSelectorComponent = ({
     },
   );
 
-  if (isLoading && !data) {
-    return <Text>로딩 중</Text>;
-  }
-
-  if (error) {
-    return <Text>에러 발생</Text>;
-  }
-
   if (!data) {
     return null;
   }
@@ -68,7 +63,7 @@ const PositionSelectorComponent = ({
       {positions.map((item, index) => (
         <PositionSelectWrapper
           data={item}
-          offers={data.offers}
+          offers={data!.offers}
           onButtonPressed={(position: Position) => {
             offerMutation.mutate([position, teamId]);
           }}

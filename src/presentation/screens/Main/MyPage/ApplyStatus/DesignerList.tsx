@@ -12,15 +12,20 @@ import { offerKeys } from '@/reactQuery/key/OfferKeys';
 import { useModelList } from '@/reactQuery/util/useModelList';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { makeStyles, useTheme } from '@rneui/themed';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 import { PositionTabParamList, PositionTabParamListProps } from '@/presentation/navigation/types';
+import { Loading } from '@/presentation/screens/Loading';
 
-const DesignerList = ({
-  navigation: { navigation },
-}: {
-  navigation: PositionTabParamListProps<'Designer'>;
-}) => {
+const DesignerList = ({ navigation, route }: PositionTabParamListProps<'Designer'>) => {
+  return (
+    <Suspense fallback={Loading()}>
+      <DesignerListComponent navigation={navigation} route={route} />
+    </Suspense>
+  );
+};
+
+const DesignerListComponent = ({ navigation, route }: PositionTabParamListProps<'Designer'>) => {
   const { theme } = useTheme();
   const styles = useStyles();
   const { data, isLoading, error, fetchNextPage, refetch, isRefreshing } = useModelList({
@@ -50,6 +55,10 @@ const DesignerList = ({
     offerKeys.acceptOfferFromUser,
     async (args: [number, boolean]) => acceptOfferFromUser(...args),
   );
+
+  if (!data) {
+    return null;
+  }
 
   return (
     <View

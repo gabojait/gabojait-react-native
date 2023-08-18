@@ -1,6 +1,6 @@
 import TeamBanner from '@/presentation/components/TeamBanner';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 import TeamBriefDto from '@/data/model/Team/TeamBriefDto';
 import { PageRequest, useModelList } from '@/reactQuery/util/useModelList';
@@ -14,16 +14,23 @@ import { useTheme } from '@rneui/themed';
 import { UserCard } from '@/presentation/components/UserCard';
 import { favoriteKeys } from '@/reactQuery/key/FavoriteKeys';
 import { isLeader } from '@/presentation/utils/util';
+import { Loading } from '../../Loading';
+import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
+import { useQueryErrorResetBoundary } from 'react-query';
 
 const BookMark = ({ navigation, route }: MainStackScreenProps<'BookMark'>) => {
+  const { reset } = useQueryErrorResetBoundary();
+
   return (
-    <>
-      {route.params.isLeader ? (
-        <FavoriteUsers navigation={navigation} route={route} />
-      ) : (
-        <FavoriteTeams navigation={navigation} route={route} />
-      )}
-    </>
+    <Suspense fallback={Loading()}>
+      <Error404Boundary onReset={reset}>
+        {route.params.isLeader ? (
+          <FavoriteUsers navigation={navigation} route={route} />
+        ) : (
+          <FavoriteTeams navigation={navigation} route={route} />
+        )}
+      </Error404Boundary>
+    </Suspense>
   );
 };
 
@@ -39,7 +46,7 @@ const FavoriteTeams = ({ navigation, route }: MainStackScreenProps<'BookMark'>) 
   const [params, setParams] = useState({ pageFrom: 0, pageSize: 20 } as PageRequest);
   const { data, isLoading, error, fetchNextPage, refetch, isRefreshing } = useModelList({
     initialParam: { ...params },
-    idName: "teamId",
+    idName: 'teamId',
     key: QueryKey.filtered(params),
     fetcher: ({ pageParam, queryKey: [_, __, params] }) => {
       return getFavoriteTeams({ ...(params as PageRequest), pageFrom: pageParam });
@@ -83,7 +90,7 @@ const FavoriteUsers = ({ navigation, route }: MainStackScreenProps<'BookMark'>) 
   const [params, setParams] = useState({ pageFrom: 0, pageSize: 20 } as PageRequest);
   const { data, isLoading, error, fetchNextPage, refetch, isRefreshing } = useModelList({
     initialParam: { ...params },
-    idName: "userId",
+    idName: 'userId',
     key: QueryKey.filtered(params),
     fetcher: ({ pageParam, queryKey: [_, __, params] }) => {
       return getFavoriteUsers({ ...(params as PageRequest), pageFrom: pageParam });

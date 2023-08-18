@@ -5,7 +5,7 @@ import Error404Boundary from '@/presentation/components/errorComponent/Error404B
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import useGlobalStyles from '@/presentation/styles';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { Text, ScrollView } from 'react-native';
 import { UseQueryResult, useQuery, useQueryClient, useQueryErrorResetBoundary } from 'react-query';
 import {} from '../../Home/Group/PositionSelector';
@@ -15,14 +15,17 @@ import BriefOfferDto from '@/data/model/Offer/BriefOfferDto';
 import { applyToTeam, decideOfferFromTeam } from '@/data/api/offer';
 import { offerKeys } from '@/reactQuery/key/OfferKeys';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
+import { Loading } from '@/presentation/screens/Loading';
 
 const JoinTeam = ({ navigation, route }: MainStackScreenProps<'JoinTeam'>) => {
   const { reset } = useQueryErrorResetBoundary();
 
   return (
-    <Error404Boundary onReset={reset}>
-      <TeamDetailComponent navigation={navigation} route={route} />
-    </Error404Boundary>
+    <Suspense fallback={Loading()}>
+      <Error404Boundary onReset={reset}>
+        <TeamDetailComponent navigation={navigation} route={route} />
+      </Error404Boundary>
+    </Suspense>
   );
 };
 
@@ -48,13 +51,6 @@ const TeamDetailComponent = ({ navigation, route }: MainStackScreenProps<'JoinTe
       },
     },
   );
-  if (isLoading && !data) {
-    return <Text>로딩 중</Text>;
-  }
-
-  if (error) {
-    return <Text>에러 발생</Text>;
-  }
 
   if (!data) {
     return null;

@@ -1,32 +1,31 @@
-import {
-  GetOfferFromOthersProps,
-  rejectOfferFromUser,
-  acceptOfferFromUser,
-  getOfferSentToUser,
-} from '@/data/api/offer';
+import { GetOfferFromOthersProps, getOfferSentToUser } from '@/data/api/offer';
 import { Position } from '@/data/model/type/Position';
 import { PositionTabParamListProps } from '@/presentation/navigation/types';
 import { offerKeys } from '@/reactQuery/key/OfferKeys';
-import { PageRequest, useModelList } from '@/reactQuery/util/useModelList';
-import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
+import { useModelList } from '@/reactQuery/util/useModelList';
 import { makeStyles, useTheme } from '@rneui/themed';
 import { View, FlatList, TouchableOpacity } from 'react-native';
-import { useQueryClient } from 'react-query';
-import React, { useState } from 'react';
+import React, { Suspense } from 'react';
 import { UserCard } from '@/presentation/components/UserCard';
-import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 import OffersFromOtherDto from '@/data/model/Offer/OffersFromUserDto';
+import { Loading } from '@/presentation/screens/Loading';
 
-const FrontendList = ({ navigation, route }: PositionTabParamListProps<'Backend'>) => {
+const BackendList = ({ navigation, route }: PositionTabParamListProps<'Backend'>) => {
+  return (
+    <Suspense fallback={Loading()}>
+      <BackendListComponent navigation={navigation} route={route} />
+    </Suspense>
+  );
+};
+
+const BackendListComponent = ({ navigation }: PositionTabParamListProps<'Backend'>) => {
   const { theme } = useTheme();
-  const styles = useStyles();
-  const queryClient = useQueryClient();
   const initialParam: GetOfferFromOthersProps = {
     pageFrom: 0,
     pageSize: 20,
     position: Position.Backend,
   };
-  const { data, isLoading, error, fetchNextPage, refetch, isRefreshing } = useModelList<
+  const { data, fetchNextPage, refetch, isRefreshing } = useModelList<
     GetOfferFromOthersProps,
     OffersFromOtherDto
   >({
@@ -41,15 +40,9 @@ const FrontendList = ({ navigation, route }: PositionTabParamListProps<'Backend'
     },
   });
 
-  const { mutation: rejectOfferMutation } = useMutationDialog(
-    offerKeys.rejectOfferFromUser,
-    async (offerId: number) => rejectOfferFromUser(offerId),
-  );
-
-  const { mutation: acceptOfferMutation } = useMutationDialog(
-    offerKeys.acceptOfferFromUser,
-    async (args: [number, boolean]) => acceptOfferFromUser(...args),
-  );
+  if (!data) {
+    return null;
+  }
 
   return (
     <View
@@ -103,4 +96,4 @@ const useStyles = makeStyles(theme => ({
     paddingLeft: 10,
   },
 }));
-export default FrontendList;
+export default BackendList;

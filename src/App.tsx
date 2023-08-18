@@ -13,7 +13,13 @@ import { QueryClient, QueryClientProvider, useQueryErrorResetBoundary } from 're
 import { createLogger } from 'redux-logger';
 import './assets/locales/index';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      suspense: true,
+    },
+  },
+});
 const logger = createLogger();
 const store = createStore(allReducers, applyMiddleware(ReduxThunk, logger));
 

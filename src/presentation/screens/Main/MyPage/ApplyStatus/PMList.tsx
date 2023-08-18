@@ -12,15 +12,20 @@ import { offerKeys } from '@/reactQuery/key/OfferKeys';
 import { PageRequest, useModelList } from '@/reactQuery/util/useModelList';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { makeStyles, useTheme } from '@rneui/themed';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 import { PositionTabParamListProps } from '@/presentation/navigation/types';
+import { Loading } from '@/presentation/screens/Loading';
 
-const PMList = ({
-  navigation: { navigation },
-}: {
-  navigation: PositionTabParamListProps<'PM'>;
-}) => {
+const PMList = ({ navigation, route }: PositionTabParamListProps<'PM'>) => {
+  return (
+    <Suspense fallback={Loading()}>
+      <PMListComponent navigation={navigation} route={route} />
+    </Suspense>
+  );
+};
+
+const PMListComponent = ({ navigation, route }: PositionTabParamListProps<'PM'>) => {
   const { theme } = useTheme();
   const styles = useStyles();
   const { data, isLoading, error, fetchNextPage, refetch, isRefreshing } = useModelList({
@@ -50,6 +55,10 @@ const PMList = ({
     offerKeys.acceptOfferFromUser,
     async (args: [number, boolean]) => acceptOfferFromUser(...args),
   );
+
+  if (!data) {
+    return null;
+  }
 
   return (
     <View

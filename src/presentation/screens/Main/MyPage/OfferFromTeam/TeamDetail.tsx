@@ -1,7 +1,7 @@
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import { UseQueryResult, useQuery, useQueryErrorResetBoundary } from 'react-query';
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { FilledButton } from '@/presentation/components/Button';
 import CardWrapper from '@/presentation/components/CardWrapper';
 import PositionWaveIcon from '@/presentation/components/PositionWaveIcon';
@@ -14,14 +14,17 @@ import { getTeam } from '@/data/api/team';
 import TeamDetailDto from '@/data/model/Team/TeamDetailDto';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import PositionRecruiting from '@/presentation/model/PositionRecruitng';
+import { Loading } from '@/presentation/screens/Loading';
 
 const TeamDetail = ({ navigation, route }: MainStackScreenProps<'TeamDetail'>) => {
   const { reset } = useQueryErrorResetBoundary();
 
   return (
-    <Error404Boundary onReset={reset}>
-      <TeamDetailComponent navigation={navigation} route={route} />
-    </Error404Boundary>
+    <Suspense fallback={Loading()}>
+      <Error404Boundary onReset={reset}>
+        <TeamDetailComponent navigation={navigation} route={route} />
+      </Error404Boundary>
+    </Suspense>
   );
 };
 
@@ -37,6 +40,10 @@ const TeamDetailComponent = ({ navigation, route }: MainStackScreenProps<'TeamDe
     },
   );
   const positions: Array<PositionRecruiting> = data?.teamMemberCnts || [];
+
+  if (!data) {
+    return null;
+  }
 
   return (
     <>

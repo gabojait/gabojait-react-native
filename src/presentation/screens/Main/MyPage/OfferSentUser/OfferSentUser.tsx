@@ -1,11 +1,7 @@
-import { getMyTeam } from '@/data/api/team';
-import TeamDetailDto from '@/data/model/Team/TeamDetailDto';
 import { MainStackScreenProps, PositionTabParamList } from '@/presentation/navigation/types';
-import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useTheme } from '@rneui/themed';
-import { Text, Dimensions } from 'react-native';
-import { UseQueryResult, useQuery } from 'react-query';
+import { Dimensions } from 'react-native';
 import FrontendList from './FrontendList';
 import BackendList from './BackendList';
 import DesignerList from './DesignerList';

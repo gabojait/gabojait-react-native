@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { makeStyles, Text, useTheme } from '@rneui/themed';
 import { KeyboardAvoidingView, ScrollView, TextInput, View } from 'react-native';
 import TeamRequestDto from '@/data/model/Team/TeamRequestDto';
@@ -19,14 +19,17 @@ import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { useMutationForm } from '@/reactQuery/util/useMutationForm';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
+import { Loading } from '../../Loading';
 
 export const TeamEditor = ({ navigation, route }: MainStackScreenProps<'TeamEditor'>) => {
   const { reset } = useQueryErrorResetBoundary();
 
   return (
-    <Error404Boundary onReset={reset}>
-      <TeamEditorComponent navigation={navigation} route={route} />
-    </Error404Boundary>
+    <Suspense fallback={Loading()}>
+      <Error404Boundary onReset={reset}>
+        <TeamEditorComponent navigation={navigation} route={route} />
+      </Error404Boundary>
+    </Suspense>
   );
 };
 

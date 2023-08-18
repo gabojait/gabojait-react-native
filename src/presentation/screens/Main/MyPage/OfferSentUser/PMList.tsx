@@ -1,23 +1,25 @@
-import {
-  GetOfferFromOthersProps,
-  rejectOfferFromUser,
-  acceptOfferFromUser,
-  getOfferSentToUser,
-} from '@/data/api/offer';
+import { GetOfferFromOthersProps, getOfferSentToUser } from '@/data/api/offer';
 import { Position } from '@/data/model/type/Position';
 import { PositionTabParamListProps } from '@/presentation/navigation/types';
 import { offerKeys } from '@/reactQuery/key/OfferKeys';
 import { PageRequest, useModelList } from '@/reactQuery/util/useModelList';
-import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { makeStyles, useTheme } from '@rneui/themed';
 import { View, FlatList, TouchableOpacity } from 'react-native';
 import { useQueryClient } from 'react-query';
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import { UserCard } from '@/presentation/components/UserCard';
-import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 import OffersFromOtherDto from '@/data/model/Offer/OffersFromUserDto';
+import { Loading } from '@/presentation/screens/Loading';
 
-const FrontendList = ({ navigation, route }: PositionTabParamListProps<'PM'>) => {
+const PMList = ({ navigation, route }: PositionTabParamListProps<'PM'>) => {
+  return (
+    <Suspense fallback={Loading()}>
+      <PMListComponent navigation={navigation} route={route} />
+    </Suspense>
+  );
+};
+
+const PMListComponent = ({ navigation, route }: PositionTabParamListProps<'PM'>) => {
   const { theme } = useTheme();
   const styles = useStyles();
   const queryClient = useQueryClient();
@@ -42,15 +44,9 @@ const FrontendList = ({ navigation, route }: PositionTabParamListProps<'PM'>) =>
     },
   });
 
-  const { mutation: rejectOfferMutation } = useMutationDialog(
-    offerKeys.rejectOfferFromUser,
-    async (offerId: number) => rejectOfferFromUser(offerId),
-  );
-
-  const { mutation: acceptOfferMutation } = useMutationDialog(
-    offerKeys.acceptOfferFromUser,
-    async (args: [number, boolean]) => acceptOfferFromUser(...args),
-  );
+  if (!data) {
+    return null;
+  }
 
   return (
     <View
@@ -104,4 +100,4 @@ const useStyles = makeStyles(theme => ({
     paddingLeft: 10,
   },
 }));
-export default FrontendList;
+export default PMList;

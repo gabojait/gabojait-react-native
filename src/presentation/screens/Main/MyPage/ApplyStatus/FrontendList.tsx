@@ -9,15 +9,24 @@ import { OutlinedButton } from '@/presentation/components/Button';
 import CardWrapper from '@/presentation/components/CardWrapper';
 import { RatingBar } from '@/presentation/components/RatingBar';
 import { PositionTabParamListProps } from '@/presentation/navigation/types';
+import { Loading } from '@/presentation/screens/Loading';
 import { offerKeys } from '@/reactQuery/key/OfferKeys';
 import { useModelList } from '@/reactQuery/util/useModelList';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { makeStyles, useTheme } from '@rneui/themed';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 import { useQueryClient } from 'react-query';
 
 const FrontendList = ({ navigation, route }: PositionTabParamListProps<'Frontend'>) => {
+  return (
+    <Suspense fallback={Loading()}>
+      <FrontendListComponent navigation={navigation} route={route} />
+    </Suspense>
+  );
+};
+
+const FrontendListComponent = ({ navigation, route }: PositionTabParamListProps<'Frontend'>) => {
   const { theme } = useTheme();
   const styles = useStyles();
   const queryClient = useQueryClient();
@@ -48,6 +57,10 @@ const FrontendList = ({ navigation, route }: PositionTabParamListProps<'Frontend
     offerKeys.acceptOfferFromUser,
     async (args: [number, boolean]) => acceptOfferFromUser(...args),
   );
+
+  if (!data) {
+    return null;
+  }
 
   return (
     <View
