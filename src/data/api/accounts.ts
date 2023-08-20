@@ -86,3 +86,7 @@ export const refreshToken = async (request: { fcmToken: string }) => {
   console.log(result);
   return result;
 };
+
+export const updateNotification = async (isNotified: boolean) => {
+  return await client.patch('user/notified', { isNotified: isNotified });
+};
