@@ -20,7 +20,6 @@ interface MutationFormResult<
     mutation: (dto?: TVariables) => Promise<void>;
 }
 
-//TODO: 파라미터 여러개일 경우도 추가필요
 export function useMutationForm<TVariables = undefined, TData = undefined>({
                                                                                mutationKey,
                                                                                mutationFn,
