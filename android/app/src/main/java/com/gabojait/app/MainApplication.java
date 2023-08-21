@@ -1,4 +1,4 @@
-package com.gabojait;
+package com.gabojait.app;
 
 import android.app.Application;
 import com.facebook.react.PackageList;
@@ -10,6 +10,7 @@ import com.facebook.react.defaults.DefaultReactNativeHost;
 import com.facebook.soloader.SoLoader;
 import java.util.List;
 
+import com.gabojait.app.BuildConfig;
 import com.microsoft.codepush.react.CodePush;
 
 

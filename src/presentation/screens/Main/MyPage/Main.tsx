@@ -1,4 +1,4 @@
-import { FlatList, RefreshControl, ScrollView, TouchableOpacity, View } from 'react-native';
+import { FlatList, ScrollView, TouchableOpacity, View } from 'react-native';
 import React, { Suspense, useEffect } from 'react';
 import { Icon, makeStyles, Text, useTheme } from '@rneui/themed';
 import { MainBottomTabNavigationProps } from '@/presentation/navigation/types';
@@ -12,9 +12,6 @@ import { UseQueryResult, useQuery, useQueryErrorResetBoundary } from 'react-quer
 import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 import { getMyProfile } from '@/data/api/profile';
 import ProfileViewResponse from '@/data/model/Profile/ProfileViewResponse';
-import { useAppDispatch } from '@/redux/hooks';
-import { getUser } from '@/redux/action/login';
-import { getProfile } from '@/redux/reducers/profileReducer';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 import Loading from '../../Loading';
 
@@ -29,16 +26,16 @@ const Main = ({ navigation, route }: MainBottomTabNavigationProps<'MyPage'>) => 
     </Suspense>
   );
 };
-const MainComponent = ({ navigation, route }: MainBottomTabNavigationProps<'MyPage'>) => {
+const MainComponent = ({ navigation }: MainBottomTabNavigationProps<'MyPage'>) => {
   const { theme } = useTheme();
   const styles = useStyles();
-  const {
-    data: profileData,
-    isLoading,
-    error,
-  }: UseQueryResult<ProfileViewResponse> = useQuery([profileKeys.myProfile], () => getMyProfile(), {
-    useErrorBoundary: true,
-  });
+  const { data: profileData }: UseQueryResult<ProfileViewResponse> = useQuery(
+    [profileKeys.myProfile],
+    () => getMyProfile(),
+    {
+      useErrorBoundary: true,
+    },
+  );
 
   return (
     <ScrollView style={styles.scrollView}>

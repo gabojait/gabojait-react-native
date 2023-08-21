@@ -80,7 +80,7 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.gabojait"
+    namespace "com.gabojait.app"
     defaultConfig {
         applicationId "com.gabojait.app"
         minSdkVersion rootProject.ext.minSdkVersion
