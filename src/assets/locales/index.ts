@@ -1,9 +1,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-// 현재 폰 언어 확인
-import { getLocales } from 'react-native-localize';
-
 import ko from './ko.json';
 
 const resources = {
@@ -14,7 +11,7 @@ const resources = {
 
 i18n.use(initReactI18next).init({
   resources: resources, // 현재 사용할 언어 모듈
-  lng: getLocales()[0].languageCode, // 앱에서 사용할 기본언어 설정
+  lng: 'ko', // 앱에서 사용할 기본언어 설정
   fallbackLng: 'ko', // lng를 사용할수 없을때 기본언어
   supportedLngs: ['ko'], // 허용할 언어배열
   compatibilityJSON: 'v3',

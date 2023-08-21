@@ -62,9 +62,6 @@ buck-out/
 /ios/Pods/
 /vendor/bundle/
 
-.gitignore
-
-
 #vscode
 .vscode/.react/
 .vscode/.react/*

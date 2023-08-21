@@ -2,29 +2,24 @@
  * @format
  */
 
-import {AppRegistry} from 'react-native';
-import App, {HeadlessCheck} from './src/App';
-import {name as appName} from './app.json';
-import messaging from "@react-native-firebase/messaging";
-import {createTable, getDBConnection, getNotifications, saveNotification} from "@/data/localdb";
+import {  AppRegistry } from 'react-native';
+import  { HeadlessCheck } from '@/App';
+import { name as appName } from './app.json';
+import React from 'react';
+import messaging from '@react-native-firebase/messaging';
 
-console.log("messaging registered: ", messaging().isDeviceRegisteredForRemoteMessages);
+import { createTable, getDBConnection, getNotifications, saveNotification } from '@/data/localdb';
 
-messaging()
-    .subscribeToTopic('com.gabojait.app')
-    .then(() => console.log('Subscribed to topic!'));
-// Handle background messages using setBackgroundMessageHandler
 messaging().setBackgroundMessageHandler(async remoteMessage => {
-    console.log('Message handled in the background!', remoteMessage);
-    const db = await getDBConnection();
-    await createTable(db);
-    await saveNotification(db, {
-        id: remoteMessage.messageId,
-        title: remoteMessage.data.title,
-        body: remoteMessage.data.body,
-        time: remoteMessage.data.time
-    });
-    await db.close();
-
+  console.log('Message handled in the background!', remoteMessage);
+  const db = await getDBConnection();
+  await createTable(db);
+  await saveNotification(db, {
+    id: remoteMessage.messageId,
+    title: remoteMessage.data.title,
+    body: remoteMessage.data.body,
+    time: remoteMessage.data.time,
+  });
+  await db.close();
 });
 AppRegistry.registerComponent(appName, () => HeadlessCheck);
