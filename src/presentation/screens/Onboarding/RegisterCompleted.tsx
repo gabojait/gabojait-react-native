@@ -5,7 +5,7 @@ import {
   OnboardingStackParamList,
   RootStackParamList,
 } from '@/presentation/navigation/types'
-import globalStyles from '@/styles'
+import useGlobalStyles from '@/presentation/styles'
 import {useNavigation} from '@react-navigation/native'
 import {StackScreenProps} from '@react-navigation/stack/lib/typescript/src/types'
 import {Text, useTheme} from '@rneui/themed'
@@ -14,6 +14,7 @@ import {View} from 'react-native'
 
 const RegisterCompleted = ({navigation}: OnboardingScreenProps<'RegisterCompleted'>) => {
   const {theme} = useTheme()
+  const globalStyles = useGlobalStyles()
 
   return (
     <View style={[globalStyles.centeredView, {padding: 20, alignItems: 'stretch'}]}>

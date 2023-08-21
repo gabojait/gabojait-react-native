@@ -1,24 +1,42 @@
-import globalStyles from '@/styles'
-import {Button, ButtonProps, Text} from '@rneui/themed'
-import {Alert, Modal, StyleSheet, View} from 'react-native'
-import DatePicker from 'react-native-date-picker'
+import {ButtonProps, Text, useTheme} from '@rneui/themed'
+import {StyleSheet, View} from 'react-native'
 import {FilledButton} from '../Button'
 import React from 'react'
+import useGlobalStyles from '@/presentation/styles'
 
-interface SymbolModalContentProps {
-  title: string
+export interface SymbolModalContentProps {
+  title?: string
   text: string
   symbol: React.ReactNode
   yesButton?: ButtonProps
 }
 
 const SymbolModalContent: React.FC<SymbolModalContentProps> = props => {
+  const globalStyles = useGlobalStyles()
+  const {theme} = useTheme()
+
   return (
-    <View style={[{display: 'flex'}, style.modalContainer]}>
+    <View
+      style={{
+        backgroundColor: 'white',
+        paddingHorizontal: 17,
+        paddingVertical: 39,
+        borderRadius: 20,
+      }}>
       {props.symbol}
-      <Text style={{fontSize: 14, fontWeight: 'bold', textAlign: 'center', marginBottom: 20}}>{props.title}</Text>
-      <Text style={{textAlign: 'center', marginBottom: 20}}>{props.text}</Text>
-      {props.yesButton ? <FilledButton {...props.yesButton} /> : null}
+      <Text
+        style={{
+          fontSize: 14,
+          fontWeight: theme.fontWeight.bold,
+          textAlign: 'center',
+          marginBottom: 18,
+        }}>
+        {props.title}
+      </Text>
+      <Text style={{textAlign: 'center', marginBottom: 20, fontSize: theme.fontSize.xs}}>
+        {props.text}
+      </Text>
+      {props.yesButton ? <FilledButton style={{width: '100%'}} {...props.yesButton} /> : null}
     </View>
   )
 }
@@ -26,6 +44,7 @@ const SymbolModalContent: React.FC<SymbolModalContentProps> = props => {
 const style = StyleSheet.create({
   modalContainer: {
     padding: 20,
+    backgroundColor: 'white',
   },
 })
 

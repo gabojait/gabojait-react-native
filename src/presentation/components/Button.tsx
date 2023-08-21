@@ -1,7 +1,7 @@
-import styles from '@/styles'
-import {FontWeight, theme} from '@/theme'
 import {Button, useTheme, ButtonProps} from '@rneui/themed'
 import React from 'react'
+import {FontWeight, theme} from '../theme'
+import useGlobalStyles from '../styles'
 
 const sizeToRadius = (size: string) => (size == 'sm' || size == 'md' ? 'sm' : 'lg')
 
@@ -27,6 +27,7 @@ const FilledButton: React.FC<FilledButtonProps> = ({
   ...props
 }) => {
   const {theme} = useTheme()
+  const styles = useGlobalStyles()
   return (
     <Button
       {...props}
@@ -65,6 +66,7 @@ const OutlinedButton: React.FC<OutlinedButtonProps> = ({
   ...props
 }) => {
   const {theme} = useTheme()
+  const styles = useGlobalStyles()
   return (
     <Button
       {...props}

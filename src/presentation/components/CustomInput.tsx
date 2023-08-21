@@ -1,68 +1,121 @@
-import {theme} from '@/theme'
-import {Icon, useTheme} from '@rneui/themed'
-import React, {useRef, useState} from 'react'
-import {StyleSheet, TextInput, TextInputProps, View} from 'react-native'
-import color from '../res/styles/color'
-import type {CustomInputProps} from '@/presentation/components/props/StateProps'
+import { Icon, Input, makeStyles } from '@rneui/themed';
+import React, { forwardRef, useState } from 'react';
+import { View } from 'react-native';
+import color from '../res/styles/color';
+import type { CustomInputProps, ValidatorState } from '@/presentation/components/props/StateProps';
 
-export const CustomInput = ({
-  size = 'sm',
-  placeholder,
-  state = 'none',
-  ...props
-}: CustomInputProps & TextInputProps) => {
-  const {theme} = useTheme()
-  const iconColors = {
-    none: color.transparent,
-    valid: color.primary,
-    invalid: color.transparent,
-  }
-  const borderColors = {
-    none: color.grey,
-    valid: color.primary,
-    invalid: color.error,
-  }
+const CustomInput = forwardRef(
+  (
+    {
+      size = 'sm',
+      shape = 'underline',
+      placeholder,
+      state,
+      inputContainerStyle,
+      ...props
+    }: CustomInputProps,
+    ref,
+  ) => {
+    const [secure, setSecure] = useState(true);
+    const styles = useStyles({ size, shape, state });
+    const iconColors = {
+      none: color.transparent,
+      valid: color.primary,
+      invalid: color.transparent,
+    };
 
-  return (
-    <View
-      style={[
-        {borderColor: borderColors[state]},
-        styles.view,
-        props.containerStyle,
-        {borderRadius: theme.radius[size]},
-      ]}>
-      <TextInput
-        style={[styles.input, props.style]}
-        placeholderTextColor={color.grey}
-        placeholder={placeholder}
-        autoCapitalize="none"
-        autoComplete="off"
-        autoCorrect={false}
-        {...props}
-      />
+    const inputIcon = props.secureTextEntry ? (
       <Icon
-        style={styles.icon}
+        name={secure ? 'eye-off-outline' : 'eye-outline'}
+        onPress={() => {
+          setSecure(prevState => !prevState);
+        }}
+        type="ionicon"
+        color={color.darkGrey}
+      />
+    ) : (
+      <Icon
         name="checkmark-circle-outline"
         type="ionicon"
         size={18}
-        color={iconColors[state]}
+        color={iconColors[state ?? 'none']}
       />
-    </View>
-  )
-}
-const styles = StyleSheet.create({
-  view: {
-    borderWidth: 1.3,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    );
+
+    return (
+      <View style={{ width: '100%', justifyContent: 'flex-end' }}>
+        <Input
+          {...props}
+            disabled={props.disabled}
+          containerStyle={[styles.container, props.containerStyle]}
+          inputContainerStyle={[
+            shape == 'underline' ? styles.underlineInputContainer : styles.roundInputContainer,
+            inputContainerStyle,
+          ]}
+          style={[shape == 'underline' ? styles.underlineInput : styles.roundInput, props.style]}
+          placeholderTextColor={color.grey}
+          placeholder={placeholder}
+          rightIcon={inputIcon}
+          secureTextEntry={props.secureTextEntry ? secure : false}
+          labelStyle={styles.label}
+          renderErrorMessage={state != undefined}
+          autoCapitalize="none"
+          autoComplete="off"
+          autoCorrect={false}
+        />
+      </View>
+    );
   },
-  input: {
-    padding: 14,
-    flex: 1,
+);
+
+export default CustomInput;
+
+const useStyles = makeStyles(
+  (theme, { shape = 'underline', size = 'md', state = 'none' }: CustomInputProps) => {
+    const shapeToColors = {
+      underline: {
+        none: color.lightGrey,
+        valid: color.primary,
+        invalid: color.error,
+      } as { [key in ValidatorState]: string },
+      round: {
+        none: color.grey,
+        valid: color.primary,
+        invalid: color.error,
+      } as { [key in ValidatorState]: string },
+    };
+    return {
+      roundInputContainer: {
+        borderWidth: 1.3,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        borderColor: shapeToColors[shape][state],
+        borderRadius: theme.radius[size],
+        paddingEnd: 10,
+      },
+      roundInput: {
+        padding: 14,
+        flex: 1,
+      },
+      container: { paddingHorizontal: 0 },
+      underlineInputContainer: {
+        borderBottomWidth: 1.3,
+        borderBottomColor: shapeToColors[shape][state],
+        marginEnd: 10,
+      },
+      underlineInput: {
+        flex: 10,
+        fontSize: 14,
+      },
+      icon: {
+        flex: 1,
+        justifyContent: 'center',
+        paddingHorizontal: 14,
+      },
+      label: {
+        fontSize: 14,
+        color: color.grey2,
+      },
+    };
   },
-  icon: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingEnd: 14,
-  },
-})
+);

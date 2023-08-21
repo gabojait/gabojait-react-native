@@ -1,12 +1,9 @@
-import globalStyles from '@/styles'
-import {Button, ButtonProps, Text} from '@rneui/themed'
 import {Alert, Modal, StyleSheet, View} from 'react-native'
-import DatePicker from 'react-native-date-picker'
-import {FilledButton} from '../Button'
 import React from 'react'
 import DefaultDialogModalContent from './DefaultDialogModalContent'
 
 interface OkDialogModalContentProps {
+  title?: string
   text: string
   onOkClick: () => void
 }
@@ -14,6 +11,7 @@ interface OkDialogModalContentProps {
 const OkDialogModalContent: React.FC<OkDialogModalContentProps> = props => {
   return (
     <DefaultDialogModalContent
+    title={props.title}
       text={props.text}
       yesButton={{onPress: props.onOkClick, title: '확인'}}
     />
