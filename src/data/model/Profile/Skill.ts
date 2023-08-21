@@ -1,7 +1,7 @@
 export const Level = {
-  low: 1,
-  mid: 2,
-  high: 3,
+  LOW: 1,
+  MID: 2,
+  HIGH: 3,
 };
 
 export default interface Skill {
@@ -12,5 +12,4 @@ export default interface Skill {
   skillName: string;
   updatedAt?: string;
   new?: boolean;
-
 }

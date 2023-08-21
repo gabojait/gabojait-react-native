@@ -226,15 +226,17 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
             )}
             <View style={{ height: 20 }}></View>
 
+            <Text style={{ fontSize: 14, marginBottom: 5 }}>희망 기술스택</Text>
             {profile.skills?.map((skill, idx) => (
               <>
-                <Text style={{ fontSize: 14, marginBottom: 5 }}>희망 기술스택</Text>
-                <CustomSlider
-                  text={skill.skillName}
-                  value={Level[skill.level ?? 'low']}
-                  onChangeValue={function (value: number | number[]): void {}}
-                  minimumTrackTintColor={sliderColors[idx % 3]}
-                />
+                <View style={{ flex: 1, flexDirection: 'row' }}>
+                  <CustomSlider
+                    text={skill.skillName}
+                    value={Level[skill.level ?? 'low']}
+                    onChangeValue={function (_: number | number[]): void {}}
+                    minimumTrackTintColor={sliderColors[idx % 3]}
+                  />
+                </View>
                 <View style={{ height: 10 }}></View>
               </>
             ))}
