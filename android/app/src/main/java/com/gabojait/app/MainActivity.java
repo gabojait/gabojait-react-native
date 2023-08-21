@@ -1,4 +1,4 @@
-package com.gabojait;
+package com.gabojait.app;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

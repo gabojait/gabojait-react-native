@@ -2,8 +2,8 @@
  * @format
  */
 
-import { Alert, AppRegistry } from 'react-native';
-import App, { HeadlessCheck } from './src/App';
+import {  AppRegistry } from 'react-native';
+import  { HeadlessCheck } from '@/App';
 import { name as appName } from './app.json';
 import React from 'react';
 import messaging from '@react-native-firebase/messaging';

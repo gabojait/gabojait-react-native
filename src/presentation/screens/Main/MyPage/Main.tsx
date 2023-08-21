@@ -12,7 +12,9 @@ import { UseQueryResult, useQuery, useQueryErrorResetBoundary } from 'react-quer
 import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 import { getMyProfile } from '@/data/api/profile';
 import ProfileViewResponse from '@/data/model/Profile/ProfileViewResponse';
-import Ionicon from 'react-native-vector-icons/Ionicons';
+import { useAppDispatch } from '@/redux/hooks';
+import { getUser } from '@/redux/action/login';
+import { getProfile } from '@/redux/reducers/profileReducer';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 import Loading from '../../Loading';
 
@@ -102,7 +104,7 @@ const MainComponent = ({ navigation, route }: MainBottomTabNavigationProps<'MyPa
               })
             }
           >
-            <Ionicon size={43} name="heart-circle-outline" />
+            <Icon type="ionicon" size={43} name="heart-circle-outline" />
             <Text style={{ textAlign: 'center' }}>찜</Text>
           </TouchableOpacity>
         </CardWrapper>

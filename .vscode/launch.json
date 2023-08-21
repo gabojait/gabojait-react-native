@@ -1,0 +1,27 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "command": "npx react-native run-ios --simulator \"iPhone 14 Pro\"",
+      "name": "Start",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+    {
+      "name": "Debug Android",
+      "request": "launch",
+      "type": "reactnative",
+      "cwd": "${workspaceFolder}",
+      "platform": "android"
+    },
+    {
+      "name": "Debug iOS",
+      "request": "launch",
+      "type": "reactnative",
+      "cwd": "${workspaceFolder}",
+      "platform": "ios",
+      "target": "B08E5B6A-2B47-44DC-AF3F-C4902686377B",
+      "trace": "log"
+    }
+  ]
+}

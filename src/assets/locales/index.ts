@@ -1,8 +1,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-// 현재 폰 언어 확인
-
 import ko from './ko.json';
 
 const resources = {
