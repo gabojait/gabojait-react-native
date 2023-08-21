@@ -37,8 +37,7 @@
 	<array>
 		<string>kakaoopen</string>
 	</array>
-	<string>$(CURRENT_PROJECT_VERSION)</string>
-	<key>FirebaseAppDelegateProxyEnabled</key>
+  <key>FirebaseAppDelegateProxyEnabled</key>
 	<false/>
 	<key>Information Property List</key>
 	<dict>
