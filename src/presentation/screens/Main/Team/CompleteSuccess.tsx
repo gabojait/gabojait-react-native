@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import { FilledButton } from '@/presentation/components/Button';
 import { useTheme } from '@rneui/themed';
 import { Text, View } from 'react-native';
