@@ -2,13 +2,18 @@
  * @format
  */
 
-import {  AppRegistry } from 'react-native';
-import  { HeadlessCheck } from '@/App';
+import { AppRegistry } from 'react-native';
+import { HeadlessCheck } from '@/App';
 import { name as appName } from './app.json';
 import React from 'react';
 import messaging from '@react-native-firebase/messaging';
 
-import { createTable, getDBConnection, getNotifications, saveNotification } from '@/data/localdb';
+import {
+  createTable,
+  getDBConnection,
+  getNotifications,
+  saveNotification,
+} from '@/data/localdb';
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.log('Message handled in the background!', remoteMessage);

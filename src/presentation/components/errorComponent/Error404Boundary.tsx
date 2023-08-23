@@ -1,5 +1,4 @@
 import React from 'react';
-import { ReactNode } from 'react';
 import { ErrorBoundaryProps, ErrorBoundaryState } from './ErrorBoundary';
 import { ApiErrorCodeType } from '@/data/api/ApiErrorCode';
 import { Fallback404 } from './Fallback';
@@ -54,7 +53,7 @@ class Error404Boundary extends React.Component<ErrorBoundaryProps, ErrorBoundary
 
     if (hasError && !isPropagated) {
       console.log(`errorCode:${error?.name}, errorMessage:${error?.message}`);
-      return <Fallback404 onPressReset={this.onResetErrorBoundary} />;
+      return <Fallback404 onPressReset={this.onResetErrorBoundary} message={this.props.message} />;
     }
 
     return children;
