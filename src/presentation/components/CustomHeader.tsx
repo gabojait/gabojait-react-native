@@ -1,10 +1,10 @@
-import HeaderProps from '@/presentation/components/props/HeaderProps'
-import {Text, useTheme} from '@rneui/themed'
-import Icon from 'react-native-vector-icons/FontAwesome'
-import React from 'react'
-import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native'
-import {useNavigation} from '@react-navigation/native'
-import CustomIcon from '@/presentation/components/icon/Gabojait'
+import HeaderProps from '@/presentation/components/props/HeaderProps';
+import { Text, useTheme } from '@rneui/themed';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import React from 'react';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import CustomIcon from '@/presentation/components/icon/Gabojait';
 const CustomHeader: React.FC<HeaderProps> = ({
   title,
   canGoBack,
@@ -12,32 +12,35 @@ const CustomHeader: React.FC<HeaderProps> = ({
   rightChildren,
   align,
 }) => {
-  const navigation = useNavigation()
-  const {theme} = useTheme()
+  const navigation = useNavigation();
+  const { theme } = useTheme();
   const back = (
     <CustomIcon
       name="arrow-back"
       size={30}
       onPress={() => {
-        if (navigation.canGoBack()) navigation.goBack()
+        if (navigation.canGoBack()) {
+          navigation.goBack();
+        }
       }}
       style={{
         marginRight: 10,
       }}
     />
-  )
+  );
   const Title = (
     <Text
       style={{
         fontWeight: theme.fontWeight.semibold,
         fontSize: theme.fontSize.lg,
         textAlign: 'center',
-      }}>
+      }}
+    >
       {title}
     </Text>
-  )
+  );
   return (
-    <View style={[headerStyle.parent, {borderColor: theme.colors.disabled}]}>
+    <View style={[headerStyle.parent, { borderColor: theme.colors.disabled }]}>
       <View style={headerStyle.left}>
         {canGoBack ? back : null}
         {leftChildren}
@@ -46,14 +49,14 @@ const CustomHeader: React.FC<HeaderProps> = ({
       {align == 'center' ? Title : null}
       {rightChildren}
     </View>
-  )
-}
+  );
+};
 
 const headerGlobalStyle: StyleProp<ViewStyle> = {
   flexDirection: 'row',
   alignItems: 'flex-end',
   paddingTop: 5,
-}
+};
 
 // card base components, width /radius 다름, theme에서 하나만
 
@@ -67,6 +70,6 @@ const headerStyle = StyleSheet.create({
     justifyContent: 'space-between',
   },
   left: headerGlobalStyle,
-})
+});
 
-export default CustomHeader
+export default CustomHeader;

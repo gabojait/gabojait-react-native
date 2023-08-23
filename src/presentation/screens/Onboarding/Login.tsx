@@ -39,7 +39,7 @@ const Login = ({ navigation }: OnboardingScreenProps<'Login'>) => {
         });
       }
     }
-  }, [data]);
+  }, [data, loading, error]);
   const globalStyles = useGlobalStyles();
 
   return (
