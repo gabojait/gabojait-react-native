@@ -1,10 +1,10 @@
 {
-  "nicknameDupOk": "닉네임 중복검사 완료",
-  "usernameDupOk": "아이디 중복검사 완료",
-  "emailOk": "이메일 중복검사/인증번호 발송 완료",
-  "authCodeVerifyOk": "인증번호 확인 완료",
-  "registerOk": "회원가입 완료",
-  "result_nicknameChangeOk": "닉네임 변경 완료",
+  "nicknameDupOk": "닉네임이 올바릅니다.",
+  "usernameDupOk": "아이디가 올바릅니다.",
+  "emailOk": "인증번호가 발송되었습니다.",
+  "authCodeVerifyOk": "인증번호가 확인되었습니다.",
+  "registerOk": "회원가입이 완료되었습니다.",
+  "result_nicknameChangeOk": "닉네임이 변경됐습니다.",
   "result_passwordChangeOk": "비밀번호가 변경됐습니다. 로그아웃됩니다. ",
   "result_passwordNotVerified": "비밀번호가 올바르지 않습니다.",
 
