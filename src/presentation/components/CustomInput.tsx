@@ -117,10 +117,12 @@ const useStyles = makeStyles(
         justifyContent: 'space-between',
         borderColor: shapeToColors[shape][stateAdditionalValidatorApplied],
         borderRadius: theme.radius[size],
+        padding: 3,
+        paddingStart: 0,
         paddingEnd: 10,
       },
       roundInput: {
-        padding: 14,
+        padding: 12,
         flex: 1,
       },
       container: { paddingHorizontal: 0 },
