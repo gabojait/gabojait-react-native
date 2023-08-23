@@ -33,7 +33,6 @@ import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import '@/lib/date';
-import { loginReducer } from '@/redux/reducers/loginReducer';
 
 const agreementItems = [
   {
@@ -89,6 +88,7 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
     {
       resultToMessage: _ => t('emailOk'),
       onSuccessClick(result) {
+        setLastEmailVerified(registerState.email!);
         console.log(result);
       },
     },
@@ -144,11 +144,18 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
     return (
       usernameRegex.test(registerState.username ?? '') &&
       nicknameRegex.test(registerState.nickname ?? '') &&
+      userIdDupCheckMutation.isSuccess &&
+      nickNmDupCheckMutation.isSuccess &&
       passwordRegex.test(registerState.password ?? '') &&
       emailRegex.test(registerState.email ?? '') &&
-      agreementState.checkedAll
+      agreementState.checkedAll &&
+      emailDupCheckMutation.isSuccess &&
+      emailVerificationMutation.isSuccess &&
+      lastEmailVerified === registerState.email
     );
   };
+
+  const [lastEmailVerified, setLastEmailVerified] = useState('');
 
   return (
     <View>
@@ -161,6 +168,10 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
               value={registerState.username}
               onChangeText={(text: string) => {
                 setRegisterState(prevState => ({ ...prevState, username: text }));
+              }}
+              additionalValidator={_ => {
+                console.log(userIdDupCheckMutation.isSuccess ? 'valid' : 'invalid');
+                return userIdDupCheckMutation.isSuccess ? 'valid' : 'none';
               }}
             />
           </View>
@@ -183,6 +194,9 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
               value={registerState.nickname}
               onChangeText={(text: string) => {
                 setRegisterState(prevState => ({ ...prevState, nickname: text }));
+              }}
+              additionalValidator={_ => {
+                return nickNmDupCheckMutation.isSuccess ? 'valid' : 'none';
               }}
             />
           </View>
@@ -250,7 +264,7 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
             }}
           />
         </View>
-        {emailDupCheckMutation.isSuccess && (
+        {emailDupCheckMutation.isSuccess && lastEmailVerified === registerState.email && (
           <View style={styles.item}>
             <View style={{ flex: 5 }}>
               <CustomInput
