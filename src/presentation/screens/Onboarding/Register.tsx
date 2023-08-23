@@ -225,7 +225,7 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
         <View style={styles.item}>
           <CustomInput
             state={
-              registerState.passwordReEntered?.length != 0
+              (registerState.passwordReEntered?.length ?? 0) != 0
                 ? registerState.password == registerState.passwordReEntered &&
                   passwordRegex.test(registerState.passwordReEntered ?? '')
                   ? 'valid'
