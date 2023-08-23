@@ -55,7 +55,6 @@ const CustomHeader: React.FC<HeaderProps> = ({
 const headerGlobalStyle: StyleProp<ViewStyle> = {
   flexDirection: 'row',
   alignItems: 'flex-end',
-  paddingTop: 5,
 };
 
 // card base components, width /radius 다름, theme에서 하나만
@@ -64,12 +63,16 @@ const headerStyle = StyleSheet.create({
   parent: {
     ...headerGlobalStyle,
     paddingHorizontal: 20,
+    paddingTop: 5,
     paddingBottom: 5,
     borderBottomWidth: 0.8,
     backgroundColor: 'white',
     justifyContent: 'space-between',
   },
-  left: headerGlobalStyle,
+  left: {
+    ...headerGlobalStyle,
+    alignItems: 'center',
+  },
 });
 
 export default CustomHeader;
