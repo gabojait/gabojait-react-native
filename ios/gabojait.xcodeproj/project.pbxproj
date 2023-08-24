@@ -49,7 +49,7 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = gabojait/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-gabojait-gabojaitTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gabojait-gabojaitTests.release.xcconfig"; path = "Target Support Files/Pods-gabojait-gabojaitTests/Pods-gabojait-gabojaitTests.release.xcconfig"; sourceTree = "<group>"; };
 		90D24C1BE405C0E2EBCA1F30 /* Pods-gabojait-gabojaitTests.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gabojait-gabojaitTests.staging.xcconfig"; path = "Target Support Files/Pods-gabojait-gabojaitTests/Pods-gabojait-gabojaitTests.staging.xcconfig"; sourceTree = "<group>"; };
-		AC44D34D53DB4AE183DAC0AC /* fontello.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = fontello.ttf; path = ../src/assets/fonts/fontello.ttf; sourceTree = "<group>"; };
+		AC44D34D53DB4AE183DAC0AC /* fontello.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = fontello.ttf; path = ../src/assets/fonts/fontello.ttf; sourceTree = "<group>"; };
 		D52F7C462A926A3E00D5F9CF /* gabojait.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = gabojait.entitlements; path = gabojait/gabojait.entitlements; sourceTree = "<group>"; };
 		D52F7C4B2A926D8600D5F9CF /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fonts; sourceTree = "<group>"; };
 		D52F7C4C2A926D8600D5F9CF /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; path = www; sourceTree = "<group>"; };
@@ -172,7 +172,6 @@
 				AC44D34D53DB4AE183DAC0AC /* fontello.ttf */,
 			);
 			name = Resources;
-			path = "";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

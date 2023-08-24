@@ -106,12 +106,16 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
-            resValue "string", "CodePushDeploymentKey", '""'
+            resValue "string", "CodePushDeploymentKey", ''
         }
         releaseStaging {
+            signingConfig signingConfigs.release
             resValue "string", "CodePushDeploymentKey", properties.getProperty("CODE_PUSH_STAGING_KEY")
             // Note: It's a good idea to provide matchingFallbacks for the new buildType you create to prevent build issues
             // Add the following line if not already there
+            minifyEnabled enableProguardInReleaseBuilds
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+
             matchingFallbacks = ['release']
         }
         release {

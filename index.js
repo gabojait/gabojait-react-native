@@ -8,12 +8,9 @@ import { name as appName } from './app.json';
 import React from 'react';
 import messaging from '@react-native-firebase/messaging';
 
-import {
-  createTable,
-  getDBConnection,
-  getNotifications,
-  saveNotification,
-} from '@/data/localdb';
+import { createTable, getDBConnection, getNotifications, saveNotification } from '@/data/localdb';
+
+import codePush from 'react-native-code-push';
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.log('Message handled in the background!', remoteMessage);
@@ -27,4 +24,5 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
   });
   await db.close();
 });
-AppRegistry.registerComponent(appName, () => HeadlessCheck);
+let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
+AppRegistry.registerComponent(appName, () => codePush(codePushOptions)(HeadlessCheck));
