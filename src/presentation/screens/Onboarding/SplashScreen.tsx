@@ -11,7 +11,7 @@ import { Text } from '@rneui/themed';
 import styles from '@/presentation/styles';
 import useGlobalStyles from '@/presentation/styles';
 import { loginReducer } from '@/redux/reducers/loginReducer';
-import { refreshToken } from '@/data/api/accounts';
+import { refreshToken as getRefreshToken } from '@/data/api/accounts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AsyncStorageKey } from '@/lib/asyncStorageKey';
 import { axiosConfig } from '@/lib/axiosInstance';
@@ -135,10 +135,10 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
     return messaging().onTokenRefresh(async token => {
       // Todo: save token to server
       console.log('New FCM token: ', token);
-      if (
-        ((await AsyncStorage.getItem(AsyncStorageKey.accessToken))?.length ?? 0) > 0 &&
-        (await refreshToken({ fcmToken: token }))
-      ) {
+      await getRefreshToken({ fcmToken: token })
+      const accessToken = await AsyncStorage.getItem('accessToken');
+      const refreshToken = await AsyncStorage.getItem('refreshToken');
+      if (accessToken && refreshToken) {
         console.info('FCM 토큰 리프레시 성공');
       }
     });
