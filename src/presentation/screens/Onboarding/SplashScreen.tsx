@@ -1,48 +1,19 @@
 import { RootStackScreenProps } from '@/presentation/navigation/types';
 import { getUser } from '@/redux/action/login';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import React, { useEffect, useState } from 'react';
-import { Alert, Dimensions, PermissionsAndroid, Platform, SafeAreaView, View } from 'react-native';
+import React, { useEffect } from 'react';
+import { Alert, PermissionsAndroid, Platform, View } from 'react-native';
 import Splash from 'react-native-splash-screen';
 import messaging from '@react-native-firebase/messaging';
-import { createTable, getDBConnection, getNotifications, saveNotification } from '@/data/localdb';
+import { createTable, getDBConnection, saveNotification } from '@/data/localdb';
 import CodePush, { DownloadProgress, LocalPackage } from 'react-native-code-push';
-import { Text } from '@rneui/themed';
-import styles from '@/presentation/styles';
-import useGlobalStyles from '@/presentation/styles';
-import { loginReducer } from '@/redux/reducers/loginReducer';
 import { refreshToken as getRefreshToken } from '@/data/api/accounts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AsyncStorageKey } from '@/lib/asyncStorageKey';
-import { axiosConfig } from '@/lib/axiosInstance';
-import { AxiosResponse } from 'axios';
-import useModal from '@/presentation/components/modal/useModal';
-import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent';
 
 interface SyncProgressViewProps {
   syncProgress: DownloadProgress;
 }
 
-function SyncProgressView({ syncProgress }: SyncProgressViewProps) {
-  const globalStyle = useGlobalStyles();
-  return (
-    <SafeAreaView style={globalStyle.container}>
-      <View>
-        <Text>안정적인 서비스 사용을 위해 내부 업데이트를 진행합니다.</Text>
-        <Text>재시작까지 잠시만 기다려주세요.</Text>
-        <View style={{ width: Dimensions.get('screen').width }}>
-          <View
-            style={{
-              width:
-                (syncProgress.receivedBytes / syncProgress.totalBytes) *
-                Dimensions.get('screen').width,
-            }}
-          />
-        </View>
-      </View>
-    </SafeAreaView>
-  );
-}
 
 const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
   const handleRefresh = () => {
