@@ -117,6 +117,7 @@ const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
         title="로그아웃"
         onClick={() => {
           dispatch(signOut());
+          navigation.goBack();
           navigation
             .getParent<RootStackNavigationProps>()
             ?.replace('OnboardingNavigation', { screen: 'Login' });
