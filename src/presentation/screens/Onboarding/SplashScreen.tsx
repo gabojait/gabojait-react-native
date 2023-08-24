@@ -16,6 +16,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AsyncStorageKey } from '@/lib/asyncStorageKey';
 import { axiosConfig } from '@/lib/axiosInstance';
 import { AxiosResponse } from 'axios';
+import useModal from '@/presentation/components/modal/useModal';
+import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent';
 
 interface SyncProgressViewProps {
   syncProgress: DownloadProgress;
@@ -70,48 +72,50 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
     // Android 13 이상부터 수동으로 권한 요청 필요.
-    if (Platform.OS === 'android' && Platform.Version >= 33)
+    if (Platform.OS === 'android' && Platform.Version >= 33) {
       PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+    }
 
     if (enabled) {
       console.log('Authorization status:', authStatus);
     }
   }
-
   useEffect(() => {
-    // const checkCodePush = async () => {
-    //     try {
-    //         console.log("checking update")
-    //         // Todo: 플랫폼별 업데이트 체크
-    //         const update = await CodePush.checkForUpdate()
-    //         if (update) {
-    //             console.log("update exists: ", update)
-    //             Alert.alert("업데이트 알림", `새로운 ${update.appVersion} 버전이 존재합니다. 업데이트 후 앱을 재시작합니다.`)
-    //             update
-    //                 .download((progress: DownloadProgress) => setSyncProgress(progress))
-    //                 .then((newPackage: LocalPackage) =>
-    //                     newPackage
-    //                         .install(CodePush.InstallMode.IMMEDIATE)
-    //                         .then(() => CodePush.restartApp())
-    //                 );
-    //             return;
-    //         }
-    //         console.log("update not exists1")
-    //         throw new Error("업데이트 없음")
-    //     } catch {
-    //         console.log("update not exists2")
-    //         setHasUpdate(false);
-    //         await dispatch(getUser());
-    //         await requestUserPermission();
-    //     }
-    // };
-    dispatch(getUser());
-    requestUserPermission();
-    // checkCodePush();
+    const checkCodePush = async () => {
+      try {
+        console.log('checking update');
+        // Todo: 플랫폼별 업데이트 체크
+        const update = await CodePush.checkForUpdate();
+        if (update) {
+          console.log('update exists: ', update);
+          update
+            .download((progress: DownloadProgress) =>
+              console.log(
+                `downloading app: ${(progress.receivedBytes / progress.totalBytes) * 100} %`,
+              ),
+            )
+            .then((newPackage: LocalPackage) =>
+              newPackage.install(CodePush.InstallMode.IMMEDIATE).then(() => CodePush.restartApp()),
+            );
+          return;
+        }
+        console.log('update not exists1');
+        throw new Error('업데이트 없음');
+      } catch {
+        console.log('update not exists2');
+        await requestUserPermission();
+        await dispatch(getUser());
+      }
+    };
+    // dispatch(getUser());
+    // requestUserPermission();
+    checkCodePush();
   }, []);
 
   const setupFCM = async () => {
-    if (!messaging().isAutoInitEnabled) await messaging().registerDeviceForRemoteMessages();
+    if (!messaging().isAutoInitEnabled) {
+      await messaging().registerDeviceForRemoteMessages();
+    }
 
     // Get the device token
     const token = await messaging().getToken();
@@ -145,7 +149,9 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
       console.log(remoteMessage);
       Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
       const db = await getDBConnection();
-      if (!db) return;
+      if (!db) {
+        return;
+      }
       await createTable(db);
       await saveNotification(db, {
         id: parseInt(remoteMessage.messageId ?? '99999') ?? 0,
@@ -159,17 +165,11 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
     });
     return unsubscribe;
   }, []);
-  const [hasUpdate, setHasUpdate] = useState(true);
-  const [syncProgress, setSyncProgress] = useState<DownloadProgress>();
 
   useEffect(() => {
     handleRefresh();
   }, [user]);
 
-  return (
-    <View style={[{ flex: 1, backgroundColor: '' }]}>
-      {syncProgress && <SyncProgressView syncProgress={syncProgress} />}
-    </View>
-  );
+  return <View style={[{ flex: 1, backgroundColor: '' }]}></View>;
 };
 export default SplashScreen;

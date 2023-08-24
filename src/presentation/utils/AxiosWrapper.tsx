@@ -1,16 +1,8 @@
 import { ResponseWrapper } from '@/data/model/ResponseWrapper';
 import client, { axiosConfig, isSuccess } from '@/lib/axiosInstance';
-import { useAppDispatch } from '@/redux/hooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import axios, {
-  Axios,
-  AxiosError,
-  AxiosHeaders,
-  AxiosInstance,
-  AxiosResponse,
-  InternalAxiosRequestConfig,
-} from 'axios';
+import { Axios, AxiosError, AxiosHeaders, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { ReactNode, useEffect } from 'react';
 import { RootStackNavigationProps } from '../navigation/RootNavigation';
 import { ApiErrorCode } from '@/data/api/ApiErrorCode';
@@ -24,7 +16,6 @@ import messaging from '@react-native-firebase/messaging';
  */
 export default function AxiosWrapper({ children }: { children: ReactNode }) {
   const navigation = useNavigation<RootStackNavigationProps>();
-  const dispatch = useAppDispatch();
 
   async function requestRefreshToken(originalRequest: InternalAxiosRequestConfig) {
     let refreshTokenValue = '';
