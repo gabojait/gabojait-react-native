@@ -9,8 +9,8 @@ import { PositionIcon } from './PartIcon';
 import { ArrowCard } from '@/presentation/components/BaseCard';
 
 const TeamBanner: React.FC<
-  CardProps & { teamMembersCnt: PositionRecruiting[]; teamName: string }
-> = ({ teamMembersCnt: teamMembers, teamName }) => {
+  CardProps & { teamMembersCnt: PositionRecruiting[]; teamName: string, onArrowPress:()=>void }
+> = ({ teamMembersCnt: teamMembers, teamName,onArrowPress }) => {
   const { theme } = useTheme();
 
   const IsRecruitDone = (item: PositionRecruiting) => {
@@ -19,7 +19,7 @@ const TeamBanner: React.FC<
 
   return (
     <View style={{ paddingTop: 16 }}>
-      <ArrowCard title={teamName} arrowColor={theme.colors.primary}>
+      <ArrowCard title={teamName} arrowColor={theme.colors.primary} onArrowPress={onArrowPress}>
         <View style={{ paddingTop: 10, flexDirection: 'row', justifyContent: 'flex-start' }}>
           {teamMembers?.map((item, index) => (
             <PositionIcon
