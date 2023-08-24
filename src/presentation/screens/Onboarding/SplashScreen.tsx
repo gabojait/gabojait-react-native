@@ -48,13 +48,13 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
     if (!user.loading) {
       if (user.data && !user.error) {
         console.log('토큰 리프레시 성공. ');
-        navigation.navigate('MainBottomTabNavigation', {
+        navigation.replace('MainBottomTabNavigation', {
           screen: 'Home',
         });
       }
       if (!user.data && user.error) {
         console.log('토큰 리프레시 실패. 로그인으로 이동.');
-        navigation.navigate('OnboardingNavigation', { screen: 'Login' });
+        navigation.replace('OnboardingNavigation', { screen: 'Login' });
       }
       Splash.hide();
     }

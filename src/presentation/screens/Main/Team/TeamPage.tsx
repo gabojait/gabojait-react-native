@@ -89,7 +89,7 @@ export const TeamPage = ({ navigation, route }: MainBottomTabNavigationProps<'Te
 
   return (
     <Suspense fallback={Loading()}>
-      <Error404Boundary onReset={reset}>
+      <Error404Boundary onReset={reset} message="현재 진행 중인 팀이 없어요">
         <TeamPageComponent navigation={navigation} route={route} />
       </Error404Boundary>
     </Suspense>

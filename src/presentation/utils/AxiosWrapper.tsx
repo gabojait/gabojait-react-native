@@ -61,7 +61,7 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
       .catch(async err => {
         AsyncStorage.removeItem('accessToken');
         AsyncStorage.removeItem('refreshToken');
-        navigation.navigate('OnboardingNavigation', { screen: 'Login' });
+        navigation.replace('OnboardingNavigation', { screen: 'Login' });
         throw {
           name: 'UNAUTHORIZED',
           message: '로그인 세션이 만료됐습니다.',
@@ -134,7 +134,7 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
       if (response.responseCode == ApiErrorCode[403].TOKEN_UNAUTHORIZED.name) {
         AsyncStorage.removeItem('accessToken');
         AsyncStorage.removeItem('refreshToken');
-        navigation.navigate('OnboardingNavigation', { screen: 'Login' });
+        navigation.replace('OnboardingNavigation', { screen: 'Login' });
         throw {
           name: 'UNAUTHORIZED',
           message: '로그인 세션이 만료됐습니다.',

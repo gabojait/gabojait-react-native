@@ -1,6 +1,6 @@
 import { makeStyles, Text } from '@rneui/themed';
 import React from 'react';
-import { StyleProp, View, ViewStyle } from 'react-native';
+import { StyleProp, TouchableOpacity, View, ViewStyle } from 'react-native';
 import CustomIcon from '@/presentation/components/icon/Gabojait';
 import CardWrapper from './CardWrapper';
 
@@ -19,35 +19,39 @@ export const ArrowCard = ({
 }) => {
   const styles = useStyles();
   return (
-    <CardWrapper style={[styles.card, style]}>
-      <View style={{ flexDirection: 'row', justifyContent: 'center', alignContent: 'center' }}>
-        <View style={{ flex: 9 }}>
-          <Text style={styles.title}>{title}</Text>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignContent: 'center',
-              justifyContent: 'space-between',
-            }}
-          >
-            {children}
-            <CustomIcon
-              name="arrow-next"
-              size={30}
+    <TouchableOpacity onPress={onArrowPress}>
+      <CardWrapper style={[styles.card, style]}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <View style={{ flex: 9 }}>
+            <Text style={styles.title}>{title}</Text>
+            <View
               style={{
-                textAlignVertical: 'center',
+                flexDirection: 'row',
                 alignContent: 'center',
-                justifyContent: 'center',
-                paddingTop: 25,
-                paddingEnd: 5,
+                justifyContent: 'space-between',
               }}
-              color={arrowColor}
-              onPress={onArrowPress}
-            />
+            >
+              <View>{children}</View>
+            </View>
           </View>
+          <CustomIcon
+            name="arrow-next"
+            size={30}
+            style={{
+              paddingEnd: 5,
+            }}
+            color={arrowColor}
+          />
         </View>
-      </View>
-    </CardWrapper>
+      </CardWrapper>
+    </TouchableOpacity>
   );
 };
 const useStyles = makeStyles(theme => ({

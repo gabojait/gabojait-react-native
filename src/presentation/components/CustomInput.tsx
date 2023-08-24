@@ -12,17 +12,21 @@ const CustomInput = forwardRef(
       placeholder,
       state,
       inputContainerStyle,
+      additionalValidator,
       ...props
     }: CustomInputProps,
-    ref,
+    ref: React.ForwardedRef<any>,
   ) => {
     const [secure, setSecure] = useState(true);
-    const styles = useStyles({ size, shape, state });
+    const styles = useStyles({ size, shape, state, value: props.value, additionalValidator });
     const iconColors = {
       none: color.transparent,
       valid: color.primary,
       invalid: color.transparent,
     };
+    const stateAdditionalValidatorApplied = additionalValidator
+      ? additionalValidator(props.value) != undefined
+      : true;
 
     const inputIcon = props.secureTextEntry ? (
       <Icon
@@ -38,7 +42,15 @@ const CustomInput = forwardRef(
         name="checkmark-circle-outline"
         type="ionicon"
         size={18}
-        color={iconColors[state ?? 'none']}
+        color={
+          iconColors[
+            state === 'valid'
+              ? additionalValidator
+                ? additionalValidator(props.value) ?? 'none'
+                : 'valid'
+              : 'none'
+          ]
+        }
       />
     );
 
@@ -46,7 +58,8 @@ const CustomInput = forwardRef(
       <View style={{ width: '100%', justifyContent: 'flex-end' }}>
         <Input
           {...props}
-            disabled={props.disabled}
+          ref={ref}
+          disabled={props.disabled}
           containerStyle={[styles.container, props.containerStyle]}
           inputContainerStyle={[
             shape == 'underline' ? styles.underlineInputContainer : styles.roundInputContainer,
@@ -58,7 +71,7 @@ const CustomInput = forwardRef(
           rightIcon={inputIcon}
           secureTextEntry={props.secureTextEntry ? secure : false}
           labelStyle={styles.label}
-          renderErrorMessage={state != undefined}
+          renderErrorMessage={state != undefined && stateAdditionalValidatorApplied}
           autoCapitalize="none"
           autoComplete="off"
           autoCorrect={false}
@@ -71,7 +84,16 @@ const CustomInput = forwardRef(
 export default CustomInput;
 
 const useStyles = makeStyles(
-  (theme, { shape = 'underline', size = 'md', state = 'none' }: CustomInputProps) => {
+  (
+    theme,
+    {
+      shape = 'underline',
+      size = 'md',
+      state = 'none',
+      additionalValidator,
+      value,
+    }: CustomInputProps,
+  ) => {
     const shapeToColors = {
       underline: {
         none: color.lightGrey,
@@ -84,23 +106,29 @@ const useStyles = makeStyles(
         invalid: color.error,
       } as { [key in ValidatorState]: string },
     };
+    // 추가 Validator를 적용하고 난 state
+    const stateAdditionalValidatorApplied =
+      state === 'valid' ? (additionalValidator ? additionalValidator(value) : 'valid') : state;
+
     return {
       roundInputContainer: {
         borderWidth: 1.3,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        borderColor: shapeToColors[shape][state],
+        borderColor: shapeToColors[shape][stateAdditionalValidatorApplied],
         borderRadius: theme.radius[size],
+        padding: 3,
+        paddingStart: 0,
         paddingEnd: 10,
       },
       roundInput: {
-        padding: 14,
+        padding: 12,
         flex: 1,
       },
       container: { paddingHorizontal: 0 },
       underlineInputContainer: {
         borderBottomWidth: 1.3,
-        borderBottomColor: shapeToColors[shape][state],
+        borderBottomColor: shapeToColors[shape][stateAdditionalValidatorApplied],
         marginEnd: 10,
       },
       underlineInput: {
