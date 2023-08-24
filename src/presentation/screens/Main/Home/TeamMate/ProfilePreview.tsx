@@ -58,7 +58,7 @@ const ProfilePreview = ({ navigation, route }: TeammateStackParamListProps<'Prof
 
   return (
     <Suspense fallback={Loading()}>
-      <Error404Boundary onReset={reset}>
+      <Error404Boundary onReset={reset} message='프로필이 존재하지 않습니다'>
         <ProfilePreviewComponent navigation={navigation} route={route} />
       </Error404Boundary>
     </Suspense>

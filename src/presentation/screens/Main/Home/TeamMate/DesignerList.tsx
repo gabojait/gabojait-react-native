@@ -26,9 +26,13 @@ const QueryKey = {
 };
 
 const DesignerList = ({ navigation, route }: PositionTabParamListProps<'Designer'>) => {
+  const { reset } = useQueryErrorResetBoundary();
+
   return (
     <Suspense fallback={Loading()}>
-      <DesignerListComponent navigation={navigation} route={route} />
+      <Error404Boundary onReset={reset} message="모집할 수 있는 팀원이 없어요">
+        <DesignerListComponent navigation={navigation} route={route} />
+      </Error404Boundary>
     </Suspense>
   );
 };

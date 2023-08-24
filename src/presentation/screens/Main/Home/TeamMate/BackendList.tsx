@@ -21,9 +21,13 @@ const QueryKey = {
 };
 
 const BackendList = ({ navigation, route }: PositionTabParamListProps<'Backend'>) => {
+  const { reset } = useQueryErrorResetBoundary();
+
   return (
     <Suspense fallback={Loading()}>
-      <BackendListComponent navigation={navigation} route={route} />
+      <Error404Boundary onReset={reset} message="모집할 수 있는 팀원이 없어요">
+        <BackendListComponent navigation={navigation} route={route} />
+      </Error404Boundary>
     </Suspense>
   );
 };

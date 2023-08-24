@@ -12,11 +12,17 @@ import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 import { PositionTabParamListProps } from '@/presentation/navigation/types';
 import { UserCard } from '@/presentation/components/UserCard';
 import { Loading } from '@/presentation/screens/Loading';
+import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
+import { useQueryErrorResetBoundary } from 'react-query';
 
 const FrontendList = ({ navigation, route }: PositionTabParamListProps<'Frontend'>) => {
+  const { reset } = useQueryErrorResetBoundary();
+  
   return (
     <Suspense fallback={Loading()}>
+      <Error404Boundary onReset={reset} message="현재 모집 가능한 팀원이 없어요">
       <FrontendListComponent navigation={navigation} route={route} />
+      </Error404Boundary>
     </Suspense>
   );
 };
