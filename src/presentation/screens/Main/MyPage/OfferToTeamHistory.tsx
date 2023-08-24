@@ -63,14 +63,11 @@ const OfferToTeamHistoryComponent = ({
         keyExtractor={item => item.toString()}
         data={data?.pages?.map(page => page.data).flat()}
         renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => navigation.navigate('GroupDetail', { teamId: item.team.teamId })}
-          >
             <TeamBanner
               teamMembersCnt={item?.team.teamMemberCnts ?? []}
               teamName={item?.team.projectName ?? ''}
+              onArrowPress={() => navigation.navigate('GroupDetail', { teamId: item.team.teamId })}
             />
-          </TouchableOpacity>
         )}
       />
     </View>

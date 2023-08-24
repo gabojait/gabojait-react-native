@@ -13,6 +13,8 @@ import { PositionTabParamListProps } from '@/presentation/navigation/types';
 import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 import { UserCard } from '@/presentation/components/UserCard';
 import { Loading } from '@/presentation/screens/Loading';
+import { useQueryErrorResetBoundary } from 'react-query';
+import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 
 const QueryKey = {
   all: 'PMList',
@@ -20,9 +22,13 @@ const QueryKey = {
 };
 
 const PMList = ({ navigation, route }: PositionTabParamListProps<'PM'>) => {
+  const { reset } = useQueryErrorResetBoundary();
+  
   return (
     <Suspense fallback={Loading()}>
-      <PMListComponent navigation={navigation} route={route} />
+      <Error404Boundary onReset={reset} message="모집할 수 있는 팀원이 없어요">
+        <PMListComponent navigation={navigation} route={route} />
+      </Error404Boundary>
     </Suspense>
   );
 };

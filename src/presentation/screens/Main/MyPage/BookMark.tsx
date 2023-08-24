@@ -60,11 +60,7 @@ const FavoriteTeams = ({ navigation, route }: MainStackScreenProps<'BookMark'>) 
         keyExtractor={item => item.toString()}
         data={data?.pages?.map(page => page.data).flat()}
         renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => navigation.navigate('GroupDetail', { teamId: item.teamId })}
-          >
-            <TeamBanner teamMembersCnt={item.teamMemberCnts} teamName={item.projectName} />
-          </TouchableOpacity>
+            <TeamBanner teamMembersCnt={item.teamMemberCnts} teamName={item.projectName} onArrowPress={() => navigation.navigate('GroupDetail', { teamId: item.teamId })} />
         )}
         refreshing={isRefreshing}
         onRefresh={refetch}

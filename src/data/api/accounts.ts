@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import client from '@/lib/axiosInstance';
 import EmailVerifyDto from '@/data/model/EmailVerifyDto';
 import LoginRequestDTO from '@/data/model/LoginRequestDto';

@@ -51,11 +51,7 @@ function TeamHistoryComponent({ navigation, route }: MainStackScreenProps<'TeamH
           keyExtractor={item => item.toString()}
           data={data}
           renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => navigation.navigate('TeamReview', { teamId: item.teamId })}
-            >
-              <TeamBanner teamMembersCnt={item.teamMemberCnts} teamName={item.projectName} />
-            </TouchableOpacity>
+              <TeamBanner teamMembersCnt={item.teamMemberCnts} teamName={item.projectName} onArrowPress={() => navigation.navigate('TeamReview', { teamId: item.teamId })}/>
           )}
         />
       </View>

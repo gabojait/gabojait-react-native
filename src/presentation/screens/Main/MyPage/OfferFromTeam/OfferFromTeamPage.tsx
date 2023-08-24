@@ -54,20 +54,17 @@ const OfferFromTeamPageComponent = ({ navigation }: MainStackScreenProps<'OfferF
         keyExtractor={item => item.toString()}
         data={data?.pages?.map(page => page.data).flat()}
         renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('TeamDetail', {
-                teamId: item.team.teamId,
-                targetPosition: item.position,
-                offerId: item.offerId,
-              });
-            }}
-          >
             <TeamBanner
               teamMembersCnt={item?.team.teamMemberCnts ?? []}
               teamName={item?.team.projectName ?? ''}
+              onArrowPress={() => {
+                navigation.navigate('TeamDetail', {
+                  teamId: item.team.teamId,
+                  targetPosition: item.position,
+                  offerId: item.offerId,
+                });
+              }}
             />
-          </TouchableOpacity>
         )}
         refreshing={isRefreshing}
         onRefresh={refetch}
