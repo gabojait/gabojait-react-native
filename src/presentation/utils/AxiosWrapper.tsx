@@ -1,13 +1,16 @@
 import { ResponseWrapper } from '@/data/model/ResponseWrapper';
 import client, { axiosConfig, isSuccess } from '@/lib/axiosInstance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+import { StackActions, useNavigation } from '@react-navigation/native';
 import { Axios, AxiosError, AxiosHeaders, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { ReactNode, useEffect } from 'react';
 import { RootStackNavigationProps } from '../navigation/RootNavigation';
 import { ApiErrorCode } from '@/data/api/ApiErrorCode';
 import React from 'react';
 import messaging from '@react-native-firebase/messaging';
+// import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '@/presentation/navigation/types';
+import { NativeStackNavigationProp } from 'react-native-screens/native-stack';
 
 /**
  * @param children
@@ -15,7 +18,7 @@ import messaging from '@react-native-firebase/messaging';
  * @constructor
  */
 export default function AxiosWrapper({ children }: { children: ReactNode }) {
-  const navigation = useNavigation<RootStackNavigationProps>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'default'>>();
 
   async function requestRefreshToken(originalRequest: InternalAxiosRequestConfig) {
     let refreshTokenValue = '';
@@ -47,12 +50,19 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
             'refresh-token': `Bearer ${headers['refresh-token']}`,
           };
           new Axios(newRequest);
+        } else {
+          throw new Error('');
         }
       })
       .catch(async err => {
-        AsyncStorage.removeItem('accessToken');
-        AsyncStorage.removeItem('refreshToken');
-        navigation.replace('OnboardingNavigation', { screen: 'Login' });
+        await AsyncStorage.removeItem('accessToken');
+        await AsyncStorage.removeItem('refreshToken');
+        console.log(navigation);
+        navigation.dispatch(
+          StackActions.replace('OnboardingNavigation', {
+            screen: 'Login',
+          }),
+        );
         throw {
           name: 'UNAUTHORIZED',
           message: '로그인 세션이 만료됐습니다.',
@@ -65,15 +75,15 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
     const resInterceptor = async (res: AxiosResponse) => {
       console.info(
         `${res.config.url} \nResponsed: ${res.status}`,
-        `\nResponse:`,
+        '\nResponse:',
         res.data.responseData,
       );
       try {
         if (isSuccess(res.status)) {
           // Todo: Interceptor에서 AsyncStorage에 item을 set 하는 것 보다 헤더의 토큰을 reducer로 전달할 방법을 찾고, 전달 받은 토큰을 반영하는 방법을 찾아야 함.
           console.log(res.headers);
-          if (res.headers['authorization']) {
-            await AsyncStorage.setItem('accessToken', res.headers['authorization']);
+          if (res.headers.authorization) {
+            await AsyncStorage.setItem('accessToken', res.headers.authorization);
           }
           if (res.headers['refresh-token']) {
             await AsyncStorage.setItem('refreshToken', res.headers['refresh-token']);
@@ -105,20 +115,20 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
       const e = error as AxiosError;
       const response = e.response?.data as ResponseWrapper<undefined>;
       console.error(
-        `Path:`,
+        'Path:',
         e.config?.url,
-        `\nStatusCode:`,
+        '\nStatusCode:',
         e.response?.status,
-        `\nAccessToken: `,
-        e.config?.headers['authorization'],
-        `\nRefreshToken: `,
+        '\nAccessToken: ',
+        e.config?.headers.authorization,
+        '\nRefreshToken: ',
         e.config?.headers['refresh-token'],
-        `\nResponse:`,
+        '\nResponse:',
         e.response,
       );
       //재요청 필요한 것
       if (response.responseCode == ApiErrorCode[401].TOKEN_UNAUTHENTICATED.name) {
-        console.log(`------------refreshToken needs-----------------------------------`);
+        console.log('------------refreshToken needs-----------------------------------');
         requestRefreshToken(e.config!);
       }
       //로그인 화면으로 보내야 할 것
