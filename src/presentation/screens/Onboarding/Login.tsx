@@ -22,6 +22,7 @@ import OkDialogModalContent from '@/presentation/components/modalContent/OkDialo
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import useGlobalStyles from '@/presentation/styles';
 import useModal from '@/presentation/components/modal/useModal';
+import { DialogLoading } from '@rneui/base/dist/Dialog/Dialog.Loading';
 
 const Login = ({ navigation }: OnboardingScreenProps<'Login'>) => {
   const [loginState, setLoginState] = useState({ username: '', password: '' } as LoginRequestDTO);
@@ -30,6 +31,11 @@ const Login = ({ navigation }: OnboardingScreenProps<'Login'>) => {
   const modal = useModal();
 
   useEffect(() => {
+    modal?.hide();
+    if (loading) {
+      modal?.show({ content: <DialogLoading /> });
+      return;
+    }
     if (!loading) {
       if (data && !error) {
         navigation.getParent()?.navigate('MainBottomTabNavigation', { screen: 'Home ' });
