@@ -54,6 +54,7 @@ const DatePickerModalContent: React.FC<DatePickerModalProps> = ({
       <DatePicker
         mode="date"
         date={props.date}
+        theme="light"
         androidVariant="nativeAndroid"
         onDateChange={props.onDatePicked}
         maximumDate={props.maximumDate}
