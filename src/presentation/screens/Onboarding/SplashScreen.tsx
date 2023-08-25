@@ -9,38 +9,17 @@ import { createTable, getDBConnection, saveNotification } from '@/data/localdb';
 import CodePush, { DownloadProgress, LocalPackage } from 'react-native-code-push';
 import { Text } from '@rneui/themed';
 import useGlobalStyles from '@/presentation/styles';
-import {  useQuery } from 'react-query';
-import { userKeys } from '@/reactQuery/key/UserKeys';
 import { refreshToken } from '@/data/api/accounts';
 
-interface SyncProgressViewProps {
-  syncProgress: DownloadProgress;
-}
-
-function SyncProgressView({ syncProgress }: SyncProgressViewProps) {
-  const globalStyle = useGlobalStyles();
-  return (
-    <SafeAreaView style={globalStyle.container}>
-      <View>
-        <Text>안정적인 서비스 사용을 위해 내부 업데이트를 진행합니다.</Text>
-        <Text>재시작까지 잠시만 기다려주세요.</Text>
-        <View style={{ width: Dimensions.get('screen').width }}>
-          <View
-            style={{
-              width:
-                (syncProgress.receivedBytes / syncProgress.totalBytes) *
-                Dimensions.get('screen').width,
-            }}
-          />
-        </View>
-      </View>
-    </SafeAreaView>
-  );
-}
-
 const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
-  const {data:user, isLoading, isError} =useQuery(userKeys.getUser,()=>getUser())
+  const dispatch = useAppDispatch();
+  const {
+    data: user,
+    loading: isLoading,
+    error: isError,
+  } = useAppSelector(state => state.loginReducer.user);
   const handleRefresh = () => {
+
     console.log(user);
     if (!isLoading) {
       if (user && !isError) {
@@ -56,7 +35,6 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
       Splash.hide();
     }
   };
-
 
   async function requestUserPermission() {
     const authStatus = await messaging().requestPermission();
@@ -96,7 +74,7 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
         throw new Error('업데이트 없음');
       } catch {
         console.log('update not exists2');
-        await requestUserPermission();
+        await dispatch(getUser());
       }
     };
     requestUserPermission();
@@ -126,7 +104,7 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
     return messaging().onTokenRefresh(async token => {
       // Todo: save token to server
       console.log('New FCM token: ', token);
-      refreshToken({ fcmToken: token })
+      refreshToken({ fcmToken: token });
     });
   }, []);
 
