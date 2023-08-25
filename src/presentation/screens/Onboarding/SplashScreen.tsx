@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { RootStackScreenProps } from '@/presentation/navigation/types';
 import { getUser } from '@/redux/action/login';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -9,7 +10,7 @@ import { createTable, getDBConnection, saveNotification } from '@/data/localdb';
 import CodePush, { DownloadProgress, LocalPackage } from 'react-native-code-push';
 import { Text } from '@rneui/themed';
 import useGlobalStyles from '@/presentation/styles';
-import {  useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 import { userKeys } from '@/reactQuery/key/UserKeys';
 import { refreshToken } from '@/data/api/accounts';
 
@@ -39,7 +40,7 @@ function SyncProgressView({ syncProgress }: SyncProgressViewProps) {
 }
 
 const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
-  const {data:user, isLoading, isError} =useQuery(userKeys.getUser,()=>getUser())
+  const { data: user, isLoading, isError } = useQuery(userKeys.getUser, () => getUser());
   const handleRefresh = () => {
     console.log(user);
     if (!isLoading) {
@@ -53,10 +54,8 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
         console.log('토큰 리프레시 실패. 로그인으로 이동.');
         navigation.replace('OnboardingNavigation', { screen: 'Login' });
       }
-      Splash.hide();
     }
   };
-
 
   async function requestUserPermission() {
     const authStatus = await messaging().requestPermission();
@@ -126,7 +125,7 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
     return messaging().onTokenRefresh(async token => {
       // Todo: save token to server
       console.log('New FCM token: ', token);
-      refreshToken({ fcmToken: token })
+      refreshToken({ fcmToken: token });
     });
   }, []);
 
@@ -156,6 +155,6 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
     handleRefresh();
   }, [user]);
 
-  return <View style={[{ flex: 1, backgroundColor: '' }]}></View>;
+  return <View style={[{ flex: 1, backgroundColor: '' }]} />;
 };
 export default SplashScreen;
