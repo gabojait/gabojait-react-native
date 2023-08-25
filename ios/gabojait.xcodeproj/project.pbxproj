@@ -536,6 +536,7 @@
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 7LF5463DRN;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = gabojait/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "가보자잇";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -569,6 +570,7 @@
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 7LF5463DRN;
 				INFOPLIST_FILE = gabojait/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "가보자잇";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -812,6 +814,7 @@
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 7LF5463DRN;
 				INFOPLIST_FILE = gabojait/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "가보자잇";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

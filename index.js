@@ -24,5 +24,5 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
   });
   await db.close();
 });
-let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
+let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_START };
 AppRegistry.registerComponent(appName, () => codePush(codePushOptions)(HeadlessCheck));
