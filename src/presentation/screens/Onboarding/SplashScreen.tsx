@@ -2,30 +2,54 @@ import { RootStackScreenProps } from '@/presentation/navigation/types';
 import { getUser } from '@/redux/action/login';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import React, { useEffect } from 'react';
-import { Alert, PermissionsAndroid, Platform, View } from 'react-native';
+import { Alert, Dimensions, PermissionsAndroid, Platform, SafeAreaView, View } from 'react-native';
 import Splash from 'react-native-splash-screen';
 import messaging from '@react-native-firebase/messaging';
 import { createTable, getDBConnection, saveNotification } from '@/data/localdb';
 import CodePush, { DownloadProgress, LocalPackage } from 'react-native-code-push';
-import { refreshToken as getRefreshToken } from '@/data/api/accounts';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Text } from '@rneui/themed';
+import useGlobalStyles from '@/presentation/styles';
+import {  useQuery } from 'react-query';
+import { userKeys } from '@/reactQuery/key/UserKeys';
+import { refreshToken } from '@/data/api/accounts';
 
 interface SyncProgressViewProps {
   syncProgress: DownloadProgress;
 }
 
+function SyncProgressView({ syncProgress }: SyncProgressViewProps) {
+  const globalStyle = useGlobalStyles();
+  return (
+    <SafeAreaView style={globalStyle.container}>
+      <View>
+        <Text>안정적인 서비스 사용을 위해 내부 업데이트를 진행합니다.</Text>
+        <Text>재시작까지 잠시만 기다려주세요.</Text>
+        <View style={{ width: Dimensions.get('screen').width }}>
+          <View
+            style={{
+              width:
+                (syncProgress.receivedBytes / syncProgress.totalBytes) *
+                Dimensions.get('screen').width,
+            }}
+          />
+        </View>
+      </View>
+    </SafeAreaView>
+  );
+}
 
 const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
+  const {data:user, isLoading, isError} =useQuery(userKeys.getUser,()=>getUser())
   const handleRefresh = () => {
     console.log(user);
-    if (!user.loading) {
-      if (user.data && !user.error) {
+    if (!isLoading) {
+      if (user && !isError) {
         console.log('토큰 리프레시 성공. ');
         navigation.replace('MainBottomTabNavigation', {
           screen: 'Home',
         });
       }
-      if (!user.data && user.error) {
+      if (!user && isError) {
         console.log('토큰 리프레시 실패. 로그인으로 이동.');
         navigation.replace('OnboardingNavigation', { screen: 'Login' });
       }
@@ -33,8 +57,6 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
     }
   };
 
-  const dispatch = useAppDispatch();
-  const user = useAppSelector(state => state.loginReducer.user);
 
   async function requestUserPermission() {
     const authStatus = await messaging().requestPermission();
@@ -75,11 +97,9 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
       } catch {
         console.log('update not exists2');
         await requestUserPermission();
-        await dispatch(getUser());
       }
     };
-    // dispatch(getUser());
-    // requestUserPermission();
+    requestUserPermission();
     checkCodePush();
   }, []);
 
@@ -106,12 +126,7 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
     return messaging().onTokenRefresh(async token => {
       // Todo: save token to server
       console.log('New FCM token: ', token);
-      await getRefreshToken({ fcmToken: token })
-      const accessToken = await AsyncStorage.getItem('accessToken');
-      const refreshToken = await AsyncStorage.getItem('refreshToken');
-      if (accessToken && refreshToken) {
-        console.info('FCM 토큰 리프레시 성공');
-      }
+      refreshToken({ fcmToken: token })
     });
   }, []);
 
