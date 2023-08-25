@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
 import { RootStackScreenProps } from '@/presentation/navigation/types';
 import { getUser } from '@/redux/action/login';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -10,6 +12,7 @@ import CodePush, { DownloadProgress, LocalPackage } from 'react-native-code-push
 import { Text } from '@rneui/themed';
 import useGlobalStyles from '@/presentation/styles';
 import { refreshToken } from '@/data/api/accounts';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
   const dispatch = useAppDispatch();
@@ -19,7 +22,6 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
     error: isError,
   } = useAppSelector(state => state.loginReducer.user);
   const handleRefresh = () => {
-
     console.log(user);
     if (!isLoading) {
       if (user && !isError) {
@@ -28,11 +30,10 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
           screen: 'Home',
         });
       }
-      if (!user && isError) {
-        console.log('토큰 리프레시 실패. 로그인으로 이동.');
-        navigation.replace('OnboardingNavigation', { screen: 'Login' });
-      }
-      Splash.hide();
+      // if (!user && isError) {
+      //   console.log('토큰 리프레시 실패. 로그인으로 이동.');
+      //   navigation.replace('OnboardingNavigation', { screen: 'Login' });
+      // }
     }
   };
 
@@ -98,13 +99,25 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
     }
   };
 
+  async function isEverBeenLogin() {
+    const accessToken = (await AsyncStorage.getItem('accessToken')) ?? '';
+    const refreshToken = (await AsyncStorage.getItem('refreshToken')) ?? '';
+
+    if (accessToken?.length > 0 && refreshToken?.length > 0) {
+      return true;
+    }
+    return false;
+  }
+
   useEffect(() => {
     setupFCM();
     // Listen to whether the token changes
     return messaging().onTokenRefresh(async token => {
       // Todo: save token to server
       console.log('New FCM token: ', token);
-      refreshToken({ fcmToken: token });
+      if (await isEverBeenLogin()) {
+        refreshToken({ fcmToken: token });
+      }
     });
   }, []);
 
@@ -134,6 +147,6 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
     handleRefresh();
   }, [user]);
 
-  return <View style={[{ flex: 1, backgroundColor: '' }]}></View>;
+  return <View style={[{ flex: 1, backgroundColor: '' }]} />;
 };
 export default SplashScreen;
