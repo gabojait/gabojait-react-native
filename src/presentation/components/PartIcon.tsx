@@ -1,6 +1,6 @@
 import { Position } from '@/data/model/type/Position';
-import { useTheme } from '@rneui/themed';
-import { PixelRatio, Text, View } from 'react-native';
+import {Text, useTheme} from '@rneui/themed';
+import { PixelRatio, View } from 'react-native';
 import { mapToInitial } from '../utils/util';
 import React from 'react';
 export const PositionIcon: React.FC<{

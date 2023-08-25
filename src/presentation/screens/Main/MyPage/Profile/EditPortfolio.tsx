@@ -146,6 +146,7 @@ export const SquareIcon = ({ ...props }: IconProps) => (
   <Icon
     size={props.size ?? 20}
     style={[{ borderWidth: 1, padding: 2, borderRadius: 8, borderColor: 'black' }, props.style]}
+    color="#000000"
     {...props}
   />
 );

@@ -11,9 +11,9 @@ import { RatingBar } from '@/presentation/components/RatingBar';
 import { offerKeys } from '@/reactQuery/key/OfferKeys';
 import { useModelList } from '@/reactQuery/util/useModelList';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
-import { makeStyles, useTheme } from '@rneui/themed';
+import { makeStyles, useTheme, Text } from '@rneui/themed';
 import React, { Suspense } from 'react';
-import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, TouchableOpacity, View } from 'react-native';
 import { PositionTabParamList, PositionTabParamListProps } from '@/presentation/navigation/types';
 import { Loading } from '@/presentation/screens/Loading';
 

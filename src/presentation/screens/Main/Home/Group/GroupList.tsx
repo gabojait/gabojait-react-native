@@ -1,13 +1,13 @@
 import FloatingButton from '@/presentation/components/FloatingButton';
-import { makeStyles, useTheme } from '@rneui/themed';
+import { makeStyles, useTheme, Text } from '@rneui/themed';
 import React, { Suspense, useEffect } from 'react';
-import { FlatList, Text, TouchableHighlight, TouchableOpacity, View } from 'react-native';
+import { FlatList, View } from 'react-native';
 import TeamBanner from '@/presentation/components/TeamBanner';
 import { BoardStackParamListProps } from '@/presentation/navigation/types';
 import { getRecruiting, GetRecruitingProps } from '@/data/api/team';
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { PageRequest, useModelList } from '../../../../../reactQuery/util/useModelList';
+import { useModelList } from '@/reactQuery/util/useModelList';
 import RecruitingTeamDto from '@/data/model/Team/TeamBriefDto';
 import useModal from '@/presentation/components/modal/useModal';
 import { Position } from '@/data/model/type/Position';
@@ -141,11 +141,16 @@ const GroupListComponent = ({ navigation }: BoardStackParamListProps<'GroupList'
           keyExtractor={(item, idx) => item?.projectName.concat(item.teamId)}
           data={data?.pages.map(page => page.data).flat()}
           renderItem={({ item }) => (
-              <TeamBanner
-                teamMembersCnt={item?.teamMemberCnts ?? []}
-                teamName={item?.projectName ?? ''}
-                onArrowPress={()=>navigation.navigate('MainNavigation',{screen:'GroupDetail',params:{teamId:item.teamId}})}
-              />
+            <TeamBanner
+              teamMembersCnt={item?.teamMemberCnts ?? []}
+              teamName={item?.projectName ?? ''}
+              onArrowPress={() =>
+                navigation.navigate('MainNavigation', {
+                  screen: 'GroupDetail',
+                  params: { teamId: item.teamId },
+                })
+              }
+            />
           )}
           refreshing={isRefreshing}
           onRefresh={refetch}

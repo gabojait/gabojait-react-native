@@ -6,7 +6,7 @@ import { MainStackScreenProps } from '@/presentation/navigation/types';
 import { reviewKeys } from '@/reactQuery/key/ReviewKeys';
 import { PageRequest } from '@/reactQuery/util/useModelList';
 import React, { Suspense } from 'react';
-import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, TouchableOpacity, View } from 'react-native';
 import { UseQueryResult, useQuery, useQueryErrorResetBoundary } from 'react-query';
 import { Loading } from '../../Loading';
 

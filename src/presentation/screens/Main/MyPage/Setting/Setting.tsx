@@ -1,11 +1,10 @@
 import Gabojait from '@/presentation/components/icon/Gabojait';
-import { MainStackScreenProps, RootStackParamList } from '@/presentation/navigation/types';
-import { useNavigation } from '@react-navigation/native';
-import { useTheme } from '@rneui/themed';
-import React, { useState, useTransition } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { MainStackScreenProps } from '@/presentation/navigation/types';
+import { useTheme, Text } from '@rneui/themed';
+import React, { useState } from 'react';
+import { TouchableOpacity, View } from 'react-native';
 import { signOut } from '@/redux/action/login';
-import { RootNavigation, RootStackNavigationProps } from '@/presentation/navigation/RootNavigation';
+import { RootStackNavigationProps } from '@/presentation/navigation/RootNavigation';
 import useModal from '@/presentation/components/modal/useModal';
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
 import { useTranslation } from 'react-i18next';

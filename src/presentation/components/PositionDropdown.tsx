@@ -1,6 +1,6 @@
-import { Icon, useTheme } from '@rneui/themed';
+import {Icon, Text, useTheme} from '@rneui/themed';
 import React, { useEffect, useState } from 'react';
-import { PixelRatio, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { PixelRatio, Platform, StyleSheet,  TouchableOpacity, View } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list';
 import Gabojait from '@/presentation/components/icon/Gabojait';
 import PositionCountDto from '@/data/model/Team/PostionCountDto';

@@ -1,8 +1,8 @@
 import { CustomSwitch } from '@/presentation/components/CustomSwitch';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
-import { useTheme } from '@rneui/themed';
+import { useTheme, Text } from '@rneui/themed';
 import React, { useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AsyncStorageKey } from '@/lib/asyncStorageKey';
 import { useMutation } from 'react-query';

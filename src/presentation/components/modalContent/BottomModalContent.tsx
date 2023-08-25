@@ -1,7 +1,7 @@
-import { ButtonProps, KeyboardAvoidingView, Text, TouchableOpacity, View } from 'react-native';
+import { ButtonProps, KeyboardAvoidingView, TouchableOpacity, View } from 'react-native';
 import { FilledButton } from '../Button';
 import React, { ReactNode } from 'react';
-import { makeStyles, useTheme } from '@rneui/themed';
+import {makeStyles, Text, useTheme} from '@rneui/themed';
 import useGlobalStyles from '@/presentation/styles';
 import useModal from '../modal/useModal';
 
