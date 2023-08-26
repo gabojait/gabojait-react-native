@@ -27,11 +27,13 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
     if (!isLoading) {
       if (user && !isError) {
         console.log('토큰 리프레시 성공. ');
+        Splash.hide();
         navigation.replace('MainBottomTabNavigation', {
           screen: 'Home',
         });
+      } else {
+        Splash.hide();
       }
-      Splash.hide();
     }
   };
 

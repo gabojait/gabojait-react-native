@@ -1,9 +1,8 @@
 import { MainStackScreenProps, PositionTabParamList } from '@/presentation/navigation/types';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { TabActions } from '@react-navigation/native';
-import { useTheme } from '@rneui/themed';
+import { Text, useTheme } from '@rneui/themed';
 import React from 'react';
-import { Dimensions, Text, View } from 'react-native';
+import { Dimensions } from 'react-native';
 import BackendList from './BackendList';
 import DesignerList from './DesignerList';
 import FrontendList from './FrontendList';

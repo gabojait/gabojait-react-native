@@ -13,9 +13,9 @@ import { Loading } from '@/presentation/screens/Loading';
 import { offerKeys } from '@/reactQuery/key/OfferKeys';
 import { PageRequest, useModelList } from '@/reactQuery/util/useModelList';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
-import { makeStyles, useTheme } from '@rneui/themed';
+import {makeStyles, Text, useTheme} from '@rneui/themed';
 import React, { Suspense } from 'react';
-import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, TouchableOpacity, View } from 'react-native';
 
 const BackendList = ({ navigation, route }: PositionTabParamListProps<'Backend'>) => {
   return (

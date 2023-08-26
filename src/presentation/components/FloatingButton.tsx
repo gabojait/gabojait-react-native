@@ -1,6 +1,6 @@
-import { useTheme } from '@rneui/themed'
+import {Text, useTheme} from '@rneui/themed'
 import React from 'react'
-import { PixelRatio, Text, TouchableOpacity, View } from 'react-native'
+import { PixelRatio, TouchableOpacity, View } from 'react-native'
 import CustomIcon from '@/presentation/components/icon/Gabojait'
 import { getOwnPropertyDescriptors } from 'immer/dist/internal'
 
@@ -32,5 +32,5 @@ const FloatingButton = ({title, onPress}:FloatingButtonProps) => {
         </TouchableOpacity>
     )
   }
-  
+
   export default FloatingButton

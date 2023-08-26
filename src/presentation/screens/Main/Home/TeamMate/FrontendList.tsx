@@ -3,7 +3,7 @@ import Gabojait from '@/presentation/components/icon/Gabojait';
 import { RatingBar } from '@/presentation/components/RatingBar';
 import { makeStyles, useTheme } from '@rneui/themed';
 import React, { Suspense } from 'react';
-import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, TouchableOpacity, View } from 'react-native';
 import UserProfileOfferDto from '@/data/model/User/UserProfileBriefDto';
 import { useModelList } from '@/reactQuery/util/useModelList';
 import { GetProfileProps, getUserSeekingTeam } from '@/data/api/profile';
@@ -17,11 +17,11 @@ import { useQueryErrorResetBoundary } from 'react-query';
 
 const FrontendList = ({ navigation, route }: PositionTabParamListProps<'Frontend'>) => {
   const { reset } = useQueryErrorResetBoundary();
-  
+
   return (
     <Suspense fallback={Loading()}>
       <Error404Boundary onReset={reset} message="현재 모집 가능한 팀원이 없어요">
-      <FrontendListComponent navigation={navigation} route={route} />
+        <FrontendListComponent navigation={navigation} route={route} />
       </Error404Boundary>
     </Suspense>
   );

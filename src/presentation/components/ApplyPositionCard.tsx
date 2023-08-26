@@ -1,6 +1,6 @@
 import { Position } from '@/data/model/type/Position';
-import { makeStyles, useTheme } from '@rneui/themed';
-import { View, Text } from 'react-native';
+import {makeStyles, Text, useTheme} from '@rneui/themed';
+import { View, } from 'react-native';
 import { FilledButton } from './Button';
 import CardWrapper from './CardWrapper';
 import PositionWaveIcon from './PositionWaveIcon';

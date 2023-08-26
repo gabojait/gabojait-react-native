@@ -1,6 +1,6 @@
-import { useTheme } from '@rneui/themed';
+import {Text, useTheme} from '@rneui/themed';
 import React, { useEffect, useState } from 'react';
-import { Animated, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Animated, ScrollView, TouchableOpacity, View } from 'react-native';
 import CustomIcon from '@/presentation/components/icon/Gabojait';
 import PositionCountDto from '@/data/model/Team/PostionCountDto';
 import PositionDropdownContent from '../model/PositionDropdownContent';

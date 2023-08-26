@@ -1,20 +1,19 @@
 import { FilledButton } from '@/presentation/components/Button';
 import CardWrapper from '@/presentation/components/CardWrapper';
 import { RatingInput } from '@/presentation/components/RatingInput';
-import { useTheme } from '@rneui/themed';
+import { useTheme, Text } from '@rneui/themed';
 import React, { Suspense, useRef, useState } from 'react';
-import { Text, TextInput, View } from 'react-native';
+import { TextInput, View } from 'react-native';
 import CustomInput from '@/presentation/components/CustomInput';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import PagerView from 'react-native-pager-view';
 import ReviewAnswer from '@/data/model/Review/ReviewAnswer';
-import SymbolCenteredModalContent from '@/presentation/components/modalContent/SymbolCenteredModalContent';
 import { HEIGHT, WIDTH, changeToTitleCase } from '@/presentation/utils/util';
 import useModal from '@/presentation/components/modal/useModal';
 import { PositionIcon } from '@/presentation/components/PartIcon';
 import TeamDto from '@/data/model/Team/TeamDto';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
-import { UseQueryResult, useQuery, useQueryClient } from 'react-query';
+import { UseQueryResult, useQuery, useQueryClient, useQueryErrorResetBoundary } from 'react-query';
 import { offerKeys } from '@/reactQuery/key/OfferKeys';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { reviewKeys } from '@/reactQuery/key/ReviewKeys';
@@ -31,6 +30,8 @@ interface ReviewQuestionsProps extends ReviewAnswer {
 }
 
 const TeamReview = ({ navigation, route }: MainStackScreenProps<'TeamReview'>) => {
+  const { reset } = useQueryErrorResetBoundary();
+
   return (
     <Suspense fallback={Loading()}>
       <Error404Boundary onReset={reset}>

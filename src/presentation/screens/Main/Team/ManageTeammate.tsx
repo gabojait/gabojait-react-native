@@ -12,9 +12,9 @@ import { MainStackScreenProps } from '@/presentation/navigation/types';
 import useGlobalStyles from '@/presentation/styles';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
-import { useTheme } from '@rneui/themed';
+import { useTheme, Text } from '@rneui/themed';
 import React, { Suspense, useState } from 'react';
-import { ScrollView, Text, TextInput, View } from 'react-native';
+import { ScrollView, TextInput, View } from 'react-native';
 import { UseQueryResult, useQuery, useQueryClient, useQueryErrorResetBoundary } from 'react-query';
 import { Loading } from '../../Loading';
 
