@@ -5,14 +5,15 @@ import { getUser } from '@/redux/action/login';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import React, { useEffect } from 'react';
 import { Alert, Dimensions, PermissionsAndroid, Platform, SafeAreaView, View } from 'react-native';
-import Splash from 'react-native-splash-screen';
 import messaging from '@react-native-firebase/messaging';
 import { createTable, getDBConnection, saveNotification } from '@/data/localdb';
 import CodePush, { DownloadProgress, LocalPackage } from 'react-native-code-push';
 import { Text } from '@rneui/themed';
+import Splash from 'react-native-splash-screen';
 import useGlobalStyles from '@/presentation/styles';
 import { refreshToken } from '@/data/api/accounts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LoadingSpinner from '../Loading';
 
 const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
   const dispatch = useAppDispatch();
@@ -30,10 +31,7 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
           screen: 'Home',
         });
       }
-      // if (!user && isError) {
-      //   console.log('토큰 리프레시 실패. 로그인으로 이동.');
-      //   navigation.replace('OnboardingNavigation', { screen: 'Login' });
-      // }
+      Splash.hide();
     }
   };
 
@@ -147,6 +145,10 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
     handleRefresh();
   }, [user]);
 
-  return <View style={[{ flex: 1, backgroundColor: '' }]} />;
+  return (
+    <View style={{ flex: 1, backgroundColor: '' }}>
+      <LoadingSpinner />
+    </View>
+  );
 };
 export default SplashScreen;
