@@ -16,27 +16,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingSpinner from '../Loading';
 
 const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
-  const dispatch = useAppDispatch();
-  const {
-    data: user,
-    loading: isLoading,
-    error: isError,
-  } = useAppSelector(state => state.loginReducer.user);
-  const handleRefresh = () => {
-    console.log(user);
-    if (!isLoading) {
-      if (user && !isError) {
-        console.log('토큰 리프레시 성공. ');
-        Splash.hide();
-        navigation.replace('MainBottomTabNavigation', {
-          screen: 'Home',
-        });
-      } else {
-        Splash.hide();
-      }
-    }
-  };
-
   async function requestUserPermission() {
     const authStatus = await messaging().requestPermission();
     const enabled =
@@ -52,35 +31,32 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
       console.log('Authorization status:', authStatus);
     }
   }
-  useEffect(() => {
-    const checkCodePush = async () => {
-      try {
-        console.log('checking update');
-        // Todo: 플랫폼별 업데이트 체크
-        const update = await CodePush.checkForUpdate();
-        if (update) {
-          console.log('update exists: ', update);
-          update
-            .download((progress: DownloadProgress) =>
-              console.log(
-                `downloading app: ${(progress.receivedBytes / progress.totalBytes) * 100} %`,
-              ),
-            )
-            .then((newPackage: LocalPackage) =>
-              newPackage.install(CodePush.InstallMode.IMMEDIATE).then(() => CodePush.restartApp()),
-            );
-          return;
-        }
-        console.log('update not exists1');
-        throw new Error('업데이트 없음');
-      } catch {
-        console.log('update not exists2');
-        await dispatch(getUser());
+
+  async function checkCodePush() {
+    try {
+      console.log('checking update');
+      // Todo: 플랫폼별 업데이트 체크
+      const update = await CodePush.checkForUpdate();
+      if (update) {
+        console.log('update exists: ', update);
+        update
+          .download((progress: DownloadProgress) =>
+            console.log(
+              `downloading app: ${(progress.receivedBytes / progress.totalBytes) * 100} %`,
+            ),
+          )
+          .then((newPackage: LocalPackage) =>
+            newPackage.install(CodePush.InstallMode.IMMEDIATE).then(() => CodePush.restartApp()),
+          );
+        return;
       }
-    };
-    requestUserPermission();
-    checkCodePush();
-  }, []);
+      console.log('update not exists1');
+      throw new Error('업데이트 없음');
+    } catch {
+      console.log('update not exists2');
+      handleLogin();
+    }
+  }
 
   const setupFCM = async () => {
     if (!messaging().isAutoInitEnabled) {
@@ -109,20 +85,36 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
     return false;
   }
 
-  useEffect(() => {
-    setupFCM();
-    // Listen to whether the token changes
-    return messaging().onTokenRefresh(async token => {
+  async function handleLogin() {
+    const token = await messaging().getToken();
+    const isEverBeenLoginValue = await isEverBeenLogin();
+    if (isEverBeenLoginValue) {
+      console.log('로그인 이력 있음');
+      refreshToken({ fcmToken: token });
+      Splash.hide();
+      navigation.replace('MainBottomTabNavigation', {
+        screen: 'Home',
+      });
+    } else {
+      Splash.hide();
+      navigation.replace('OnboardingNavigation', {
+        screen: 'Login',
+      });
+    }
+  }
+
+  function handleFcmTokenRefresh() {
+    messaging().onTokenRefresh(async token => {
       // Todo: save token to server
       console.log('New FCM token: ', token);
       if (await isEverBeenLogin()) {
         refreshToken({ fcmToken: token });
       }
     });
-  }, []);
+  }
 
-  useEffect(() => {
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
+  function handleSubscribe() {
+    messaging().onMessage(async remoteMessage => {
       console.log(remoteMessage);
       Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
       const db = await getDBConnection();
@@ -140,12 +132,15 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
 
       await db.close();
     });
-    return unsubscribe;
-  }, []);
+  }
 
   useEffect(() => {
-    handleRefresh();
-  }, [user]);
+    setupFCM();
+    requestUserPermission();
+    handleSubscribe();
+    checkCodePush();
+    handleFcmTokenRefresh();
+  }, []);
 
   return (
     <View style={{ flex: 1, backgroundColor: '' }}>
