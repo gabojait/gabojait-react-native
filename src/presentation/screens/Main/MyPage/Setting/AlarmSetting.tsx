@@ -19,19 +19,18 @@ const AlarmSetting = ({ navigation }: MainStackScreenProps<'AlarmSetting'>) => {
     userKeys.updateNotification,
     (isNotified: boolean) => updateNotification(isNotified),
     {
-      onSuccess: () => {
+      onSuccess: async () => {
         setIsEnabled(previousState => !previousState);
-        AsyncStorage.setItem(AsyncStorageKey.alertEnabled, alertEnabledValue.true);
+        await AsyncStorage.setItem(AsyncStorageKey.alertEnabled, alertEnabledValue.true);
       },
     },
   );
   const [isEnabled, setIsEnabled] = useState(false);
 
   useEffect(() => {
-    async () => {
-      const value = await AsyncStorage.getItem(AsyncStorageKey.alertEnabled);
+    AsyncStorage.getItem(AsyncStorageKey.alertEnabled).then(value => {
       setIsEnabled(mapStringToBoolean(value ?? alertEnabledValue.false));
-    };
+    });
   }, []);
 
   function mapStringToBoolean(value: string) {

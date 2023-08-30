@@ -89,17 +89,16 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
     const token = await messaging().getToken();
     const isEverBeenLoginValue = await isEverBeenLogin();
     if (isEverBeenLoginValue) {
-      console.log('로그인 이력 있음');
+      console.log('토큰을 이용한 로그인 갱신 시도');
       refreshToken({ fcmToken: token });
-      Splash.hide();
       navigation.replace('MainBottomTabNavigation', {
         screen: 'Home',
       });
     } else {
-      Splash.hide();
       navigation.replace('OnboardingNavigation', {
         screen: 'Login',
       });
+      Splash.hide();
     }
   }
 
