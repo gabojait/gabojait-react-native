@@ -26,6 +26,7 @@ const store = createStore(allReducers, applyMiddleware(ReduxThunk, logger));
 import NetInfo from '@react-native-community/netinfo';
 import { onlineManager } from 'react-query';
 import CodePush, { CodePushOptions, DownloadProgress, LocalPackage } from 'react-native-code-push';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 onlineManager.setEventListener(setOnline => {
   return NetInfo.addEventListener(state => {
@@ -53,6 +54,7 @@ export function HeadlessCheck({ isHeadless }: { isHeadless: boolean }) {
 const App = () => {
   const backgroundStyle = {
     flex: 1,
+    backgroundColor: 'yellow',
   };
 
   // const modalRef = useRef<CustomModalRef>()

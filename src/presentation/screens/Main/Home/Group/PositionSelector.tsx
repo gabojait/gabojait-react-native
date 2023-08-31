@@ -1,6 +1,6 @@
 import { makeStyles, Text, useTheme } from '@rneui/themed';
 import React, { Suspense, useEffect, useState } from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import { useQuery, useQueryClient, useQueryErrorResetBoundary, UseQueryResult } from 'react-query';
 import TeamDetailDto from '@/data/model/Team/TeamDetailDto';
@@ -16,6 +16,7 @@ import { offerKeys } from '@/reactQuery/key/OfferKeys';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 import { ApplyPositionCard, RecruitStatusType } from '@/presentation/components/ApplyPositionCard';
 import { Loading } from '@/presentation/screens/Loading';
+import { FlatList } from 'react-native';
 
 const PositionSelector = ({ navigation, route }: MainStackScreenProps<'PositionSelector'>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -59,17 +60,33 @@ const PositionSelectorComponent = ({
   }
 
   return (
-    <ScrollView style={styles.scrollView}>
-      {positions.map((item, index) => (
-        <PositionSelectWrapper
-          data={item}
-          offers={data!.offers}
-          onButtonPressed={(position: Position) => {
-            offerMutation.mutate([position, teamId]);
-          }}
-        />
-      ))}
-    </ScrollView>
+    <View style={{ backgroundColor: 'white' }}>
+      <FlatList
+        showsVerticalScrollIndicator={false}
+        keyExtractor={item => item.position}
+        data={positions}
+        renderItem={({ item }) => (
+          <PositionSelectWrapper
+            data={item}
+            offers={data!.offers}
+            onButtonPressed={(position: Position) => {
+              offerMutation.mutate([position, teamId]);
+            }}
+          />
+        )}
+      />
+    </View>
+    // <ScrollView style={styles.scrollView}>
+    //   {positions.map((item, index) => (
+    //     <PositionSelectWrapper
+    //       data={item}
+    //       offers={data!.offers}
+    //       onButtonPressed={(position: Position) => {
+    //         offerMutation.mutate([position, teamId]);
+    //       }}
+    //     />
+    //   ))}
+    // </ScrollView>
   );
 };
 

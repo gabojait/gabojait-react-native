@@ -111,7 +111,6 @@ const useGlobalStyles = makeStyles(theme => ({
   },
   scrollView: {
     backgroundColor: theme.colors.white,
-    paddingVertical: 18,
   },
   tabBar: {
     minHeight: 60,

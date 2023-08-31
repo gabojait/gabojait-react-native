@@ -10,7 +10,7 @@ import PositionRecruiting from '@/presentation/model/PositionRecruitng';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import { makeStyles, Text, useTheme } from '@rneui/themed';
 import React, { Suspense, useEffect, useState } from 'react';
-import { ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
+import { FlatList, ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
 import {
   useMutation,
   useQuery,
@@ -73,7 +73,12 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
     text: '신고하기',
     isDisabled: true,
   });
-
+  const [dataList, setDataList] = useState({
+    data: [
+      { content: data?.projectDescription, title: '프로젝트 설명' },
+      { content: data?.expectation, title: '바라는 점' },
+    ],
+  });
   useEffect(() => {
     if (reportState.text.length > 0) {
       setReportButtonState({ text: '완료', isDisabled: false });
@@ -155,7 +160,7 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
 
   //TODO: BookMarkHeader로 묶어서 팀원찾기/프로필미리보기 에서 사용하기
   return (
-    <>
+    <View>
       <CustomHeader
         title={''}
         canGoBack={true}
@@ -170,7 +175,50 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
           </View>
         }
       />
-      <ScrollView style={styles.scrollView}>
+      {/* <FlatList
+        style={{ backgroundColor: 'white' }}
+        showsVerticalScrollIndicator={false}
+        data={dataList.data}
+        ListHeaderComponent={
+          <CardWrapper style={[styles.card, { minHeight: 243 }]}>
+            <View
+              style={{
+                width: '100%',
+                paddingHorizontal: 10,
+                flex: 1,
+                justifyContent: 'space-between',
+              }}
+            >
+              <Text style={styles.teamname}>{data?.projectName}</Text>
+              <View style={styles.partIcon}>
+                {positions.map((item, index) => (
+                  <PositionWaveIcon
+                    currentCnt={item.currentCnt}
+                    recruitNumber={item.recruitCnt}
+                    textView={
+                      <Text style={globalStyles.itnitialText}>{mapToInitial(item.position)}</Text>
+                    }
+                    key={item.position}
+                  />
+                ))}
+              </View>
+              <FilledButton
+                title={'함께 하기'}
+                onPress={() => navigation.navigate('PositionSelector', { teamId: teamId })}
+              />
+            </View>
+          </CardWrapper>
+        }
+        renderItem={({ item }) => (
+          <View style={[styles.card, globalStyles.FlexStartCardWrapper, { minHeight: 243 }]}>
+            <View>
+              <Text style={styles.title}>{item.title}</Text>
+              <Text style={globalStyles.textLight13}>{item.content}</Text>
+            </View>
+          </View>
+        )}
+      /> */}
+      <ScrollView style={[globalStyles.scrollView]}>
         <CardWrapper style={[styles.card, { minHeight: 243 }]}>
           <View
             style={{
@@ -212,16 +260,11 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
           </View>
         </View>
       </ScrollView>
-    </>
+    </View>
   );
 };
 
 const useStyles = makeStyles(theme => ({
-  scrollView: {
-    backgroundColor: theme.colors.white,
-    paddingVertical: 18,
-    flex: 1,
-  },
   card: {
     paddingHorizontal: 13,
     paddingVertical: 17,
