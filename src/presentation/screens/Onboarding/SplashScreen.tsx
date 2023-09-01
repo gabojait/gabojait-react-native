@@ -14,6 +14,7 @@ import useGlobalStyles from '@/presentation/styles';
 import { refreshToken } from '@/data/api/accounts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingSpinner from '../Loading';
+import { useDB } from '@/data/localdb/dbProvider';
 
 const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
   async function requestUserPermission() {
@@ -22,13 +23,11 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
+    console.log('Authorization status:', enabled);
+
     // Android 13 이상부터 수동으로 권한 요청 필요.
     if (Platform.OS === 'android' && Platform.Version >= 33) {
       PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
-    }
-
-    if (enabled) {
-      console.log('Authorization status:', authStatus);
     }
   }
 
@@ -59,19 +58,21 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
   }
 
   const setupFCM = async () => {
+    console.log(
+      '[FCM]',
+      `
+      FCM 설정을 시작합니다.
+      Firebase Messaging SDK Version: ${messaging.SDK_VERSION}
+      Auto init 활성화 여부: ${messaging().isAutoInitEnabled}
+      Headless 여부: ${await messaging().getIsHeadless()}
+      FCM 토큰: ${await messaging().getToken()}
+      APNS 토큰: ${await messaging().getAPNSToken()}
+      기기 등록 여부: ${messaging().isDeviceRegisteredForRemoteMessages}
+      
+    `,
+    );
     if (!messaging().isAutoInitEnabled) {
       await messaging().registerDeviceForRemoteMessages();
-    }
-
-    // Get the device token
-    const token = await messaging().getToken();
-    console.log(token);
-
-    // If using other push notification providers (ie Amazon SNS, etc)
-    // you may need to get the APNs token instead for iOS:
-    if (Platform.OS == 'ios') {
-      const apnsToken = await messaging().getAPNSToken();
-      console.log('apnsToken: ', apnsToken);
     }
   };
 
@@ -90,7 +91,7 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
     const isEverBeenLoginValue = await isEverBeenLogin();
     if (isEverBeenLoginValue) {
       console.log('토큰을 이용한 로그인 갱신 시도');
-      refreshToken({ fcmToken: token });
+      await refreshToken({ fcmToken: token });
       navigation.replace('MainBottomTabNavigation', {
         screen: 'Home',
       });
@@ -98,8 +99,8 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
       navigation.replace('OnboardingNavigation', {
         screen: 'Login',
       });
-      Splash.hide();
     }
+    Splash.hide();
   }
 
   function handleFcmTokenRefresh() {
@@ -112,11 +113,18 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
     });
   }
 
+  const db = useDB();
+
   function handleSubscribe() {
     messaging().onMessage(async remoteMessage => {
-      console.log(remoteMessage);
+      console.log(`
+      새로운 FCM 메시지가 도착했어요.
+      DB 상태: ${db ? '정상' : '오류'}
+      ----------
+      ${JSON.stringify(remoteMessage)}
+      ----------
+      `);
       Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
-      const db = await getDBConnection();
       if (!db) {
         return;
       }
@@ -129,7 +137,6 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
         type: remoteMessage.data?.type ?? '',
       });
 
-      await db.close();
     });
   }
 

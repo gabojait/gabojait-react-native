@@ -11,13 +11,13 @@ export const OpenChatingPage = ({ navigation, route }: MainStackScreenProps<'Ope
     // 만약 어플이 설치되어 있으면 true, 없으면 false
     const supported = await Linking.canOpenURL(url);
 
-    if (supported) {
-      // 설치되어 있으면
-      await Linking.openURL(url);
-    } else {
-      // 앱이 없으면
-      await Linking.openURL(alterUrl);
-    }
+    // if (supported) {
+    //   // 설치되어 있으면
+    //   await Linking.openURL(url);
+    // } else {
+    //   // 앱이 없으면
+    //   await Linking.openURL(alterUrl);
+    // }
   }, []);
   return (
     <WebView
@@ -27,10 +27,10 @@ export const OpenChatingPage = ({ navigation, route }: MainStackScreenProps<'Ope
       originWhitelist={['intent://*']}
       onShouldStartLoadWithRequest={event => {
         if (Platform.OS === 'android' && event.url.startsWith('intent:')) {
-          handlePress(event.url, KAKAO_TALK_PLAYSTORE_URL);
+          // handlePress(event.url, KAKAO_TALK_PLAYSTORE_URL);
           return false;
         } else if (Platform.OS === 'ios') {
-          handlePress(event.url, KAKAO_TALK_APPSTORE_URL);
+          // handlePress(event.url, KAKAO_TALK_APPSTORE_URL);
           return false;
         }
         return true;

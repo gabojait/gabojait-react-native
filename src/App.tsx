@@ -54,7 +54,7 @@ export function HeadlessCheck({ isHeadless }: { isHeadless: boolean }) {
 const App = () => {
   const backgroundStyle = {
     flex: 1,
-    backgroundColor: 'yellow',
+    backgroundColor: __DEV__ ? 'yellow' : 'white',
   };
 
   // const modalRef = useRef<CustomModalRef>()
