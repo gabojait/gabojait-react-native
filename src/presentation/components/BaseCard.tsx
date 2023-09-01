@@ -8,18 +8,18 @@ export const ArrowCard = ({
   title,
   arrowColor = 'black',
   children,
-  onArrowPress,
+  onPress,
   style,
 }: {
   title: string;
   arrowColor?: string;
   children: React.ReactNode;
-  onArrowPress?: () => void;
+  onPress?: () => void;
   style?: StyleProp<ViewStyle>;
 }) => {
   const styles = useStyles();
   return (
-    <TouchableOpacity onPress={onArrowPress}>
+    <TouchableOpacity onPress={onPress}>
       <CardWrapper style={[styles.card, style]}>
         <View
           style={{

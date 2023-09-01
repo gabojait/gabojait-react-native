@@ -124,7 +124,7 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
       <ScrollView style={{ padding: 20, backgroundColor: 'white' }}>
         <ArrowCard
           title="기본정보"
-          onArrowPress={() => {
+          onPress={() => {
             navigation.getParent()?.navigate('UserModifier');
           }}
           style={{ marginBottom: theme.spacing.xl }}
@@ -150,7 +150,7 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
         <ArrowCard
           title="포트폴리오"
           style={{ marginBottom: theme.spacing.xl }}
-          onArrowPress={() => {
+          onPress={() => {
             navigation.navigate('EditPortfolio');
           }}
         >
@@ -178,7 +178,7 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
         <ArrowCard
           title="학력/경력"
           style={{ marginBottom: theme.spacing.xl }}
-          onArrowPress={() => {
+          onPress={() => {
             navigation.navigate('EditSchoolAndWork');
           }}
         >
@@ -206,7 +206,7 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
         <ArrowCard
           title="기술스택/직무"
           style={{ marginBottom: theme.spacing.xl }}
-          onArrowPress={() => {
+          onPress={() => {
             navigation.navigate('EditSkillAndPosition');
           }}
         >

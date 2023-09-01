@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import React from 'react';
 import { FlatList, View } from 'react-native';
 import { useDB } from '@/data/localdb/dbProvider';
+import { AlertType } from '@/data/model/type/AlertType';
 
 export function useNotification() {
   const [notifications, setNotifications] = useState([] as Notification[]);
@@ -35,13 +36,24 @@ export default function AlertPage() {
   const { notifications, isRefreshing, fetchNextPage, refetch } = useNotification();
   return (
     <>
-      <View style={{ backgroundColor: 'white', flex: 1 }}>
+      <View style={{ backgroundColor: 'white', flex: 1, paddingTop: 16 }}>
         <FlatList
           showsHorizontalScrollIndicator={false}
           keyExtractor={item => item.id.toString()}
           data={notifications}
           renderItem={({ item }) => (
-            <ArrowCard title={item.title} key={item.id}>
+            <ArrowCard
+              title={item.title}
+              key={item.id}
+              style={{ marginHorizontal: 20, marginVertical: 9 }}
+              onPress={() => {
+                switch (AlertType[item.type]) {
+                  case AlertType.TEAM_PROFILE: {
+
+                  }
+                }
+              }}
+            >
               <Text>{item.body}</Text>
             </ArrowCard>
           )}

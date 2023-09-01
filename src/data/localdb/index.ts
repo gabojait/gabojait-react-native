@@ -1,4 +1,5 @@
 import { openDatabase, SQLiteDatabase } from 'react-native-sqlite-storage';
+import { AlertType } from '@/data/model/type/AlertType';
 
 const SQLite = require('react-native-sqlite-storage');
 SQLite.enablePromise(true);
@@ -26,7 +27,7 @@ export type Notification = {
   title: string;
   body: string;
   time: string;
-  type: string;
+  type: keyof typeof AlertType;
 };
 
 export const createTable = async (db: SQLiteDatabase) => {

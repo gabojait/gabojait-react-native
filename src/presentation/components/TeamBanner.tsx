@@ -19,7 +19,7 @@ const TeamBanner: React.FC<
 
   return (
     <View style={{ paddingTop: 16 }}>
-      <ArrowCard title={teamName} arrowColor={theme.colors.primary} onArrowPress={onArrowPress}>
+      <ArrowCard title={teamName} arrowColor={theme.colors.primary} onPress={onArrowPress}>
         <View style={{ paddingTop: 10, flexDirection: 'row', justifyContent: 'flex-start' }}>
           {teamMembers?.map((item, index) => (
             <PositionIcon

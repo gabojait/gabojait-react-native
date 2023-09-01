@@ -34,18 +34,11 @@ export function DBProvider({ children }: { children: React.ReactNode }) {
       });
   });
 
-  if (isLoading || db == null) {
+  if (isLoading || !db) {
     return <LoadingSpinner />;
   }
 
-  const safeDB = {
-    ...db,
-    close: async () => {
-      throw new Error('루트 컴포넌트에서 사용중인 DB 인스턴스이므로 연결을 닫을 수 없습니다!');
-    },
-  };
-
-  return <DBContext.Provider value={safeDB}>{children}</DBContext.Provider>;
+  return <DBContext.Provider value={db}>{children}</DBContext.Provider>;
 }
 
 export function useDB() {
