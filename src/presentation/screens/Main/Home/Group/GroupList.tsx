@@ -52,7 +52,7 @@ const GroupListComponent = ({ navigation }: BoardStackParamListProps<'GroupList'
       const value = await AsyncStorage.getItem(GUIDE_MODE_MODAL_KEY);
       return value;
     } catch (error) {
-      console.log(`GUIDE_MODE_MODAL_KEY 저장실패`);
+      console.log('GUIDE_MODE_MODAL_KEY 저장실패');
     }
   }
 
@@ -61,7 +61,7 @@ const GroupListComponent = ({ navigation }: BoardStackParamListProps<'GroupList'
       await AsyncStorage.setItem(GUIDE_MODE_MODAL_KEY, JSON.stringify(GUIDE_MODE_MODAL_VALUE));
       console.log(`저장한 데이터:${JSON.stringify(GUIDE_MODE_MODAL_VALUE)}`);
     } catch (error) {
-      console.log(`GUIDE_MODE_MODAL_KEY 저장실패`);
+      console.log('GUIDE_MODE_MODAL_KEY 저장실패');
     }
     const value = getGuideModeModalKey();
     console.log(`GUIDE_MODE_MODAL_KEY 값 확인: ${value}`);
@@ -133,7 +133,6 @@ const GroupListComponent = ({ navigation }: BoardStackParamListProps<'GroupList'
         backgroundColor: 'white',
         justifyContent: 'flex-end',
         position: 'relative',
-        paddingHorizontal: 20,
       }}
     >
       {data && (
@@ -150,6 +149,7 @@ const GroupListComponent = ({ navigation }: BoardStackParamListProps<'GroupList'
                   params: { teamId: item.teamId },
                 })
               }
+              containerStyle={{ marginHorizontal: 20 }}
             />
           )}
           refreshing={isRefreshing}
