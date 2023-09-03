@@ -1,32 +1,35 @@
 import { ArrowCard } from '@/presentation/components/BaseCard';
-import { getNotifications, Notification } from '@/data/localdb';
+import { Notification } from '@/data/localdb';
 import { Text } from '@rneui/themed';
 import { useEffect, useState } from 'react';
 import React from 'react';
 import { FlatList, View } from 'react-native';
-import { useDB } from '@/data/localdb/dbProvider';
+import { useNotificationRepository } from '@/data/localdb/notificationProvider';
 import { AlertType } from '@/data/model/type/AlertType';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
-import { Position } from '@/data/model/type/Position';
+import { RootStackNavigationProps } from '@/presentation/navigation/RootNavigation';
 
 export function useNotification() {
   const [notifications, setNotifications] = useState([] as Notification[]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [page, setPage] = useState(0);
 
-  const db = useDB();
+  const notificationRepository = useNotificationRepository();
 
-  const refetch = () =>
-    db ? getNotifications(db, page) : new Error('로컬 DB가 초기화되지 않았어요!');
+  const refetch = () => notificationRepository?.findByPage(page);
+
+  useEffect(() => {
+    refetch();
+  }, [page]);
   const fetchNextPage = () => {
     setPage(prev => prev + 1);
-    refetch();
   };
 
   useEffect(() => {
-    if (db) {
+    if (notificationRepository) {
       setIsRefreshing(true);
-      getNotifications(db, 0)
+      notificationRepository
+        .findByPage(0)
         .then(res => {
           setIsRefreshing(false);
           setNotifications(res);
@@ -35,7 +38,7 @@ export function useNotification() {
           setIsRefreshing(false);
         });
     }
-  }, [db]);
+  }, [notificationRepository]);
 
   return {
     notifications,
@@ -62,22 +65,28 @@ export default function AlertPage({ navigation }: MainStackScreenProps<'AlertPag
               onPress={() => {
                 switch (AlertType[item.type]) {
                   case AlertType.TEAM_PROFILE: {
-                    return navigation.push('TeamDetail', {
-                      teamId: '',
-                      targetPosition: Position.Manager,
-                      offerId: 0,
-                    });
+                    // 팀/팀원 합류로 인한 알림. 현재 팀 페이지로 이동
+                    return navigation
+                      .getParent<RootStackNavigationProps>()
+                      .push('MainBottomTabNavigation', { screen: 'Team' });
                   }
+                  case AlertType.REVIEW: {
+                    return navigation.push('TeamReview', { teamId: '' });
+                  }
+                  // Offer from User to Team
                   case AlertType.USER_OFFER: {
-                    return navigation.push('OfferToTeamHistory');
+                    return navigation.push('ApplyStatus');
                   }
+                  // Offer from Team to User
                   case AlertType.TEAM_OFFER: {
                     return navigation.push('OfferFromTeamPage');
                   }
                 }
               }}
             >
-              <Text>{item.body}</Text>
+              <Text numberOfLines={1} ellipsizeMode="tail">
+                {item.body}
+              </Text>
             </ArrowCard>
           )}
           refreshing={isRefreshing}

@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { useAppDispatch } from '@/redux/hooks';
 import { signOut } from '@/redux/action/login';
 import { clearNotificationTable } from '@/data/localdb';
-import { useDB } from '@/data/localdb/dbProvider';
+import { useNotificationRepository } from '@/data/localdb/notificationProvider';
 
 const UserModifier = ({ navigation }: MainStackScreenProps<'UserModifier'>) => {
   const { theme } = useTheme();
@@ -49,7 +49,7 @@ const UserModifier = ({ navigation }: MainStackScreenProps<'UserModifier'>) => {
       resultToMessage: () => t('result_nicknameChangeOk'),
     },
   );
-  const db = useDB();
+  const db = useNotificationRepository();
 
   const { mutation: changePwMutation } = useMutationDialog(
     ['changePassword', passwords],

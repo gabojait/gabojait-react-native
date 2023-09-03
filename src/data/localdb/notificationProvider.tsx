@@ -1,14 +1,15 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { clearNotificationTable, getDBConnection } from '@/data/localdb/index';
+import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import { getDBConnection, NotificationRepository } from '@/data/localdb/index';
 import { SQLiteDatabase } from 'react-native-sqlite-storage';
 import { DevSettings } from 'react-native';
 import LoadingSpinner from '@/presentation/screens/Loading';
 
-const DBContext = createContext<SQLiteDatabase | null>(null);
+const NotificationContext = createContext<NotificationRepository | null>(null);
 
-export function DBProvider({ children }: { children: React.ReactNode }) {
+export function NotificationProvider({ children }: { children: React.ReactNode }) {
   const [db, setDB] = useState<SQLiteDatabase | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const notificationRepository = useMemo(() => (db ? new NotificationRepository(db) : null), [db]);
 
   useEffect(() => {
     async function createDBConnection() {
@@ -30,7 +31,7 @@ export function DBProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (__DEV__ && db != null)
       DevSettings.addMenuItem('Clear Notification DB (may not be available)', () => {
-        clearNotificationTable(db!);
+        notificationRepository?.clear();
       });
   });
 
@@ -38,9 +39,13 @@ export function DBProvider({ children }: { children: React.ReactNode }) {
     return <LoadingSpinner />;
   }
 
-  return <DBContext.Provider value={db}>{children}</DBContext.Provider>;
+  return (
+    <NotificationContext.Provider value={notificationRepository!}>
+      {children}
+    </NotificationContext.Provider>
+  );
 }
 
-export function useDB() {
-  return useContext(DBContext);
+export function useNotificationRepository() {
+  return useContext(NotificationContext);
 }

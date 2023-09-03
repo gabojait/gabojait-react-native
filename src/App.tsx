@@ -1,4 +1,4 @@
-import { DevSettings, SafeAreaView } from 'react-native';
+import { DevSettings, Platform, SafeAreaView } from 'react-native';
 import { ThemeProvider } from '@rneui/themed';
 import { RootNavigation } from './presentation/navigation/RootNavigation';
 import allReducers from '@/redux/reducers';

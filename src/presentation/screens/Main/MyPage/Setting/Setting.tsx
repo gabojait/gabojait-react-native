@@ -12,8 +12,7 @@ import CustomInput from '@/presentation/components/CustomInput';
 import { verifyPassword } from '@/data/api/accounts';
 import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent';
 import { useAppDispatch } from '@/redux/hooks';
-import { useDB } from '@/data/localdb/dbProvider';
-import { clearNotificationTable } from '@/data/localdb';
+import { useNotificationRepository } from '@/data/localdb/notificationProvider';
 
 const MenuItem = ({
   title,
@@ -62,7 +61,7 @@ const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
   const modal = useModal();
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const db = useDB();
+  const notificationRepository = useNotificationRepository();
   const [currentPassword, setCurrentPassword] = useState('');
 
   return (
@@ -117,7 +116,7 @@ const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
       <MenuItem
         title="로그아웃"
         onClick={async () => {
-          await clearNotificationTable(db!);
+          await notificationRepository?.clear();
           dispatch(signOut());
           navigation.goBack();
           navigation

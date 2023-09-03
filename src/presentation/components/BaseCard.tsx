@@ -30,7 +30,9 @@ export const ArrowCard = ({
           }}
         >
           <View style={{ flex: 9 }}>
-            <Text style={styles.title}>{title}</Text>
+            <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
+              {title}
+            </Text>
             <View
               style={{
                 flexDirection: 'row',

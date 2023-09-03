@@ -2,14 +2,15 @@ import { RootStackScreenProps } from '@/presentation/navigation/types';
 import React, { useEffect } from 'react';
 import { Alert, PermissionsAndroid, Platform, View, BackHandler } from 'react-native';
 import messaging from '@react-native-firebase/messaging';
-import { createTable, Notification, saveNotification } from '@/data/localdb';
+import { Notification } from '@/data/localdb';
 import CodePush, { DownloadProgress, LocalPackage } from 'react-native-code-push';
 import Splash from 'react-native-splash-screen';
 import { refreshToken } from '@/data/api/accounts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingSpinner from '../Loading';
-import { useDB } from '@/data/localdb/dbProvider';
+import { useNotificationRepository } from '@/data/localdb/notificationProvider';
 import { onlineManager } from 'react-query';
+import { AlertType } from '@/data/model/type/AlertType';
 
 const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
   async function requestUserPermission() {
@@ -56,7 +57,7 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
       `
       FCM 설정을 시작합니다.
       Firebase Messaging SDK Version: ${messaging.SDK_VERSION}
-      Headless 여부: ${await messaging().getIsHeadless()}
+      ${Platform.OS === 'ios' ? 'Headless 여부: ' + (await messaging().getIsHeadless()) : ''}
       FCM 토큰: ${await messaging().getToken()}
       APNS 토큰: ${await messaging().getAPNSToken()}
       기기 등록 여부: ${messaging().isDeviceRegisteredForRemoteMessages}
@@ -101,29 +102,39 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
     });
   }
 
-  const db = useDB();
+  const notificationRepository = useNotificationRepository();
 
   function handleSubscribe() {
     messaging().onMessage(async remoteMessage => {
-      console.log(`
+      try {
+        console.log('알림 삽입');
+        console.log(`
       새로운 FCM 메시지가 도착했어요.
-      DB 상태: ${db ? '정상' : '오류'}
+      DB 상태: ${notificationRepository ? '정상' : '오류'}
       ----------
       ${JSON.stringify(remoteMessage)}
       ----------
       `);
-      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
-      if (!db) {
-        return;
+        Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+        if (!notificationRepository) {
+          throw new Error('로컬 DB 셋업 안됨');
+        }
+        await notificationRepository.createTableIfNotExists();
+        if (!AlertType.hasOwnProperty(remoteMessage.data?.type ?? ''))
+          throw new Error('올바른 알림 유형이 아닙니다!');
+        const notification = new Notification({
+          read: false,
+          id: remoteMessage.messageId ?? '-9999',
+          title: remoteMessage.data?.title ?? '',
+          body: remoteMessage.data?.body ?? '',
+          time: remoteMessage.data?.time ?? '',
+          type: (remoteMessage.data?.type as keyof typeof AlertType) ?? '',
+        });
+        console.info(notification);
+        await notificationRepository.save(notification);
+      } catch (e) {
+        console.error(e);
       }
-      await createTable(db);
-      await saveNotification(db, {
-        id: parseInt(remoteMessage.messageId ?? '99999') ?? 0,
-        title: remoteMessage.data?.title ?? '',
-        body: remoteMessage.data?.body ?? '',
-        time: remoteMessage.data?.time ?? '',
-        type: remoteMessage.data?.type ?? '',
-      } as Notification);
     });
   }
 

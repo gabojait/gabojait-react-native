@@ -343,10 +343,12 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
                 style={{ height: 1, width: '100%', backgroundColor: '#D9D9D9', marginVertical: 14 }}
               ></View>
 
-              <Text h4>리뷰</Text>
+              <Text h4 style={{ marginBottom: 11, fontWeight: theme.fontWeight.medium }}>
+                리뷰
+              </Text>
               {profile.reviews?.length ?? 0 > 0 ? (
                 <>
-                  <View style={{ flexDirection: 'row' }}>
+                  <View style={{ flexDirection: 'row', marginBottom: 30 }}>
                     <Text h2 style={{ fontWeight: 'bold', marginEnd: 10 }}>
                       {profile.rating}
                     </Text>
@@ -397,18 +399,18 @@ export const ReviewItem = ({ review }: { review: Review }) => {
           alignItems: 'center',
         }}
       >
-        <View style={{ flexDirection: 'row', width: '100%' }}>
+        <View style={{ flexDirection: 'column', width: '100%' }}>
           <Text
             style={{
-              fontSize: 14,
-              fontStyle: 'normal',
-              fontWeight: '700',
+              fontSize: theme.fontSize.md,
+              fontWeight: theme.fontWeight.semibold,
               color: 'black',
               paddingEnd: 7,
               paddingTop: 4,
+              marginBottom: 4,
             }}
           >
-            {review.reviewerNickname}
+            {review.reviewer}
           </Text>
           <RatingBar ratingScore={2.5} size={20} />
         </View>
@@ -423,7 +425,7 @@ export const ReviewItem = ({ review }: { review: Review }) => {
       <Text
         style={{ fontWeight: theme.fontWeight.light, color: theme.colors.grey1, lineHeight: 25 }}
       >
-        {review.createdAt}
+        {new Date(review.createdAt).format('yyyy-MM-dd')}
       </Text>
     </View>
   );
