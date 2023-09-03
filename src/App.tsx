@@ -1,4 +1,4 @@
-import { SafeAreaView } from 'react-native';
+import { DevSettings, SafeAreaView } from 'react-native';
 import { ThemeProvider } from '@rneui/themed';
 import { RootNavigation } from './presentation/navigation/RootNavigation';
 import allReducers from '@/redux/reducers';
@@ -6,7 +6,7 @@ import ReduxThunk from 'redux-thunk';
 import { ModalProvider } from './presentation/components/modal/context';
 import { theme } from './presentation/theme';
 import GeneralErrorBoundary from './presentation/components/errorComponent/ErrorBoundary';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import { QueryClient, QueryClientProvider, useQueryErrorResetBoundary } from 'react-query';
@@ -50,9 +50,17 @@ export function HeadlessCheck({ isHeadless }: { isHeadless: boolean }) {
 }
 
 const App = () => {
+  const [safeAreaBackgroundColor, setSafeAreaBackgroundColor] = useState('white');
+  useEffect(() => {
+    if (__DEV__)
+      DevSettings.addMenuItem('Toggle Safe Area Color (iOS Only)', () => {
+        setSafeAreaBackgroundColor(prev => (prev === 'white' ? 'yellow' : 'white'));
+      });
+  }, []);
+
   const backgroundStyle = {
     flex: 1,
-    backgroundColor: __DEV__ ? 'yellow' : 'white',
+    backgroundColor: __DEV__ ? safeAreaBackgroundColor : 'white',
   };
 
   const { reset } = useQueryErrorResetBoundary();
