@@ -48,23 +48,24 @@ const OfferFromTeamPageComponent = ({ navigation }: MainStackScreenProps<'OfferF
   }
 
   return (
-    <View style={{ backgroundColor: 'white', flex: 1, padding: 20 }}>
+    <View style={{ backgroundColor: 'white', flex: 1 }}>
       <FlatList
         showsHorizontalScrollIndicator={false}
         keyExtractor={item => item.toString()}
         data={data?.pages?.map(page => page.data).flat()}
         renderItem={({ item }) => (
-            <TeamBanner
-              teamMembersCnt={item?.team.teamMemberCnts ?? []}
-              teamName={item?.team.projectName ?? ''}
-              onArrowPress={() => {
-                navigation.navigate('TeamDetail', {
-                  teamId: item.team.teamId,
-                  targetPosition: item.position,
-                  offerId: item.offerId,
-                });
-              }}
-            />
+          <TeamBanner
+            teamMembersCnt={item?.team.teamMemberCnts ?? []}
+            teamName={item?.team.projectName ?? ''}
+            onArrowPress={() => {
+              navigation.navigate('TeamDetail', {
+                teamId: item.team.teamId,
+                targetPosition: item.position,
+                offerId: item.offerId,
+              });
+            }}
+            containerStyle={{ marginHorizontal: 20 }}
+          />
         )}
         refreshing={isRefreshing}
         onRefresh={refetch}

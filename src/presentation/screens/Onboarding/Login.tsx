@@ -23,6 +23,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import useGlobalStyles from '@/presentation/styles';
 import useModal from '@/presentation/components/modal/useModal';
 import { DialogLoading } from '@rneui/base/dist/Dialog/Dialog.Loading';
+import messaging from '@react-native-firebase/messaging';
+import { RootStackNavigationProps } from '@/presentation/navigation/RootNavigation';
 
 const Login = ({ navigation }: OnboardingScreenProps<'Login'>) => {
   const [loginState, setLoginState] = useState({ username: '', password: '' } as LoginRequestDTO);
@@ -38,7 +40,9 @@ const Login = ({ navigation }: OnboardingScreenProps<'Login'>) => {
     }
     if (!loading) {
       if (data && !error) {
-        navigation.getParent()?.navigate('MainBottomTabNavigation', { screen: 'Home ' });
+        navigation
+          .getParent<RootStackNavigationProps>()
+          ?.replace('MainBottomTabNavigation', { screen: 'Home' });
       } else if (error) {
         modal?.show({
           content: (
@@ -98,20 +102,17 @@ const Login = ({ navigation }: OnboardingScreenProps<'Login'>) => {
                   login({
                     username: loginState.username,
                     password: loginState.password,
-                    fcmToken: 'testToken',
+                    fcmToken: await messaging().getToken(),
                   }),
                 );
               }}
               containerStyle={{ marginBottom: 10 }}
             />
-            <TouchableOpacity onPress={() => navigation.navigate('FindAccount')}>
+            <TouchableOpacity onPress={() => navigation.push('FindAccount')}>
               <Text style={styles.text}>아이디 찾기/ 비밀번호 찾기</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            style={styles.registerLink}
-            onPress={() => navigation.navigate('Register')}
-          >
+          <TouchableOpacity style={styles.registerLink} onPress={() => navigation.push('Register')}>
             <Text style={styles.text}>아직 가보자잇에 가입하지 않으셨나요?</Text>
             <Text style={styles.highlightText}> 회원가입</Text>
           </TouchableOpacity>

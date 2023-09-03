@@ -6,6 +6,8 @@ import React from 'react';
 import { FlatList, View } from 'react-native';
 import { useDB } from '@/data/localdb/dbProvider';
 import { AlertType } from '@/data/model/type/AlertType';
+import { MainStackScreenProps } from '@/presentation/navigation/types';
+import { Position } from '@/data/model/type/Position';
 
 export function useNotification() {
   const [notifications, setNotifications] = useState([] as Notification[]);
@@ -14,14 +16,25 @@ export function useNotification() {
 
   const db = useDB();
 
-  const refetch = () => (db ? getNotifications(db, page) : {});
+  const refetch = () =>
+    db ? getNotifications(db, page) : new Error('로컬 DB가 초기화되지 않았어요!');
   const fetchNextPage = () => {
     setPage(prev => prev + 1);
     refetch();
   };
 
   useEffect(() => {
-    if (db) getNotifications(db, 0).then(res => setNotifications(res));
+    if (db) {
+      setIsRefreshing(true);
+      getNotifications(db, 0)
+        .then(res => {
+          setIsRefreshing(false);
+          setNotifications(res);
+        })
+        .catch(e => {
+          setIsRefreshing(false);
+        });
+    }
   }, [db]);
 
   return {
@@ -32,7 +45,7 @@ export function useNotification() {
   };
 }
 
-export default function AlertPage() {
+export default function AlertPage({ navigation }: MainStackScreenProps<'AlertPage'>) {
   const { notifications, isRefreshing, fetchNextPage, refetch } = useNotification();
   return (
     <>
@@ -49,7 +62,17 @@ export default function AlertPage() {
               onPress={() => {
                 switch (AlertType[item.type]) {
                   case AlertType.TEAM_PROFILE: {
-
+                    return navigation.push('TeamDetail', {
+                      teamId: '',
+                      targetPosition: Position.Manager,
+                      offerId: 0,
+                    });
+                  }
+                  case AlertType.USER_OFFER: {
+                    return navigation.push('OfferToTeamHistory');
+                  }
+                  case AlertType.TEAM_OFFER: {
+                    return navigation.push('OfferFromTeamPage');
                   }
                 }
               }}

@@ -13,6 +13,9 @@ import { QueryClient, QueryClientProvider, useQueryErrorResetBoundary } from 're
 import { createLogger } from 'redux-logger';
 import './assets/locales/index';
 
+import NetInfo from '@react-native-community/netinfo';
+import { onlineManager } from 'react-query';
+import CodePush, { CodePushOptions } from 'react-native-code-push';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -22,11 +25,6 @@ const queryClient = new QueryClient({
 });
 const logger = createLogger();
 const store = createStore(allReducers, applyMiddleware(ReduxThunk, logger));
-
-import NetInfo from '@react-native-community/netinfo';
-import { onlineManager } from 'react-query';
-import CodePush, { CodePushOptions, DownloadProgress, LocalPackage } from 'react-native-code-push';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 onlineManager.setEventListener(setOnline => {
   return NetInfo.addEventListener(state => {
@@ -57,7 +55,6 @@ const App = () => {
     backgroundColor: __DEV__ ? 'yellow' : 'white',
   };
 
-  // const modalRef = useRef<CustomModalRef>()
   const { reset } = useQueryErrorResetBoundary();
   return (
     <Provider store={store}>

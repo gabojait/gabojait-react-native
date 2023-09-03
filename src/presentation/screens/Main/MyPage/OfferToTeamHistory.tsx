@@ -63,11 +63,12 @@ const OfferToTeamHistoryComponent = ({
         keyExtractor={item => item.toString()}
         data={data?.pages?.map(page => page.data).flat()}
         renderItem={({ item }) => (
-            <TeamBanner
-              teamMembersCnt={item?.team.teamMemberCnts ?? []}
-              teamName={item?.team.projectName ?? ''}
-              onArrowPress={() => navigation.navigate('GroupDetail', { teamId: item.team.teamId })}
-            />
+          <TeamBanner
+            teamMembersCnt={item?.team.teamMemberCnts ?? []}
+            teamName={item?.team.projectName ?? ''}
+            onArrowPress={() => navigation.navigate('GroupDetail', { teamId: item.team.teamId })}
+            containerStyle={{ marginHorizontal: 20 }}
+          />
         )}
       />
     </View>

@@ -33,6 +33,7 @@ import { Position } from '@/data/model/type/Position';
 import { KoreanPosition } from '@/presentation/model/type/Position';
 import { Asset, launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { setProfileImage } from '@/redux/action/profileActions';
+import { getUser } from '@/redux/action/login';
 const Header = ({ navigation }: StackHeaderProps) => {
   const { theme } = useTheme();
   return (
@@ -115,6 +116,10 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
 
   useEffect(() => {
     dispatch(getProfile());
+    return () => {
+      dispatch(getProfile());
+      dispatch(getUser());
+    };
   }, []);
 
   const profileExist = useMemo(() => isProfileExist(profile), [profile]);

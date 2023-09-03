@@ -1,20 +1,15 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable react-hooks/exhaustive-deps */
 import { RootStackScreenProps } from '@/presentation/navigation/types';
-import { getUser } from '@/redux/action/login';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import React, { useEffect } from 'react';
-import { Alert, Dimensions, PermissionsAndroid, Platform, SafeAreaView, View } from 'react-native';
+import { Alert, PermissionsAndroid, Platform, View, BackHandler } from 'react-native';
 import messaging from '@react-native-firebase/messaging';
-import { createTable, getDBConnection, saveNotification } from '@/data/localdb';
+import { createTable, Notification, saveNotification } from '@/data/localdb';
 import CodePush, { DownloadProgress, LocalPackage } from 'react-native-code-push';
-import { Text } from '@rneui/themed';
 import Splash from 'react-native-splash-screen';
-import useGlobalStyles from '@/presentation/styles';
 import { refreshToken } from '@/data/api/accounts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingSpinner from '../Loading';
 import { useDB } from '@/data/localdb/dbProvider';
+import { onlineManager } from 'react-query';
 
 const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
   async function requestUserPermission() {
@@ -27,43 +22,40 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
 
     // Android 13 이상부터 수동으로 권한 요청 필요.
     if (Platform.OS === 'android' && Platform.Version >= 33) {
-      PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+      const androidAuthStatus = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+      );
+      return androidAuthStatus === 'granted';
     }
+    return enabled;
   }
 
   async function checkCodePush() {
-    try {
-      console.log('checking update');
-      // Todo: 플랫폼별 업데이트 체크
-      const update = await CodePush.checkForUpdate();
-      if (update) {
-        console.log('update exists: ', update);
-        update
-          .download((progress: DownloadProgress) =>
-            console.log(
-              `downloading app: ${(progress.receivedBytes / progress.totalBytes) * 100} %`,
-            ),
-          )
-          .then((newPackage: LocalPackage) =>
-            newPackage.install(CodePush.InstallMode.IMMEDIATE).then(() => CodePush.restartApp()),
-          );
-        return;
-      }
-      console.log('update not exists1');
-      throw new Error('업데이트 없음');
-    } catch {
-      console.log('update not exists2');
-      handleLogin();
+    console.log('checking update');
+    // Todo: 플랫폼별 업데이트 체크
+    const update = await CodePush.checkForUpdate();
+    if (update) {
+      console.log('update exists: ', update);
+      update
+        .download((progress: DownloadProgress) =>
+          console.log(`downloading app: ${(progress.receivedBytes / progress.totalBytes) * 100} %`),
+        )
+        .then((newPackage: LocalPackage) =>
+          newPackage.install(CodePush.InstallMode.IMMEDIATE).then(() => CodePush.restartApp()),
+        );
+      return true;
     }
+    console.log('update not exists');
+    return false;
   }
 
   const setupFCM = async () => {
+    await messaging().registerDeviceForRemoteMessages();
     console.log(
       '[FCM]',
       `
       FCM 설정을 시작합니다.
       Firebase Messaging SDK Version: ${messaging.SDK_VERSION}
-      Auto init 활성화 여부: ${messaging().isAutoInitEnabled}
       Headless 여부: ${await messaging().getIsHeadless()}
       FCM 토큰: ${await messaging().getToken()}
       APNS 토큰: ${await messaging().getAPNSToken()}
@@ -71,9 +63,6 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
       
     `,
     );
-    if (!messaging().isAutoInitEnabled) {
-      await messaging().registerDeviceForRemoteMessages();
-    }
   };
 
   async function isEverBeenLogin() {
@@ -100,7 +89,6 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
         screen: 'Login',
       });
     }
-    Splash.hide();
   }
 
   function handleFcmTokenRefresh() {
@@ -135,17 +123,37 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
         body: remoteMessage.data?.body ?? '',
         time: remoteMessage.data?.time ?? '',
         type: remoteMessage.data?.type ?? '',
-      });
-
+      } as Notification);
     });
   }
 
+  const checkNetworkConnection = () => {
+    if (!onlineManager.isOnline()) {
+      Alert.alert('오류', '네트워크에 연결돼있지 않습니다. 앱을 종료합니다.', [
+        { text: '확인', onPress: () => BackHandler.exitApp() },
+      ]);
+    }
+  };
+
+  const initApp = async () => {
+    checkNetworkConnection();
+    console.log('네트워크 연결 상태 체크 완료');
+    const authStatus = await requestUserPermission();
+    console.log('알림 권한 요청 완료. 알림 권한:', authStatus);
+    if (authStatus) {
+      await setupFCM();
+      console.log('FCM 셋업 완료');
+      handleSubscribe();
+      console.log('메시지 핸들러 셋업 완료 ');
+      handleFcmTokenRefresh();
+    }
+    // 개발모드이거나 개발모드가 아닌데 코드푸시 업데이트가 존재하지 않으면 로그인 처리
+    if (__DEV__ || (!__DEV__ && !(await checkCodePush()))) await handleLogin();
+    Splash.hide();
+  };
+
   useEffect(() => {
-    setupFCM();
-    requestUserPermission();
-    handleSubscribe();
-    checkCodePush();
-    handleFcmTokenRefresh();
+    initApp();
   }, []);
 
   return (

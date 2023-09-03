@@ -17,6 +17,8 @@ import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch } from '@/redux/hooks';
 import { signOut } from '@/redux/action/login';
+import { clearNotificationTable } from '@/data/localdb';
+import { useDB } from '@/data/localdb/dbProvider';
 
 const UserModifier = ({ navigation }: MainStackScreenProps<'UserModifier'>) => {
   const { theme } = useTheme();
@@ -47,12 +49,14 @@ const UserModifier = ({ navigation }: MainStackScreenProps<'UserModifier'>) => {
       resultToMessage: () => t('result_nicknameChangeOk'),
     },
   );
+  const db = useDB();
 
   const { mutation: changePwMutation } = useMutationDialog(
     ['changePassword', passwords],
     changePassword,
     {
-      onSuccessClick: () => {
+      onSuccessClick: async () => {
+        await clearNotificationTable(db!);
         dispatch(signOut());
         navigation.getParent()?.navigate('OnboardingNavigation', { screen: 'Login' });
       },
@@ -115,7 +119,6 @@ const UserModifier = ({ navigation }: MainStackScreenProps<'UserModifier'>) => {
         value={passwords[1]}
         onChangeText={value => setPasswords(prevState => [prevState[0], value])}
         placeholder="다시 한번 입력하세요"
-
       />
       <FilledButton
         title="완료"
