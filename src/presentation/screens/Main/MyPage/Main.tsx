@@ -123,7 +123,7 @@ const MainComponent = ({ navigation }: MainBottomTabNavigationProps<'MyPage'>) =
         {profileData?.isLeader ? (
           <LeaderComponent
             onPressApply={() => navigation.navigate('MainNavigation', { screen: 'ApplyStatus' })}
-            onPressTeam={() => {}}
+            onPressTeam={() => navigation.push('MainNavigation', { screen: 'OfferSentUser' })}
             onPressHistory={() => navigation.navigate('MainNavigation', { screen: 'TeamHistory' })}
           />
         ) : (

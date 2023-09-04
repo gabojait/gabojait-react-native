@@ -12,6 +12,7 @@ import CustomInput from '@/presentation/components/CustomInput';
 import { verifyPassword } from '@/data/api/accounts';
 import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent';
 import { useAppDispatch } from '@/redux/hooks';
+import { useNotificationRepository } from '@/data/localdb/notificationProvider';
 
 const MenuItem = ({
   title,
@@ -60,7 +61,7 @@ const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
   const modal = useModal();
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-
+  const notificationRepository = useNotificationRepository();
   const [currentPassword, setCurrentPassword] = useState('');
 
   return (
@@ -114,7 +115,8 @@ const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
       <MenuItem title="기타" onClick={() => navigation.navigate('Etc')} />
       <MenuItem
         title="로그아웃"
-        onClick={() => {
+        onClick={async () => {
+          await notificationRepository?.clear();
           dispatch(signOut());
           navigation.goBack();
           navigation

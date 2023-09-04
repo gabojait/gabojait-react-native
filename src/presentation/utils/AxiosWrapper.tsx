@@ -22,6 +22,7 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
 
   async function requestRefreshToken(originalRequest: InternalAxiosRequestConfig) {
     let refreshTokenValue = '';
+    console.log(`리프레시 토큰을 이용해 세션 유지를 시도합니다.`);
     let fcmToken = await messaging().getToken();
 
     await AsyncStorage.getItem('refreshToken', (err, result) => {

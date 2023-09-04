@@ -145,12 +145,11 @@ const GroupListComponent = ({ navigation }: BoardStackParamListProps<'GroupList'
         backgroundColor: 'white',
         justifyContent: 'flex-end',
         position: 'relative',
-        paddingHorizontal: 20,
       }}
     >
       {data && (
         <FlatList
-          keyExtractor={(item, idx) => item?.projectName.concat(item.teamId)}
+          keyExtractor={(item, _) => item?.projectName.concat(item.teamId)}
           data={data?.pages.map(page => page.data).flat()}
           renderItem={({ item }) => (
             <TeamBanner
@@ -162,6 +161,7 @@ const GroupListComponent = ({ navigation }: BoardStackParamListProps<'GroupList'
                   params: { teamId: item.teamId },
                 })
               }
+              containerStyle={{ marginHorizontal: 20 }}
             />
           )}
           refreshing={isRefreshing}
@@ -180,6 +180,8 @@ const GroupListComponent = ({ navigation }: BoardStackParamListProps<'GroupList'
           flexDirection: 'column-reverse',
           justifyContent: 'flex-start',
           alignItems: 'flex-end',
+          right: 20,
+          bottom: 20,
           width: '100%',
           backgroundColor: theme.colors.disabled,
         }}

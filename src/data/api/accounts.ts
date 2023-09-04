@@ -9,9 +9,7 @@ import { FindPasswordDto } from '@/data/model/FindPasswordDto';
 
 export const login = async (dto: LoginRequestDTO) => {
   // Get the device token
-  const token = await messaging().getToken();
-  console.log(token);
-  const result = await client.post('user/login', { ...dto, fcmToken: token });
+  const result = await client.post('user/login', { ...dto });
 
   console.log(result);
   return result;
