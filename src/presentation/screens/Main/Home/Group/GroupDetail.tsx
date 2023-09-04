@@ -29,6 +29,7 @@ import { favoriteKeys } from '@/reactQuery/key/FavoriteKeys';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 import { Loading } from '@/presentation/screens/Loading';
+import { InputModalContent } from '@/presentation/screens/Main/MyPage/Setting/Setting';
 
 const GroupDetail = ({ navigation, route }: MainStackScreenProps<'GroupDetail'>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -104,26 +105,22 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
   const handleReportModal = () => {
     modal?.show({
       content: (
-        <BottomModalContent
+        <InputModalContent
           title="팀을 신고하시겠습니까?"
-          children={
+          inputProps={{
+            style: { width: '100%' },
+            multiline: true,
+            maxLength: 500,
+            shape: 'none',
+          }}
+          inputWrapper={children => (
             <View style={{ justifyContent: 'center', alignContent: 'center', width: '100%' }}>
               <Text style={[globalStyles.textLight13, { textAlign: 'center', paddingBottom: 10 }]}>
                 신고 사유를 적어주세요
               </Text>
-              <CardWrapper style={{ minHeight: 75, maxWidth: 400 }}>
-                <TextInput
-                  value={reportState.text}
-                  style={{ width: '100%' }}
-                  onChangeText={(text: string) => {
-                    setReportState(prevState => ({ ...prevState, text: text }));
-                  }}
-                  multiline={true}
-                  maxLength={500}
-                />
-              </CardWrapper>
+              <CardWrapper style={{ minHeight: 75, maxWidth: 400, padding: 20 }}>{children}</CardWrapper>
             </View>
-          }
+          )}
           yesButton={{
             title: reportButtonState.text,
             onPress: () => {

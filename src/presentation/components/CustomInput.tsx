@@ -62,10 +62,21 @@ const CustomInput = forwardRef(
           disabled={props.disabled}
           containerStyle={[styles.container, props.containerStyle]}
           inputContainerStyle={[
-            shape == 'underline' ? styles.underlineInputContainer : styles.roundInputContainer,
+            shape === 'underline'
+              ? styles.underlineInputContainer
+              : shape === 'round'
+              ? styles.roundInputContainer
+              : { borderBottomWidth: 0 },
             inputContainerStyle,
           ]}
-          style={[shape == 'underline' ? styles.underlineInput : styles.roundInput, props.style]}
+          style={[
+            shape === 'underline'
+              ? styles.underlineInput
+              : shape === 'round'
+              ? styles.roundInput
+              : { borderBottomWidth: 0 },
+            props.style,
+          ]}
           placeholderTextColor={color.grey}
           placeholder={placeholder}
           rightIcon={inputIcon}
@@ -101,6 +112,11 @@ const useStyles = makeStyles(
         invalid: color.error,
       } as { [key in ValidatorState]: string },
       round: {
+        none: color.grey,
+        valid: color.primary,
+        invalid: color.error,
+      } as { [key in ValidatorState]: string },
+      none: {
         none: color.grey,
         valid: color.primary,
         invalid: color.error,

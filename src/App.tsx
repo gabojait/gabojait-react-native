@@ -16,6 +16,7 @@ import './assets/locales/index';
 import NetInfo from '@react-native-community/netinfo';
 import { onlineManager } from 'react-query';
 import CodePush, { CodePushOptions } from 'react-native-code-push';
+import { OverlayProvider } from '@toss/use-overlay';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -70,9 +71,11 @@ const App = () => {
         <GeneralErrorBoundary onReset={reset}>
           <QueryClientProvider client={queryClient}>
             <ModalProvider>
-              <SafeAreaView style={backgroundStyle}>
-                <RootNavigation />
-              </SafeAreaView>
+              <OverlayProvider>
+                <SafeAreaView style={backgroundStyle}>
+                  <RootNavigation />
+                </SafeAreaView>
+              </OverlayProvider>
             </ModalProvider>
           </QueryClientProvider>
         </GeneralErrorBoundary>
