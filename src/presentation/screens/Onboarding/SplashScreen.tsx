@@ -94,6 +94,7 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
       navigation.replace('MainBottomTabNavigation', {
         screen: 'Home',
       });
+      Splash.hide();
     } else {
       navigation.replace('OnboardingNavigation', {
         screen: 'Login',

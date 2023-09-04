@@ -14,6 +14,8 @@ import { Position } from '@/data/model/type/Position';
 import { TeamOrder } from '@/data/model/type/TeamOrder';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { Loading } from '@/presentation/screens/Loading';
+import { BoardSwitchActionType } from '@/redux/action_types/boardSwitchTypes';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
 const GroupList = ({ navigation, route }: BoardStackParamListProps<'GroupList'>) => {
   return (
@@ -46,13 +48,15 @@ const GroupListComponent = ({ navigation }: BoardStackParamListProps<'GroupList'
       return await getRecruiting({ ...(params as GetRecruitingProps), pageFrom: pageParam });
     },
   });
+  const dispatch = useAppDispatch();
+  const { switchTitle } = useAppSelector(state => state.boardSwitchReducer);
 
   async function getGuideModeModalKey() {
     try {
       const value = await AsyncStorage.getItem(GUIDE_MODE_MODAL_KEY);
       return value;
     } catch (error) {
-      console.log(`GUIDE_MODE_MODAL_KEY 저장실패`);
+      console.log('GUIDE_MODE_MODAL_KEY 저장실패');
     }
   }
 
@@ -61,7 +65,7 @@ const GroupListComponent = ({ navigation }: BoardStackParamListProps<'GroupList'
       await AsyncStorage.setItem(GUIDE_MODE_MODAL_KEY, JSON.stringify(GUIDE_MODE_MODAL_VALUE));
       console.log(`저장한 데이터:${JSON.stringify(GUIDE_MODE_MODAL_VALUE)}`);
     } catch (error) {
-      console.log(`GUIDE_MODE_MODAL_KEY 저장실패`);
+      console.log('GUIDE_MODE_MODAL_KEY 저장실패');
     }
     const value = getGuideModeModalKey();
     console.log(`GUIDE_MODE_MODAL_KEY 값 확인: ${value}`);
@@ -120,6 +124,14 @@ const GroupListComponent = ({ navigation }: BoardStackParamListProps<'GroupList'
   useEffect(() => {
     handleBottomSlideModal();
   }, []);
+
+  //TODO: MainBottomTabNavigation에서 해결해보기
+  useEffect(() => {
+    const refreshSwitch = navigation.addListener('focus', () => {
+      dispatch({ type: BoardSwitchActionType.FIND_GROUP_SWITCH });
+    });
+    return refreshSwitch;
+  }, [navigation]);
 
   if (!data) {
     return null;

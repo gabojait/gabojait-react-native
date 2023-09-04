@@ -38,7 +38,7 @@ export const RootNavigation = () => {
               <RootStack.Screen
                 name="MainBottomTabNavigation"
                 component={MainBottomTabNavigation}
-                options={{ gestureEnabled: false }}
+                options={{ gestureEnabled: false, headerMode: 'screen' }}
               />
             </RootStack.Group>
           </RootStack.Navigator>

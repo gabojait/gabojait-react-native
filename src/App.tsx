@@ -1,4 +1,4 @@
-import { SafeAreaView } from 'react-native';
+import { Dimensions, SafeAreaView, StatusBar } from 'react-native';
 import { ThemeProvider } from '@rneui/themed';
 import { RootNavigation } from './presentation/navigation/RootNavigation';
 import allReducers from '@/redux/reducers';
@@ -54,7 +54,7 @@ export function HeadlessCheck({ isHeadless }: { isHeadless: boolean }) {
 const App = () => {
   const backgroundStyle = {
     flex: 1,
-    backgroundColor: 'yellow',
+    backgroundColor: 'white',
   };
 
   // const modalRef = useRef<CustomModalRef>()

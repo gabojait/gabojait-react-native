@@ -1,14 +1,14 @@
-import {BoardSwitchActions} from '@/redux/action/boardSwitchActions'
-import React from 'react'
-import {BoardSwitchActionType} from '../action_types/boardSwitchTypes'
+import { BoardSwitchActions } from '@/redux/action/boardSwitchActions';
+import React from 'react';
+import { BoardSwitchActionType } from '../action_types/boardSwitchTypes';
 
 export interface BoardSwitchState {
-  switchTitle: BoardSwitchActionType.FiND_TEAMATE_SWITCH
+  switchTitle: BoardSwitchActionType.FiND_TEAMATE_SWITCH;
 }
 
 const initialStates = {
   switchTitle: BoardSwitchActionType.FiND_TEAMATE_SWITCH,
-} as BoardSwitchState
+} as BoardSwitchState;
 
 const boardSwitchReducer = (
   state: BoardSwitchState = initialStates,
@@ -19,16 +19,16 @@ const boardSwitchReducer = (
       return {
         ...state,
         switchTitle: BoardSwitchActionType.FiND_TEAMATE_SWITCH,
-      }
+      };
     }
     case BoardSwitchActionType.FiND_TEAMATE_SWITCH: {
       return {
         ...state,
         switchTitle: BoardSwitchActionType.FIND_GROUP_SWITCH,
-      }
+      };
     }
     default:
-      return state
+      return state;
   }
-}
-export default boardSwitchReducer
+};
+export default boardSwitchReducer;

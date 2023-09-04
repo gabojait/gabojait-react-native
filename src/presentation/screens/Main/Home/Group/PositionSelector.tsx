@@ -76,17 +76,6 @@ const PositionSelectorComponent = ({
         )}
       />
     </View>
-    // <ScrollView style={styles.scrollView}>
-    //   {positions.map((item, index) => (
-    //     <PositionSelectWrapper
-    //       data={item}
-    //       offers={data!.offers}
-    //       onButtonPressed={(position: Position) => {
-    //         offerMutation.mutate([position, teamId]);
-    //       }}
-    //     />
-    //   ))}
-    // </ScrollView>
   );
 };
 
