@@ -1,10 +1,10 @@
 import HeaderProps from '@/presentation/components/props/HeaderProps';
 import { Text, useTheme } from '@rneui/themed';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import React from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import CustomIcon from '@/presentation/components/icon/Gabojait';
+
 const CustomHeader: React.FC<HeaderProps> = ({
   title,
   canGoBack,
@@ -23,11 +23,10 @@ const CustomHeader: React.FC<HeaderProps> = ({
           navigation.goBack();
         }
       }}
-      style={{
-        marginRight: 10,
-      }}
+      style={{ position: 'absolute' }}
     />
   );
+
   const Title = (
     <Text
       style={{
@@ -39,15 +38,32 @@ const CustomHeader: React.FC<HeaderProps> = ({
       {title}
     </Text>
   );
+
   return (
     <View style={[headerStyle.parent, { borderColor: theme.colors.disabled }]}>
-      <View style={headerStyle.left}>
-        {canGoBack ? back : null}
-        {leftChildren}
-        {align == 'left' || !align ? Title : null}
+      {canGoBack && title ? (
+        <>
+          <View style={{ flex: 3, paddingBottom: 26 }}>{canGoBack ? back : null}</View>
+          <View style={{ flex: 6 }}>{Title}</View>
+        </>
+      ) : !canGoBack && title ? (
+        <>
+          <View style={{ paddingStart: 10 }}>{Title}</View>
+        </>
+      ) : canGoBack && !title ? (
+        <View style={{ flex: 3, paddingBottom: 26 }}>{canGoBack ? back : null}</View>
+      ) : (
+        <></>
+      )}
+      <View
+        style={{
+          flex: 3,
+          alignItems: 'flex-end',
+          paddingEnd: 20,
+        }}
+      >
+        {rightChildren}
       </View>
-      {align == 'center' ? Title : null}
-      {rightChildren}
     </View>
   );
 };
@@ -62,16 +78,16 @@ const headerGlobalStyle: StyleProp<ViewStyle> = {
 const headerStyle = StyleSheet.create({
   parent: {
     ...headerGlobalStyle,
-    paddingHorizontal: 20,
-    paddingTop: 5,
-    paddingBottom: 5,
-    borderBottomWidth: 0.8,
+    paddingStart: 10,
+    paddingVertical: 15,
+    borderBottomWidth: 1,
     backgroundColor: 'white',
     justifyContent: 'space-between',
   },
   left: {
     ...headerGlobalStyle,
     alignItems: 'center',
+    paddingVertical: 10,
   },
 });
 

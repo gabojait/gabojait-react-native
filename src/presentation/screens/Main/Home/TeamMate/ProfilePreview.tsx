@@ -58,7 +58,7 @@ const ProfilePreview = ({ navigation, route }: TeammateStackParamListProps<'Prof
 
   return (
     <Suspense fallback={Loading()}>
-      <Error404Boundary onReset={reset} message='프로필이 존재하지 않습니다'>
+      <Error404Boundary onReset={reset} message="프로필이 존재하지 않습니다">
         <ProfilePreviewComponent navigation={navigation} route={route} />
       </Error404Boundary>
     </Suspense>
@@ -209,7 +209,6 @@ const ProfilePreviewComponent = ({
               onPress={() => {
                 handleFavoriteTeam();
               }}
-              style={{ paddingRight: 25 }}
             >
               <CustomIcon name="heart" size={30} color={isFavorite(profile.isFavorite)} />
             </TouchableOpacity>

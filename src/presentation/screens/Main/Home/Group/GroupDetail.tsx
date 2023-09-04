@@ -73,12 +73,6 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
     text: '신고하기',
     isDisabled: true,
   });
-  const [dataList, setDataList] = useState({
-    data: [
-      { content: data?.projectDescription, title: '프로젝트 설명' },
-      { content: data?.expectation, title: '바라는 점' },
-    ],
-  });
   useEffect(() => {
     if (reportState.text.length > 0) {
       setReportButtonState({ text: '완료', isDisabled: false });
@@ -162,62 +156,20 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
   return (
     <View>
       <CustomHeader
-        title={''}
+        title={data.projectName}
         canGoBack={true}
         rightChildren={
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <TouchableOpacity onPress={handleFavoriteTeam} style={{ paddingRight: 25 }}>
-              <CustomIcon name="heart" size={30} color={isFavorite(data?.isFavorite!)} />
+            <TouchableOpacity onPress={handleFavoriteTeam} style={{ paddingEnd: 16 }}>
+              <CustomIcon name="heart" size={24} color={isFavorite(data?.isFavorite!)} />
             </TouchableOpacity>
             <TouchableOpacity onPress={handleReportModal}>
-              <Icon type="entypo" name="dots-three-vertical" size={20} />
+              <Icon type="material" name="pending" size={24} />
             </TouchableOpacity>
           </View>
         }
-      />
-      {/* <FlatList
-        style={{ backgroundColor: 'white' }}
-        showsVerticalScrollIndicator={false}
-        data={dataList.data}
-        ListHeaderComponent={
-          <CardWrapper style={[styles.card, { minHeight: 243 }]}>
-            <View
-              style={{
-                width: '100%',
-                paddingHorizontal: 10,
-                flex: 1,
-                justifyContent: 'space-between',
-              }}
-            >
-              <Text style={styles.teamname}>{data?.projectName}</Text>
-              <View style={styles.partIcon}>
-                {positions.map((item, index) => (
-                  <PositionWaveIcon
-                    currentCnt={item.currentCnt}
-                    recruitNumber={item.recruitCnt}
-                    textView={
-                      <Text style={globalStyles.itnitialText}>{mapToInitial(item.position)}</Text>
-                    }
-                    key={item.position}
-                  />
-                ))}
-              </View>
-              <FilledButton
-                title={'함께 하기'}
-                onPress={() => navigation.navigate('PositionSelector', { teamId: teamId })}
-              />
-            </View>
-          </CardWrapper>
-        }
-        renderItem={({ item }) => (
-          <View style={[styles.card, globalStyles.FlexStartCardWrapper, { minHeight: 243 }]}>
-            <View>
-              <Text style={styles.title}>{item.title}</Text>
-              <Text style={globalStyles.textLight13}>{item.content}</Text>
-            </View>
-          </View>
-        )}
-      /> */}
+        align="center"
+      ></CustomHeader>
       <ScrollView style={[globalStyles.scrollView]}>
         <CardWrapper style={[styles.card, { minHeight: 243 }]}>
           <View
