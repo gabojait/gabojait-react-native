@@ -69,3 +69,5 @@ buck-out/
 /android/app/google-services.json
 
 .env*
+
+android/app/releaseStaging/

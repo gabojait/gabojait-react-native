@@ -9,8 +9,8 @@ import CustomIcon from '@/presentation/components/icon/Gabojait';
 import PositionRecruiting from '@/presentation/model/PositionRecruitng';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import { makeStyles, Text, useTheme } from '@rneui/themed';
-import React, { Suspense, useEffect, useState } from 'react';
-import { FlatList, ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
+import { Alert, FlatList, ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
 import {
   useMutation,
   useQuery,
@@ -21,15 +21,14 @@ import {
 import useGlobalStyles from '@/presentation/styles';
 import { isFavorite, mapToInitial } from '@/presentation/utils/util';
 import FavoriteUpdateDto from '@/data/model/Favorite/FavoriteUpdateDto';
-import { Icon } from '@rneui/base';
-import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
+import { Icon, Input } from '@rneui/base';
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent';
 import useModal from '@/presentation/components/modal/useModal';
 import { favoriteKeys } from '@/reactQuery/key/FavoriteKeys';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 import { Loading } from '@/presentation/screens/Loading';
-import { InputModalContent } from '@/presentation/screens/Main/MyPage/Setting/Setting';
+import { InputModalContent } from '@/presentation/components/modalContent/InputModalContent';
 
 const GroupDetail = ({ navigation, route }: MainStackScreenProps<'GroupDetail'>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -69,7 +68,8 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
     },
   );
   const positions: Array<PositionRecruiting> = data?.teamMemberCnts || [];
-  const [reportState, setReportState] = useState({ text: '' });
+  const reportStateRef = useRef<Input>(null);
+
   const [reportButtonState, setReportButtonState] = useState({
     text: '신고하기',
     isDisabled: true,
@@ -81,14 +81,14 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
     ],
   });
   useEffect(() => {
-    if (reportState.text.length > 0) {
+    if ((reportStateRef.current?.props?.value?.length ?? 0) > 0) {
       setReportButtonState({ text: '완료', isDisabled: false });
     } else {
       setReportButtonState({ text: '신고하기', isDisabled: true });
     }
-  }, [reportState]);
+  }, [reportStateRef.current?.props.value]);
 
-  const reportCompeletedModal = () => {
+  const reportCompletedModal = () => {
     modal?.show({
       content: (
         <SymbolModalContent
@@ -106,6 +106,7 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
     modal?.show({
       content: (
         <InputModalContent
+          ref={reportStateRef}
           title="팀을 신고하시겠습니까?"
           inputProps={{
             style: { width: '100%' },
@@ -118,14 +119,16 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
               <Text style={[globalStyles.textLight13, { textAlign: 'center', paddingBottom: 10 }]}>
                 신고 사유를 적어주세요
               </Text>
-              <CardWrapper style={{ minHeight: 75, maxWidth: 400, padding: 20 }}>{children}</CardWrapper>
+              <CardWrapper style={{ minHeight: 75, maxWidth: 400, padding: 20 }}>
+                {children}
+              </CardWrapper>
             </View>
           )}
           yesButton={{
             title: reportButtonState.text,
             onPress: () => {
               modal.hide();
-              reportCompeletedModal();
+              reportCompletedModal();
             },
             disabled: reportButtonState.isDisabled,
           }}

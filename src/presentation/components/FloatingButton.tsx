@@ -11,6 +11,7 @@ interface FloatingButtonProps {
 }
 const FloatingButton = ({ title, onPress }: FloatingButtonProps) => {
   const { theme } = useTheme();
+  console.log(ScreenWidth);
   return (
     <TouchableOpacity
       style={{
@@ -23,11 +24,11 @@ const FloatingButton = ({ title, onPress }: FloatingButtonProps) => {
         position: 'absolute',
         borderRadius: PixelRatio.getPixelSizeForLayoutSize(38),
         width:
-          ScreenWidth > 640
+          ScreenWidth > 400
             ? PixelRatio.getPixelSizeForLayoutSize(38)
             : PixelRatio.getPixelSizeForLayoutSize(50),
         height:
-          ScreenWidth > 640
+          ScreenWidth > 400
             ? PixelRatio.getPixelSizeForLayoutSize(38)
             : PixelRatio.getPixelSizeForLayoutSize(50),
         marginHorizontal: PixelRatio.getPixelSizeForLayoutSize(2),
