@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import MainBottomTabNavigation from '@/presentation/navigation/MainBottomTabNavigation';
 import OnboardingNavigation from '@/presentation/navigation/OnboardingNavigation';
 import { RootStackParamList } from './types';

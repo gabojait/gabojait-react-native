@@ -49,12 +49,12 @@ const PositionSelectorComponent = ({
     (args: [Position, string]) => applyToTeam(...args),
     {
       resultToMessage: _ => '함께하기 요청이 전달되었습니다\n 결과를 기다려주세요',
+      errorToMessage: e => (e as Error)?.message,
       onSuccessClick() {
         queryClient.invalidateQueries([teamKeys.getTeam, teamId]);
       },
     },
   );
-
   if (!data) {
     return null;
   }

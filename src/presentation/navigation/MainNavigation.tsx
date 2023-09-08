@@ -32,7 +32,7 @@ const Main = createStackNavigator<MainStackParamList>();
 
 const MainNavigation = () => {
   return (
-    <Main.Navigator initialRouteName="GroupDetail">
+    <Main.Navigator initialRouteName="GroupDetail" id="Main">
       <Main.Group>
         <Main.Screen
           name="Profile"

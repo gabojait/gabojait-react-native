@@ -2,11 +2,10 @@ import { MainStackScreenProps, PositionTabParamList } from '@/presentation/navig
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useTheme } from '@rneui/themed';
 import { Dimensions } from 'react-native';
-import FrontendList from './FrontendList';
-import BackendList from './BackendList';
-import DesignerList from './DesignerList';
-import PMList from './PMList';
 import React from 'react';
+import OfferList from '@/presentation/screens/Main/MyPage/OfferSentUser/OfferList';
+import { Position } from '@/data/model/type/Position';
+
 const OfferSentUser = ({ navigation, route }: MainStackScreenProps<'OfferSentUser'>) => {
   const Tab = createMaterialTopTabNavigator<PositionTabParamList>();
   const { theme } = useTheme();
@@ -37,10 +36,26 @@ const OfferSentUser = ({ navigation, route }: MainStackScreenProps<'OfferSentUse
           },
         }}
       >
-        <Tab.Screen name="Frontend" component={FrontendList} />
-        <Tab.Screen name="Backend" component={BackendList} />
-        <Tab.Screen name="Designer" component={DesignerList} />
-        <Tab.Screen name="PM" component={PMList} />
+        <Tab.Screen
+          name="Frontend"
+          component={OfferList}
+          initialParams={{ position: Position.Frontend }}
+        />
+        <Tab.Screen
+          name="Backend"
+          component={OfferList}
+          initialParams={{ position: Position.Backend }}
+        />
+        <Tab.Screen
+          name="Designer"
+          component={OfferList}
+          initialParams={{ position: Position.Designer }}
+        />
+        <Tab.Screen
+          name="PM"
+          component={OfferList}
+          initialParams={{ position: Position.Manager }}
+        />
       </Tab.Navigator>
     </>
   );

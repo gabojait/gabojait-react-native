@@ -59,8 +59,12 @@ const OfferToTeamHistoryComponent = ({
   return (
     <View style={{ backgroundColor: 'white', flex: 1 }}>
       <FlatList
+        onRefresh={() => {
+          refetch();
+        }}
+        refreshing={isRefreshing}
         showsHorizontalScrollIndicator={false}
-        keyExtractor={item => item.toString()}
+        keyExtractor={item => item.offerId.toString()}
         data={data?.pages?.map(page => page.data).flat()}
         renderItem={({ item }) => (
           <TeamBanner

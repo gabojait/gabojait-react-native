@@ -51,7 +51,7 @@ const OfferFromTeamPageComponent = ({ navigation }: MainStackScreenProps<'OfferF
     <View style={{ backgroundColor: 'white', flex: 1 }}>
       <FlatList
         showsHorizontalScrollIndicator={false}
-        keyExtractor={item => item.toString()}
+        keyExtractor={item => item.offerId.toString()}
         data={data?.pages?.map(page => page.data).flat()}
         renderItem={({ item }) => (
           <TeamBanner

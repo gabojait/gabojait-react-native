@@ -1,37 +1,43 @@
 import { GetOfferFromOthersProps, getOfferSentToUser } from '@/data/api/offer';
 import { Position } from '@/data/model/type/Position';
-import { PositionTabParamListProps } from '@/presentation/navigation/types';
-import { offerKeys } from '@/reactQuery/key/OfferKeys';
-import { useModelList } from '@/reactQuery/util/useModelList';
-import { makeStyles, useTheme } from '@rneui/themed';
+import { PositionTabParamList, PositionTabParamListProps } from '@/presentation/navigation/types';
+import { positionToSentOfferKey } from '@/reactQuery/key/OfferKeys';
+import { PageRequest, useModelList } from '@/reactQuery/util/useModelList';
+import { makeStyles } from '@rneui/themed';
 import { View, FlatList, TouchableOpacity } from 'react-native';
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { UserCard } from '@/presentation/components/UserCard';
 import OffersFromOtherDto from '@/data/model/Offer/OffersFromUserDto';
 import { Loading } from '@/presentation/screens/Loading';
 
-const FrontendList = ({ navigation, route }: PositionTabParamListProps<'Frontend'>) => {
+const OfferList = ({
+  navigation,
+  route,
+}: PositionTabParamListProps<keyof PositionTabParamList>) => {
   return (
     <Suspense fallback={Loading()}>
-      <FrontendListComponent navigation={navigation} route={route} />
+      <OfferListComponent navigation={navigation} route={route} />
     </Suspense>
   );
 };
 
-const FrontendListComponent = ({ navigation }: PositionTabParamListProps<'Frontend'>) => {
-  const { theme } = useTheme();
+const OfferListComponent = ({
+  navigation,
+  route,
+}: PositionTabParamListProps<keyof PositionTabParamList>) => {
   const initialParam: GetOfferFromOthersProps = {
     pageFrom: 0,
     pageSize: 20,
-    position: Position.Frontend,
+    position: route.params.position,
   };
-  const { data, fetchNextPage, refetch, isRefreshing } = useModelList<
+  const [params, setParams] = useState({ pageFrom: 0, pageSize: 20 } as PageRequest);
+  const { data, isLoading, error, fetchNextPage, refetch, isRefreshing } = useModelList<
     GetOfferFromOthersProps,
     OffersFromOtherDto
   >({
     initialParam,
     idName: 'offerId',
-    key: offerKeys.getOffersSentToFrontend,
+    key: positionToSentOfferKey[route.params.position],
     fetcher: async ({ pageParam, queryKey: [_, param] }) => {
       return await getOfferSentToUser({
         ...(param as GetOfferFromOthersProps),
@@ -39,6 +45,10 @@ const FrontendListComponent = ({ navigation }: PositionTabParamListProps<'Fronte
       });
     },
   });
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   if (!data) {
     return null;
@@ -64,7 +74,7 @@ const FrontendListComponent = ({ navigation }: PositionTabParamListProps<'Fronte
               navigation.getParent()?.navigate('ProfilePreview', { userId: item.offerId });
             }}
           >
-            <UserCard item={item.user} position={Position.Frontend} />
+            <UserCard item={item.user} position={Position.Manager} />
           </TouchableOpacity>
         )}
         refreshing={isRefreshing}
@@ -96,4 +106,4 @@ const useStyles = makeStyles(theme => ({
     paddingLeft: 10,
   },
 }));
-export default FrontendList;
+export default OfferList;
