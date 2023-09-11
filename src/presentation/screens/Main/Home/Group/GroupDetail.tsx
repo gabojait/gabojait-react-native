@@ -29,6 +29,7 @@ import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 import { Loading } from '@/presentation/screens/Loading';
 import { BottomInputModalContent } from '@/presentation/components/modalContent/BottomInputModalContent';
+import { ReportCompleteModal } from '@/presentation/components/ReportCompleteModal';
 
 const GroupDetail = ({ navigation, route }: MainStackScreenProps<'GroupDetail'>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -83,13 +84,7 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
 
   const reportCompletedModal = () => {
     modal?.show({
-      content: (
-        <BottomModalContent
-          header={<Text style={globalStyles.modalEmoji}>✅</Text>}
-          children={<Text style={globalStyles.modalTitle}>신고완료</Text>}
-          yesButton={{ title: '완료', onPress: () => modal.hide() }}
-        />
-      ),
+      content: <ReportCompleteModal onPressYesButton={() => modal.hide()} />,
       modalProps: { animationType: 'slide', justifying: 'bottom' },
     });
   };

@@ -42,7 +42,7 @@ const BookMark = ({ navigation, route }: MainStackScreenProps<'BookMark'>) => {
  */
 const FavoriteTeams = ({ navigation, route }: MainStackScreenProps<'BookMark'>) => {
   const QueryKey = {
-    all: favoriteKeys.favoriteByTeam,
+    all: favoriteKeys.favoriteByTeamList,
     filtered: (filter: PageRequest) => [
       ...QueryKey.all,
       'filtered',
@@ -92,7 +92,7 @@ const FavoriteTeams = ({ navigation, route }: MainStackScreenProps<'BookMark'>) 
 const FavoriteUsers = ({ navigation, route }: MainStackScreenProps<'BookMark'>) => {
   const { theme } = useTheme();
   const QueryKey = {
-    all: favoriteKeys.favoriteByUser,
+    all: favoriteKeys.favoriteByUserList,
     filtered: (filter: PageRequest) => [
       ...QueryKey.all,
       'filtered',

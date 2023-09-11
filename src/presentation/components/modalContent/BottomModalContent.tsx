@@ -7,11 +7,7 @@ import useModal from '../modal/useModal';
 import { HEIGHT } from '@/presentation/utils/util';
 
 export interface BottomSlideModalContentProps {
-<<<<<<< HEAD
   header?: string | ReactNode;
-=======
-  title: string;
->>>>>>> d5f5e64cce46ad1d9dd2ec714a6fae0d7e229332
   children?: ReactNode;
   neverSeeAgainShow?: boolean;
   yesButton?: ButtonProps;

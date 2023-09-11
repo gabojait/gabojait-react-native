@@ -53,6 +53,12 @@ import { cancelOfferToUser, sendOfferToUser } from '@/data/api/offer';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 import { Loading } from '@/presentation/screens/Loading';
 import { BottomInputModalContent } from '@/presentation/components/modalContent/BottomInputModalContent';
+import { ReportCompleteModal } from '@/presentation/components/ReportCompleteModal';
+import BookMarkHeader from '@/presentation/screens/Headers/BookmarkHeader';
+import {
+  StackHeaderInterpolationProps,
+  StackHeaderInterpolatedStyle,
+} from '@react-navigation/stack';
 
 const ProfilePreview = ({ navigation, route }: TeammateStackParamListProps<'ProfilePreview'>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -100,7 +106,7 @@ const ProfilePreviewComponent = ({
     {
       useErrorBoundary: true,
       onSuccess: () => {
-        queryClient.invalidateQueries([profileKeys.profileUserId]);
+        queryClient.invalidateQueries([profileKeys.profileUserId, favoriteKeys.favoriteByUserList]);
       },
     },
   );
@@ -109,15 +115,10 @@ const ProfilePreviewComponent = ({
     (args: [string, Position]) => sendOfferToUser(...args),
     'CENTER',
     {
-<<<<<<< HEAD
       resultModalContent: {
         title: '초대 완료!',
         content: '팀원 초대장이 보내졌습니다! 답장을 기다려주세요',
       },
-=======
-      resultToMessage: _ => '팀원 초대장이 보내졌습니다! 답장을 기다려주세요',
-      errorToMessage: e => (e as Error)?.message,
->>>>>>> d5f5e64cce46ad1d9dd2ec714a6fae0d7e229332
       onSuccessClick() {
         setButtonState({ title: '취소하기', color: theme.colors.disabled });
       },
@@ -144,13 +145,7 @@ const ProfilePreviewComponent = ({
 
   function reportCompeletedModal() {
     modal?.show({
-      content: (
-        <BottomModalContent
-          header={<Text style={globalStyles.modalEmoji}>✅</Text>}
-          children={<Text style={globalStyles.modalTitle}>신고완료</Text>}
-          yesButton={{ title: '완료', onPress: () => modal.hide() }}
-        />
-      ),
+      content: <ReportCompleteModal onPressYesButton={() => modal.hide()} />,
       modalProps: { animationType: 'slide', justifying: 'bottom' },
     });
   }
@@ -178,7 +173,6 @@ const ProfilePreviewComponent = ({
           }}
           onInputValueChange={(text: string) => {
             setReportState({ text: text });
-            console.log(`text:${text}`);
           }}
         />
       ),
@@ -213,7 +207,12 @@ const ProfilePreviewComponent = ({
 
   return (
     <>
-      <CustomHeader
+      <BookMarkHeader
+        onPressBookMark={handleFavoriteTeam}
+        onPressReport={handleReportModal}
+        toChangeColor={isFavorite(profile?.isFavorite!)}
+      />
+      {/* <CustomHeader
         title={''}
         canGoBack={true}
         rightChildren={
@@ -227,7 +226,7 @@ const ProfilePreviewComponent = ({
           </View>
         }
         align="center"
-      />
+      /> */}
       <ScrollView style={{ flex: 1 }}>
         <View style={{ flex: 0.2, backgroundColor: '#f5f5f5', marginBottom: '30%' }} />
         <View style={{ flex: 0.8 }}>

@@ -32,8 +32,6 @@ const Board = () => {
           headerShown: false,
         }}
       />
-<<<<<<< HEAD
-=======
       <BoardStack.Screen
         options={{
           header: HomeHeader,
@@ -42,7 +40,6 @@ const Board = () => {
         name="TeamMate"
         component={TeammateList}
       />
->>>>>>> d5f5e64cce46ad1d9dd2ec714a6fae0d7e229332
     </BoardStack.Navigator>
   );
 };
