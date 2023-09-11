@@ -1,12 +1,13 @@
 import { ButtonProps, KeyboardAvoidingView, TouchableOpacity, View } from 'react-native';
 import { FilledButton } from '../Button';
 import React, { ReactNode } from 'react';
-import {makeStyles, Text, useTheme} from '@rneui/themed';
+import { makeStyles, Text, useTheme } from '@rneui/themed';
 import useGlobalStyles from '@/presentation/styles';
 import useModal from '../modal/useModal';
+import { HEIGHT } from '@/presentation/utils/util';
 
-interface BottomSlideModalContentProps {
-  title: string;
+export interface BottomSlideModalContentProps {
+  header?: string | ReactNode;
   children?: ReactNode;
   neverSeeAgainShow?: boolean;
   yesButton?: ButtonProps;
@@ -41,26 +42,34 @@ const BottomModalContent: React.FC<BottomSlideModalContentProps> = props => {
           justifyContent: 'flex-end',
         }}
       >
-        <View style={[style.modal, { paddingHorizontal: 20 }]}>
-          <Text style={style.title}>{props.title}</Text>
+        <View style={[style.modal, { paddingHorizontal: 20, paddingBottom: 70 }]}>
+          {props.header}
           <View style={[style.children, { width: '100%' }]}>{props.children}</View>
-          <View style={{ width: '100%' }}>
-            <FilledButton
-              style={style.button}
-              buttonStyle={{ backgroundColor: theme.colors.primary, width: '100%' }}
-              titleStyle={style.title}
-              title={props.yesButton?.title}
-              onPress={props.yesButton?.onPress}
-              size="xs"
-            />
-            <FilledButton
-              style={[style.button, { paddingBottom: 10 }]}
-              buttonStyle={{ backgroundColor: theme.colors.disabled, width: '100%' }}
-              titleStyle={style.title}
-              title={props.noButton?.title}
-              onPress={props.noButton?.onPress}
-              size="xs"
-            />
+          <View style={{ width: '100%', paddingTop: 20 }}>
+            {props.yesButton ? (
+              <FilledButton
+                style={style.button}
+                buttonStyle={{ backgroundColor: theme.colors.primary, width: '100%' }}
+                titleStyle={style.title}
+                title={props.yesButton?.title}
+                onPress={props.yesButton?.onPress}
+                size="xs"
+              />
+            ) : (
+              <></>
+            )}
+            {props.noButton ? (
+              <FilledButton
+                style={[style.button, { paddingBottom: 10 }]}
+                buttonStyle={{ backgroundColor: theme.colors.disabled, width: '100%' }}
+                titleStyle={style.title}
+                title={props.noButton?.title}
+                onPress={props.noButton?.onPress}
+                size="xs"
+              />
+            ) : (
+              <></>
+            )}
             {props.neverSeeAgainShow ? (
               <TouchableOpacity
                 style={{ paddingVertical: 7 }}
@@ -96,14 +105,13 @@ const useStyles = makeStyles(theme => {
       shadowOpacity: 0.25,
       shadowRadius: 4,
       elevation: 5,
-      paddingTop: 40,
+      paddingTop: 46,
     },
     button: {
       paddingVertical: 7,
     },
     children: {
-      paddingTop: 30,
-      paddingBottom: 20,
+      paddingTop: 10,
       alignItems: 'center',
     },
     title: {

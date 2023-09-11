@@ -63,9 +63,10 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
   }: UseQueryResult<ProfileViewResponse> = useQuery([profileKeys.myProfile], () => getMyProfile(), {
     useErrorBoundary: true,
   });
-  const { mutation: reviewMutation } = useMutationDialog(
+  const { mutation: submitReviewMutation } = useMutationDialog(
     offerKeys.offerToTeam,
     (args: [Reviews, string]) => createReview(...args),
+    'CENTER',
     {
       onSuccessClick() {
         queryClient.invalidateQueries([reviewKeys.reviewAvailableTeams]);
@@ -291,7 +292,10 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
                             `item.answer:${item.post}, item.rate:${item.rate}, item.revieweeUserId:${item.userId}`,
                           );
                         });
-                        reviewMutation.mutate([{ reviews: reviewResultState } as Reviews, teamId]);
+                        submitReviewMutation.mutate([
+                          { reviews: reviewResultState } as Reviews,
+                          teamId,
+                        ]);
                       }}
                     />
                   ) : (

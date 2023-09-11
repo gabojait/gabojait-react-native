@@ -72,7 +72,7 @@ const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
           modal?.show({
             content: (
               <BottomModalContent
-                title={t('order_enterCurrentPassword')}
+                header={t('order_enterCurrentPassword')}
                 yesButton={{
                   title: t('action_confirm'),
                   onPress: async () => {

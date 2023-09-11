@@ -1,5 +1,5 @@
 import { TeammateStackParamListProps } from '@/presentation/navigation/types';
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { Text, useTheme } from '@rneui/themed';
 import {
   ImageBackground,
@@ -52,6 +52,7 @@ import { offerKeys } from '@/reactQuery/key/OfferKeys';
 import { cancelOfferToUser, sendOfferToUser } from '@/data/api/offer';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 import { Loading } from '@/presentation/screens/Loading';
+import { BottomInputModalContent } from '@/presentation/components/modalContent/BottomInputModalContent';
 
 const ProfilePreview = ({ navigation, route }: TeammateStackParamListProps<'ProfilePreview'>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -106,8 +107,12 @@ const ProfilePreviewComponent = ({
   const { mutation: sendOfferMutation } = useMutationDialog(
     offerKeys.offerToUser,
     (args: [string, Position]) => sendOfferToUser(...args),
+    'CENTER',
     {
-      resultToMessage: _ => '팀원 초대장이 보내졌습니다! 답장을 기다려주세요',
+      resultModalContent: {
+        title: '초대 완료!',
+        content: '팀원 초대장이 보내졌습니다! 답장을 기다려주세요',
+      },
       onSuccessClick() {
         setButtonState({ title: '취소하기', color: theme.colors.disabled });
       },
@@ -116,81 +121,84 @@ const ProfilePreviewComponent = ({
   const { mutation: cancelOfferMutation } = useMutationDialog(
     offerKeys.cancelOfferToUser,
     (args: number) => cancelOfferToUser(args),
+    'CENTER',
     {
-      resultToMessage: _ => '팀원 초대를 취소하셨습니다.',
+      resultModalContent: {
+        title: '취소 완료!!',
+        content: '팀원 초대를 취소하셨습니다.',
+      },
       onSuccessClick() {
         setButtonState({ title: '초대하기', color: theme.colors.primary });
       },
     },
   );
-  const reportCompeletedModal = () => {
-    modal?.show({
-      content: (
-        <SymbolModalContent
-          title="신고완료!"
-          symbol={<Text style={{ fontSize: theme.emojiSize.md, textAlign: 'center' }}>✅</Text>}
-          text={'신고가 완료되었습니다.'}
-          yesButton={{ title: '확인', onPress: () => modal.hide() }}
-        />
-      ),
-      modalProps: { animationType: 'none', justifying: 'center' },
-    });
-  };
-  const handleReportModal = () => {
+
+  useEffect(() => {
+    checkIsOfferedAlready();
+  }, [profile]);
+
+  function reportCompeletedModal() {
     modal?.show({
       content: (
         <BottomModalContent
-          title="팀을 신고하시겠습니까?"
-          children={
-            <View style={{ justifyContent: 'center', alignContent: 'center', width: '100%' }}>
-              <Text style={[globalStyles.textLight13, { textAlign: 'center', paddingBottom: 10 }]}>
-                신고 사유를 적어주세요
-              </Text>
-              <CardWrapper style={{ minHeight: 75, maxWidth: 400 }}>
-                <TextInput
-                  value={reportState.text}
-                  style={{ width: '100%' }}
-                  onChangeText={(text: string) => {
-                    setReportState(prevState => ({ ...prevState, text: text }));
-                  }}
-                  multiline={true}
-                  maxLength={500}
-                />
-              </CardWrapper>
-            </View>
-          }
-          yesButton={{
-            title: reportButtonState.text,
-            onPress: () => {
-              modal.hide();
-              reportCompeletedModal();
-            },
-            disabled: reportButtonState.isDisabled,
-          }}
-          noButton={{
-            title: '나가기',
-            onPress: () => {
-              modal.hide();
-            },
-          }}
-          neverSeeAgainShow={false}
-          onBackgroundPress={modal?.hide}
+          header={<Text style={globalStyles.modalEmoji}>✅</Text>}
+          children={<Text style={globalStyles.modalTitle}>신고완료</Text>}
+          yesButton={{ title: '완료', onPress: () => modal.hide() }}
         />
       ),
       modalProps: { animationType: 'slide', justifying: 'bottom' },
     });
-  };
+  }
+
+  function handleReportModal() {
+    modal?.show({
+      content: (
+        <BottomInputModalContent
+          header={'팀을 신고하시겠습니까?'}
+          content={'신고사유를 적어주세요'}
+          yesButton={{
+            title: '신고하기',
+            onPress: () => {
+              console.log('신고하기');
+              modal.hide();
+              reportCompeletedModal();
+            },
+          }}
+          noButton={{
+            title: '취소',
+            onPress: () => {
+              console.log('신고하기');
+              modal.hide();
+            },
+          }}
+          onInputValueChange={(text: string) => {
+            setReportState({ text: text });
+            console.log(`text:${text}`);
+          }}
+        />
+      ),
+      modalProps: { animationType: 'slide', justifying: 'bottom' },
+    });
+  }
 
   function handleFavoriteTeam() {
     mutateFavorite([userId, { isAddFavorite: !profile?.isFavorite }]);
   }
 
-  function handleOfferMutation(profile: ProfileViewResponse) {
+  function handleOfferMutation() {
     if (buttonState.title == '초대하기') {
-      sendOfferMutation.mutate([userId, profile.position]);
-    } else if (buttonState.title == '취소하기' && profile.offers) {
-      const offer = profile.offers.find(item => item.position == profile.position);
+      sendOfferMutation.mutate([userId, profile!.position]);
+      queryClient.fetchQuery(offerKeys.offerToUser);
+    } else if (buttonState.title == '취소하기' && profile!.offers) {
+      const offer = profile!.offers.find(item => item.position == profile!.position);
       cancelOfferMutation.mutate(offer?.offerId!);
+    }
+  }
+
+  function checkIsOfferedAlready() {
+    const offer = profile!.offers.find(item => item.position == profile!.position);
+    if (offer) {
+      setButtonState({ title: '취소하기', color: theme.colors.disabled });
     }
   }
 
@@ -205,22 +213,15 @@ const ProfilePreviewComponent = ({
         canGoBack={true}
         rightChildren={
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <TouchableOpacity
-              onPress={() => {
-                handleFavoriteTeam();
-              }}
-            >
-              <CustomIcon name="heart" size={30} color={isFavorite(profile.isFavorite)} />
+            <TouchableOpacity onPress={handleFavoriteTeam} style={{ paddingEnd: 16 }}>
+              <CustomIcon name="heart" size={24} color={isFavorite(profile?.isFavorite!)} />
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                handleReportModal();
-              }}
-            >
-              <Icon type="entypo" name="dots-three-vertical" size={20} />
+            <TouchableOpacity onPress={handleReportModal}>
+              <Icon type="material" name="pending" size={24} />
             </TouchableOpacity>
           </View>
         }
+        align="center"
       />
       <ScrollView style={{ flex: 1 }}>
         <View style={{ flex: 0.2, backgroundColor: '#f5f5f5', marginBottom: '30%' }} />
@@ -241,7 +242,7 @@ const ProfilePreviewComponent = ({
               rightChild={
                 <FilledButton
                   onPress={() => {
-                    handleOfferMutation(profile);
+                    handleOfferMutation();
                   }}
                   title={buttonState.title}
                   style={{ minWidth: 123, minHeight: 40, borderRadius: 10 }}

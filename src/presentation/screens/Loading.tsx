@@ -47,9 +47,9 @@ export default LoadingSpinner;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
+    backfaceVisibility: 'hidden',
   },
 
   spinnerImage: {
@@ -64,7 +64,7 @@ export const Loading = () => {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'white',
+        backfaceVisibility: 'hidden',
       }}
     >
       <LoadingSpinner />

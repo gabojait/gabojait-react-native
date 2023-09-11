@@ -4,7 +4,7 @@ import { StyleProp, TouchableOpacity, View, ViewStyle } from 'react-native';
 import CustomIcon from '@/presentation/components/icon/Gabojait';
 import CardWrapper from './CardWrapper';
 
-export const ArrowCard = ({
+export const BaseCard = ({
   title,
   arrowColor = 'black',
   children,
@@ -27,6 +27,9 @@ export const ArrowCard = ({
             justifyContent: 'center',
             alignContent: 'center',
             alignItems: 'center',
+            paddingTop: 21,
+            paddingHorizontal: 24,
+            paddingBottom: 32,
           }}
         >
           <View style={{ flex: 9 }}>
@@ -43,14 +46,6 @@ export const ArrowCard = ({
               <View>{children}</View>
             </View>
           </View>
-          <CustomIcon
-            name="arrow-next"
-            size={30}
-            style={{
-              paddingEnd: 5,
-            }}
-            color={arrowColor}
-          />
         </View>
       </CardWrapper>
     </TouchableOpacity>
@@ -59,27 +54,15 @@ export const ArrowCard = ({
 const useStyles = makeStyles(theme => ({
   card: {
     borderWidth: 1,
-    borderColor: theme.colors.disabled,
+    borderColor: theme.colors.grey2,
     backgroundColor: 'white',
-    shadowColor: 'black',
-    shadowOpacity: 0.2,
-    shadowOffset: {
-      width: 2,
-      height: 2,
-    },
     borderRadius: 20,
-    paddingVertical: 25,
-    paddingStart: 25,
     display: 'flex',
   },
   title: {
     justifyContent: 'flex-start',
     fontWeight: theme.fontWeight.bold,
     fontSize: theme.fontSize.md,
-  },
-  iconWrapper: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 10,
+    paddingBottom: 16,
   },
 }));

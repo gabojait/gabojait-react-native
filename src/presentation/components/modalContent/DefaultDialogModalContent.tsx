@@ -3,6 +3,7 @@ import { Alert, Modal, StyleSheet, View } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import { FilledButton } from '../Button';
 import React from 'react';
+import { WIDTH } from '@/presentation/utils/util';
 
 interface DefaultDialogModalContentProps {
   title?: string;
@@ -35,6 +36,7 @@ const style = StyleSheet.create({
     padding: 20,
     backgroundColor: 'white',
     borderRadius: 20,
+    width: WIDTH / 1.7,
   },
 });
 

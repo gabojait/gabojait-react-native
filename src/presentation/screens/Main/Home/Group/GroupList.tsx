@@ -83,7 +83,7 @@ const GroupListComponent = ({ navigation }: BoardStackParamListProps<'GroupList'
         modal?.show({
           content: (
             <BottomModalContent
-              title="팀 찾기 모드로 변경하시겠어요?"
+              header="팀 찾기 모드로 변경하시겠어요?"
               children={
                 <View>
                   <Text style={styles.text}>팀 찾기 모드로 변경하면</Text>
