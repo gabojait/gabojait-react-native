@@ -1,16 +1,14 @@
 import React from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import FrontendList from './FrontendList';
-import BackendList from './BackendList';
-import DesignerList from './DesignerList';
-import PMList from './PMList';
 import { useTheme } from '@rneui/themed';
 import { Dimensions } from 'react-native';
-import { TeammateStackParamListProps } from '@/presentation/navigation/types';
+import MateList from '@/presentation/screens/Main/Home/TeamMate/MateList';
+import { Position } from '@/data/model/type/Position';
+import { PositionTabParamList } from '@/presentation/navigation/types';
 
-const Tab = createMaterialTopTabNavigator();
+const Tab = createMaterialTopTabNavigator<PositionTabParamList>();
 
-const TeammateList = ({ navigation, route }: TeammateStackParamListProps<'TeammateList'>) => {
+const TeammateList = () => {
   const { theme } = useTheme();
   return (
     <Tab.Navigator
@@ -37,10 +35,22 @@ const TeammateList = ({ navigation, route }: TeammateStackParamListProps<'Teamma
         },
       }}
     >
-      <Tab.Screen name="Frontend" component={FrontendList} />
-      <Tab.Screen name="Backend" component={BackendList} />
-      <Tab.Screen name="Designer" component={DesignerList} />
-      <Tab.Screen name="PM" component={PMList} />
+      <Tab.Screen
+        name="Frontend"
+        component={MateList}
+        initialParams={{ position: Position.Frontend }}
+      />
+      <Tab.Screen
+        name="Backend"
+        component={MateList}
+        initialParams={{ position: Position.Backend }}
+      />
+      <Tab.Screen
+        name="Designer"
+        component={MateList}
+        initialParams={{ position: Position.Designer }}
+      />
+      <Tab.Screen name="PM" component={MateList} initialParams={{ position: Position.Manager }} />
     </Tab.Navigator>
   );
 };

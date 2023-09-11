@@ -3,15 +3,12 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { Text, useTheme } from '@rneui/themed';
 import React from 'react';
 import { Dimensions } from 'react-native';
-import BackendList from './BackendList';
-import DesignerList from './DesignerList';
-import FrontendList from './FrontendList';
-import PMList from './PMList';
-import { theme } from '@/presentation/theme';
-import { getMyTeam, getTeam } from '@/data/api/team';
+import { getMyTeam } from '@/data/api/team';
 import TeamDetailDto from '@/data/model/Team/TeamDetailDto';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
-import { UseQueryResult, useQuery } from 'react-query';
+import { useQuery, UseQueryResult } from 'react-query';
+import ApplyList from '@/presentation/screens/Main/MyPage/ApplyStatus/ApplyList';
+import { Position } from '@/data/model/type/Position';
 
 const ApplyStatus = ({ navigation, route }: MainStackScreenProps<'ApplyStatus'>) => {
   const Tab = createMaterialTopTabNavigator<PositionTabParamList>();
@@ -61,10 +58,26 @@ const ApplyStatus = ({ navigation, route }: MainStackScreenProps<'ApplyStatus'>)
           },
         }}
       >
-        <Tab.Screen name="Frontend" component={FrontendList} />
-        <Tab.Screen name="Backend" component={BackendList} />
-        <Tab.Screen name="Designer" component={DesignerList} />
-        <Tab.Screen name="PM" component={PMList} />
+        <Tab.Screen
+          name="Frontend"
+          component={ApplyList}
+          initialParams={{ position: Position.Frontend }}
+        />
+        <Tab.Screen
+          name="Backend"
+          component={ApplyList}
+          initialParams={{ position: Position.Backend }}
+        />
+        <Tab.Screen
+          name="Designer"
+          component={ApplyList}
+          initialParams={{ position: Position.Designer }}
+        />
+        <Tab.Screen
+          name="PM"
+          component={ApplyList}
+          initialParams={{ position: Position.Manager }}
+        />
       </Tab.Navigator>
     </>
   );

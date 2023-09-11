@@ -1,7 +1,5 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import styles from '../styles';
-import { theme } from '../theme';
 import CardWrapper from './CardWrapper';
 import { RatingBar } from './RatingBar';
 import Gabojait from './icon/Gabojait';

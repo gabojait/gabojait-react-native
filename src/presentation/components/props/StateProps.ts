@@ -2,7 +2,7 @@ import { StyleProp, TextInputProps, ViewStyle } from 'react-native';
 
 export type ValidatorState = 'valid' | 'invalid' | 'none';
 
-export type InputShape = 'round' | 'underline';
+export type InputShape = 'round' | 'underline' | 'none';
 
 export interface CustomInputProps extends TextInputProps {
   state?: ValidatorState;

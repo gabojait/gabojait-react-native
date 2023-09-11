@@ -48,8 +48,7 @@ export type MainStackScreenProps<T extends keyof MainStackParamList> = StackScre
 
 export type MainStackParamList = {
   Profile: NavigatorScreenParams<ProfileStackParamList>;
-  ApplyStatus: NavigatorScreenParams<PositionTabParamList> &
-    NavigatorScreenParams<TeammateStackParamList>;
+  ApplyStatus: NavigatorScreenParams<PositionTabParamList>;
   TeamHistory: undefined;
   TeamReview: { teamId: string };
   BookMark: { isLeader: boolean };
@@ -90,7 +89,7 @@ export type MainBottomTabNavigationProps<T extends keyof MainBottomTabParamList 
 
 export type BoardStackParamList = {
   GroupList: undefined;
-  TeamMate: NavigatorScreenParams<TeammateStackParamList>;
+  TeamMate: NavigatorScreenParams<PositionTabParamList>;
   MainNavigation: NavigatorScreenParams<MainStackParamList>;
 };
 
@@ -112,24 +111,22 @@ export type ProfileStackParamList = {
   EditSkillAndPosition: undefined;
 };
 
-export type TeammateStackParamListProps<T extends keyof TeammateStackParamList> = StackScreenProps<
-  TeammateStackParamList,
-  T
->;
-
-export type TeammateStackParamList = {
-  TeammateList: NavigatorScreenParams<PositionTabParamList>;
-  ProfilePreview: { userId: string };
-};
-
 export type PositionTabParamListProps<T extends keyof PositionTabParamList> = StackScreenProps<
   PositionTabParamList,
   T
 >;
 
 export type PositionTabParamList = {
-  Frontend: undefined;
-  Backend: undefined;
-  Designer: undefined;
-  PM: undefined;
+  Frontend: {
+    position: Position;
+  };
+  Backend: {
+    position: Position;
+  };
+  Designer: {
+    position: Position;
+  };
+  PM: {
+    position: Position;
+  };
 };

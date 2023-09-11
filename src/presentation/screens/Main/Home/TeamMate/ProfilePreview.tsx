@@ -109,10 +109,15 @@ const ProfilePreviewComponent = ({
     (args: [string, Position]) => sendOfferToUser(...args),
     'CENTER',
     {
+<<<<<<< HEAD
       resultModalContent: {
         title: '초대 완료!',
         content: '팀원 초대장이 보내졌습니다! 답장을 기다려주세요',
       },
+=======
+      resultToMessage: _ => '팀원 초대장이 보내졌습니다! 답장을 기다려주세요',
+      errorToMessage: e => (e as Error)?.message,
+>>>>>>> d5f5e64cce46ad1d9dd2ec714a6fae0d7e229332
       onSuccessClick() {
         setButtonState({ title: '취소하기', color: theme.colors.disabled });
       },
@@ -235,7 +240,7 @@ const ProfilePreviewComponent = ({
             }}
           >
             <View style={globalStyles.profileContainer}>
-              <ImageBackground source={image} borderRadius={8} />
+              {image && <ImageBackground source={image} borderRadius={8} />}
             </View>
             <PortfolioView
               profile={profile}
@@ -291,7 +296,7 @@ const ProfilePreviewComponent = ({
               }}
               style={{ borderRadius: 10 }}
             />
-            <View style={{ height: 20 }}></View>
+            <View style={{ height: 20 }} />
             {profile.skills?.map((skill, idx) => (
               <>
                 <Text style={{ fontSize: 14 }}>희망 기술스택</Text>
@@ -301,7 +306,7 @@ const ProfilePreviewComponent = ({
                   onChangeValue={function (value: number | number[]): void {}}
                   minimumTrackTintColor={sliderColors[idx % 3]}
                 />
-                <View style={{ height: 10 }}></View>
+                <View style={{ height: 10 }} />
               </>
             ))}
             <Text style={{ marginVertical: 10, marginTop: 20, fontSize: 17 }}>포트폴리오</Text>
@@ -310,14 +315,15 @@ const ProfilePreviewComponent = ({
                 profile.portfolios?.map(portfolio => (
                   <ToggleButton
                     title={portfolio.portfolioName}
-                    icon={<MaterialIcon name={portfolioTypeIconName['pdf']} size={15} />}
+                    icon={<MaterialIcon name={portfolioTypeIconName.pdf} size={15} />}
                     style={{
                       backgroundColor: '#fff',
                       marginRight: 10,
                     }}
                     onClick={async () => {
-                      if (await Linking.canOpenURL(portfolio.portfolioUrl))
+                      if (await Linking.canOpenURL(portfolio.portfolioUrl)) {
                         Linking.openURL(portfolio.portfolioUrl);
+                      }
                     }}
                   />
                 ))
@@ -325,7 +331,7 @@ const ProfilePreviewComponent = ({
                 <Text>아직 포트폴리오 정보를 입력하지 않은 것 같아요.</Text>
               )}
             </View>
-            <View style={{ height: 1, width: '100%', backgroundColor: '#D9D9D9' }}></View>
+            <View style={{ height: 1, width: '100%', backgroundColor: '#D9D9D9' }} />
             <Text style={{ fontSize: 17, marginVertical: 14 }}>이전 프로젝트</Text>
             {profile.completedTeams?.length ?? 0 > 0 ? (
               profile.completedTeams?.map(team => (
@@ -346,7 +352,7 @@ const ProfilePreviewComponent = ({
             )}
             <View
               style={{ height: 1, width: '100%', backgroundColor: '#D9D9D9', marginVertical: 14 }}
-            ></View>
+            />
             <Text h4>리뷰</Text>
             {profile.reviews?.length ?? 0 > 0 ? (
               <>

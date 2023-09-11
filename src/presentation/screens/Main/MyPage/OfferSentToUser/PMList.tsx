@@ -1,32 +1,34 @@
 import { GetOfferFromOthersProps, getOfferSentToUser } from '@/data/api/offer';
 import { Position } from '@/data/model/type/Position';
-import { PositionTabParamListProps } from '@/presentation/navigation/types';
-import { offerKeys } from '@/reactQuery/key/OfferKeys';
+import { PositionTabParamList, PositionTabParamListProps } from '@/presentation/navigation/types';
+import { positionToSentOfferKey } from '@/reactQuery/key/OfferKeys';
 import { PageRequest, useModelList } from '@/reactQuery/util/useModelList';
-import { makeStyles, useTheme } from '@rneui/themed';
+import { makeStyles } from '@rneui/themed';
 import { View, FlatList, TouchableOpacity } from 'react-native';
-import { useQueryClient } from 'react-query';
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { UserCard } from '@/presentation/components/UserCard';
 import OffersFromOtherDto from '@/data/model/Offer/OffersFromUserDto';
 import { Loading } from '@/presentation/screens/Loading';
 
-const PMList = ({ navigation, route }: PositionTabParamListProps<'PM'>) => {
+const OfferList = ({
+  navigation,
+  route,
+}: PositionTabParamListProps<keyof PositionTabParamList>) => {
   return (
     <Suspense fallback={Loading()}>
-      <PMListComponent navigation={navigation} route={route} />
+      <OfferListComponent navigation={navigation} route={route} />
     </Suspense>
   );
 };
 
-const PMListComponent = ({ navigation, route }: PositionTabParamListProps<'PM'>) => {
-  const { theme } = useTheme();
-  const styles = useStyles();
-  const queryClient = useQueryClient();
+const OfferListComponent = ({
+  navigation,
+  route,
+}: PositionTabParamListProps<keyof PositionTabParamList>) => {
   const initialParam: GetOfferFromOthersProps = {
     pageFrom: 0,
     pageSize: 20,
-    position: Position.Manager,
+    position: route.params.position,
   };
   const [params, setParams] = useState({ pageFrom: 0, pageSize: 20 } as PageRequest);
   const { data, isLoading, error, fetchNextPage, refetch, isRefreshing } = useModelList<
@@ -35,7 +37,7 @@ const PMListComponent = ({ navigation, route }: PositionTabParamListProps<'PM'>)
   >({
     initialParam,
     idName: 'offerId',
-    key: offerKeys.getOffersSentToFrontend,
+    key: positionToSentOfferKey[route.params.position],
     fetcher: async ({ pageParam, queryKey: [_, param] }) => {
       return await getOfferSentToUser({
         ...(param as GetOfferFromOthersProps),
@@ -43,6 +45,10 @@ const PMListComponent = ({ navigation, route }: PositionTabParamListProps<'PM'>)
       });
     },
   });
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   if (!data) {
     return null;
@@ -100,4 +106,4 @@ const useStyles = makeStyles(theme => ({
     paddingLeft: 10,
   },
 }));
-export default PMList;
+export default OfferList;

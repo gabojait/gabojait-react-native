@@ -48,10 +48,14 @@ function TeamHistoryComponent({ navigation, route }: MainStackScreenProps<'TeamH
       <View style={{ backgroundColor: 'white', flex: 1 }}>
         <FlatList
           showsHorizontalScrollIndicator={false}
-          keyExtractor={item => item.toString()}
+          keyExtractor={item => item.teamId.toString()}
           data={data}
           renderItem={({ item }) => (
-              <TeamBanner teamMembersCnt={item.teamMemberCnts} teamName={item.projectName} onArrowPress={() => navigation.navigate('TeamReview', { teamId: item.teamId })}/>
+            <TeamBanner
+              teamMembersCnt={item.teamMemberCnts}
+              teamName={item.projectName}
+              onArrowPress={() => navigation.navigate('TeamReview', { teamId: item.teamId })}
+            />
           )}
         />
       </View>

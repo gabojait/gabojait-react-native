@@ -9,8 +9,8 @@ import CustomIcon from '@/presentation/components/icon/Gabojait';
 import PositionRecruiting from '@/presentation/model/PositionRecruitng';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import { makeStyles, Text, useTheme } from '@rneui/themed';
-import React, { Suspense, useEffect, useState } from 'react';
-import { FlatList, ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
+import { ScrollView, TouchableOpacity, View } from 'react-native';
 import {
   useMutation,
   useQuery,
@@ -21,8 +21,7 @@ import {
 import useGlobalStyles from '@/presentation/styles';
 import { isFavorite, mapToInitial, WIDTH } from '@/presentation/utils/util';
 import FavoriteUpdateDto from '@/data/model/Favorite/FavoriteUpdateDto';
-import { Icon } from '@rneui/base';
-import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
+import { Icon, Input } from '@rneui/base';
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent';
 import useModal from '@/presentation/components/modal/useModal';
 import { favoriteKeys } from '@/reactQuery/key/FavoriteKeys';
@@ -50,6 +49,7 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
   const modal = useModal();
   const { teamId } = route.params!;
   const queryClient = useQueryClient();
+  const reportStateRef = useRef<Input>(null);
   const { data, isLoading, error }: UseQueryResult<TeamDetailDto> = useQuery(
     [teamKeys.getTeam, teamId],
     () => getTeam(teamId),
@@ -69,20 +69,19 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
     },
   );
   const positions: Array<PositionRecruiting> = data?.teamMemberCnts || [];
-  const [reportState, setReportState] = useState({ text: '' });
   const [reportButtonState, setReportButtonState] = useState({
     text: '신고하기',
     isDisabled: true,
   });
   useEffect(() => {
-    if (reportState.text.length > 0) {
+    if ((reportStateRef.current?.props?.value?.length ?? 0) > 0) {
       setReportButtonState({ text: '완료', isDisabled: false });
     } else {
       setReportButtonState({ text: '신고하기', isDisabled: true });
     }
-  }, [reportState]);
+  }, [reportStateRef.current?.props.value]);
 
-  const reportCompeletedModal = () => {
+  const reportCompletedModal = () => {
     modal?.show({
       content: (
         <BottomModalContent
@@ -98,15 +97,39 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
   const handleReportModal = () => {
     modal?.show({
       content: (
-        <BottomInputModalContent
-          header={'팀을 신고하시겠습니까?'}
-          content={'신고사유를 적어주세요'}
+        <BottomModalContent
+          title="팀을 신고하시겠습니까?"
+          children={
+            <View style={{ justifyContent: 'center', alignContent: 'center', width: '100%' }}>
+              <Text style={[globalStyles.textLight13, { textAlign: 'center', paddingBottom: 10 }]}>
+                신고 사유를 적어주세요
+              </Text>
+              <CardWrapper style={{ minHeight: 75, maxWidth: 400 }}>
+                <TextInput
+                  ref={reportStateRef}
+                  inputProps={{
+                    style: { width: '100%' },
+                    multiline: true,
+                    maxLength: 500,
+                    shape: 'none',
+                  }}
+                  value={reportState.text}
+                  style={{ width: '100%' }}
+                  onChangeText={(text: string) => {
+                    setReportState(prevState => ({ ...prevState, text: text }));
+                  }}
+                  multiline={true}
+                  maxLength={500}
+                />
+              </CardWrapper>
+            </View>
+          }
           yesButton={{
             title: '신고하기',
             onPress: () => {
               console.log('신고하기');
               modal.hide();
-              reportCompeletedModal();
+              reportCompletedModal();
             },
           }}
           noButton={{

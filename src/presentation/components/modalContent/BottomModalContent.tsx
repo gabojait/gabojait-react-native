@@ -7,13 +7,18 @@ import useModal from '../modal/useModal';
 import { HEIGHT } from '@/presentation/utils/util';
 
 export interface BottomSlideModalContentProps {
+<<<<<<< HEAD
   header?: string | ReactNode;
+=======
+  title: string;
+>>>>>>> d5f5e64cce46ad1d9dd2ec714a6fae0d7e229332
   children?: ReactNode;
   neverSeeAgainShow?: boolean;
   yesButton?: ButtonProps;
   noButton?: ButtonProps;
   onNeverSeeAgainPress?: () => void;
   onBackgroundPress?: () => void;
+  visible?: boolean;
 }
 
 const BottomModalContent: React.FC<BottomSlideModalContentProps> = props => {
@@ -25,8 +30,12 @@ const BottomModalContent: React.FC<BottomSlideModalContentProps> = props => {
     <>
       <TouchableOpacity
         style={{
-          flex: 1.1,
           width: '100%',
+          height: '100%',
+          top: 0,
+          left: 0,
+          position: 'absolute',
+          zIndex: 50,
           justifyContent: 'flex-end',
         }}
         onPress={() => {
@@ -37,9 +46,11 @@ const BottomModalContent: React.FC<BottomSlideModalContentProps> = props => {
       <KeyboardAvoidingView
         behavior="position"
         style={{
-          flex: 1,
           width: '100%',
           justifyContent: 'flex-end',
+          zIndex: 51,
+          position: 'absolute',
+          bottom: 0,
         }}
       >
         <View style={[style.modal, { paddingHorizontal: 20, paddingBottom: 70 }]}>

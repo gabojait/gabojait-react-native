@@ -532,10 +532,17 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = gabojait/gabojait.entitlements;
+<<<<<<< HEAD
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 7LF5463DRN;
+=======
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 4;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 7LF5463DRN;
+>>>>>>> d5f5e64cce46ad1d9dd2ec714a6fae0d7e229332
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = gabojait/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "가보자잇";
@@ -566,10 +573,17 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = gabojait/gabojait.entitlements;
+<<<<<<< HEAD
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 7LF5463DRN;
+=======
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 4;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 7LF5463DRN;
+>>>>>>> d5f5e64cce46ad1d9dd2ec714a6fae0d7e229332
 				INFOPLIST_FILE = gabojait/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "가보자잇";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
@@ -809,10 +823,17 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = gabojait/gabojait.entitlements;
+<<<<<<< HEAD
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 7LF5463DRN;
+=======
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 4;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 7LF5463DRN;
+>>>>>>> d5f5e64cce46ad1d9dd2ec714a6fae0d7e229332
 				INFOPLIST_FILE = gabojait/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "가보자잇";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";

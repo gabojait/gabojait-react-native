@@ -150,6 +150,9 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
   const initApp = async () => {
     checkNetworkConnection();
     console.log('네트워크 연결 상태 체크 완료');
+    // 개발모드이거나 개발모드가 아닌데 코드푸시 업데이트가 존재하지 않으면 로그인 처리
+    if (__DEV__ || (!__DEV__ && !(await checkCodePush()))) await handleLogin();
+    Splash.hide();
     const authStatus = await requestUserPermission();
     console.log('알림 권한 요청 완료. 알림 권한:', authStatus);
     if (authStatus) {
@@ -159,9 +162,6 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
       console.log('메시지 핸들러 셋업 완료 ');
       handleFcmTokenRefresh();
     }
-    // 개발모드이거나 개발모드가 아닌데 코드푸시 업데이트가 존재하지 않으면 로그인 처리
-    if (__DEV__ || (!__DEV__ && !(await checkCodePush()))) await handleLogin();
-    Splash.hide();
   };
 
   useEffect(() => {

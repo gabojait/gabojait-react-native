@@ -1,18 +1,25 @@
 import Gabojait from '@/presentation/components/icon/Gabojait';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
-import { useTheme, Text } from '@rneui/themed';
-import React, { useState } from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { useTheme, Text, ButtonProps } from '@rneui/themed';
+import React, { forwardRef, useEffect, useRef, useState } from 'react';
+import { Modal, TextInput, TouchableOpacity, View } from 'react-native';
 import { signOut } from '@/redux/action/login';
 import { RootStackNavigationProps } from '@/presentation/navigation/RootNavigation';
 import useModal from '@/presentation/components/modal/useModal';
-import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
+import BottomModalContent, {
+  BottomSlideModalContentProps,
+} from '@/presentation/components/modalContent/BottomModalContent';
 import { useTranslation } from 'react-i18next';
 import CustomInput from '@/presentation/components/CustomInput';
 import { verifyPassword } from '@/data/api/accounts';
 import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent';
 import { useAppDispatch } from '@/redux/hooks';
 import { useNotificationRepository } from '@/data/localdb/notificationProvider';
+import { useOverlay } from '@toss/use-overlay';
+import { CustomInputProps } from '@/presentation/components/props/StateProps';
+import { Input, InputProps } from '@rneui/base';
+import CustomModal from '@/presentation/components/modal/Modal';
+import { InputModalContent } from '@/presentation/components/modalContent/InputModalContent';
 
 const MenuItem = ({
   title,
@@ -62,13 +69,60 @@ const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const notificationRepository = useNotificationRepository();
-  const [currentPassword, setCurrentPassword] = useState('');
+  const modalInputRef = useRef<Input>(null);
+  const openFooConfirmDialog = () => {
+    modal?.show({
+      content: (
+        <InputModalContent
+          ref={modalInputRef} // Assign the ref to the BottomModal
+          visible={modal?.modal}
+          title={t('order_enterCurrentPassword')}
+          onBackgroundPress={modal?.hide}
+          inputProcessor={text => {
+            return text.replace(/[가-힣ㄱ-ㅎㅏ-ㅣ]/, '');
+          }}
+          inputProps={{
+            secureTextEntry: true,
+          }}
+          yesButton={{
+            title: t('action_confirm'),
+            onPress: async () => {
+              // Todo: Password Check
+              try {
+                const value = modalInputRef.current?.props?.value;
+                if (value)
+                  if (await verifyPassword({ password: value })) {
+                    navigation.navigate('UserModifier');
+                    modal?.hide();
+                  }
+              } catch (e) {
+                modal?.hide();
+                modal?.show({
+                  content: (
+                    <OkDialogModalContent
+                      text={t('result_passwordNotVerified')}
+                      onOkClick={modal?.hide}
+                    />
+                  ),
+                });
+              }
+            },
+          }}
+          noButton={{
+            title: t('action_goBack'),
+            onPress: modal?.hide,
+          }}
+        ></InputModalContent>
+      ),
+    });
+  };
 
   return (
     <View style={{ backgroundColor: 'white', flex: 1 }}>
       <MenuItem
         title="회원 정보 수정"
         onClick={() =>
+<<<<<<< HEAD
           modal?.show({
             content: (
               <BottomModalContent
@@ -109,6 +163,51 @@ const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
               </BottomModalContent>
             ),
           })
+=======
+          // modal?.show({
+          //   content: (
+          //     <BottomModalContent
+          //       title={t('order_enterCurrentPassword')}
+          //       yesButton={{
+          //         title: t('action_confirm'),
+          //         onPress: async () => {
+          //           // Todo: Password Check
+          //           try {
+          //             if (await verifyPassword({ password: currentPassword })) {
+          //               navigation.navigate('UserModifier');
+          //               modal.hide();
+          //             }
+          //           } catch (e) {
+          //             modal.hide();
+          //             modal.show({
+          //               content: (
+          //                 <OkDialogModalContent
+          //                   text={t('result_passwordNotVerified')}
+          //                   onOkClick={() => modal.hide()}
+          //                 />
+          //               ),
+          //             });
+          //           }
+          //         },
+          //       }}
+          //       noButton={{
+          //         title: t('action_goBack'),
+          //         onPress: () => modal.hide(),
+          //       }}
+          //     >
+          //       <CustomInput
+          //         onChangeText={value => {
+          //           const filteredValue = value.replace(/[^가-힣ㄱ-ㅎㅏ-ㅣ]/gi, '');
+          //           console.info(filteredValue);
+          //           setCurrentPassword(filteredValue);
+          //         }}
+          //         secureTextEntry
+          //       />
+          //     </BottomModalContent>
+          //   ),
+          // })
+          openFooConfirmDialog()
+>>>>>>> d5f5e64cce46ad1d9dd2ec714a6fae0d7e229332
         }
       />
       <MenuItem title="알림 설정" onClick={() => navigation.navigate('AlarmSetting')} />

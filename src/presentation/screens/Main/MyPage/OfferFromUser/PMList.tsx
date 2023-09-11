@@ -14,25 +14,31 @@ import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { makeStyles, useTheme } from '@rneui/themed';
 import React, { Suspense } from 'react';
 import { FlatList, Text, TouchableOpacity, View } from 'react-native';
-import { PositionTabParamListProps } from '@/presentation/navigation/types';
+import { PositionTabParamList, PositionTabParamListProps } from '@/presentation/navigation/types';
 import { Loading } from '@/presentation/screens/Loading';
 
-const PMList = ({ navigation, route }: PositionTabParamListProps<'PM'>) => {
+const ApplyList = ({
+  navigation,
+  route,
+}: PositionTabParamListProps<keyof PositionTabParamList>) => {
   return (
     <Suspense fallback={Loading()}>
-      <PMListComponent navigation={navigation} route={route} />
+      <ApplyListComponent navigation={navigation} route={route} />
     </Suspense>
   );
 };
 
-const PMListComponent = ({ navigation, route }: PositionTabParamListProps<'PM'>) => {
+const ApplyListComponent = ({
+  navigation,
+  route,
+}: PositionTabParamListProps<keyof PositionTabParamList>) => {
   const { theme } = useTheme();
   const styles = useStyles();
   const { data, isLoading, error, fetchNextPage, refetch, isRefreshing } = useModelList({
     initialParam: {
       pageFrom: 0,
       pageSize: 20,
-      position: Position.Manager,
+      position: route.params.position,
     },
     idName: 'offerId',
     key: offerKeys.getOffersFromFrontend,
@@ -78,6 +84,7 @@ const PMListComponent = ({ navigation, route }: PositionTabParamListProps<'PM'>)
         data={data?.pages?.map(page => page.data).flat()}
         renderItem={({ item }) => (
           <TouchableOpacity
+            key={item.offerId}
             onPress={() =>
               navigation.getParent()?.navigate('ProfilePreview', { userId: item.user.userId })
             }
@@ -153,4 +160,4 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default PMList;
+export default ApplyList;

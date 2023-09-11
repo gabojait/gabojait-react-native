@@ -49,6 +49,11 @@ const PositionSelectorComponent = ({
     (args: [Position, string]) => applyToTeam(...args),
     'BOTTOM',
     {
+<<<<<<< HEAD
+=======
+      resultToMessage: _ => '함께하기 요청이 전달되었습니다\n 결과를 기다려주세요',
+      errorToMessage: e => (e as Error)?.message,
+>>>>>>> d5f5e64cce46ad1d9dd2ec714a6fae0d7e229332
       onSuccessClick() {
         queryClient.invalidateQueries([teamKeys.getTeam, teamId]);
       },
@@ -59,7 +64,6 @@ const PositionSelectorComponent = ({
       },
     },
   );
-
   if (!data) {
     return null;
   }

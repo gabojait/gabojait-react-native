@@ -115,14 +115,19 @@ export const TeamEditorComponent = ({ navigation, route }: MainStackScreenProps<
     const pattern = /^https\:\/\/open\.kakao\.com\/.+$/;
     const result = pattern.test(teamUpdateState.openChatUrl);
 
-    if (result) return true;
-    else throw Error('유효한 카카오톡 오픈채팅 링크가 아닙니다');
+    if (result) {
+      return true;
+    } else {
+      throw Error('유효한 카카오톡 오픈채팅 링크가 아닙니다');
+    }
   }
 
   function isRecruitCntValidate() {
     if (teamUpdateState.teamMemberRecruitCnts.length == 0) {
       throw Error('팀원이 존재하지 않습니다');
-    } else return true;
+    } else {
+      return true;
+    }
   }
 
   function isEmptyInputExisted() {
@@ -139,7 +144,9 @@ export const TeamEditorComponent = ({ navigation, route }: MainStackScreenProps<
       openChatUrl.length != 0
     ) {
       return true;
-    } else throw Error('빈 입력란이 있습니다');
+    } else {
+      throw Error('빈 입력란이 있습니다');
+    }
   }
 
   function isAllInputValidate() {
