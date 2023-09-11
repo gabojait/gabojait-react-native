@@ -8,33 +8,31 @@ import { Position } from '@/data/model/type/Position';
 import { OutlinedButton } from '@/presentation/components/Button';
 import CardWrapper from '@/presentation/components/CardWrapper';
 import { RatingBar } from '@/presentation/components/RatingBar';
-import { PositionTabParamListProps } from '@/presentation/navigation/types';
-import { Loading } from '@/presentation/screens/Loading';
 import { offerKeys } from '@/reactQuery/key/OfferKeys';
-import { useModelList } from '@/reactQuery/util/useModelList';
+import { PageRequest, useModelList } from '@/reactQuery/util/useModelList';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { makeStyles, useTheme } from '@rneui/themed';
 import React, { Suspense } from 'react';
 import { FlatList, Text, TouchableOpacity, View } from 'react-native';
-import { useQueryClient } from 'react-query';
+import { PositionTabParamListProps } from '@/presentation/navigation/types';
+import { Loading } from '@/presentation/screens/Loading';
 
-const FrontendList = ({ navigation, route }: PositionTabParamListProps<'Frontend'>) => {
+const PMList = ({ navigation, route }: PositionTabParamListProps<'PM'>) => {
   return (
     <Suspense fallback={Loading()}>
-      <FrontendListComponent navigation={navigation} route={route} />
+      <PMListComponent navigation={navigation} route={route} />
     </Suspense>
   );
 };
 
-const FrontendListComponent = ({ navigation, route }: PositionTabParamListProps<'Frontend'>) => {
+const PMListComponent = ({ navigation, route }: PositionTabParamListProps<'PM'>) => {
   const { theme } = useTheme();
   const styles = useStyles();
-  const queryClient = useQueryClient();
   const { data, isLoading, error, fetchNextPage, refetch, isRefreshing } = useModelList({
     initialParam: {
       pageFrom: 0,
       pageSize: 20,
-      position: Position.Frontend,
+      position: Position.Manager,
     },
     idName: 'offerId',
     key: offerKeys.getOffersFromFrontend,
@@ -51,11 +49,13 @@ const FrontendListComponent = ({ navigation, route }: PositionTabParamListProps<
   const { mutation: rejectOfferMutation } = useMutationDialog(
     offerKeys.rejectOfferFromUser,
     async (offerId: number) => rejectOfferFromUser(offerId),
+    'CENTER',
   );
 
   const { mutation: acceptOfferMutation } = useMutationDialog(
     offerKeys.acceptOfferFromUser,
     async (args: [number, boolean]) => acceptOfferFromUser(...args),
+    'CENTER',
   );
 
   if (!data) {
@@ -79,10 +79,7 @@ const FrontendListComponent = ({ navigation, route }: PositionTabParamListProps<
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() =>
-              navigation
-                .getParent()
-                ?.getParent()
-                ?.navigate('MainBottomTabNavigation', { screen: 'Team' })
+              navigation.getParent()?.navigate('ProfilePreview', { userId: item.user.userId })
             }
           >
             <CardWrapper
@@ -156,4 +153,4 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default FrontendList;
+export default PMList;

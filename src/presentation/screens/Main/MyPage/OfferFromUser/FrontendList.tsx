@@ -11,30 +11,33 @@ import { RatingBar } from '@/presentation/components/RatingBar';
 import { PositionTabParamListProps } from '@/presentation/navigation/types';
 import { Loading } from '@/presentation/screens/Loading';
 import { offerKeys } from '@/reactQuery/key/OfferKeys';
-import { PageRequest, useModelList } from '@/reactQuery/util/useModelList';
+import { useModelList } from '@/reactQuery/util/useModelList';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
-import {makeStyles, Text, useTheme} from '@rneui/themed';
+import { makeStyles, useTheme } from '@rneui/themed';
 import React, { Suspense } from 'react';
-import { FlatList, TouchableOpacity, View } from 'react-native';
+import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { useQueryClient } from 'react-query';
 
-const BackendList = ({ navigation, route }: PositionTabParamListProps<'Backend'>) => {
+const FrontendList = ({ navigation, route }: PositionTabParamListProps<'Frontend'>) => {
   return (
     <Suspense fallback={Loading()}>
-      <BackendListComponent navigation={navigation} route={route} />
+      <FrontendListComponent navigation={navigation} route={route} />
     </Suspense>
   );
 };
-const BackendListComponent = ({ navigation, route }: PositionTabParamListProps<'Backend'>) => {
+
+const FrontendListComponent = ({ navigation, route }: PositionTabParamListProps<'Frontend'>) => {
   const { theme } = useTheme();
   const styles = useStyles();
+  const queryClient = useQueryClient();
   const { data, isLoading, error, fetchNextPage, refetch, isRefreshing } = useModelList({
     initialParam: {
       pageFrom: 0,
       pageSize: 20,
-      position: Position.Backend,
+      position: Position.Frontend,
     },
     idName: 'offerId',
-    key: offerKeys.getOffersFromBackend,
+    key: offerKeys.getOffersFromFrontend,
     fetcher: async ({ pageParam, queryKey: [_, params] }) => {
       console.log('fetch!!');
       console.log('pageParam:', pageParam);
@@ -48,11 +51,13 @@ const BackendListComponent = ({ navigation, route }: PositionTabParamListProps<'
   const { mutation: rejectOfferMutation } = useMutationDialog(
     offerKeys.rejectOfferFromUser,
     async (offerId: number) => rejectOfferFromUser(offerId),
+    'CENTER',
   );
 
   const { mutation: acceptOfferMutation } = useMutationDialog(
     offerKeys.acceptOfferFromUser,
     async (args: [number, boolean]) => acceptOfferFromUser(...args),
+    'CENTER',
   );
 
   if (!data) {
@@ -76,10 +81,7 @@ const BackendListComponent = ({ navigation, route }: PositionTabParamListProps<'
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() =>
-              navigation
-                .getParent()
-                ?.getParent()
-                ?.navigate('MainBottomTabNavigation', { screen: 'Team' })
+              navigation.getParent()?.navigate('ProfilePreview', { userId: item.user.userId })
             }
           >
             <CardWrapper
@@ -153,4 +155,4 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default BackendList;
+export default FrontendList;

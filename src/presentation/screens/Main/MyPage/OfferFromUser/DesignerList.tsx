@@ -49,11 +49,13 @@ const DesignerListComponent = ({ navigation, route }: PositionTabParamListProps<
   const { mutation: rejectOfferMutation } = useMutationDialog(
     offerKeys.rejectOfferFromUser,
     async (offerId: number) => rejectOfferFromUser(offerId),
+    'CENTER',
   );
 
   const { mutation: acceptOfferMutation } = useMutationDialog(
     offerKeys.acceptOfferFromUser,
     async (args: [number, boolean]) => acceptOfferFromUser(...args),
+    'CENTER',
   );
 
   if (!data) {
@@ -77,10 +79,7 @@ const DesignerListComponent = ({ navigation, route }: PositionTabParamListProps<
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() =>
-              navigation
-                .getParent()
-                ?.getParent()
-                ?.navigate('MainBottomTabNavigation', { screen: 'Team' })
+              navigation.getParent()?.navigate('ProfilePreview', { userId: item.user.userId })
             }
           >
             <CardWrapper

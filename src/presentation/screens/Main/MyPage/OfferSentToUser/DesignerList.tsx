@@ -8,7 +8,7 @@ import { View, FlatList, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import { UserCard } from '@/presentation/components/UserCard';
 import OffersFromOtherDto from '@/data/model/Offer/OffersFromUserDto';
-import DesignerList from '../ApplyStatus/DesignerList';
+import DesignerList from '../OfferFromUser/DesignerList';
 
 const DesignerListComponent = ({ navigation }: PositionTabParamListProps<'Designer'>) => {
   const { theme } = useTheme();
