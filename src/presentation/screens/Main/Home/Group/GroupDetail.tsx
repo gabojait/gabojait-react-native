@@ -30,6 +30,7 @@ import Error404Boundary from '@/presentation/components/errorComponent/Error404B
 import { Loading } from '@/presentation/screens/Loading';
 import { BottomInputModalContent } from '@/presentation/components/modalContent/BottomInputModalContent';
 import { ReportCompleteModal } from '@/presentation/components/ReportCompleteModal';
+import BookMarkHeader from '@/presentation/screens/Headers/BookmarkHeader';
 
 const GroupDetail = ({ navigation, route }: MainStackScreenProps<'GroupDetail'>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -156,23 +157,12 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
     return null;
   }
 
-  //TODO: BookMarkHeader로 묶어서 팀원찾기/프로필미리보기 에서 사용하기
   return (
     <View style={{ backgroundColor: 'white' }}>
-      <CustomHeader
-        title={''}
-        canGoBack={true}
-        rightChildren={
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <TouchableOpacity onPress={handleFavoriteTeam} style={{ paddingEnd: 16 }}>
-              <CustomIcon name="heart" size={24} color={isFavorite(data?.isFavorite!)} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleReportModal}>
-              <Icon type="material" name="pending" size={24} />
-            </TouchableOpacity>
-          </View>
-        }
-        align="center"
+      <BookMarkHeader
+        onPressBookMark={handleFavoriteTeam}
+        onPressReport={handleReportModal}
+        toChangeColor={isFavorite(data?.isFavorite!)}
       />
       <ScrollView style={[globalStyles.scrollView]}>
         <CardWrapper style={[styles.card, { minHeight: 243 }]}>

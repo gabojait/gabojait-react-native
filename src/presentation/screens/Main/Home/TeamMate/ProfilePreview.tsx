@@ -212,21 +212,6 @@ const ProfilePreviewComponent = ({
         onPressReport={handleReportModal}
         toChangeColor={isFavorite(profile?.isFavorite!)}
       />
-      {/* <CustomHeader
-        title={''}
-        canGoBack={true}
-        rightChildren={
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <TouchableOpacity onPress={handleFavoriteTeam} style={{ paddingEnd: 16 }}>
-              <CustomIcon name="heart" size={24} color={isFavorite(profile?.isFavorite!)} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleReportModal}>
-              <Icon type="material" name="pending" size={24} />
-            </TouchableOpacity>
-          </View>
-        }
-        align="center"
-      /> */}
       <ScrollView style={{ flex: 1 }}>
         <View style={{ flex: 0.2, backgroundColor: '#f5f5f5', marginBottom: '30%' }} />
         <View style={{ flex: 0.8 }}>
