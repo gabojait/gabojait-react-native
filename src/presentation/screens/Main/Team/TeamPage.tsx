@@ -121,6 +121,7 @@ export const TeamPageComponent = ({ navigation, route }: MainBottomTabNavigation
   const { mutation: deleteTeamMutation } = useMutationDialog(
     teamKeys.incompleteTeam,
     async () => incompleteTeam(),
+    'CENTER',
     {
       onSuccessClick() {
         queryClient.invalidateQueries([teamKeys.myTeam, profileKeys.myProfile]);

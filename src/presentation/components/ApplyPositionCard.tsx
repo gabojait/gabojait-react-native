@@ -1,6 +1,6 @@
 import { Position } from '@/data/model/type/Position';
-import {makeStyles, Text, useTheme} from '@rneui/themed';
-import { View, } from 'react-native';
+import { makeStyles, Text, useTheme } from '@rneui/themed';
+import { View } from 'react-native';
 import { FilledButton } from './Button';
 import CardWrapper from './CardWrapper';
 import PositionWaveIcon from './PositionWaveIcon';
@@ -95,7 +95,6 @@ const useStyles = makeStyles(theme => ({
   },
   card: {
     padding: 30,
-    marginVertical: 5,
     marginHorizontal: 20,
   },
   container: {

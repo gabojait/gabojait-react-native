@@ -44,8 +44,11 @@ const TeamDetailComponent = ({ navigation, route }: MainStackScreenProps<'JoinTe
   const { mutation: decideMutation } = useMutationDialog<[number, boolean], unknown>(
     offerKeys.offerToTeam,
     (args: [number, boolean]) => decideOfferFromTeam(...args),
+    'CENTER',
     {
-      resultToMessage: _ => '팀에 합류하셨습니다!',
+      resultModalContent: {
+        content: '팀에 합류하셨습니다!',
+      },
       onSuccessClick() {
         queryClient.invalidateQueries([teamKeys.getTeam, teamId]);
       },

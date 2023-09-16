@@ -8,40 +8,33 @@ import { Position } from '@/data/model/type/Position';
 import { OutlinedButton } from '@/presentation/components/Button';
 import CardWrapper from '@/presentation/components/CardWrapper';
 import { RatingBar } from '@/presentation/components/RatingBar';
+import { PositionTabParamListProps } from '@/presentation/navigation/types';
+import { Loading } from '@/presentation/screens/Loading';
 import { offerKeys } from '@/reactQuery/key/OfferKeys';
 import { PageRequest, useModelList } from '@/reactQuery/util/useModelList';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
-import { makeStyles, useTheme } from '@rneui/themed';
+import { makeStyles, Text, useTheme } from '@rneui/themed';
 import React, { Suspense } from 'react';
-import { FlatList, Text, TouchableOpacity, View } from 'react-native';
-import { PositionTabParamList, PositionTabParamListProps } from '@/presentation/navigation/types';
-import { Loading } from '@/presentation/screens/Loading';
+import { FlatList, TouchableOpacity, View } from 'react-native';
 
-const ApplyList = ({
-  navigation,
-  route,
-}: PositionTabParamListProps<keyof PositionTabParamList>) => {
+const BackendList = ({ navigation, route }: PositionTabParamListProps<'Backend'>) => {
   return (
     <Suspense fallback={Loading()}>
-      <ApplyListComponent navigation={navigation} route={route} />
+      <BackendListComponent navigation={navigation} route={route} />
     </Suspense>
   );
 };
-
-const ApplyListComponent = ({
-  navigation,
-  route,
-}: PositionTabParamListProps<keyof PositionTabParamList>) => {
+const BackendListComponent = ({ navigation, route }: PositionTabParamListProps<'Backend'>) => {
   const { theme } = useTheme();
   const styles = useStyles();
   const { data, isLoading, error, fetchNextPage, refetch, isRefreshing } = useModelList({
     initialParam: {
       pageFrom: 0,
       pageSize: 20,
-      position: route.params.position,
+      position: Position.Backend,
     },
     idName: 'offerId',
-    key: offerKeys.getOffersFromFrontend,
+    key: offerKeys.getOffersFromBackend,
     fetcher: async ({ pageParam, queryKey: [_, params] }) => {
       console.log('fetch!!');
       console.log('pageParam:', pageParam);
@@ -55,11 +48,13 @@ const ApplyListComponent = ({
   const { mutation: rejectOfferMutation } = useMutationDialog(
     offerKeys.rejectOfferFromUser,
     async (offerId: number) => rejectOfferFromUser(offerId),
+    'CENTER',
   );
 
   const { mutation: acceptOfferMutation } = useMutationDialog(
     offerKeys.acceptOfferFromUser,
     async (args: [number, boolean]) => acceptOfferFromUser(...args),
+    'CENTER',
   );
 
   if (!data) {
@@ -82,12 +77,8 @@ const ApplyListComponent = ({
         data={data?.pages?.map(page => page.data).flat()}
         renderItem={({ item }) => (
           <TouchableOpacity
-            key={item.offerId}
             onPress={() =>
-              navigation
-                .getParent()
-                ?.getParent()
-                ?.navigate('MainBottomTabNavigation', { screen: 'Team' })
+              navigation.getParent()?.navigate('ProfilePreview', { userId: item.user.userId })
             }
           >
             <CardWrapper
@@ -161,4 +152,4 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default ApplyList;
+export default BackendList;

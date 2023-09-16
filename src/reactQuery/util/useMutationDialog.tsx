@@ -1,15 +1,13 @@
 import useModal from '@/presentation/components/modal/useModal';
-import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent';
-import {
-  MutationKey,
-  MutationFunction,
-  useMutation,
-  UseMutationOptions,
-  UseMutationResult,
-} from 'react-query';
+import { MutationKey, MutationFunction, useMutation, UseMutationOptions } from 'react-query';
 import React, { useEffect } from 'react';
-import { ApiErrorCode, ApiErrorCodeType } from '@/data/api/ApiErrorCode';
 import { DialogLoading } from '@rneui/base/dist/Dialog/Dialog.Loading';
+import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
+import { Text } from 'react-native';
+import { View } from 'react-native';
+import useGlobalStyles from '@/presentation/styles';
+import LoadingSpinner from '@/presentation/screens/Loading';
+import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent';
 import { UseBaseMutationResult } from 'react-query/types/react/types';
 
 /**
@@ -21,14 +19,27 @@ import { UseBaseMutationResult } from 'react-query/types/react/types';
  * @param options
  * @returns
  */
+
+interface modalContentProp {
+  icon?: string;
+  title?: string;
+  content?: string;
+}
+
+export const ModalType = {
+  CENTER: 'CENTER',
+  BOTTOM: 'BOTTOM',
+};
+export type ModalType = keyof typeof ModalType;
+
 export function useMutationDialog<TVariables, TData>(
   mutationKey: MutationKey,
   mutationFn: MutationFunction<TData, TVariables>,
+  modalType: ModalType,
   message?: {
-    resultToMessage?: (result: unknown) => string;
-    errorToMessage?: (error: unknown) => string;
     onSuccessClick?: (result: unknown) => void;
     onFailureClick?: (error: unknown) => void;
+    resultModalContent?: modalContentProp;
   },
   options?: Omit<
     UseMutationOptions<TData, unknown, TVariables, unknown>,
@@ -36,38 +47,82 @@ export function useMutationDialog<TVariables, TData>(
   >,
 ) {
   const modal = useModal();
-  const { resultToMessage, errorToMessage, onSuccessClick, onFailureClick } = message ?? {};
+  const { onSuccessClick, onFailureClick, resultModalContent } = message ?? {};
   const mutation = useMutation(mutationKey, mutationFn, options);
+  const globalStyles = useGlobalStyles();
+  let { icon = '', title = '성공', content = '성공했습니다' } = resultModalContent ?? {};
+  const error = mutation.error as Error;
+
   useEffect(() => {
     modal?.hide();
     if (mutation.isLoading) {
       modal?.show({
-        content: <DialogLoading />,
+        content: <LoadingSpinner />,
       });
       return;
     }
 
-    const title = mutation.isSuccess ? '성공' : '오류';
-    const defaultMessage = mutation.isSuccess ? '성공했습니다.' : '실패했습니다.';
-    const msg =
-      (mutation.isSuccess ? resultToMessage?.(mutation.data) : errorToMessage?.(mutation.error)) ??
-      defaultMessage;
-    if (mutation.isSuccess || mutation.isError) {
+    if (mutation.isSuccess) {
       modal?.show({
-        content: (
-          <OkDialogModalContent
-            title={title}
-            text={msg}
-            onOkClick={() => {
-              modal?.hide();
-              if (mutation.isSuccess) {
+        content:
+          modalType == ModalType.CENTER ? (
+            <OkDialogModalContent
+              title={title}
+              text={content}
+              onOkClick={() => {
+                modal.hide();
                 onSuccessClick?.(mutation.data);
-              } else if (mutation.isError) {
-                onFailureClick?.(mutation.error);
+              }}
+            />
+          ) : (
+            <BottomModalContent
+              header={<Text style={globalStyles.modalEmoji}>{icon}</Text>}
+              children={
+                <View>
+                  {<Text style={[globalStyles.modalTitle, { paddingBottom: 12 }]}>{title}</Text>}
+                  {<Text style={globalStyles.modalContent}>{content}</Text>}
+                </View>
               }
-            }}
-          />
-        ),
+              yesButton={{
+                title: '완료',
+                onPress: () => {
+                  modal.hide();
+                  onSuccessClick?.(mutation.data);
+                },
+              }}
+            />
+          ),
+      });
+    } else if (mutation.isError) {
+      modal?.show({
+        content:
+          modalType == ModalType.CENTER ? (
+            <OkDialogModalContent
+              title={title}
+              text={title}
+              onOkClick={() => {
+                modal.hide();
+                onFailureClick?.(mutation.error);
+              }}
+            />
+          ) : (
+            <BottomModalContent
+              header={<Text style={globalStyles.modalEmoji}>😔</Text>}
+              children={
+                <View style={{ justifyContent: 'center' }}>
+                  <Text style={globalStyles.modalTitle}>에러가 발생했습니다</Text>
+                  <Text style={globalStyles.modalContent}>{error.message}</Text>
+                </View>
+              }
+              yesButton={{
+                title: '완료',
+                onPress: () => {
+                  modal.hide();
+                  onFailureClick?.(mutation.error);
+                },
+              }}
+            />
+          ),
       });
     }
   }, [mutation.status]);

@@ -1,14 +1,17 @@
-import React from 'react'
-import {View, StyleSheet, StyleProp, ViewProps} from 'react-native'
-import colors from '@/presentation/res/styles/color'
+import React from 'react';
+import { View, StyleSheet, StyleProp, ViewProps } from 'react-native';
+import colors from '@/presentation/res/styles/color';
+import { makeStyles, useTheme } from '@rneui/themed';
 
 interface DivideWrapperProps {
-  children:any
-  style?:any
-  color?:any
+  children: any;
+  style?: any;
+  color?: any;
 }
 
-const DivideWrapper = ({children,style}:DivideWrapperProps) => {
+const DivideWrapper = ({ children, style }: DivideWrapperProps) => {
+  const { theme } = useTheme();
+  const styles = useStyles();
   return (
     <View style={[styles.card, style]}>
       {React.Children.map(children, (child, index) =>
@@ -19,33 +22,25 @@ const DivideWrapper = ({children,style}:DivideWrapperProps) => {
         ),
       )}
     </View>
-  )
-}
+  );
+};
 
-export default DivideWrapper
-
-const styles = StyleSheet.create({
+const useStyles = makeStyles(theme => ({
   card: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor:colors.white,
-    borderColor:colors.transparent,
+    backgroundColor: colors.white,
+    borderColor: theme.colors.grey2,
     width: '100%',
     height: 100,
     borderRadius: 14,
-    shadowColor: colors.black,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    borderWidth: 1,
     elevation: 5,
     marginVertical: 5,
   },
   element: {
-    flex:1,
+    flex: 1,
     height: '100%',
     borderWidth: 1,
     borderTopColor: colors.transparent,
@@ -57,7 +52,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   last_element: {
-    flex:1,
+    flex: 1,
     height: '100%',
     borderWidth: 1,
     borderColor: colors.transparent,
@@ -65,4 +60,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 5,
   },
-})
+}));
+
+export default DivideWrapper;

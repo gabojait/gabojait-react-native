@@ -1,18 +1,11 @@
 import { FilledButton } from '@/presentation/components/Button';
 import CustomInput from '@/presentation/components/CustomInput';
-import { CustomSwitch } from '@/presentation/components/CustomSwitch';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import { nicknameRegex, passwordRegex } from '@/presentation/utils/util';
 import { Text, useTheme } from '@rneui/themed';
 import React, { useState } from 'react';
 import { View } from 'react-native';
-import {
-  changeNickname,
-  changePassword,
-  checkNicknameDuplicate,
-  checkUsernameDuplicate,
-} from '@/data/api/accounts';
-import { useMutation } from 'react-query';
+import { changeNickname, changePassword, checkNicknameDuplicate } from '@/data/api/accounts';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch } from '@/redux/hooks';
@@ -22,48 +15,60 @@ import { useNotificationRepository } from '@/data/localdb/notificationProvider';
 
 const UserModifier = ({ navigation }: MainStackScreenProps<'UserModifier'>) => {
   const { theme } = useTheme();
-
   const dispatch = useAppDispatch();
-
   const [nickname, setNickname] = useState('');
   const [passwords, setPasswords] = useState<string[]>([]);
   const [dupChecked, setDupChecked] = useState(false);
-
+  const db = useNotificationRepository();
+  const { t } = useTranslation();
   const { mutation: checkNicknameDuplicateMutation } = useMutationDialog(
     ['checkNicknameDuplicate', nickname],
     checkNicknameDuplicate,
+    'CENTER',
     {
       onSuccessClick: () => {
         setDupChecked(true);
       },
-      resultToMessage: () => t('nicknameDupOk'),
+      resultModalContent: {
+        icon: '',
+        title: '',
+        content: t('nicknameDupOk'),
+      },
     },
   );
   const { mutation: changeNicknameMutation } = useMutationDialog(
     ['changeNickName', nickname],
     changeNickname,
+    'CENTER',
     {
       onSuccessClick: () => {
         setDupChecked(true);
       },
-      resultToMessage: () => t('result_nicknameChangeOk'),
+      resultModalContent: {
+        icon: '',
+        title: '',
+        content: t('result_nicknameChangeOk'),
+      },
     },
   );
-  const db = useNotificationRepository();
-
   const { mutation: changePwMutation } = useMutationDialog(
     ['changePassword', passwords],
     changePassword,
+    'CENTER',
     {
       onSuccessClick: async () => {
         await clearNotificationTable(db!);
         dispatch(signOut());
         navigation.getParent()?.navigate('OnboardingNavigation', { screen: 'Login' });
       },
-      resultToMessage: () => t('result_passwordChangeOk'),
+      resultModalContent: {
+        icon: '',
+        title: '',
+        content: t('result_passwordChangeOk'),
+      },
     },
   );
-  const { t } = useTranslation();
+
   return (
     <View style={{ backgroundColor: 'white', flex: 1, padding: 20 }}>
       <Text

@@ -15,7 +15,7 @@ import PositionCountDto from '@/data/model/Team/PostionCountDto';
 import { useCreateTeam } from '@/reactQuery/useCreateTeam';
 import useGlobalStyles from '@/presentation/styles';
 import useModal from '@/presentation/components/modal/useModal';
-import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
+import { ModalType, useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { createTeam } from '@/data/api/team';
 import { HEIGHT } from '@/presentation/utils/util';
@@ -39,9 +39,14 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
   const { mutation: createTeamMutation } = useMutationDialog<TeamRequestDto, unknown>(
     teamKeys.createTeam,
     async (dto: TeamRequestDto) => createTeam(dto),
+    'BOTTOM',
     {
       onSuccessClick() {
         navigation.goBack();
+      },
+      resultModalContent: {
+        title: '팀 생성 완료!',
+        content: '팀원을 초대하고 팀 지원을 받아보세요',
       },
     },
   );
@@ -172,7 +177,7 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
     modal?.show({
       content: (
         <BottomModalContent
-          title="글을 입력하시겠어요?"
+          header="글을 입력하시겠어요?"
           yesButton={{
             title: '삭제하기',
             onPress: () => {

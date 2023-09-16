@@ -53,6 +53,7 @@ export const ManageTeammateComponent = ({
   const { mutation: fireTeammateMutation } = useMutationDialog(
     teamKeys.fireTeammate,
     async (userId: number) => fireTeammate(userId),
+    'CENTER',
     {
       onSuccessClick() {
         queryClient.invalidateQueries(teamKeys.myTeam);
@@ -81,7 +82,7 @@ export const ManageTeammateComponent = ({
     modal?.show({
       content: (
         <BottomModalContent
-          title="팀원을 신고하시겠습니까?"
+          header="팀원을 신고하시겠습니까?"
           children={
             <View style={{ justifyContent: 'center', alignContent: 'center', width: '100%' }}>
               <Text style={[globalStyles.textLight13, { textAlign: 'center', paddingBottom: 10 }]}>

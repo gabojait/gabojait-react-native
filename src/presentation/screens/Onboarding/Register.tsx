@@ -100,18 +100,31 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
   const { mutation: nickNmDupCheckMutation } = useMutationDialog(
     QueryKey.nickNmDupCheck(registerState.nickname),
     checkNicknameDuplicate,
-    { resultToMessage: _ => t('nicknameDupOk') },
+    'CENTER',
+    {
+      resultModalContent: {
+        content: t('nicknameDupOk'),
+      },
+    },
   );
   const { mutation: userIdDupCheckMutation } = useMutationDialog(
     QueryKey.userIdDupCheck(registerState.username),
     checkUsernameDuplicate,
-    { resultToMessage: _ => t('usernameDupOk') },
+    'CENTER',
+    {
+      resultModalContent: {
+        content: t('usernameDupOk'),
+      },
+    },
   );
   const { mutation: emailDupCheckMutation } = useMutationDialog(
     QueryKey.emailDupCheck(registerState.email),
     sendAuthCode,
+    'CENTER',
     {
-      resultToMessage: _ => t('emailOk'),
+      resultModalContent: {
+        content: t('emailOk'),
+      },
       onSuccessClick(result) {
         setLastEmailVerified(stateSeperatedForm.email?.value!);
         console.log(result);
@@ -126,8 +139,11 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
   const { mutation: emailVerificationMutation } = useMutationDialog(
     QueryKey.emailVerification(registerState.email, registerState.authCode),
     verifyAuthCode,
+    'CENTER',
     {
-      resultToMessage: _ => t('authCodeVerifyOk'),
+      resultModalContent: {
+        content: t('authCodeVerifyOk'),
+      },
       onSuccessClick(result) {
         console.log(result);
       },
@@ -136,8 +152,11 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
   const { mutation: registerMutation } = useMutationDialog(
     QueryKey.register(registerState),
     register,
+    'CENTER',
     {
-      resultToMessage: _ => t('registerOk'),
+      resultModalContent: {
+        content: t('registerOk'),
+      },
       onSuccessClick(result) {
         navigation.navigate('RegisterCompleted');
       },

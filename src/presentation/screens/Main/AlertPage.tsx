@@ -1,4 +1,4 @@
-import { ArrowCard } from '@/presentation/components/BaseCard';
+import { BaseCard } from '@/presentation/components/BaseCard';
 import { Notification } from '@/data/localdb';
 import { Text } from '@rneui/themed';
 import { useEffect, useState } from 'react';
@@ -58,7 +58,7 @@ export default function AlertPage({ navigation }: MainStackScreenProps<'AlertPag
           keyExtractor={item => item.id.toString()}
           data={notifications}
           renderItem={({ item }) => (
-            <ArrowCard
+            <BaseCard
               title={item.title}
               key={item.id}
               style={{ marginHorizontal: 20, marginVertical: 9 }}
@@ -87,7 +87,7 @@ export default function AlertPage({ navigation }: MainStackScreenProps<'AlertPag
               <Text numberOfLines={1} ellipsizeMode="tail">
                 {item.body}
               </Text>
-            </ArrowCard>
+            </BaseCard>
           )}
           refreshing={isRefreshing}
           onEndReached={() => {

@@ -59,6 +59,7 @@ export const TeamEditorComponent = ({ navigation, route }: MainStackScreenProps<
   const { mutation: updateTeamMutation } = useMutationDialog(
     teamKeys.updateTeam,
     async (dto: TeamRequestDto) => updateTeam(dto) as Promise<TeamDto>,
+    'CENTER',
     {
       onSuccessClick() {
         navigation.goBack();
@@ -219,7 +220,7 @@ export const TeamEditorComponent = ({ navigation, route }: MainStackScreenProps<
     modal?.show({
       content: (
         <BottomModalContent
-          title="글 수정을 취소하시겠어요?"
+          header="글 수정을 취소하시겠어요?"
           yesButton={{
             title: '확인',
             onPress: () => {

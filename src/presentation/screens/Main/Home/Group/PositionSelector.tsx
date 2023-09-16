@@ -47,11 +47,15 @@ const PositionSelectorComponent = ({
   const { mutation: offerMutation } = useMutationDialog<[Position, string], unknown>(
     offerKeys.offerToTeam,
     (args: [Position, string]) => applyToTeam(...args),
+    'BOTTOM',
     {
-      resultToMessage: _ => '함께하기 요청이 전달되었습니다\n 결과를 기다려주세요',
-      errorToMessage: e => (e as Error)?.message,
       onSuccessClick() {
         queryClient.invalidateQueries([teamKeys.getTeam, teamId]);
+      },
+      resultModalContent: {
+        icon: '👏',
+        title: '지원완료!',
+        content: '요청이 전달되었습니다 결과를 기다려주세요',
       },
     },
   );
@@ -60,33 +64,25 @@ const PositionSelectorComponent = ({
   }
 
   return (
-    <View style={{ backgroundColor: 'white' }}>
+    <View style={{ backgroundColor: 'white', flex: 1 }}>
       <FlatList
+        style={{ backgroundColor: 'white' }}
         showsVerticalScrollIndicator={false}
         keyExtractor={item => item.position}
         data={positions}
         renderItem={({ item }) => (
-          <PositionSelectWrapper
-            data={item}
-            offers={data!.offers}
-            onButtonPressed={(position: Position) => {
-              offerMutation.mutate([position, teamId]);
-            }}
-          />
+          <View style={{ paddingTop: 20 }}>
+            <PositionSelectWrapper
+              data={item}
+              offers={data!.offers}
+              onButtonPressed={(position: Position) => {
+                offerMutation.mutate([position, teamId]);
+              }}
+            />
+          </View>
         )}
       />
     </View>
-    // <ScrollView style={styles.scrollView}>
-    //   {positions.map((item, index) => (
-    //     <PositionSelectWrapper
-    //       data={item}
-    //       offers={data!.offers}
-    //       onButtonPressed={(position: Position) => {
-    //         offerMutation.mutate([position, teamId]);
-    //       }}
-    //     />
-    //   ))}
-    // </ScrollView>
   );
 };
 

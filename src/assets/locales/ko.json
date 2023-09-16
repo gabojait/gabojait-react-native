@@ -7,7 +7,10 @@
   "result_nicknameChangeOk": "닉네임이 변경됐습니다.",
   "result_passwordChangeOk": "비밀번호가 변경됐습니다. 로그아웃됩니다. ",
   "result_passwordNotVerified": "비밀번호가 올바르지 않습니다.",
-
+  "nicknameOnEmail": "아이디 전달 완료!",
+  "passwordOnEmail": "임시 비밀번호 전달 완료",
+  "request_nicknameConfirm": "아이디를 이메일로 전달했습니다! 이메일을 확인해주세요",
+  "request_passwordConfirm": "임시 비밀번호를 이메일로 보냈습니다! 이메일을 확인해주세요",
   "changeNickNm": "닉네임 변경",
   "action_checkDup": "중복확인",
   "action_confirm": "확인",

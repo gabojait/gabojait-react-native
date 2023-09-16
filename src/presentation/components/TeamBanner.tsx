@@ -4,7 +4,7 @@ import React from 'react';
 import { View } from 'react-native';
 import PositionRecruiting from '../model/PositionRecruitng';
 import { PositionIcon } from './PartIcon';
-import { ArrowCard } from '@/presentation/components/BaseCard';
+import { BaseCard } from '@/presentation/components/BaseCard';
 
 const TeamBanner: React.FC<
   CardProps & { teamMembersCnt: PositionRecruiting[]; teamName: string; onArrowPress: () => void }
@@ -17,7 +17,7 @@ const TeamBanner: React.FC<
 
   return (
     <View style={[containerStyle, { paddingTop: 16 }]}>
-      <ArrowCard title={teamName} arrowColor={theme.colors.primary} onPress={onArrowPress}>
+      <BaseCard title={teamName} arrowColor={theme.colors.primary} onPress={onArrowPress}>
         <View style={{ paddingTop: 10, flexDirection: 'row', justifyContent: 'flex-start' }}>
           {teamMembers?.map((item, index) => (
             <PositionIcon
@@ -27,7 +27,7 @@ const TeamBanner: React.FC<
             />
           ))}
         </View>
-      </ArrowCard>
+      </BaseCard>
     </View>
   );
 };

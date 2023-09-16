@@ -19,7 +19,7 @@ import {
   UseQueryResult,
 } from 'react-query';
 import useGlobalStyles from '@/presentation/styles';
-import { isFavorite, mapToInitial } from '@/presentation/utils/util';
+import { isFavorite, mapToInitial, WIDTH } from '@/presentation/utils/util';
 import FavoriteUpdateDto from '@/data/model/Favorite/FavoriteUpdateDto';
 import { Icon, Input } from '@rneui/base';
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent';
@@ -28,7 +28,8 @@ import { favoriteKeys } from '@/reactQuery/key/FavoriteKeys';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 import { Loading } from '@/presentation/screens/Loading';
-import { InputModalContent } from '@/presentation/components/modalContent/InputModalContent';
+import { BottomInputModalContent } from '@/presentation/components/modalContent/BottomInputModalContent';
+import { ReportCompleteModal } from '@/presentation/components/ReportCompleteModal';
 
 const GroupDetail = ({ navigation, route }: MainStackScreenProps<'GroupDetail'>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -49,6 +50,7 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
   const modal = useModal();
   const { teamId } = route.params!;
   const queryClient = useQueryClient();
+  const reportStateRef = useRef<Input>(null);
   const { data, isLoading, error }: UseQueryResult<TeamDetailDto> = useQuery(
     [teamKeys.getTeam, teamId],
     () => getTeam(teamId),
@@ -68,17 +70,9 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
     },
   );
   const positions: Array<PositionRecruiting> = data?.teamMemberCnts || [];
-  const reportStateRef = useRef<Input>(null);
-
   const [reportButtonState, setReportButtonState] = useState({
     text: '신고하기',
     isDisabled: true,
-  });
-  const [dataList, setDataList] = useState({
-    data: [
-      { content: data?.projectDescription, title: '프로젝트 설명' },
-      { content: data?.expectation, title: '바라는 점' },
-    ],
   });
   useEffect(() => {
     if ((reportStateRef.current?.props?.value?.length ?? 0) > 0) {
@@ -90,56 +84,60 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
 
   const reportCompletedModal = () => {
     modal?.show({
-      content: (
-        <SymbolModalContent
-          title="신고완료!"
-          symbol={<Text style={{ fontSize: theme.emojiSize.md, textAlign: 'center' }}>✅</Text>}
-          text={'신고가 완료되었습니다.'}
-          yesButton={{ title: '확인', onPress: () => modal.hide() }}
-        />
-      ),
-      modalProps: { animationType: 'none', justifying: 'center' },
+      content: <ReportCompleteModal onPressYesButton={() => modal.hide()} />,
+      modalProps: { animationType: 'slide', justifying: 'bottom' },
     });
   };
 
   const handleReportModal = () => {
     modal?.show({
       content: (
-        <InputModalContent
-          ref={reportStateRef}
+        <BottomModalContent
           title="팀을 신고하시겠습니까?"
-          inputProps={{
-            style: { width: '100%' },
-            multiline: true,
-            maxLength: 500,
-            shape: 'none',
-          }}
-          inputWrapper={children => (
+          children={
             <View style={{ justifyContent: 'center', alignContent: 'center', width: '100%' }}>
               <Text style={[globalStyles.textLight13, { textAlign: 'center', paddingBottom: 10 }]}>
                 신고 사유를 적어주세요
               </Text>
-              <CardWrapper style={{ minHeight: 75, maxWidth: 400, padding: 20 }}>
-                {children}
+              <CardWrapper style={{ minHeight: 75, maxWidth: 400 }}>
+                <TextInput
+                  ref={reportStateRef}
+                  inputProps={{
+                    style: { width: '100%' },
+                    multiline: true,
+                    maxLength: 500,
+                    shape: 'none',
+                  }}
+                  value={reportState.text}
+                  style={{ width: '100%' }}
+                  onChangeText={(text: string) => {
+                    setReportState(prevState => ({ ...prevState, text: text }));
+                  }}
+                  multiline={true}
+                  maxLength={500}
+                />
               </CardWrapper>
             </View>
-          )}
+          }
           yesButton={{
-            title: reportButtonState.text,
+            title: '신고하기',
             onPress: () => {
+              console.log('신고하기');
               modal.hide();
               reportCompletedModal();
             },
-            disabled: reportButtonState.isDisabled,
           }}
           noButton={{
-            title: '나가기',
+            title: '취소',
             onPress: () => {
+              console.log('신고하기');
               modal.hide();
             },
           }}
-          neverSeeAgainShow={false}
-          onBackgroundPress={modal?.hide}
+          onInputValueChange={(text: string) => {
+            setReportState({ text: text });
+            console.log(`text:${text}`);
+          }}
         />
       ),
       modalProps: { animationType: 'slide', justifying: 'bottom' },
@@ -160,64 +158,22 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
 
   //TODO: BookMarkHeader로 묶어서 팀원찾기/프로필미리보기 에서 사용하기
   return (
-    <View>
+    <View style={{ backgroundColor: 'white' }}>
       <CustomHeader
         title={''}
         canGoBack={true}
         rightChildren={
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <TouchableOpacity onPress={handleFavoriteTeam} style={{ paddingRight: 25 }}>
-              <CustomIcon name="heart" size={30} color={isFavorite(data?.isFavorite!)} />
+            <TouchableOpacity onPress={handleFavoriteTeam} style={{ paddingEnd: 16 }}>
+              <CustomIcon name="heart" size={24} color={isFavorite(data?.isFavorite!)} />
             </TouchableOpacity>
             <TouchableOpacity onPress={handleReportModal}>
-              <Icon type="entypo" name="dots-three-vertical" size={20} />
+              <Icon type="material" name="pending" size={24} />
             </TouchableOpacity>
           </View>
         }
+        align="center"
       />
-      {/* <FlatList
-        style={{ backgroundColor: 'white' }}
-        showsVerticalScrollIndicator={false}
-        data={dataList.data}
-        ListHeaderComponent={
-          <CardWrapper style={[styles.card, { minHeight: 243 }]}>
-            <View
-              style={{
-                width: '100%',
-                paddingHorizontal: 10,
-                flex: 1,
-                justifyContent: 'space-between',
-              }}
-            >
-              <Text style={styles.teamname}>{data?.projectName}</Text>
-              <View style={styles.partIcon}>
-                {positions.map((item, index) => (
-                  <PositionWaveIcon
-                    currentCnt={item.currentCnt}
-                    recruitNumber={item.recruitCnt}
-                    textView={
-                      <Text style={globalStyles.itnitialText}>{mapToInitial(item.position)}</Text>
-                    }
-                    key={item.position}
-                  />
-                ))}
-              </View>
-              <FilledButton
-                title={'함께 하기'}
-                onPress={() => navigation.navigate('PositionSelector', { teamId: teamId })}
-              />
-            </View>
-          </CardWrapper>
-        }
-        renderItem={({ item }) => (
-          <View style={[styles.card, globalStyles.FlexStartCardWrapper, { minHeight: 243 }]}>
-            <View>
-              <Text style={styles.title}>{item.title}</Text>
-              <Text style={globalStyles.textLight13}>{item.content}</Text>
-            </View>
-          </View>
-        )}
-      /> */}
       <ScrollView style={[globalStyles.scrollView]}>
         <CardWrapper style={[styles.card, { minHeight: 243 }]}>
           <View
@@ -247,18 +203,18 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
             />
           </View>
         </CardWrapper>
-        <View style={[styles.card, globalStyles.FlexStartCardWrapper, { minHeight: 243 }]}>
+        <CardWrapper style={[styles.card, globalStyles.FlexStartCardWrapper, { minHeight: 243 }]}>
           <View>
             <Text style={styles.title}>프로젝트 설명</Text>
             <Text style={globalStyles.textLight13}>{data?.projectDescription}</Text>
           </View>
-        </View>
-        <View style={[styles.card, globalStyles.FlexStartCardWrapper, { minHeight: 243 }]}>
+        </CardWrapper>
+        <CardWrapper style={[styles.card, globalStyles.FlexStartCardWrapper, { minHeight: 243 }]}>
           <View>
             <Text style={styles.title}>바라는 점</Text>
             <Text style={globalStyles.textLight13}>{data?.expectation}</Text>
           </View>
-        </View>
+        </CardWrapper>
       </ScrollView>
     </View>
   );
@@ -268,7 +224,7 @@ const useStyles = makeStyles(theme => ({
   card: {
     paddingHorizontal: 13,
     paddingVertical: 17,
-    marginVertical: 5,
+    marginTop: 20,
     marginHorizontal: 20,
   },
   teamname: {
@@ -280,6 +236,11 @@ const useStyles = makeStyles(theme => ({
     fontSize: 20,
     fontWeight: theme.fontWeight.semibold,
     paddingBottom: 5,
+    color: theme.colors.black,
+  },
+  buttonTitle: {
+    fontSize: theme.fontSize.md,
+    fontWeight: theme.fontWeight.bold,
     color: theme.colors.black,
   },
   partIcon: {

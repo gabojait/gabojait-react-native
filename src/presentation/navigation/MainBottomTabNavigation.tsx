@@ -1,4 +1,4 @@
-import { BottomTabNavigationProp, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import Board from '@/presentation/navigation/BoardNavigation';
 import MyPage from '@/presentation/screens/Main/MyPage/Main';
@@ -14,6 +14,7 @@ const MainBottomTab = createBottomTabNavigator<MainBottomTabParamList>();
 const MainBottomTabNavigation = () => {
   const { theme } = useTheme();
   const globalStyles = useGlobalStyles();
+
   return (
     <MainBottomTab.Navigator
       backBehavior="none"

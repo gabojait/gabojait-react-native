@@ -14,6 +14,8 @@ import { Position } from '@/data/model/type/Position';
 import { TeamOrder } from '@/data/model/type/TeamOrder';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { Loading } from '@/presentation/screens/Loading';
+import { BoardSwitchActionType } from '@/redux/action_types/boardSwitchTypes';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
 const GroupList = ({ navigation, route }: BoardStackParamListProps<'GroupList'>) => {
   return (
@@ -46,6 +48,8 @@ const GroupListComponent = ({ navigation }: BoardStackParamListProps<'GroupList'
       return await getRecruiting({ ...(params as GetRecruitingProps), pageFrom: pageParam });
     },
   });
+  const dispatch = useAppDispatch();
+  const { switchTitle } = useAppSelector(state => state.boardSwitchReducer);
 
   async function getGuideModeModalKey() {
     try {
@@ -79,7 +83,7 @@ const GroupListComponent = ({ navigation }: BoardStackParamListProps<'GroupList'
         modal?.show({
           content: (
             <BottomModalContent
-              title="팀 찾기 모드로 변경하시겠어요?"
+              header="팀 찾기 모드로 변경하시겠어요?"
               children={
                 <View>
                   <Text style={styles.text}>팀 찾기 모드로 변경하면</Text>
@@ -120,6 +124,14 @@ const GroupListComponent = ({ navigation }: BoardStackParamListProps<'GroupList'
   useEffect(() => {
     handleBottomSlideModal();
   }, []);
+
+  //TODO: MainBottomTabNavigation에서 해결해보기
+  useEffect(() => {
+    const refreshSwitch = navigation.addListener('focus', () => {
+      dispatch({ type: BoardSwitchActionType.FIND_GROUP_SWITCH });
+    });
+    return refreshSwitch;
+  }, [navigation]);
 
   if (!data) {
     return null;

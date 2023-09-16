@@ -122,6 +122,48 @@ const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
       <MenuItem
         title="회원 정보 수정"
         onClick={() =>
+<<<<<<< HEAD
+          modal?.show({
+            content: (
+              <BottomModalContent
+                header={t('order_enterCurrentPassword')}
+                yesButton={{
+                  title: t('action_confirm'),
+                  onPress: async () => {
+                    // Todo: Password Check
+                    try {
+                      if (await verifyPassword({ password: currentPassword })) {
+                        navigation.navigate('UserModifier');
+                        modal.hide();
+                      }
+                    } catch (e) {
+                      modal.hide();
+                      modal.show({
+                        content: (
+                          <OkDialogModalContent
+                            text={t('result_passwordNotVerified')}
+                            onOkClick={() => modal.hide()}
+                          />
+                        ),
+                      });
+                    }
+                  },
+                }}
+                noButton={{
+                  title: t('action_goBack'),
+                  onPress: () => modal.hide(),
+                }}
+              >
+                <CustomInput
+                  onChangeText={v => {
+                    setCurrentPassword(v);
+                  }}
+                  secureTextEntry
+                />
+              </BottomModalContent>
+            ),
+          })
+=======
           // modal?.show({
           //   content: (
           //     <BottomModalContent
@@ -165,6 +207,7 @@ const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
           //   ),
           // })
           openFooConfirmDialog()
+>>>>>>> d5f5e64cce46ad1d9dd2ec714a6fae0d7e229332
         }
       />
       <MenuItem title="알림 설정" onClick={() => navigation.navigate('AlarmSetting')} />

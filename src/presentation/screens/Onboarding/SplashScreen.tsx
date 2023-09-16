@@ -5,13 +5,14 @@ import messaging from '@react-native-firebase/messaging';
 import { Notification } from '@/data/localdb';
 import CodePush, { DownloadProgress, LocalPackage } from 'react-native-code-push';
 import Splash from 'react-native-splash-screen';
+import { refreshToken } from '@/data/api/accounts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingSpinner from '../Loading';
 import { useNotificationRepository } from '@/data/localdb/notificationProvider';
 import { onlineManager } from 'react-query';
 import { AlertType } from '@/data/model/type/AlertType';
-import { axiosConfig } from '@/lib/axiosInstance';
 import { AsyncStorageKey } from '@/lib/asyncStorageKey';
+import { axiosConfig } from '@/lib/axiosInstance';
 
 const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
   async function requestUserPermission() {
@@ -127,6 +128,7 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
         screen: 'Login',
       });
     }
+    Splash.hide();
   }
 
   function handleFcmTokenRefresh() {
