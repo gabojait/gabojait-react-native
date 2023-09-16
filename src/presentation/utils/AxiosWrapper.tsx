@@ -21,19 +21,21 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'default'>>();
 
   async function requestRefreshToken(originalRequest: InternalAxiosRequestConfig) {
-    let refreshTokenValue = '';
-    console.log(`리프레시 토큰을 이용해 세션 유지를 시도합니다.`);
+    console.log('리프레시 토큰을 이용해 세션 유지를 시도합니다.');
     let fcmToken = await messaging().getToken();
 
-    await AsyncStorage.getItem('refreshToken', (err, result) => {
-      refreshTokenValue = result ?? '';
-    });
-
+    const refreshToken = await AsyncStorage.getItem('refreshToken');
+    if (!refreshToken) {
+      throw {
+        name: 'UNAUTHORIZED',
+        message: '로그인 세션이 만료됐습니다.',
+      };
+    }
     const request = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'refresh-Token': `Bearer ${refreshTokenValue}`,
+        'refresh-Token': `Bearer ${refreshToken}`,
       },
       body: JSON.stringify({ fcmToken: fcmToken }),
     };

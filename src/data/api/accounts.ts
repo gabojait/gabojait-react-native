@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import client from '@/lib/axiosInstance';
+import client, { axiosConfig } from '@/lib/axiosInstance';
 import EmailVerifyDto from '@/data/model/EmailVerifyDto';
 import LoginRequestDTO from '@/data/model/LoginRequestDto';
 import RegisterRequestDto from '@/data/model/RegisterRequestDto';
 import messaging from '@react-native-firebase/messaging';
 import { Platform } from 'react-native';
 import { FindPasswordDto } from '@/data/model/FindPasswordDto';
+import { ApiErrorCode } from '@/data/api/ApiErrorCode';
 
 export const login = async (dto: LoginRequestDTO) => {
   // Get the device token
@@ -34,21 +35,53 @@ export const checkNicknameDuplicate = async (nickname: string) => {
 };
 
 export const register = async (dto: RegisterRequestDto) => {
-  const result = await client.post('user', dto);
-  console.log(result);
-  return result;
+  const request = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + dto.emailAuthToken ?? '',
+    },
+    body: JSON.stringify({ ...dto, emailAuthToken: undefined }),
+  };
+  const result = await fetch(`${axiosConfig.baseURL}/user`, request);
+  if (result.ok) {
+    return result;
+  } else {
+    throw { name: 'TOKEN_UNAUTHORIZED', message: '승인되지 않은 요청입니다.' };
+  }
 };
 
 export const sendAuthCode = async (email: string) => {
-  const result = await client.post('contact', { email });
+  const request = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email }),
+  };
+
+  const result = await fetch(`${axiosConfig.baseURL}/contact`, request);
   console.log(result);
-  return result;
+  if (result.ok && (await result.json()).responseCode === 'VERIFICATION_CODE_SENT') {
+    return result.headers.get('Authorization') as string | null;
+  } else {
+    return null;
+  }
 };
 
-export const verifyAuthCode = async (request: EmailVerifyDto) => {
-  const result = await client.patch('contact', request);
+export const verifyAuthCode = async (requestDto: EmailVerifyDto) => {
+  const request = {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + requestDto.token,
+    },
+    body: JSON.stringify({ ...requestDto, token: undefined }),
+  };
+
+  const result = await fetch(`${axiosConfig.baseURL}/contact`, request);
   console.log(result);
-  return result;
+  // if (result.ok && (await result.json()).responseCode === 'EMAIL_VERIFIED')
 };
 
 export const findUserName = async (request: { email: string }) => {

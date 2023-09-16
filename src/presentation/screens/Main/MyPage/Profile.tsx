@@ -42,7 +42,7 @@ const Header = ({ navigation }: StackHeaderProps) => {
         name="chevron-left"
         size={25}
         onPress={() => (navigation.canGoBack() ? navigation.goBack() : null)}
-      ></Icon>
+      />
       <Link to={'/EditMain'} style={{ color: theme.colors.primary }}>
         수정
       </Link>
@@ -88,10 +88,12 @@ export const ProfileImage = ({
               mediaType: 'photo',
               selectionLimit: 1,
             });
-            if ((result.assets?.length ?? 0) === 1) setImage(result.assets?.[0]!);
+            if ((result.assets?.length ?? 0) === 1) {
+              setImage(result.assets?.[0]!);
+            }
           }}
           style={styles.profileTouchArea}
-        ></TouchableOpacity>
+        />
       </ImageBackground>
     </View>
   );
@@ -124,10 +126,11 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
 
   const profileExist = useMemo(() => isProfileExist(profile), [profile]);
 
-  if (profileExist)
+  if (profileExist) {
     navigation.setOptions({
       header: Header,
     });
+  }
 
   const globalStyles = useGlobalStyles();
 
@@ -145,7 +148,9 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
 
   const [refreshing, setRefreshing] = useState(false);
   useEffect(() => {
-    if (!pageLoading) setRefreshing(false);
+    if (!pageLoading) {
+      setRefreshing(false);
+    }
   }, [pageLoading]);
 
   const [image, setImage] = useState<Asset | null>(null);
@@ -282,7 +287,7 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
               ) : (
                 <Text>아직 직무 정보를 입력하지 않은 것 같아요.</Text>
               )}
-              <View style={{ height: 20 }}></View>
+              <View style={{ height: 20 }} />
 
               {profile.skills?.map((skill, idx) => (
                 <>
@@ -290,10 +295,10 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
                   <CustomSlider
                     text={skill.skillName}
                     value={Level[skill.level ?? 'low']}
-                    onChangeValue={function (value: number | number[]): void {}}
-                    minimumTrackTintColor={sliderColors[idx % 3]}
+                    enabled={false}
+                    minimumTrackTintColor={sliderColors[Level[skill.level ?? 'low'] - 1]}
                   />
-                  <View style={{ height: 10 }}></View>
+                  <View style={{ height: 10 }} />
                 </>
               ))}
 
@@ -304,14 +309,15 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
                   profile.portfolios?.map(portfolio => (
                     <ToggleButton
                       title={portfolio.portfolioName}
-                      icon={<MaterialIcon name={portfolioTypeIconName['pdf']} size={15} />}
+                      icon={<MaterialIcon name={portfolioTypeIconName.pdf} size={15} />}
                       style={{
                         backgroundColor: '#fff',
                         marginRight: 10,
                       }}
                       onClick={async () => {
-                        if (await Linking.canOpenURL(portfolio.portfolioUrl))
+                        if (await Linking.canOpenURL(portfolio.portfolioUrl)) {
                           Linking.openURL(portfolio.portfolioUrl);
+                        }
                       }}
                     />
                   ))
@@ -319,7 +325,7 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
                   <Text>아직 포트폴리오 정보를 입력하지 않은 것 같아요.</Text>
                 )}
               </View>
-              <View style={{ height: 1, width: '100%', backgroundColor: '#D9D9D9' }}></View>
+              <View style={{ height: 1, width: '100%', backgroundColor: '#D9D9D9' }} />
 
               <Text style={{ fontSize: 17, marginVertical: 14 }}>이전 프로젝트</Text>
               {profile.completedTeams?.length ?? 0 > 0 ? (
@@ -341,7 +347,7 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
               )}
               <View
                 style={{ height: 1, width: '100%', backgroundColor: '#D9D9D9', marginVertical: 14 }}
-              ></View>
+              />
 
               <Text h4 style={{ marginBottom: 11, fontWeight: theme.fontWeight.medium }}>
                 리뷰
@@ -551,7 +557,7 @@ export const CustomSlider = ({
         }}
         trackMarks={[1, 2]}
         renderTrackMarkComponent={() => (
-          <View style={{ width: 1, height: theme.sliderSize.md, backgroundColor: 'black' }}></View>
+          <View style={{ width: 1, height: theme.sliderSize.md, backgroundColor: 'black' }} />
         )}
         value={value}
         onValueChange={onChangeValue}
@@ -610,7 +616,7 @@ export const PortfolioView = ({
           {profile.profileDescription}
         </Text>
       ) : (
-        <View style={{ height: 24 }}></View>
+        <View style={{ height: 24 }} />
       )}
 
       <SolidCard>

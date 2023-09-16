@@ -1,9 +1,16 @@
 import useModal from '@/presentation/components/modal/useModal';
 import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent';
-import { MutationKey, MutationFunction, useMutation, UseMutationOptions } from 'react-query';
+import {
+  MutationKey,
+  MutationFunction,
+  useMutation,
+  UseMutationOptions,
+  UseMutationResult,
+} from 'react-query';
 import React, { useEffect } from 'react';
 import { ApiErrorCode, ApiErrorCodeType } from '@/data/api/ApiErrorCode';
 import { DialogLoading } from '@rneui/base/dist/Dialog/Dialog.Loading';
+import { UseBaseMutationResult } from 'react-query/types/react/types';
 
 /**
  * 회원가입에서와 같이 Mutation의 결과로 다이얼로그를 띄우는 커스텀 훅입니다.
@@ -73,7 +80,7 @@ export function useMutationDialog<TVariables, TData>(
           mutation.mutate(...params);
         }
       },
-    },
+    } as UseBaseMutationResult,
     modal,
   };
 }

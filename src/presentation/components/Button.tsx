@@ -1,21 +1,21 @@
-import {Button, useTheme, ButtonProps} from '@rneui/themed'
-import React from 'react'
-import {FontWeight, theme} from '../theme'
-import useGlobalStyles from '../styles'
+import { Button, useTheme, ButtonProps } from '@rneui/themed';
+import React from 'react';
+import { FontWeight, theme } from '../theme';
+import useGlobalStyles from '../styles';
 
-const sizeToRadius = (size: string) => (size == 'sm' || size == 'md' ? 'sm' : 'lg')
+const sizeToRadius = (size: string) => (size == 'sm' || size == 'md' ? 'sm' : 'lg');
 
 interface CustomButtomProps extends Omit<ButtonProps, 'size'> {
-  size?: 'xs' | 'sm' | 'md' | 'lg'
+  size?: 'xs' | 'sm' | 'md' | 'lg';
 }
 
 interface FilledButtonProps extends CustomButtomProps {
-  fontWeight?: FontWeight
+  fontWeight?: FontWeight;
 }
 
 interface OutlinedButtonProps extends CustomButtomProps {
-  shadow?: boolean
-  highlighted?: boolean
+  shadow?: boolean;
+  highlighted?: boolean;
 }
 
 /**
@@ -26,8 +26,8 @@ const FilledButton: React.FC<FilledButtonProps> = ({
   fontWeight = size == 'sm' ? theme.fontWeight?.semibold : theme.fontWeight?.bold,
   ...props
 }) => {
-  const {theme} = useTheme()
-  const styles = useGlobalStyles()
+  const { theme } = useTheme();
+  const styles = useGlobalStyles();
   return (
     <Button
       {...props}
@@ -49,8 +49,8 @@ const FilledButton: React.FC<FilledButtonProps> = ({
       containerStyle={[styles.buttonContainer, props.containerStyle]}
       activeOpacity={1}
     />
-  )
-}
+  );
+};
 
 /**
  * OutlinedButton은..
@@ -65,8 +65,8 @@ const OutlinedButton: React.FC<OutlinedButtonProps> = ({
   highlighted = false,
   ...props
 }) => {
-  const {theme} = useTheme()
-  const styles = useGlobalStyles()
+  const { theme } = useTheme();
+  const styles = useGlobalStyles();
   return (
     <Button
       {...props}
@@ -94,7 +94,7 @@ const OutlinedButton: React.FC<OutlinedButtonProps> = ({
       }}
       activeOpacity={1}
     />
-  )
-}
+  );
+};
 
-export {FilledButton, OutlinedButton}
+export { FilledButton, OutlinedButton };

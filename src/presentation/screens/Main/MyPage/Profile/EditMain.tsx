@@ -119,18 +119,9 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
   const globalStyles = useGlobalStyles();
   const dispatch = useAppDispatch();
 
-  if (profile && !profileLoading && !profileError)
+  if (profile && !profileLoading && !profileError) {
     return (
       <ScrollView style={{ padding: 20, backgroundColor: 'white' }}>
-        <ArrowCard
-          title="기본정보"
-          onPress={() => {
-            navigation.getParent()?.navigate('UserModifier');
-          }}
-          style={{ marginBottom: theme.spacing.xl }}
-        >
-          <></>
-        </ArrowCard>
         <CardWrapper style={[globalStyles.card, { marginBottom: theme.spacing.xl, padding: 20 }]}>
           <Text style={{ fontSize: theme.fontSize.md, fontWeight: theme.fontWeight.bold }}>
             자기소개
@@ -145,7 +136,7 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
             onChangeText={value => dispatch(setDescription(value))}
             numberOfLines={6}
             inputStyle={{ fontWeight: theme.fontWeight.light }}
-          ></Input>
+          />
         </CardWrapper>
         <ArrowCard
           title="포트폴리오"
@@ -159,14 +150,15 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
               profile.portfolios?.map(portfolio => (
                 <ToggleButton
                   title={portfolio.portfolioName}
-                  icon={<MaterialIcon name={portfolioTypeIconName['pdf']} size={15} />}
+                  icon={<MaterialIcon name={portfolioTypeIconName.pdf} size={15} />}
                   style={{
                     backgroundColor: '#fff',
                     marginRight: 10,
                   }}
                   onClick={async () => {
-                    if (await Linking.canOpenURL(portfolio.portfolioUrl))
+                    if (await Linking.canOpenURL(portfolio.portfolioUrl)) {
                       Linking.openURL(portfolio.portfolioUrl);
+                    }
                   }}
                 />
               ))
@@ -224,7 +216,7 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
             ) : (
               <Text>아직 직무 정보를 입력하지 않은 것 같아요.</Text>
             )}
-            <View style={{ height: 20 }}></View>
+            <View style={{ height: 20 }} />
 
             <Text style={{ fontSize: 14, marginBottom: 5 }}>희망 기술스택</Text>
             {profile.skills?.map((skill, idx) => (
@@ -237,14 +229,16 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
                     minimumTrackTintColor={sliderColors[idx % 3]}
                   />
                 </View>
-                <View style={{ height: 10 }}></View>
+                <View style={{ height: 10 }} />
               </>
             ))}
           </View>
         </ArrowCard>
       </ScrollView>
     );
-  else return <></>;
+  } else {
+    return <></>;
+  }
 };
 
 export default EditMain;

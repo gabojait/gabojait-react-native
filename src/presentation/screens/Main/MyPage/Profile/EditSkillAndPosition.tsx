@@ -56,19 +56,22 @@ const EditSkillAndPosition = () => {
 
       {skills.map((skill, idx) => (
         <SliderItem
-          sliderColor={sliderColors[idx % 3]}
+          sliderColor={sliderColors[Level[skill.level ?? 'low'] - 1]}
           value={Level[skill.level ?? 'low']}
           title={skill.skillName}
           onTitleChange={title => {
-            if (skill.skillId) dispatch(updateSkill(skill.skillId, { ...skill, skillName: title }));
+            if (skill.skillId) {
+              dispatch(updateSkill(skill.skillId, { ...skill, skillName: title }));
+            }
           }}
           isChecked={skill.isExperienced ?? false}
           onCheckboxChange={checked => {
-            if (skill.skillId)
+            if (skill.skillId) {
               dispatch(updateSkill(skill.skillId, { ...skill, isExperienced: checked }));
+            }
           }}
           onSliderChange={value => {
-            if (skill.skillId)
+            if (skill.skillId) {
               dispatch(
                 updateSkill(skill.skillId, {
                   ...skill,
@@ -77,9 +80,12 @@ const EditSkillAndPosition = () => {
                   )?.[0] as keyof typeof Level,
                 }),
               );
+            }
           }}
           onDelete={() => {
-            if (skill.skillId) dispatch(deleteSkill(skill.skillId));
+            if (skill.skillId) {
+              dispatch(deleteSkill(skill.skillId));
+            }
           }}
         />
       ))}
@@ -92,7 +98,7 @@ const EditSkillAndPosition = () => {
             dispatch(
               createSkill({
                 isExperienced: false,
-                level: 'mid',
+                level: 'MID',
                 skillId: skills.length + 1,
                 skillName: '',
               }),
@@ -161,7 +167,7 @@ const SliderItem = ({
               value={title}
               onChangeText={onTitleChange}
               renderErrorMessage={false}
-            ></Input>
+            />
           </Chip>
           <SquareIcon name="close" onPress={onDelete} />
         </View>
