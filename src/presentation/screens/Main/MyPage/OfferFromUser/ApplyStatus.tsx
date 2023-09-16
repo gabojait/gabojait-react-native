@@ -7,8 +7,8 @@ import { getMyTeam } from '@/data/api/team';
 import TeamDetailDto from '@/data/model/Team/TeamDetailDto';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { useQuery, UseQueryResult } from 'react-query';
-import ApplyList from '@/presentation/screens/Main/MyPage/ApplyStatus/ApplyList';
 import { Position } from '@/data/model/type/Position';
+import ApplyList from '@/presentation/screens/Main/MyPage/OfferFromUser/ApplyList';
 
 const ApplyStatus = ({ navigation, route }: MainStackScreenProps<'ApplyStatus'>) => {
   const Tab = createMaterialTopTabNavigator<PositionTabParamList>();
