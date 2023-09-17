@@ -2,7 +2,7 @@ import Gabojait from '@/presentation/components/icon/Gabojait';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import { Text, useTheme } from '@rneui/themed';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Alert, Platform, TouchableOpacity, View } from 'react-native';
+import { Alert, Platform, View } from 'react-native';
 import { signOut } from '@/redux/action/login';
 import { RootStackNavigationProps } from '@/presentation/navigation/RootNavigation';
 import useModal from '@/presentation/components/modal/useModal';
@@ -14,7 +14,11 @@ import { useNotificationRepository } from '@/data/localdb/notificationProvider';
 import { Input } from '@rneui/base';
 import { InputModalContent } from '@/presentation/components/modalContent/InputModalContent';
 import CodePush, { LocalPackage } from 'react-native-code-push';
-import UpdateState = CodePush.UpdateState;
+import {
+  TouchableHighlight,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from 'react-native-gesture-handler';
 
 const MenuItem = ({
   title,
@@ -28,6 +32,7 @@ const MenuItem = ({
   const { theme } = useTheme();
   return (
     <TouchableOpacity
+      disabled={!onClick}
       onPress={onClick}
       style={{
         flexDirection: 'row',
@@ -128,6 +133,7 @@ const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
         process.env[`CODEPUSH_DEPLOYMENT_KEY_STAGING_${Platform.OS.toUpperCase()}`] || __DEV__,
     [latestVersionPackage],
   );
+  const repository = useNotificationRepository();
   const onVersionClick = async () => {
     if (!isDev) {
       return;
@@ -137,12 +143,30 @@ const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
     if (currTime - lastClick > 2000) {
       setClickCnt(0);
     } else {
-      if (clickCnt >= 5) {
-        Alert.alert('개발자 히든메뉴', '이 모달은 Debug/Staging 빌드에서만 활성화됩니다.', [
-          { text: '버튼1', onPress: () => {} },
-          { text: '버튼1', onPress: () => {} },
-          { text: '버튼1', onPress: () => {} },
-        ]);
+      if (clickCnt >= 4) {
+        Alert.alert(
+          '개발자 히든메뉴',
+          `OS: ${Platform.OS} ${Platform.Version}
+          ${
+            latestVersionPackage != null
+              ? '코드푸시 버전: ' +
+                latestVersionPackage?.appVersion +
+                '/' +
+                latestVersionPackage?.label
+              : ''
+          }`,
+          [
+            {
+              text: '알림 저장용 로컬 DB 초기화',
+              onPress: () => {
+                repository?.clear();
+              },
+            },
+            {
+              text: '닫기',
+            },
+          ],
+        );
         setClickCnt(0);
       } else {
         setClickCnt(prev => prev + 1);
@@ -167,7 +191,24 @@ const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
             ?.replace('OnboardingNavigation', { screen: 'Login' });
         }}
       />
-      <MenuItem title="버전" text="1.0.0." onClick={onVersionClick} />
+      <TouchableOpacity onPress={onVersionClick}>
+        <MenuItem title="버전" text="1.0.0." />
+      </TouchableOpacity>
+      {clickCnt > 0 && (
+        <View
+          style={{
+            position: 'absolute',
+            width: '100%',
+            bottom: '7%',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <View style={{ backgroundColor: theme.colors.grey5, padding: 10, borderRadius: 38 }}>
+            <Text>{5 - clickCnt} 번 더 누르면 개발자 모드가 활성화됩니다.</Text>
+          </View>
+        </View>
+      )}
     </View>
   );
 };
