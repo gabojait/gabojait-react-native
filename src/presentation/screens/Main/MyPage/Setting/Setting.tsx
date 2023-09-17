@@ -1,8 +1,8 @@
 import Gabojait from '@/presentation/components/icon/Gabojait';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
-import { useTheme, Text } from '@rneui/themed';
-import React, { useRef } from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { Text, useTheme } from '@rneui/themed';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Alert, Platform, TouchableOpacity, View } from 'react-native';
 import { signOut } from '@/redux/action/login';
 import { RootStackNavigationProps } from '@/presentation/navigation/RootNavigation';
 import useModal from '@/presentation/components/modal/useModal';
@@ -13,6 +13,8 @@ import { useAppDispatch } from '@/redux/hooks';
 import { useNotificationRepository } from '@/data/localdb/notificationProvider';
 import { Input } from '@rneui/base';
 import { InputModalContent } from '@/presentation/components/modalContent/InputModalContent';
+import CodePush, { LocalPackage } from 'react-native-code-push';
+import UpdateState = CodePush.UpdateState;
 
 const MenuItem = ({
   title,
@@ -109,6 +111,46 @@ const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
       ),
     });
   };
+
+  const [clickCnt, setClickCnt] = useState(0);
+  const [lastClick, setLastClick] = useState(0);
+  const [latestVersionPackage, setLatestVersionPackage] = useState<LocalPackage | null>(null);
+
+  useEffect(() => {
+    CodePush.getUpdateMetadata().then(r => {
+      setLatestVersionPackage(r);
+    });
+  }, []);
+
+  const isDev = useMemo(
+    () =>
+      latestVersionPackage?.deploymentKey ===
+        process.env[`CODEPUSH_DEPLOYMENT_KEY_STAGING_${Platform.OS.toUpperCase()}`] || __DEV__,
+    [latestVersionPackage],
+  );
+  const onVersionClick = async () => {
+    if (!isDev) {
+      return;
+    }
+    const currTime = new Date().getTime();
+    console.log(currTime, lastClick);
+    if (currTime - lastClick > 2000) {
+      setClickCnt(0);
+    } else {
+      if (clickCnt >= 5) {
+        Alert.alert('개발자 히든메뉴', '이 모달은 Debug/Staging 빌드에서만 활성화됩니다.', [
+          { text: '버튼1', onPress: () => {} },
+          { text: '버튼1', onPress: () => {} },
+          { text: '버튼1', onPress: () => {} },
+        ]);
+        setClickCnt(0);
+      } else {
+        setClickCnt(prev => prev + 1);
+      }
+    }
+    setLastClick(new Date().getTime());
+  };
+
   return (
     <View style={{ backgroundColor: 'white', flex: 1 }}>
       <MenuItem title="회원 정보 수정" onClick={() => openFooConfirmDialog()} />
@@ -125,7 +167,7 @@ const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
             ?.replace('OnboardingNavigation', { screen: 'Login' });
         }}
       />
-      <MenuItem title="버전" text="1.0.0." />
+      <MenuItem title="버전" text="1.0.0." onClick={onVersionClick} />
     </View>
   );
 };

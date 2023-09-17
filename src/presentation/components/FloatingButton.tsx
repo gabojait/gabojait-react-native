@@ -24,11 +24,11 @@ const FloatingButton = ({ title, onPress }: FloatingButtonProps) => {
         position: 'absolute',
         borderRadius: PixelRatio.getPixelSizeForLayoutSize(38),
         width:
-          ScreenWidth > 400
+          ScreenWidth > 350
             ? PixelRatio.getPixelSizeForLayoutSize(38)
             : PixelRatio.getPixelSizeForLayoutSize(50),
         height:
-          ScreenWidth > 400
+          ScreenWidth > 350
             ? PixelRatio.getPixelSizeForLayoutSize(38)
             : PixelRatio.getPixelSizeForLayoutSize(50),
         marginHorizontal: PixelRatio.getPixelSizeForLayoutSize(2),
