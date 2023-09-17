@@ -1,4 +1,5 @@
 export default interface EmailVerifyDto {
   email: string;
-  verificationCode: string
+  verificationCode: string;
+  token: string
 }

@@ -25,21 +25,6 @@ const Board = () => {
           headerTitle: '팀 찾기',
         }}
       />
-      <BoardStack.Screen
-        name="TeamMate"
-        component={TeamMate}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <BoardStack.Screen
-        options={{
-          header: HomeHeader,
-          headerTitle: '팀원 찾기',
-        }}
-        name="TeamMate"
-        component={TeammateList}
-      />
     </BoardStack.Navigator>
   );
 };

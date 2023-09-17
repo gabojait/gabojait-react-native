@@ -8,6 +8,7 @@ import { View } from 'react-native';
 import useGlobalStyles from '@/presentation/styles';
 import LoadingSpinner from '@/presentation/screens/Loading';
 import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent';
+import { UseBaseMutationResult } from 'react-query/types/react/types';
 
 /**
  * 회원가입에서와 같이 Mutation의 결과로 다이얼로그를 띄우는 커스텀 훅입니다.
@@ -134,7 +135,7 @@ export function useMutationDialog<TVariables, TData>(
           mutation.mutate(...params);
         }
       },
-    },
+    } as UseBaseMutationResult,
     modal,
   };
 }

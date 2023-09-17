@@ -1,25 +1,24 @@
 import Gabojait from '@/presentation/components/icon/Gabojait';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
-import { useTheme, Text, ButtonProps } from '@rneui/themed';
-import React, { forwardRef, useEffect, useRef, useState } from 'react';
-import { Modal, TextInput, TouchableOpacity, View } from 'react-native';
+import { Text, useTheme } from '@rneui/themed';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Alert, Platform, View } from 'react-native';
 import { signOut } from '@/redux/action/login';
 import { RootStackNavigationProps } from '@/presentation/navigation/RootNavigation';
 import useModal from '@/presentation/components/modal/useModal';
-import BottomModalContent, {
-  BottomSlideModalContentProps,
-} from '@/presentation/components/modalContent/BottomModalContent';
 import { useTranslation } from 'react-i18next';
-import CustomInput from '@/presentation/components/CustomInput';
 import { verifyPassword } from '@/data/api/accounts';
 import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent';
 import { useAppDispatch } from '@/redux/hooks';
 import { useNotificationRepository } from '@/data/localdb/notificationProvider';
-import { useOverlay } from '@toss/use-overlay';
-import { CustomInputProps } from '@/presentation/components/props/StateProps';
-import { Input, InputProps } from '@rneui/base';
-import CustomModal from '@/presentation/components/modal/Modal';
+import { Input } from '@rneui/base';
 import { InputModalContent } from '@/presentation/components/modalContent/InputModalContent';
+import CodePush, { LocalPackage } from 'react-native-code-push';
+import {
+  TouchableHighlight,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from 'react-native-gesture-handler';
 
 const MenuItem = ({
   title,
@@ -33,6 +32,7 @@ const MenuItem = ({
   const { theme } = useTheme();
   return (
     <TouchableOpacity
+      disabled={!onClick}
       onPress={onClick}
       style={{
         flexDirection: 'row',
@@ -76,7 +76,6 @@ const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
         <InputModalContent
           ref={modalInputRef} // Assign the ref to the BottomModal
           visible={modal?.modal}
-          title={t('order_enterCurrentPassword')}
           onBackgroundPress={modal?.hide}
           inputProcessor={text => {
             return text.replace(/[가-힣ㄱ-ㅎㅏ-ㅣ]/, '');
@@ -90,11 +89,12 @@ const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
               // Todo: Password Check
               try {
                 const value = modalInputRef.current?.props?.value;
-                if (value)
+                if (value) {
                   if (await verifyPassword({ password: value })) {
                     navigation.navigate('UserModifier');
                     modal?.hide();
                   }
+                }
               } catch (e) {
                 modal?.hide();
                 modal?.show({
@@ -112,104 +112,72 @@ const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
             title: t('action_goBack'),
             onPress: modal?.hide,
           }}
-        ></InputModalContent>
+        />
       ),
     });
   };
 
+  const [clickCnt, setClickCnt] = useState(0);
+  const [lastClick, setLastClick] = useState(0);
+  const [latestVersionPackage, setLatestVersionPackage] = useState<LocalPackage | null>(null);
+
+  useEffect(() => {
+    CodePush.getUpdateMetadata().then(r => {
+      setLatestVersionPackage(r);
+    });
+  }, []);
+
+  const isDev = useMemo(
+    () =>
+      latestVersionPackage?.deploymentKey ===
+        process.env[`CODEPUSH_DEPLOYMENT_KEY_STAGING_${Platform.OS.toUpperCase()}`] || __DEV__,
+    [latestVersionPackage],
+  );
+  const repository = useNotificationRepository();
+  const onVersionClick = async () => {
+    if (!isDev) {
+      return;
+    }
+    const currTime = new Date().getTime();
+    console.log(currTime, lastClick);
+    if (currTime - lastClick > 2000) {
+      setClickCnt(0);
+    } else {
+      if (clickCnt >= 4) {
+        Alert.alert(
+          '개발자 히든메뉴',
+          `OS: ${Platform.OS} ${Platform.Version}
+          ${
+            latestVersionPackage != null
+              ? '코드푸시 버전: ' +
+                latestVersionPackage?.appVersion +
+                '/' +
+                latestVersionPackage?.label
+              : ''
+          }`,
+          [
+            {
+              text: '알림 저장용 로컬 DB 초기화',
+              onPress: () => {
+                repository?.clear();
+              },
+            },
+            {
+              text: '닫기',
+            },
+          ],
+        );
+        setClickCnt(0);
+      } else {
+        setClickCnt(prev => prev + 1);
+      }
+    }
+    setLastClick(new Date().getTime());
+  };
+
   return (
     <View style={{ backgroundColor: 'white', flex: 1 }}>
-      <MenuItem
-        title="회원 정보 수정"
-        onClick={() =>
-<<<<<<< HEAD
-          modal?.show({
-            content: (
-              <BottomModalContent
-                header={t('order_enterCurrentPassword')}
-                yesButton={{
-                  title: t('action_confirm'),
-                  onPress: async () => {
-                    // Todo: Password Check
-                    try {
-                      if (await verifyPassword({ password: currentPassword })) {
-                        navigation.navigate('UserModifier');
-                        modal.hide();
-                      }
-                    } catch (e) {
-                      modal.hide();
-                      modal.show({
-                        content: (
-                          <OkDialogModalContent
-                            text={t('result_passwordNotVerified')}
-                            onOkClick={() => modal.hide()}
-                          />
-                        ),
-                      });
-                    }
-                  },
-                }}
-                noButton={{
-                  title: t('action_goBack'),
-                  onPress: () => modal.hide(),
-                }}
-              >
-                <CustomInput
-                  onChangeText={v => {
-                    setCurrentPassword(v);
-                  }}
-                  secureTextEntry
-                />
-              </BottomModalContent>
-            ),
-          })
-=======
-          // modal?.show({
-          //   content: (
-          //     <BottomModalContent
-          //       title={t('order_enterCurrentPassword')}
-          //       yesButton={{
-          //         title: t('action_confirm'),
-          //         onPress: async () => {
-          //           // Todo: Password Check
-          //           try {
-          //             if (await verifyPassword({ password: currentPassword })) {
-          //               navigation.navigate('UserModifier');
-          //               modal.hide();
-          //             }
-          //           } catch (e) {
-          //             modal.hide();
-          //             modal.show({
-          //               content: (
-          //                 <OkDialogModalContent
-          //                   text={t('result_passwordNotVerified')}
-          //                   onOkClick={() => modal.hide()}
-          //                 />
-          //               ),
-          //             });
-          //           }
-          //         },
-          //       }}
-          //       noButton={{
-          //         title: t('action_goBack'),
-          //         onPress: () => modal.hide(),
-          //       }}
-          //     >
-          //       <CustomInput
-          //         onChangeText={value => {
-          //           const filteredValue = value.replace(/[^가-힣ㄱ-ㅎㅏ-ㅣ]/gi, '');
-          //           console.info(filteredValue);
-          //           setCurrentPassword(filteredValue);
-          //         }}
-          //         secureTextEntry
-          //       />
-          //     </BottomModalContent>
-          //   ),
-          // })
-          openFooConfirmDialog()
->>>>>>> d5f5e64cce46ad1d9dd2ec714a6fae0d7e229332
-        }
-      />
+      <MenuItem title="회원 정보 수정" onClick={() => openFooConfirmDialog()} />
       <MenuItem title="알림 설정" onClick={() => navigation.navigate('AlarmSetting')} />
       <MenuItem title="기타" onClick={() => navigation.navigate('Etc')} />
       <MenuItem
@@ -223,7 +191,24 @@ const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
             ?.replace('OnboardingNavigation', { screen: 'Login' });
         }}
       />
-      <MenuItem title="버전" text="1.0.0." />
+      <TouchableOpacity onPress={onVersionClick}>
+        <MenuItem title="버전" text="1.0.0." />
+      </TouchableOpacity>
+      {clickCnt > 0 && (
+        <View
+          style={{
+            position: 'absolute',
+            width: '100%',
+            bottom: '7%',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <View style={{ backgroundColor: theme.colors.grey5, padding: 10, borderRadius: 38 }}>
+            <Text>{5 - clickCnt} 번 더 누르면 개발자 모드가 활성화됩니다.</Text>
+          </View>
+        </View>
+      )}
     </View>
   );
 };

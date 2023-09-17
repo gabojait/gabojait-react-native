@@ -11,6 +11,8 @@ import LoadingSpinner from '../Loading';
 import { useNotificationRepository } from '@/data/localdb/notificationProvider';
 import { onlineManager } from 'react-query';
 import { AlertType } from '@/data/model/type/AlertType';
+import { AsyncStorageKey } from '@/lib/asyncStorageKey';
+import { axiosConfig } from '@/lib/axiosInstance';
 
 const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
   async function requestUserPermission() {
@@ -76,30 +78,67 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
     return false;
   }
 
+  const checkLoginAndRefresh = async (refreshToken: string, fcmToken: string) => {
+    const request = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'refresh-Token': `Bearer ${refreshToken}`,
+      },
+      body: JSON.stringify({ fcmToken: fcmToken }),
+    };
+    const response = await fetch(`${axiosConfig.baseURL}/user/token`, request);
+    const body = await response.json();
+    if (response.ok) {
+      await AsyncStorage.setItem(
+        AsyncStorageKey.accessToken,
+        response.headers.get('authorization')!,
+      );
+      await AsyncStorage.setItem(
+        AsyncStorageKey.refreshToken,
+        response.headers.get('refresh-token')!,
+      );
+    } else {
+      throw {
+        name: body.responseCode,
+        message: body.responseMessage,
+      };
+    }
+  };
+
   async function handleLogin() {
     const token = await messaging().getToken();
     const isEverBeenLoginValue = await isEverBeenLogin();
     if (isEverBeenLoginValue) {
       console.log('토큰을 이용한 로그인 갱신 시도');
-      await refreshToken({ fcmToken: token });
-      navigation.replace('MainBottomTabNavigation', {
-        screen: 'Home',
-      });
-      Splash.hide();
+      // isEverBeenLogin 에서 토큰 없는 경우 어차피 걸림
+      checkLoginAndRefresh((await AsyncStorage.getItem(AsyncStorageKey.refreshToken))!, token)
+        .then(res => {
+          navigation.replace('MainBottomTabNavigation', {
+            screen: 'Home',
+          });
+        })
+        .catch(e => {
+          navigation.replace('OnboardingNavigation', {
+            screen: 'Login',
+          });
+        });
     } else {
       navigation.replace('OnboardingNavigation', {
         screen: 'Login',
       });
     }
+    Splash.hide();
   }
 
   function handleFcmTokenRefresh() {
     messaging().onTokenRefresh(async token => {
-      // Todo: save token to server
-      console.log('New FCM token: ', token);
-      if (await isEverBeenLogin()) {
-        refreshToken({ fcmToken: token });
-      }
+      // FIXME: 로그인 흐름이 이상해질까봐 우선 제거했습니다.
+      // // Todo: save token to server
+      // console.log('New FCM token: ', token);
+      // if (await isEverBeenLogin()) {
+      //   await refreshToken({ fcmToken: token });
+      // }
     });
   }
 
@@ -121,8 +160,9 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
           throw new Error('로컬 DB 셋업 안됨');
         }
         await notificationRepository.createTableIfNotExists();
-        if (!AlertType.hasOwnProperty(remoteMessage.data?.type ?? ''))
+        if (!AlertType.hasOwnProperty(remoteMessage.data?.type ?? '')) {
           throw new Error('올바른 알림 유형이 아닙니다!');
+        }
         const notification = new Notification({
           read: false,
           id: remoteMessage.messageId ?? '-9999',
@@ -151,7 +191,9 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
     checkNetworkConnection();
     console.log('네트워크 연결 상태 체크 완료');
     // 개발모드이거나 개발모드가 아닌데 코드푸시 업데이트가 존재하지 않으면 로그인 처리
-    if (__DEV__ || (!__DEV__ && !(await checkCodePush()))) await handleLogin();
+    if (__DEV__ || (!__DEV__ && !(await checkCodePush()))) {
+      await handleLogin();
+    }
     Splash.hide();
     const authStatus = await requestUserPermission();
     console.log('알림 권한 요청 완료. 알림 권한:', authStatus);

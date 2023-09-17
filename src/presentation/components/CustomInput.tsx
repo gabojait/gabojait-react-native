@@ -1,8 +1,8 @@
-import { Icon, Input, makeStyles } from '@rneui/themed';
-import React, { forwardRef, useState } from 'react';
+import { Icon, Input, makeStyles, Text, useTheme } from '@rneui/themed';
+import React, { forwardRef, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import color from '../res/styles/color';
-import type { CustomInputProps, ValidatorState } from '@/presentation/components/props/StateProps';
+import { CustomInputProps, ValidatorState } from '@/presentation/components/props/StateProps';
 
 const CustomInput = forwardRef(
   (
@@ -10,23 +10,20 @@ const CustomInput = forwardRef(
       size = 'sm',
       shape = 'underline',
       placeholder,
-      state,
       inputContainerStyle,
-      additionalValidator,
+      rightChildren,
+      validatorResult = { state: ValidatorState.none },
       ...props
     }: CustomInputProps,
     ref: React.ForwardedRef<any>,
   ) => {
     const [secure, setSecure] = useState(true);
-    const styles = useStyles({ size, shape, state, value: props.value, additionalValidator });
+    const styles = useStyles({ size, shape, value: props.value, validatorResult });
     const iconColors = {
       none: color.transparent,
       valid: color.primary,
       invalid: color.transparent,
     };
-    const stateAdditionalValidatorApplied = additionalValidator
-      ? additionalValidator(props.value) != undefined
-      : true;
 
     const inputIcon = props.secureTextEntry ? (
       <Icon
@@ -42,51 +39,76 @@ const CustomInput = forwardRef(
         name="checkmark-circle-outline"
         type="ionicon"
         size={18}
-        color={
-          iconColors[
-            state === 'valid'
-              ? additionalValidator
-                ? additionalValidator(props.value) ?? 'none'
-                : 'valid'
-              : 'none'
-          ]
-        }
+        color={iconColors[validatorResult.state]}
       />
     );
+    const { theme } = useTheme();
 
     return (
-      <View style={{ width: '100%', justifyContent: 'flex-end' }}>
-        <Input
-          {...props}
-          ref={ref}
-          disabled={props.disabled}
-          containerStyle={[styles.container, props.containerStyle]}
-          inputContainerStyle={[
-            shape === 'underline'
-              ? styles.underlineInputContainer
-              : shape === 'round'
-              ? styles.roundInputContainer
-              : { borderBottomWidth: 0 },
-            inputContainerStyle,
-          ]}
-          style={[
-            shape === 'underline'
-              ? styles.underlineInput
-              : shape === 'round'
-              ? styles.roundInput
-              : { borderBottomWidth: 0 },
-            props.style,
-          ]}
-          placeholderTextColor={color.grey}
-          placeholder={placeholder}
-          rightIcon={inputIcon}
-          secureTextEntry={props.secureTextEntry ? secure : false}
-          labelStyle={styles.label}
-          renderErrorMessage={state != undefined && stateAdditionalValidatorApplied}
-          autoCapitalize="none"
-          autoComplete="off"
-          autoCorrect={false}
-        />
+      <View style={[{ marginBottom: theme.spacing.xs }, props.containerStyle]}>
+        <View
+          style={{
+            width: '100%',
+            justifyContent: 'flex-end',
+            flexDirection: 'row',
+          }}
+        >
+          <View style={{ flex: 5 }}>
+            <Input
+              {...props}
+              ref={ref}
+              disabled={props.disabled}
+              containerStyle={[styles.container, { marginBottom: 0 }]}
+              inputContainerStyle={[
+                shape === 'underline'
+                  ? styles.underlineInputContainer
+                  : shape === 'round'
+                  ? styles.roundInputContainer
+                  : { borderBottomWidth: 0 },
+                inputContainerStyle,
+              ]}
+              style={[
+                shape === 'underline'
+                  ? styles.underlineInput
+                  : shape === 'round'
+                  ? styles.roundInput
+                  : { borderBottomWidth: 0 },
+                props.style,
+              ]}
+              placeholderTextColor={color.grey}
+              placeholder={placeholder}
+              rightIcon={inputIcon}
+              secureTextEntry={props.secureTextEntry ? secure : false}
+              labelStyle={styles.label}
+              renderErrorMessage={false}
+              autoCapitalize="none"
+              autoComplete="off"
+              autoCorrect={false}
+            />
+          </View>
+          <View
+            id={'rightChildren'}
+            style={{
+              flexDirection: 'column',
+              alignContent: 'stretch',
+              alignItems: 'stretch',
+              marginStart: theme.spacing.xs,
+            }}
+          >
+            {rightChildren && rightChildren}
+          </View>
+        </View>
+        {
+          <Text
+            style={{
+              color: theme.colors.error,
+              marginTop: theme.spacing.xs,
+              marginStart: theme.spacing.sm,
+            }}
+          >
+            {validatorResult.message && validatorResult.message}
+          </Text>
+        }
       </View>
     );
   },
@@ -100,8 +122,7 @@ const useStyles = makeStyles(
     {
       shape = 'underline',
       size = 'md',
-      state = 'none',
-      additionalValidator,
+      validatorResult = { state: ValidatorState.none },
       value,
     }: CustomInputProps,
   ) => {
@@ -110,54 +131,52 @@ const useStyles = makeStyles(
         none: color.lightGrey,
         valid: color.primary,
         invalid: color.error,
-      } as { [key in ValidatorState]: string },
+      },
       round: {
         none: color.grey,
         valid: color.primary,
         invalid: color.error,
-      } as { [key in ValidatorState]: string },
+      },
       none: {
         none: color.grey,
         valid: color.primary,
         invalid: color.error,
-      } as { [key in ValidatorState]: string },
+      },
     };
-    // 추가 Validator를 적용하고 난 state
-    const stateAdditionalValidatorApplied =
-      state === 'valid' ? (additionalValidator ? additionalValidator(value) : 'valid') : state;
 
+    const state = validatorResult.state;
     return {
       roundInputContainer: {
         borderWidth: 1.3,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        borderColor: shapeToColors[shape][stateAdditionalValidatorApplied],
+        borderColor: shapeToColors[shape][state],
         borderRadius: theme.radius[size],
         padding: 3,
-        paddingStart: 0,
+        // paddingStart: 0,
         paddingEnd: 10,
       },
       roundInput: {
         padding: 12,
         flex: 1,
       },
-      container: { paddingHorizontal: 0 },
+      container: { paddingHorizontal: 0, marginBottom: 0 },
       underlineInputContainer: {
         borderBottomWidth: 1.3,
-        borderBottomColor: shapeToColors[shape][stateAdditionalValidatorApplied],
+        borderBottomColor: shapeToColors[shape][state],
         marginEnd: 10,
       },
       underlineInput: {
         flex: 10,
-        fontSize: 14,
+        fontSize: theme.fontSize.xs,
       },
       icon: {
         flex: 1,
         justifyContent: 'center',
-        paddingHorizontal: 14,
+        paddingHorizontal: theme.spacing.sm,
       },
       label: {
-        fontSize: 14,
+        fontSize: theme.fontSize.md,
         color: color.grey2,
       },
     };

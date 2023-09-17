@@ -9,4 +9,5 @@ export default interface RegisterRequestDto {
   passwordReEntered?: string;
   username?: string;
   fcmToken?: string;
+  emailAuthToken?: string;
 }

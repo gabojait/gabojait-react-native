@@ -3,8 +3,8 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { useTheme } from '@rneui/themed';
 import { Dimensions } from 'react-native';
 import React from 'react';
-import OfferList from '@/presentation/screens/Main/MyPage/OfferSentUser/OfferList';
 import { Position } from '@/data/model/type/Position';
+import OfferList from '@/presentation/screens/Main/MyPage/OfferSentToUser/OfferList';
 
 const OfferSentUser = ({ navigation, route }: MainStackScreenProps<'OfferSentUser'>) => {
   const Tab = createMaterialTopTabNavigator<PositionTabParamList>();

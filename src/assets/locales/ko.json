@@ -15,5 +15,17 @@
   "action_checkDup": "중복확인",
   "action_confirm": "확인",
   "action_goBack": "돌아가기",
-  "order_enterCurrentPassword": "현재 비밀번호 입력"
+
+  "order_enterCurrentPassword": "현재 비밀번호 입력",
+
+  "register_username_invalid_format": "올바른 아이디 형식이 아닙니다.",
+  "register_username_invalid_dup": "이미 존재하는 아이디입니다.",
+  "register_authCode_invalid_format": "올바른 인증번호 형식이 아닙니다.",
+  "register_authCode_invalid_not_match": "인증번호가 일치하지 않습니다.",
+  "register_nickname_invalid_format": "올바른 닉네임 형식이 아닙니다.",
+  "register_nickname_invalid_dup": "이미 존재하는 닉네임입니다.",
+  "register_password_invalid_format": "올바른 비밀번호 형식이 아닙니다.",
+  "register_password_not_match": "비밀번호가 일치하지 않습니다.",
+  "register_email_invalid_format": "올바른 이메일 형식이 아닙니다.",
+  "register_email_invalid_dup": "이미 존재하는 이메일입니다."
 }

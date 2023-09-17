@@ -1,6 +1,6 @@
 import { CheckBox, makeStyles, Text, useTheme } from '@rneui/themed';
-import React, { useEffect, useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Animated, Easing, ScrollView, View } from 'react-native';
 import { FilledButton, OutlinedButton } from '@/presentation/components/Button';
 import { OnboardingScreenProps } from '@/presentation/navigation/types';
 import CustomInput from '@/presentation/components/CustomInput';
@@ -15,7 +15,7 @@ import {
 } from '@/presentation/utils/util';
 import { Gender } from '@/data/model/Gender';
 import DatePickerModalContent from '@/presentation/components/modalContent/DatePickerModalContent';
-import { ValidatorState } from '@/presentation/components/props/StateProps';
+import { CustomInputProps, ValidatorState } from '@/presentation/components/props/StateProps';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import AgreementItem, { AgreementState } from '@/presentation/components/Agreement';
 import DropdownButton from '@/presentation/components/DropdownWithoutItem';
@@ -33,6 +33,21 @@ import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import '@/lib/date';
+import useForm from '@/presentation/components/useForm';
+import useValidator, {
+  FormField,
+  ValidationLevel,
+} from '@/presentation/screens/Onboarding/useValidator';
+import Collapsible from 'react-native-collapsible';
+import useFormField from '@/presentation/screens/Onboarding/useFormField';
+import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent';
+
+export type RegisterRequestForm = { [key in keyof RegisterRequestDto]: FormField<any> };
+
+export interface ValidatorResult {
+  state: ValidatorState;
+  message?: string;
+}
 
 const agreementItems = [
   {
@@ -59,6 +74,16 @@ const QueryKey = {
   ],
   register: (registerDto: RegisterRequestDto) => ['register', registerDto],
 } as const;
+const ValidatorInput = (props: CustomInputProps & { validator: FormField<string> }) => {
+  return (
+    <CustomInput
+      {...props}
+      value={props.validator.value}
+      onChangeText={props.validator.setValue}
+      validatorResult={props.validator.state}
+    />
+  );
+};
 
 const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
   const [registerState, setRegisterState] = useState<RegisterRequestDto>({
@@ -101,8 +126,13 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
         content: t('emailOk'),
       },
       onSuccessClick(result) {
-        setLastEmailVerified(registerState.email!);
+        setLastEmailVerified(stateSeperatedForm.email?.value!);
         console.log(result);
+      },
+    },
+    {
+      onSuccess: token => {
+        setEmailAuthToken(token);
       },
     },
   );
@@ -131,6 +161,12 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
         navigation.navigate('RegisterCompleted');
       },
     },
+    {
+      onSuccess: async response => {
+        await AsyncStorage.setItem('accessToken', response.headers.get('authorization')!);
+        await AsyncStorage.setItem('refreshToken', response.headers.get('refresh-token')!);
+      },
+    },
   );
 
   const [agreementState, setAgreementState] = useState<AgreementState>({
@@ -150,170 +186,287 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
 
   function isValid(regex: RegExp, text?: string): ValidatorState {
     if (text?.length == 0 || !text) {
-      return 'none';
+      return ValidatorState.none;
     } else {
-      return regex.test(text) ? 'valid' : 'invalid';
+      return regex.test(text) ? ValidatorState.valid : ValidatorState.invalid;
     }
   }
 
   // Todo: 우선 단순 리퀘 구현. 추후 에러 핸들링 등 예정.
 
   const checkAllFieldsValidate = () => {
-    //FIXME: 개똥코드. 고쳐야해요
-    return (
-      usernameRegex.test(registerState.username ?? '') &&
-      nicknameRegex.test(registerState.nickname ?? '') &&
-      userIdDupCheckMutation.isSuccess &&
-      nickNmDupCheckMutation.isSuccess &&
-      passwordRegex.test(registerState.password ?? '') &&
-      emailRegex.test(registerState.email ?? '') &&
-      agreementState.checkedAll &&
-      emailDupCheckMutation.isSuccess &&
-      emailVerificationMutation.isSuccess &&
-      lastEmailVerified === registerState.email
+    const validatorResults = Object.values(stateSeperatedForm).map(formField =>
+      formField?.formatValidate(),
     );
+    return !validatorResults.find(result => result.state === ValidatorState.invalid);
   };
 
   const [lastEmailVerified, setLastEmailVerified] = useState('');
+  const [emailAuthToken, setEmailAuthToken] = useState<string | null>(null);
+
+  const stateSeperatedForm: RegisterRequestForm = {
+    username: useValidator<string>(
+      '',
+      (value: string) => {
+        if (!usernameRegex.test(value)) {
+          return {
+            state: ValidatorState.invalid,
+            message: t('register_username_invalid_format'),
+          };
+        } else {
+          return { state: ValidatorState.none };
+        }
+      },
+      async value => {
+        try {
+          const result = await userIdDupCheckMutation.mutateAsync(value);
+          console.log('mutationResult: ', result);
+          return { state: ValidatorState.valid };
+        } catch (e) {
+          return { state: ValidatorState.invalid, message: (e as Error)?.message };
+        }
+      },
+      ValidationLevel.Format,
+    ),
+    nickname: useValidator<string>(
+      '',
+      (value: string) => {
+        if (!nicknameRegex.test(value)) {
+          return {
+            state: ValidatorState.invalid,
+            message: t('register_nickname_invalid_format'),
+          };
+        } else {
+          return { state: ValidatorState.none };
+        }
+      },
+      async value => {
+        try {
+          const result = await nickNmDupCheckMutation.mutateAsync(value);
+          console.log('mutationResult: ', result);
+          return { state: ValidatorState.valid };
+        } catch (e) {
+          return { state: ValidatorState.invalid, message: (e as Error)?.message };
+        }
+      },
+      ValidationLevel.Format,
+    ),
+    password: useValidator<string>(
+      '',
+      (value: string) => {
+        console.log('valid: ', isValid(passwordRegex, value));
+        if (!passwordRegex.test(value)) {
+          return {
+            state: ValidatorState.invalid,
+            message: t('register_password_invalid_format'),
+          };
+        } else {
+          return { state: ValidatorState.none };
+        }
+      },
+      undefined,
+      ValidationLevel.Format,
+    ),
+    passwordReEntered: useValidator<string>(
+      '',
+      (value: string) => {
+        if (!passwordRegex.test(value) || value !== stateSeperatedForm.password?.value) {
+          return {
+            state: ValidatorState.invalid,
+            message: t('register_password_not_match'),
+          };
+        } else {
+          return { state: ValidatorState.none };
+        }
+      },
+      undefined,
+      ValidationLevel.Format,
+    ),
+    email: useValidator<string>(
+      '',
+      (value: string) => {
+        if (!emailRegex.test(value)) {
+          return {
+            state: ValidatorState.invalid,
+            message: t('register_email_invalid_format'),
+          };
+        } else {
+          return { state: ValidatorState.none };
+        }
+      },
+      async value => {
+        try {
+          const result = await emailDupCheckMutation.mutateAsync(value);
+
+          return { state: ValidatorState.valid };
+        } catch (e) {
+          return { state: ValidatorState.invalid, message: (e as Error)?.message };
+        }
+      },
+      ValidationLevel.Format,
+    ),
+    authCode: useValidator<string>(
+      '',
+      (value: string) => {
+        if (!authCodeRegex.test(value)) {
+          return {
+            state: ValidatorState.invalid,
+            message: t('register_authCode_invalid_format'),
+          };
+        } else {
+          return { state: ValidatorState.none };
+        }
+      },
+      useCallback(
+        async (value: string) => {
+          try {
+            const result = await emailVerificationMutation.mutateAsync({
+              email: stateSeperatedForm.email?.value,
+              verificationCode: value,
+              token: emailAuthToken,
+            });
+            return { state: ValidatorState.valid };
+          } catch (e) {
+            return { state: ValidatorState.invalid, message: (e as Error)?.message };
+          }
+        },
+        [emailAuthToken],
+      ),
+      ValidationLevel.Format,
+    ),
+    gender: useFormField(Gender.Female),
+  };
+  const authCodeCollapsed = useMemo(
+    () =>
+      !(
+        emailDupCheckMutation.isSuccess &&
+        lastEmailVerified === stateSeperatedForm.email?.value &&
+        emailAuthToken != null
+      ),
+    [emailDupCheckMutation.status, lastEmailVerified, emailAuthToken],
+  );
 
   return (
     <View>
       <ScrollView style={styles.view} showsVerticalScrollIndicator={false}>
         <View style={styles.item}>
-          <View style={{ flex: 5 }}>
-            <CustomInput
-              state={isValid(usernameRegex, registerState.username)}
-              label="아이디 입력"
-              value={registerState.username}
-              onChangeText={(text: string) => {
-                setRegisterState(prevState => ({ ...prevState, username: text }));
-              }}
-              additionalValidator={_ => {
-                console.log(userIdDupCheckMutation.isSuccess ? 'valid' : 'invalid');
-                return userIdDupCheckMutation.isSuccess ? 'valid' : 'none';
-              }}
-            />
-          </View>
-          <OutlinedButton
-            title="중복확인"
-            size="sm"
-            onPress={() => {
-              if (usernameRegex.test(registerState.username ?? '')) {
-                dispatch(signOut());
-                userIdDupCheckMutation?.mutate(registerState.username!);
-              }
-            }}
-          />
-        </View>
-        <View style={styles.item}>
-          <View style={{ flex: 5 }}>
-            <CustomInput
-              state={isValid(nicknameRegex, registerState.nickname)}
-              label="닉네임 입력"
-              value={registerState.nickname}
-              onChangeText={(text: string) => {
-                setRegisterState(prevState => ({ ...prevState, nickname: text }));
-              }}
-              additionalValidator={_ => {
-                return nickNmDupCheckMutation.isSuccess ? 'valid' : 'none';
-              }}
-            />
-          </View>
-          <OutlinedButton
-            title="중복확인"
-            size="sm"
-            onPress={() => {
-              if (nicknameRegex.test(registerState.nickname ?? '')) {
-                dispatch(signOut());
-                nickNmDupCheckMutation.mutate(registerState.nickname!);
-              }
-            }}
-          />
-        </View>
-        <View style={styles.item}>
-          <CustomInput
-            state={isValid(passwordRegex, registerState.password)}
-            label="비밀번호 입력"
-            secureTextEntry
-            value={registerState.password}
-            onChangeText={(text: string) => {
-              setRegisterState(prevState => ({ ...prevState, password: text }));
-            }}
-          />
-        </View>
-        <View style={styles.item}>
-          <CustomInput
-            state={
-              (registerState.passwordReEntered?.length ?? 0) != 0
-                ? registerState.password == registerState.passwordReEntered &&
-                  passwordRegex.test(registerState.passwordReEntered ?? '')
-                  ? 'valid'
-                  : 'invalid'
-                : 'none'
+          <ValidatorInput
+            validator={stateSeperatedForm.username!}
+            shape={'round'}
+            placeholder="아이디 입력"
+            rightChildren={
+              <OutlinedButton
+                style={{ flex: 1 }}
+                title="중복확인"
+                size="sm"
+                onPress={() => {
+                  dispatch(signOut());
+                  stateSeperatedForm.username?.validate();
+                  // if (stateSeperatedForm.username.state) {
+                  // dispatch(signOut());
+                  //   userIdDupCheckMutation?.mutate(stateSeperatedForm.username.value);
+                  // }
+                  // stateSeperatedForm.username.validate();
+                }}
+              />
             }
-            label="비밀번호 재입력"
+          />
+        </View>
+        <View style={styles.item}>
+          <ValidatorInput
+            validator={stateSeperatedForm.nickname!}
+            placeholder="닉네임 입력"
+            shape={'round'}
+            rightChildren={
+              <OutlinedButton
+                style={{ flex: 1 }}
+                title="중복확인"
+                size="sm"
+                onPress={async () => {
+                  dispatch(signOut());
+                  await stateSeperatedForm.nickname?.validate();
+                  // if (stateSeperatedForm.nickname.state) {
+                  // nickNmDupCheckMutation.mutate(stateSeperatedForm.nickname.value);
+                  // }
+                  // await stateSeperatedForm.nickname.validate();
+                }}
+              />
+            }
+          />
+        </View>
+        <View style={styles.item}>
+          <ValidatorInput
+            shape={'round'}
+            placeholder="비밀번호 입력"
             secureTextEntry
-            value={registerState.passwordReEntered}
-            onChangeText={(text: string) => {
-              setRegisterState(prevState => ({ ...prevState, passwordReEntered: text }));
-            }}
+            validator={stateSeperatedForm.password!}
+          />
+        </View>
+        <View style={styles.item}>
+          <ValidatorInput
+            shape={'round'}
+            validator={stateSeperatedForm.passwordReEntered!}
+            placeholder="비밀번호 재입력"
+            secureTextEntry
           />
         </View>
 
         <View style={styles.item}>
-          <View style={{ flex: 5 }}>
-            <CustomInput
-              state={isValid(emailRegex, registerState.email)}
-              label="이메일 입력"
-              value={registerState.email}
-              keyboardType="email-address"
-              onChangeText={(text: string) => {
-                setRegisterState(prevState => ({ ...prevState, email: text }));
-              }}
-            />
-          </View>
-          <OutlinedButton
-            title="인증하기"
-            size="sm"
-            onPress={() => {
-              if (registerState.email && emailRegex.test(registerState.email)) {
-                dispatch(signOut());
-                emailDupCheckMutation.mutate(registerState.email!);
-              }
-            }}
-          />
-        </View>
-        {emailDupCheckMutation.isSuccess && lastEmailVerified === registerState.email && (
-          <View style={styles.item}>
-            <View style={{ flex: 5 }}>
-              <CustomInput
-                state={isValid(authCodeRegex, registerState.authCode)}
-                label="인증번호 입력"
-                value={registerState.authCode}
-                onChangeText={(text: string) => {
-                  setRegisterState(prevState => ({ ...prevState, authCode: text }));
+          <ValidatorInput
+            placeholder="이메일 입력"
+            shape="round"
+            keyboardType="email-address"
+            validator={stateSeperatedForm.email!}
+            rightChildren={
+              <OutlinedButton
+                title="인증하기"
+                size="sm"
+                style={{ flex: 1 }}
+                onPress={() => {
+                  dispatch(signOut());
+                  stateSeperatedForm.email?.validate();
+                  // if (registerState.email && emailRegex.test(registerState.email)) {
+                  //   emailDupCheckMutation.mutate(registerState.email!);
+                  // }
                 }}
               />
-            </View>
-            <OutlinedButton
-              title="인증확인"
-              size="sm"
-              onPress={() => {
-                if (registerState.authCode && authCodeRegex.test(registerState.authCode)) {
-                  console.log(AsyncStorage.getItem('accessToken'));
-                  emailVerificationMutation.mutate({
-                    email: registerState.email ?? '',
-                    verificationCode: registerState.authCode ?? '',
-                  });
-                }
-              }}
+            }
+          />
+        </View>
+        {!authCodeCollapsed && (
+          <View style={styles.item}>
+            <CustomInput
+              shape="round"
+              placeholder="인증번호 입력"
+              rightChildren={
+                <OutlinedButton
+                  title="인증확인"
+                  size="sm"
+                  style={{ flex: 1 }}
+                  onPress={() => {
+                    if (emailAuthToken != null) {
+                      stateSeperatedForm.authCode?.validate();
+                    }
+                    // if (registerState.authCode && authCodeRegex.test(registerState.authCode)) {
+                    //   emailVerificationMutation.mutate({
+                    //     email: registerState.email ?? '',
+                    //     verificationCode: registerState.authCode ?? '',
+                    //   });
+                    // }
+                  }}
+                />
+              }
+              value={stateSeperatedForm.authCode?.value}
+              onChangeText={stateSeperatedForm.authCode?.setValue}
+              validatorResult={stateSeperatedForm.authCode?.state}
             />
           </View>
         )}
 
-        <View style={styles.itemBox}>
+        <View>
           <Text style={styles.label}>생년월일 입력</Text>
           <DropdownButton
+            style={{ borderColor: theme.colors.grey3 }}
             text={
               !registerState.birthdate
                 ? '생년월일 입력'
@@ -346,7 +499,7 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
         </View>
 
         <View style={styles.itemBox}>
-          <Text style={styles.label}>성별</Text>
+          <Text style={styles.label}>성별 선택</Text>
           <View style={styles.genderView}>
             <OutlinedButton
               title="여자"
@@ -415,9 +568,16 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
           title="가입하기"
           onPress={() => {
             if (checkAllFieldsValidate()) {
+              const req: RegisterRequestDto = {};
+              Object.entries(stateSeperatedForm).forEach(([k, v]) => {
+                const key = k as keyof RegisterRequestDto;
+                req[key] = v.value;
+              });
+              console.log(req);
               registerMutation.mutate({
-                ...registerState,
+                ...req,
                 birthdate: new Date(registerState.birthdate!).format('yyyy-MM-dd'),
+                emailAuthToken: emailAuthToken,
               });
             }
           }}
@@ -455,7 +615,7 @@ const useStyles = makeStyles(theme => ({
   item: {
     flex: 1,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   itemBox: {
     paddingTop: 30,
@@ -470,7 +630,7 @@ const useStyles = makeStyles(theme => ({
   label: {
     fontSize: 14,
     color: color.grey2,
-    paddingBottom: 24,
+    paddingBottom: theme.spacing.sm,
   },
 }));
 

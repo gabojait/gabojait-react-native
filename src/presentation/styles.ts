@@ -54,7 +54,7 @@ const useGlobalStyles = makeStyles(theme => ({
     shadowRadius: 2,
   },
   buttonContainer: {
-    padding: 4,
+    padding: 0,
     paddingHorizontal: 0,
   },
   centerText: {
