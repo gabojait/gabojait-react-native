@@ -5,6 +5,7 @@ import React from 'react';
 import HomeHeader from '../screens/Headers/HomeHeader';
 import GroupList from '../screens/Main/Home/Group/GroupList';
 import { RootStackNavigationProps } from './RootNavigation';
+import TeammateList from '../screens/Main/Home/TeamMate/TeammateList';
 type BoardNavigationProp<T extends keyof BoardStackParamList = 'GroupList'> = StackNavigationProp<
   BoardStackParamList,
   T
@@ -23,6 +24,14 @@ const Board = () => {
         options={{
           header: HomeHeader,
           headerTitle: '팀 찾기',
+        }}
+      />
+      <BoardStack.Screen
+        name="TeamMate"
+        component={TeammateList}
+        options={{
+          header: HomeHeader,
+          headerTitle: '팀원 찾기',
         }}
       />
     </BoardStack.Navigator>

@@ -27,5 +27,19 @@
   "register_password_invalid_format": "올바른 비밀번호 형식이 아닙니다.",
   "register_password_not_match": "비밀번호가 일치하지 않습니다.",
   "register_email_invalid_format": "올바른 이메일 형식이 아닙니다.",
-  "register_email_invalid_dup": "이미 존재하는 이메일입니다."
+  "register_email_invalid_dup": "이미 존재하는 이메일입니다.",
+
+  "teamCreateOk": "팀 생성 완료!",
+  "todoAfterTeamCreate": "팀원을 초대하고 팀 지원을 받아보세요",
+  "warn_openchatlink_invalid_format": "알맞은 링크가 아니에요",
+  "warn_teammate_notExist": "팀원이 존재하지 않아요!",
+  "warn_input_empty": "빈 입력란이 있습니다",
+  "require_openchatlink_valid": "유효한 카카오톡 오픈채팅 링크를 첨부해주세요!",
+  "require_teammate": "프로젝트를 함께할 팀원들을 알려주세요!",
+  "peptalk_input_empty": "최대한 자세히 적어주시면\n 프로젝트 모집에 도움이 될 수 있어요!",
+
+  "position_frontend": "프론트엔드",
+  "position_backend": "백엔드",
+  "position_designer": "디자이너",
+  "position_manager": "기획자"
 }

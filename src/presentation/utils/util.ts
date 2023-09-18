@@ -1,6 +1,7 @@
 import { Position } from '@/data/model/type/Position';
 import { PositionSymbol } from '../model/type/Position';
 import { Dimensions } from 'react-native';
+import { t } from 'i18next';
 
 export const usernameRegex = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{5,15}$/; //5~15자 영문, 숫자 조합
 export const passwordRegex =
@@ -53,10 +54,10 @@ export const getFirstAlphabet = (text: string) => {
 export const chagneToOfficialWord = (text: string | undefined) => {
   let word = '';
 
-  if (text == 'BACKEND') word = '백엔드';
-  else if (text == 'FRONTEND') word = '프론트엔드';
-  else if (text == 'DESIGNER') word = 'UI/UX 디자이너';
-  else if (text == 'PM') word = 'PM';
+  if (text == 'BACKEND') word = t('position_backend');
+  else if (text == 'FRONTEND') word = t('프론트엔드');
+  else if (text == 'DESIGNER') word = t('position_designer');
+  else if (text == 'PM') word = t('position_manager');
   else word = '';
 
   return word;

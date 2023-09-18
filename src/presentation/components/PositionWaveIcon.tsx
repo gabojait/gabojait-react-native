@@ -48,7 +48,6 @@ const useStyles = makeStyles(theme => ({
     borderWidth: 1,
     borderColor: theme.colors.primary,
     position: 'absolute',
-    paddingHorizontal: 20,
   },
 }));
 

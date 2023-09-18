@@ -34,16 +34,18 @@ import { KoreanPosition } from '@/presentation/model/type/Position';
 import { Asset, launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { setProfileImage } from '@/redux/action/profileActions';
 import { getUser } from '@/redux/action/login';
+import CustomIcon from '@/presentation/components/icon/Gabojait';
+
 const Header = ({ navigation }: StackHeaderProps) => {
   const { theme } = useTheme();
   return (
     <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 20 }}>
-      <Icon
-        name="chevron-left"
-        size={25}
+      <CustomIcon
+        name="arrow-back"
+        size={30}
         onPress={() => (navigation.canGoBack() ? navigation.goBack() : null)}
       />
-      <Link to={'/EditMain'} style={{ color: theme.colors.primary }}>
+      <Link to={'/EditMain'} style={{ fontSize: 20, color: theme.colors.primary }}>
         수정
       </Link>
     </View>

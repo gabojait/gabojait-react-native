@@ -19,6 +19,7 @@ import { ModalType, useMutationDialog } from '@/reactQuery/util/useMutationDialo
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { createTeam } from '@/data/api/team';
 import { HEIGHT } from '@/presentation/utils/util';
+import { t } from 'i18next';
 
 const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'>) => {
   const { theme } = useTheme();
@@ -45,8 +46,8 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
         navigation.goBack();
       },
       resultModalContent: {
-        title: '팀 생성 완료!',
-        content: '팀원을 초대하고 팀 지원을 받아보세요',
+        title: t('teamCreateOk'),
+        content: t('todoAfterTeamCreate'),
       },
     },
   );
@@ -80,12 +81,12 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
     const result = pattern.test(teamCreateState.openChatUrl);
 
     if (result) return true;
-    else throw Error('유효한 카카오톡 오픈채팅 링크가 아닙니다');
+    else throw Error(t('warn_openchatlink_invalid_format'));
   }
 
   function isRecruitCntValidate() {
     if (teamCreateState.teamMemberRecruitCnts.length == 0) {
-      throw Error('팀원이 존재하지 않습니다');
+      throw Error(t('warn_teammate_notExist'));
     } else return true;
   }
 
@@ -103,7 +104,7 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
       openChatUrl.length != 0
     ) {
       return true;
-    } else throw Error('빈 입력란이 있습니다');
+    } else throw Error(t('warn_input_empty'));
   }
 
   function isAllInputValidate() {
@@ -135,10 +136,10 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
     modal?.show({
       content: (
         <SymbolModalContent
-          title="빈 입력란이 있어요!"
+          title={t('warn_input_empty')}
           symbol={<Text style={{ fontSize: theme.emojiSize.md, textAlign: 'center' }}>😚</Text>}
-          text={'최대한 자세히 적어주시면\n 프로젝트 모집에 도움이 될 수 있어요!'}
-          yesButton={{ title: '확인', onPress: () => modal.hide() }}
+          text={t('peptalk_input_empty')}
+          yesButton={{ title: t('action_confirm'), onPress: () => modal.hide() }}
         />
       ),
       modalProps: { animationType: 'none', justifying: 'center' },
@@ -149,10 +150,10 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
     modal?.show({
       content: (
         <SymbolModalContent
-          title="알맞은 링크가 아니에요!"
+          title={t('warn_openchatlink_invalid_format')}
           symbol={<Text style={{ fontSize: theme.emojiSize.md, textAlign: 'center' }}>🧐</Text>}
-          text={'유효한 카카오톡 오픈채팅 링크를 첨부해주세요!'}
-          yesButton={{ title: '확인', onPress: () => modal.hide() }}
+          text={t('require_openchatlink_valid')}
+          yesButton={{ title: t('action_confirm'), onPress: () => modal.hide() }}
         />
       ),
       modalProps: { animationType: 'none', justifying: 'center' },
@@ -163,9 +164,9 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
     modal?.show({
       content: (
         <SymbolModalContent
-          title="팀원이 없어요!"
+          title={t('warn_teammate_notExist')}
           symbol={<Text style={{ fontSize: theme.emojiSize.md, textAlign: 'center' }}>🫥</Text>}
-          text={'프로젝트를 함께할 팀원들을 알려주세요!'}
+          text={t('require_teammate')}
           yesButton={{ title: '확인', onPress: () => modal.hide() }}
         />
       ),
@@ -305,7 +306,7 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
           </TouchableOpacity>
         </View>
 
-        <View style={{ paddingHorizontal: 30 }}>
+        <View style={{ paddingTop: 20, paddingBottom: 50 }}>
           <FilledButton
             title={'완료'}
             disabled={false}
@@ -313,13 +314,6 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
               if (isAllInputValidate()) {
                 handleCreateTeam();
               }
-            }}
-          />
-          <FilledButton
-            title={'삭제하기'}
-            buttonStyle={{ backgroundColor: theme.colors.grey0 }}
-            onPress={() => {
-              DeleteConfirmModal();
             }}
           />
         </View>

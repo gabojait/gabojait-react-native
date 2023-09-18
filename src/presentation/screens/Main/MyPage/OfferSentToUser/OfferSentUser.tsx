@@ -5,6 +5,7 @@ import { Dimensions } from 'react-native';
 import React from 'react';
 import { Position } from '@/data/model/type/Position';
 import OfferList from '@/presentation/screens/Main/MyPage/OfferSentToUser/OfferList';
+import { t } from 'i18next';
 
 const OfferSentUser = ({ navigation, route }: MainStackScreenProps<'OfferSentUser'>) => {
   const Tab = createMaterialTopTabNavigator<PositionTabParamList>();
@@ -13,7 +14,7 @@ const OfferSentUser = ({ navigation, route }: MainStackScreenProps<'OfferSentUse
   return (
     <>
       <Tab.Navigator
-        initialRouteName="Frontend"
+        initialRouteName={t('position_frontend')}
         initialLayout={{ width: Dimensions.get('window').width }}
         screenOptions={{
           tabBarInactiveTintColor: theme.colors.black,
@@ -37,22 +38,22 @@ const OfferSentUser = ({ navigation, route }: MainStackScreenProps<'OfferSentUse
         }}
       >
         <Tab.Screen
-          name="Frontend"
+          name={t('position_frontend')}
           component={OfferList}
           initialParams={{ position: Position.Frontend }}
         />
         <Tab.Screen
-          name="Backend"
+          name={t('position_backend')}
           component={OfferList}
           initialParams={{ position: Position.Backend }}
         />
         <Tab.Screen
-          name="Designer"
+          name={t('position_designer')}
           component={OfferList}
           initialParams={{ position: Position.Designer }}
         />
         <Tab.Screen
-          name="PM"
+          name={t('position_manager')}
           component={OfferList}
           initialParams={{ position: Position.Manager }}
         />

@@ -43,7 +43,7 @@ export const PositionDropdownMaker = ({
     { key: Position.Backend, value: KoreanPosition.BACKEND, disabled: false },
     { key: Position.Frontend, value: KoreanPosition.FRONTEND, disabled: false },
     { key: Position.Designer, value: KoreanPosition.DESIGNER, disabled: false },
-    // { key: Position.Manager, value: KoreanPosition.MANAGER, disabled: false },
+    { key: Position.Manager, value: KoreanPosition.MANAGER, disabled: false },
   ]);
 
   useEffect(() => {

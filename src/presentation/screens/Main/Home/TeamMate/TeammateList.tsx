@@ -5,6 +5,7 @@ import { Dimensions } from 'react-native';
 import MateList from '@/presentation/screens/Main/Home/TeamMate/MateList';
 import { Position } from '@/data/model/type/Position';
 import { PositionTabParamList } from '@/presentation/navigation/types';
+import { t } from 'i18next';
 
 const Tab = createMaterialTopTabNavigator<PositionTabParamList>();
 
@@ -12,7 +13,7 @@ const TeammateList = () => {
   const { theme } = useTheme();
   return (
     <Tab.Navigator
-      initialRouteName="Frontend"
+      initialRouteName={t('position_frontend')}
       initialLayout={{ width: Dimensions.get('window').width }}
       screenOptions={{
         tabBarInactiveTintColor: theme.colors.black,
@@ -36,21 +37,25 @@ const TeammateList = () => {
       }}
     >
       <Tab.Screen
-        name="Frontend"
+        name={t('position_frontend')}
         component={MateList}
         initialParams={{ position: Position.Frontend }}
       />
       <Tab.Screen
-        name="Backend"
+        name={t('position_backend')}
         component={MateList}
         initialParams={{ position: Position.Backend }}
       />
       <Tab.Screen
-        name="Designer"
+        name={t('position_designer')}
         component={MateList}
         initialParams={{ position: Position.Designer }}
       />
-      <Tab.Screen name="PM" component={MateList} initialParams={{ position: Position.Manager }} />
+      <Tab.Screen
+        name={t('position_manager')}
+        component={MateList}
+        initialParams={{ position: Position.Manager }}
+      />
     </Tab.Navigator>
   );
 };

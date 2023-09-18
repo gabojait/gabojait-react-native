@@ -121,7 +121,7 @@ const ApplyListComponent = ({
                     onPress={() => acceptOfferMutation.mutate([item.offerId, true])}
                     size="sm"
                     title={'함께하기'}
-                    style={{ borderRadius: 5 }}
+                    style={{ borderRadius: 5, paddingBottom: 10 }}
                   />
                   <OutlinedButton
                     size="sm"

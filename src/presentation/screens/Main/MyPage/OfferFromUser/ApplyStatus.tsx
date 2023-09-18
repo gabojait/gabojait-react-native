@@ -9,6 +9,7 @@ import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { useQuery, UseQueryResult } from 'react-query';
 import { Position } from '@/data/model/type/Position';
 import ApplyList from '@/presentation/screens/Main/MyPage/OfferFromUser/ApplyList';
+import { t } from 'i18next';
 
 const ApplyStatus = ({ navigation, route }: MainStackScreenProps<'ApplyStatus'>) => {
   const Tab = createMaterialTopTabNavigator<PositionTabParamList>();
@@ -35,7 +36,7 @@ const ApplyStatus = ({ navigation, route }: MainStackScreenProps<'ApplyStatus'>)
         {data?.projectName}
       </Text>
       <Tab.Navigator
-        initialRouteName="Frontend"
+        initialRouteName={t('position_frontend')}
         initialLayout={{ width: Dimensions.get('window').width }}
         screenOptions={{
           tabBarInactiveTintColor: theme.colors.black,
@@ -59,22 +60,22 @@ const ApplyStatus = ({ navigation, route }: MainStackScreenProps<'ApplyStatus'>)
         }}
       >
         <Tab.Screen
-          name="Frontend"
+          name={t('position_frontend')}
           component={ApplyList}
           initialParams={{ position: Position.Frontend }}
         />
         <Tab.Screen
-          name="Backend"
+          name={t('position_backend')}
           component={ApplyList}
           initialParams={{ position: Position.Backend }}
         />
         <Tab.Screen
-          name="Designer"
+          name={t('position_designer')}
           component={ApplyList}
           initialParams={{ position: Position.Designer }}
         />
         <Tab.Screen
-          name="PM"
+          name={t('position_manager')}
           component={ApplyList}
           initialParams={{ position: Position.Manager }}
         />

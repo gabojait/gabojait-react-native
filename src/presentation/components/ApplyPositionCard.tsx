@@ -62,7 +62,11 @@ export const ApplyPositionCard = ({
   return (
     <CardWrapper style={[styles.card]}>
       <View style={styles.container}>
-        <View style={{ alignItems: 'center' }}>
+        <View
+          style={{
+            alignItems: 'center',
+          }}
+        >
           <PositionWaveIcon
             currentCnt={data.currentCnt}
             recruitNumber={data.recruitCnt}
@@ -73,7 +77,7 @@ export const ApplyPositionCard = ({
             }
             key={data.position}
           />
-          <Text style={styles.text}>{data.position}</Text>
+          <Text style={styles.text}>{state.title}</Text>
         </View>
         <FilledButton
           title={state.buttonTitle}
@@ -108,6 +112,9 @@ const useStyles = makeStyles(theme => ({
     fontSize: theme.fontSize.sm,
     fontWeight: theme.fontWeight.semibold,
     paddingTop: 10,
+    width: 100,
+    textAlignVertical: 'bottom',
+    textAlign: 'center',
   },
   posiionText: {
     fontSize: 20,
