@@ -98,8 +98,8 @@ export function useMutationDialog<TVariables, TData>(
         content:
           modalType == ModalType.CENTER ? (
             <OkDialogModalContent
-              title={title}
-              text={title}
+              title={'에러 발생'}
+              text={error.message}
               onOkClick={() => {
                 modal.hide();
                 onFailureClick?.(mutation.error);

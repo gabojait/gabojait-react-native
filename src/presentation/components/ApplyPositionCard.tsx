@@ -8,12 +8,7 @@ import BriefOfferDto from '@/data/model/Offer/BriefOfferDto';
 import PositionRecruiting from '../model/PositionRecruitng';
 import React, { useEffect, useState } from 'react';
 
-export type RecruitStatusType =
-  | '함께하기'
-  | '모집완료'
-  | '지원완료'
-  | '수락하기'
-  | '제안받은 포지션x';
+export type RecruitStatusType = '함께하기' | '모집완료' | '지원완료' | '수락하기';
 export type PositionTextNameType = '디자이너' | '기획자' | '프론트엔드' | '백엔드';
 export interface ApplyPositionCardProps {
   data: PositionRecruiting;
@@ -26,6 +21,7 @@ export interface ApplyPositionCardState {
   title: PositionTextNameType;
   buttonTitle: string;
   buttonDisabled: boolean;
+  color: string;
 }
 
 export const ApplyPositionCard = ({
@@ -41,11 +37,20 @@ export const ApplyPositionCard = ({
     title: handleTitle(),
     buttonTitle: buttonTitle,
     buttonDisabled: isButtonDisabled,
+    color: isButtonDisabled ? '#D9D9D9' : '#1CDF71',
   });
 
   useEffect(() => {
     setState(prevState => ({ ...prevState, buttonDisabled: isButtonDisabled }));
   }, [isButtonDisabled]);
+
+  useEffect(() => {
+    if (state.buttonDisabled) {
+      setState(prevState => ({ ...prevState, color: theme.colors.disabled }));
+    } else {
+      setState(prevState => ({ ...prevState, color: theme.colors.primary }));
+    }
+  }, [state.buttonDisabled]);
 
   function handleTitle(): PositionTextNameType {
     if (data.position == Position.Backend) {
@@ -62,11 +67,7 @@ export const ApplyPositionCard = ({
   return (
     <CardWrapper style={[styles.card]}>
       <View style={styles.container}>
-        <View
-          style={{
-            alignItems: 'center',
-          }}
-        >
+        <View style={{ alignItems: 'center' }}>
           <PositionWaveIcon
             currentCnt={data.currentCnt}
             recruitNumber={data.recruitCnt}
@@ -76,6 +77,7 @@ export const ApplyPositionCard = ({
               </Text>
             }
             key={data.position}
+            color={state.color}
           />
           <Text style={styles.text}>{state.title}</Text>
         </View>

@@ -160,6 +160,7 @@ export const ManageTeammateComponent = ({
                   onPress={() => {
                     confirmBeforeFire(parseInt(item.userId));
                   }}
+                  style={{ paddingBottom: 10 }}
                 />
                 <OutlinedButton
                   title={'신고하기'}

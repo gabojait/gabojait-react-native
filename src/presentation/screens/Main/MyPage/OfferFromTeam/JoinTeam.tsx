@@ -6,7 +6,7 @@ import { MainStackScreenProps } from '@/presentation/navigation/types';
 import useGlobalStyles from '@/presentation/styles';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import React, { Suspense, useEffect, useState } from 'react';
-import { Text, ScrollView } from 'react-native';
+import { Text, ScrollView, View } from 'react-native';
 import { UseQueryResult, useQuery, useQueryClient, useQueryErrorResetBoundary } from 'react-query';
 import {} from '../../Home/Group/PositionSelector';
 import { ApplyPositionCard, RecruitStatusType } from '@/presentation/components/ApplyPositionCard';
@@ -62,14 +62,16 @@ const TeamDetailComponent = ({ navigation, route }: MainStackScreenProps<'JoinTe
   return (
     <ScrollView style={globalStyles.scrollView}>
       {positions.map((item, index) => (
-        <JoinTeamWrapper
-          data={item}
-          offers={data.offers}
-          onButtonPressed={() => {
-            decideMutation.mutate([route.params.offerId, true]);
-          }}
-          targetPosition={route.params.targetPosition}
-        />
+        <View style={{ paddingTop: 20 }}>
+          <JoinTeamWrapper
+            data={item}
+            offers={data.offers}
+            onButtonPressed={() => {
+              decideMutation.mutate([route.params.offerId, true]);
+            }}
+            targetPosition={route.params.targetPosition}
+          />
+        </View>
       ))}
     </ScrollView>
   );
@@ -88,29 +90,36 @@ const JoinTeamWrapper = ({
 }) => {
   const [state, setState] = useState({
     buttonTitle: handleButtonState(),
-    buttonDisabled: true,
+    disabled: true,
+    offered: handleOfferedState(),
   });
+
   useEffect(() => {
     const buttonTitle = handleButtonState();
     setState(prevState => ({ ...prevState, buttonState: buttonTitle }));
   }, [offers]);
 
   useEffect(() => {
-    if (state.buttonTitle == '수락하기') {
-      setState(prevState => ({ ...prevState, buttonDisabled: false }));
+    if (state.offered) {
+      setState(prevState => ({ ...prevState, disabled: false }));
     } else {
-      setState(prevState => ({ ...prevState, buttonDisabled: true }));
+      setState(prevState => ({ ...prevState, disabled: true }));
     }
-  }, [state.buttonTitle]);
+  }, [state.offered]);
 
   function handleButtonState(): RecruitStatusType {
-    const offerThisPosition = data.position == targetPosition ? true : false;
     if (data.currentCnt == data.recruitCnt) {
       return '모집완료';
-    } else if (offerThisPosition) {
-      return '수락하기';
     }
-    return '제안받은 포지션x';
+    return '함께하기';
+  }
+
+  function handleOfferedState(): boolean {
+    const offerThisPosition = data.position == targetPosition ? true : false;
+    if (offerThisPosition) {
+      return true;
+    }
+    return false;
   }
 
   return (
@@ -118,7 +127,7 @@ const JoinTeamWrapper = ({
       data={data}
       offers={offers}
       buttonTitle={state.buttonTitle}
-      isButtonDisabled={state.buttonDisabled}
+      isButtonDisabled={state.disabled}
       onApplyButtonPressed={() => {
         onButtonPressed();
       }}
