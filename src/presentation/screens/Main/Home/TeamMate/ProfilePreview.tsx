@@ -1,4 +1,4 @@
-import { TeammateStackParamListProps } from '@/presentation/navigation/types';
+import { MainStackScreenProps, TeammateStackParamListProps } from '@/presentation/navigation/types';
 import React, { Suspense, useEffect, useState } from 'react';
 import { Text, useTheme } from '@rneui/themed';
 import {
@@ -60,7 +60,7 @@ import {
   StackHeaderInterpolatedStyle,
 } from '@react-navigation/stack';
 
-const ProfilePreview = ({ navigation, route }: TeammateStackParamListProps<'ProfilePreview'>) => {
+const ProfilePreview = ({ navigation, route }: MainStackScreenProps<'ProfilePreview'>) => {
   const { reset } = useQueryErrorResetBoundary();
 
   return (
@@ -74,10 +74,7 @@ const ProfilePreview = ({ navigation, route }: TeammateStackParamListProps<'Prof
 
 type buttonTitle = '초대하기' | '취소하기';
 
-const ProfilePreviewComponent = ({
-  navigation,
-  route,
-}: TeammateStackParamListProps<'ProfilePreview'>) => {
+const ProfilePreviewComponent = ({ navigation, route }: MainStackScreenProps<'ProfilePreview'>) => {
   const { theme } = useTheme();
   const userId = route.params.userId;
   const modal = useModal();

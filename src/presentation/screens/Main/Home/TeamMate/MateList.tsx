@@ -18,7 +18,7 @@ import { MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
 import { RootStackNavigationProps } from '@/presentation/navigation/RootNavigation';
 import { StackNavigationProp } from '@react-navigation/stack';
 
-const MateList = ({ navigation, route }: MaterialTopTabScreenProps<PositionTabParamList>) => {
+const MateList = ({ navigation, route }: PositionTabParamListProps<keyof PositionTabParamList>) => {
   const { reset } = useQueryErrorResetBoundary();
 
   return (
@@ -33,7 +33,7 @@ const MateList = ({ navigation, route }: MaterialTopTabScreenProps<PositionTabPa
 const MateListComponent = ({
   navigation,
   route,
-}: MaterialTopTabScreenProps<PositionTabParamList, keyof PositionTabParamList, string>) => {
+}: PositionTabParamListProps<keyof PositionTabParamList>) => {
   const { theme } = useTheme();
   const initialParam: GetProfileProps = {
     pageFrom: 0,
@@ -74,14 +74,10 @@ const MateListComponent = ({
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => {
-              console.log(
-                navigation.getParent<
-                  StackNavigationProp<MainStackParamList, keyof MainStackParamList, string>
-                >('Main'),
-              );
-              navigation
-                .getParent<StackNavigationProp<MainStackParamList>>('Main')
-                ?.navigate('ProfilePreview', { userId: item.userId });
+              navigation.getParent()?.navigate('MainNavigation', {
+                screen: 'ProfilePreview',
+                params: { userId: item.userId },
+              });
             }}
           >
             <UserCard item={item} position={route.params.position} />

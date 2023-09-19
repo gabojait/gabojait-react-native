@@ -4,13 +4,12 @@ import { useTheme } from '@rneui/themed';
 import { Dimensions } from 'react-native';
 import MateList from '@/presentation/screens/Main/Home/TeamMate/MateList';
 import { Position } from '@/data/model/type/Position';
-import { PositionTabParamList } from '@/presentation/navigation/types';
+import { BoardStackParamListProps, PositionTabParamList } from '@/presentation/navigation/types';
 import { t } from 'i18next';
 
-const Tab = createMaterialTopTabNavigator<PositionTabParamList>();
-
-const TeammateList = () => {
+const TeammateList = ({ navigation, route }: BoardStackParamListProps<'TeamMate'>) => {
   const { theme } = useTheme();
+  const Tab = createMaterialTopTabNavigator<PositionTabParamList>();
   return (
     <Tab.Navigator
       initialRouteName={t('position_frontend')}
