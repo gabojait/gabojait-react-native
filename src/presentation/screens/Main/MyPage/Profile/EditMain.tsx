@@ -97,7 +97,7 @@ export function EditMainHeader() {
           onPress={() => {
             mutate();
           }}
-          style={{ color: theme.colors.primary }}
+          style={{ color: theme.colors.primary, fontSize: 20 }}
         >
           완료
         </Text>

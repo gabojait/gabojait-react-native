@@ -124,7 +124,8 @@ export const TeamPageComponent = ({ navigation, route }: MainBottomTabNavigation
     'CENTER',
     {
       onSuccessClick() {
-        queryClient.invalidateQueries([teamKeys.myTeam, profileKeys.myProfile]);
+        queryClient.fetchQuery(teamKeys.myTeam);
+        queryClient.invalidateQueries([profileKeys.myProfile]);
       },
     },
   );
@@ -231,7 +232,6 @@ export const TeamPageComponent = ({ navigation, route }: MainBottomTabNavigation
               }}
               onPressDelete={() => {
                 deleteTeamMutation.mutate(undefined);
-                console.log('워워');
               }}
             />
           ) : (

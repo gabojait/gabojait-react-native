@@ -2,6 +2,7 @@ import { Position } from '@/data/model/type/Position';
 import { PositionSymbol } from '../model/type/Position';
 import { Dimensions } from 'react-native';
 import { t } from 'i18next';
+import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 
 export const usernameRegex = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{5,15}$/; //5~15자 영문, 숫자 조합
 export const passwordRegex =
@@ -222,4 +223,11 @@ export function isFavorite(isFavorite: boolean) {
     return '#1CDF71';
   }
   return 'black';
+}
+
+export function mapToSeekingTeamKey(position: Position) {
+  if (position == Position.Backend) return profileKeys.backendSeekingTeam;
+  else if (position == Position.Designer) return profileKeys.designerSeekingTeam;
+  else if (position == Position.Frontend) return profileKeys.frontendSeekingTeam;
+  else if (position == Position.Manager) return profileKeys.managerSeekingTeam;
 }

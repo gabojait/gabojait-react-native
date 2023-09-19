@@ -27,7 +27,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { getProfile, setProfileVisibility } from '@/redux/reducers/profileReducer';
 import { Level } from '@/data/model/Profile/Skill';
 import useGlobalStyles from '@/presentation/styles';
-import { calcMonth } from '@/presentation/utils/util';
+import { calcMonth, mapToSeekingTeamKey } from '@/presentation/utils/util';
 import { isProfileExist } from './ProfileUtils';
 import { Position } from '@/data/model/type/Position';
 import { KoreanPosition } from '@/presentation/model/type/Position';
@@ -35,6 +35,8 @@ import { Asset, launchCamera, launchImageLibrary } from 'react-native-image-pick
 import { setProfileImage } from '@/redux/action/profileActions';
 import { getUser } from '@/redux/action/login';
 import CustomIcon from '@/presentation/components/icon/Gabojait';
+import { useQueryClient } from 'react-query';
+import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 
 const Header = ({ navigation }: StackHeaderProps) => {
   const { theme } = useTheme();
@@ -105,7 +107,8 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
   const { theme } = useTheme();
   const styles = useStyles();
   const dispatch = useAppDispatch();
-
+  const queryClient = useQueryClient();
+  const globalStyles = useGlobalStyles();
   const {
     data: user,
     loading: userLoading,
@@ -133,8 +136,6 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
       header: Header,
     });
   }
-
-  const globalStyles = useGlobalStyles();
 
   const PortfolioNotExist = () => (
     <View>
@@ -173,6 +174,11 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
       dispatch(setProfileImage(formData));
     }
   }, [image]);
+
+  useEffect(() => {
+    const refetch_key = mapToSeekingTeamKey(profile?.position);
+    queryClient.invalidateQueries(refetch_key);
+  }, [profile?.isSeekingTeam]);
 
   return pageLoading && !refreshing ? (
     <View style={globalStyles.container}>

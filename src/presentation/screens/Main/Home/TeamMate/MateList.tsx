@@ -17,6 +17,7 @@ import { useQueryErrorResetBoundary } from 'react-query';
 import { MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
 import { RootStackNavigationProps } from '@/presentation/navigation/RootNavigation';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { mapToSeekingTeamKey } from '@/presentation/utils/util';
 
 const MateList = ({ navigation, route }: PositionTabParamListProps<keyof PositionTabParamList>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -47,7 +48,7 @@ const MateListComponent = ({
   >({
     initialParam,
     idName: 'userId',
-    key: route.params.position.toLowerCase(),
+    key: mapToSeekingTeamKey(route.params.position),
     fetcher: async ({ pageParam, queryKey: [_, param] }) => {
       return await getUserSeekingTeam({ ...(param as GetProfileProps), pageFrom: pageParam });
     },

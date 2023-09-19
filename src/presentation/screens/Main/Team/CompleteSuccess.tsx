@@ -43,7 +43,7 @@ export const CompleteSuccess = ({ navigation }: MainStackScreenProps<'CompleteSu
         title={'완료하기'}
         containerStyle={{ paddingTop: 10 }}
         onPress={() => {
-          queryClient.invalidateQueries(teamKeys.myTeam);
+          queryClient.fetchQuery(teamKeys.myTeam);
           navigation.navigate('Team');
         }}
       />

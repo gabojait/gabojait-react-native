@@ -56,7 +56,7 @@ export const ManageTeammateComponent = ({
     'CENTER',
     {
       onSuccessClick() {
-        queryClient.invalidateQueries(teamKeys.myTeam);
+        queryClient.fetchQuery(teamKeys.myTeam);
       },
     },
   );
