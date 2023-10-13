@@ -1,15 +1,27 @@
 module.exports = {
-  presets: ["module:metro-react-native-babel-preset"],
+  presets: ['module:metro-react-native-babel-preset'],
   plugins: [
     // ... some other plugins
     [
-      "module-resolver",
+      'module-resolver',
       {
-        root: ["./src"],
+        root: ['./src'],
         alias: {
-          "@": "./src",
+          '@': './src',
         },
-        extensions: [".ios.js", ".android.js", ".js", ".jsx", ".json", ".tsx", ".ts", ".native.js"],
+        extensions: ['.ios.js', '.android.js', '.js', '.jsx', '.json', '.tsx', '.ts', '.native.js'],
+      },
+    ],
+    [
+      'module:react-native-dotenv',
+      {
+        envName: 'APP_ENV',
+        moduleName: '@env',
+        path: '.env',
+        blacklist: null,
+        whitelist: null,
+        safe: true,
+        allowUndefined: true,
       },
     ],
   ],

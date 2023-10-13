@@ -1,9 +1,10 @@
 import React, {useState} from 'react'
-import {StyleSheet, TouchableOpacity, View, Text} from 'react-native'
+import {StyleSheet, TouchableOpacity, View} from 'react-native'
 import DatePicker from 'react-native-date-picker'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import colors from '@/presentation/res/styles/color'
 import textStyles from '@/presentation/res/styles/textStyles'
+import {Text} from "@rneui/themed";
 
 interface DateDropdownProps{
   inputChange?:any

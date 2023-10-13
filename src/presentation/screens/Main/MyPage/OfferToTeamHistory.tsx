@@ -59,18 +59,20 @@ const OfferToTeamHistoryComponent = ({
   return (
     <View style={{ backgroundColor: 'white', flex: 1 }}>
       <FlatList
+        onRefresh={() => {
+          refetch();
+        }}
+        refreshing={isRefreshing}
         showsHorizontalScrollIndicator={false}
-        keyExtractor={item => item.toString()}
+        keyExtractor={item => item.offerId.toString()}
         data={data?.pages?.map(page => page.data).flat()}
         renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => navigation.navigate('GroupDetail', { teamId: item.team.teamId })}
-          >
-            <TeamBanner
-              teamMembersCnt={item?.team.teamMemberCnts ?? []}
-              teamName={item?.team.projectName ?? ''}
-            />
-          </TouchableOpacity>
+          <TeamBanner
+            teamMembersCnt={item?.team.teamMemberCnts ?? []}
+            teamName={item?.team.projectName ?? ''}
+            onArrowPress={() => navigation.navigate('GroupDetail', { teamId: item.team.teamId })}
+            containerStyle={{ marginHorizontal: 20 }}
+          />
         )}
       />
     </View>

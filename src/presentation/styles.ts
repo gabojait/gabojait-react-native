@@ -54,7 +54,7 @@ const useGlobalStyles = makeStyles(theme => ({
     shadowRadius: 2,
   },
   buttonContainer: {
-    padding: 4,
+    padding: 0,
     paddingHorizontal: 0,
   },
   centerText: {
@@ -89,6 +89,23 @@ const useGlobalStyles = makeStyles(theme => ({
     shadowRadius: 4,
     elevation: 5,
   },
+  modalTitle: {
+    fontSize: theme.fontSize.md,
+    fontWeight: theme.fontWeight.bold,
+    color: theme.colors.black,
+    textAlign: 'center',
+    paddingBottom: 16,
+  },
+  modalContent: {
+    fontSize: theme.fontSize.sm,
+    fontWeight: theme.fontWeight.medium,
+    color: theme.colors.black,
+    textAlign: 'center',
+  },
+  modalEmoji: {
+    fontSize: 60,
+    textAlign: 'center',
+  },
   modalDim: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
@@ -96,13 +113,6 @@ const useGlobalStyles = makeStyles(theme => ({
     alignItems: 'flex-start',
     backgroundColor: 'white',
     borderRadius: 14,
-    shadowColor: 'black',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
     elevation: 5,
   },
   itnitialText: {
@@ -111,7 +121,6 @@ const useGlobalStyles = makeStyles(theme => ({
   },
   scrollView: {
     backgroundColor: theme.colors.white,
-    paddingVertical: 18,
   },
   tabBar: {
     minHeight: 60,

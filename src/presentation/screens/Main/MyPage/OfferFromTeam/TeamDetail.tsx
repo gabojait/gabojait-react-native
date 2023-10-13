@@ -82,18 +82,18 @@ const TeamDetailComponent = ({ navigation, route }: MainStackScreenProps<'TeamDe
             />
           </View>
         </CardWrapper>
-        <View style={[styles.card, globalStyles.FlexStartCardWrapper, { minHeight: 243 }]}>
+        <CardWrapper style={[styles.card, globalStyles.FlexStartCardWrapper, { minHeight: 243 }]}>
           <View>
             <Text style={styles.title}>프로젝트 설명</Text>
             <Text style={globalStyles.textLight13}>{data?.projectDescription}</Text>
           </View>
-        </View>
-        <View style={[styles.card, globalStyles.FlexStartCardWrapper, { minHeight: 243 }]}>
+        </CardWrapper>
+        <CardWrapper style={[styles.card, globalStyles.FlexStartCardWrapper, { minHeight: 243 }]}>
           <View>
             <Text style={styles.title}>바라는 점</Text>
             <Text style={globalStyles.textLight13}>{data?.expectation}</Text>
           </View>
-        </View>
+        </CardWrapper>
       </ScrollView>
     </>
   );

@@ -4,5 +4,5 @@ export const profileKeys = {
   frontendSeekingTeam: 'frontend',
   backendSeekingTeam: 'backend',
   designerSeekingTeam: 'designer',
-  pmSeekingTeam: 'manager',
+  managerSeekingTeam: 'manager',
 };

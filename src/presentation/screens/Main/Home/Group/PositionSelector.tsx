@@ -1,6 +1,6 @@
 import { makeStyles, Text, useTheme } from '@rneui/themed';
 import React, { Suspense, useEffect, useState } from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import { useQuery, useQueryClient, useQueryErrorResetBoundary, UseQueryResult } from 'react-query';
 import TeamDetailDto from '@/data/model/Team/TeamDetailDto';
@@ -16,6 +16,7 @@ import { offerKeys } from '@/reactQuery/key/OfferKeys';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 import { ApplyPositionCard, RecruitStatusType } from '@/presentation/components/ApplyPositionCard';
 import { Loading } from '@/presentation/screens/Loading';
+import { FlatList } from 'react-native';
 
 const PositionSelector = ({ navigation, route }: MainStackScreenProps<'PositionSelector'>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -46,30 +47,42 @@ const PositionSelectorComponent = ({
   const { mutation: offerMutation } = useMutationDialog<[Position, string], unknown>(
     offerKeys.offerToTeam,
     (args: [Position, string]) => applyToTeam(...args),
+    'BOTTOM',
     {
-      resultToMessage: _ => '함께하기 요청이 전달되었습니다\n 결과를 기다려주세요',
       onSuccessClick() {
         queryClient.invalidateQueries([teamKeys.getTeam, teamId]);
       },
+      resultModalContent: {
+        icon: '👏',
+        title: '지원완료!',
+        content: '요청이 전달되었습니다 결과를 기다려주세요',
+      },
     },
   );
-
   if (!data) {
     return null;
   }
 
   return (
-    <ScrollView style={styles.scrollView}>
-      {positions.map((item, index) => (
-        <PositionSelectWrapper
-          data={item}
-          offers={data!.offers}
-          onButtonPressed={(position: Position) => {
-            offerMutation.mutate([position, teamId]);
-          }}
-        />
-      ))}
-    </ScrollView>
+    <View style={{ backgroundColor: 'white', flex: 1 }}>
+      <FlatList
+        style={{ backgroundColor: 'white' }}
+        showsVerticalScrollIndicator={false}
+        keyExtractor={item => item.position}
+        data={positions}
+        renderItem={({ item }) => (
+          <View style={{ paddingTop: 20 }}>
+            <PositionSelectWrapper
+              data={item}
+              offers={data!.offers}
+              onButtonPressed={(position: Position) => {
+                offerMutation.mutate([position, teamId]);
+              }}
+            />
+          </View>
+        )}
+      />
+    </View>
   );
 };
 

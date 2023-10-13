@@ -34,9 +34,15 @@ const BookMark = ({ navigation, route }: MainStackScreenProps<'BookMark'>) => {
   );
 };
 
+/**
+ * 좋아요 누른 팀 리스트입니다.
+ * @param navigation
+ * @param route
+ * @constructor
+ */
 const FavoriteTeams = ({ navigation, route }: MainStackScreenProps<'BookMark'>) => {
   const QueryKey = {
-    all: favoriteKeys.favoriteByTeam,
+    all: favoriteKeys.favoriteByTeamList,
     filtered: (filter: PageRequest) => [
       ...QueryKey.all,
       'filtered',
@@ -57,14 +63,14 @@ const FavoriteTeams = ({ navigation, route }: MainStackScreenProps<'BookMark'>) 
     <View style={{ backgroundColor: 'white', flex: 1 }}>
       <FlatList
         showsHorizontalScrollIndicator={false}
-        keyExtractor={item => item.toString()}
+        keyExtractor={item => item.teamId.toString()}
         data={data?.pages?.map(page => page.data).flat()}
         renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => navigation.navigate('GroupDetail', { teamId: item.teamId })}
-          >
-            <TeamBanner teamMembersCnt={item.teamMemberCnts} teamName={item.projectName} />
-          </TouchableOpacity>
+          <TeamBanner
+            teamMembersCnt={item.teamMemberCnts}
+            teamName={item.projectName}
+            onArrowPress={() => navigation.navigate('GroupDetail', { teamId: item.teamId })}
+          />
         )}
         refreshing={isRefreshing}
         onRefresh={refetch}
@@ -77,10 +83,16 @@ const FavoriteTeams = ({ navigation, route }: MainStackScreenProps<'BookMark'>) 
   );
 };
 
+/**
+ * 좋아요 누른 사용자 리스트입니다.
+ * @param navigation
+ * @param route
+ * @constructor
+ */
 const FavoriteUsers = ({ navigation, route }: MainStackScreenProps<'BookMark'>) => {
   const { theme } = useTheme();
   const QueryKey = {
-    all: favoriteKeys.favoriteByUser,
+    all: favoriteKeys.favoriteByUserList,
     filtered: (filter: PageRequest) => [
       ...QueryKey.all,
       'filtered',
@@ -101,7 +113,7 @@ const FavoriteUsers = ({ navigation, route }: MainStackScreenProps<'BookMark'>) 
     <View style={{ backgroundColor: 'white', flex: 1 }}>
       <FlatList
         showsHorizontalScrollIndicator={false}
-        keyExtractor={item => item.toString()}
+        keyExtractor={item => item.userId.toString()}
         data={data?.pages?.map(page => page.data).flat()}
         renderItem={({ item }) => (
           <TouchableOpacity

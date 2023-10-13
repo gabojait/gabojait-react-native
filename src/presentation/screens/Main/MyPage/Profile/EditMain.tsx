@@ -1,8 +1,7 @@
 import { Linking, ScrollView, View } from 'react-native';
-import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowCard } from '@/presentation/components/BaseCard';
+import React, { useEffect } from 'react';
+import { BaseCard } from '@/presentation/components/BaseCard';
 import { Input, Text, useTheme } from '@rneui/themed';
-import ProfileViewDto from '@/data/model/Profile/ProfileViewDto';
 import {
   CustomSlider,
   IconLabel,
@@ -10,7 +9,6 @@ import {
   sliderColors,
   ToggleButton,
 } from '../Profile';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import { ProfileStackParamListProps } from '@/presentation/navigation/types';
 import CardWrapper from '@/presentation/components/CardWrapper';
 import CustomHeader from '@/presentation/components/CustomHeader';
@@ -99,7 +97,7 @@ export function EditMainHeader() {
           onPress={() => {
             mutate();
           }}
-          style={{ color: theme.colors.primary }}
+          style={{ color: theme.colors.primary, fontSize: 20 }}
         >
           완료
         </Text>
@@ -122,15 +120,15 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
   if (profile && !profileLoading && !profileError)
     return (
       <ScrollView style={{ padding: 20, backgroundColor: 'white' }}>
-        <ArrowCard
+        <BaseCard
           title="기본정보"
-          onArrowPress={() => {
+          onPress={() => {
             navigation.getParent()?.navigate('UserModifier');
           }}
           style={{ marginBottom: theme.spacing.xl }}
         >
           <></>
-        </ArrowCard>
+        </BaseCard>
         <CardWrapper style={[globalStyles.card, { marginBottom: theme.spacing.xl, padding: 20 }]}>
           <Text style={{ fontSize: theme.fontSize.md, fontWeight: theme.fontWeight.bold }}>
             자기소개
@@ -147,10 +145,10 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
             inputStyle={{ fontWeight: theme.fontWeight.light }}
           ></Input>
         </CardWrapper>
-        <ArrowCard
+        <BaseCard
           title="포트폴리오"
           style={{ marginBottom: theme.spacing.xl }}
-          onArrowPress={() => {
+          onPress={() => {
             navigation.navigate('EditPortfolio');
           }}
         >
@@ -174,11 +172,11 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
               <Text>아직 포트폴리오 정보를 입력하지 않은 것 같아요.</Text>
             )}
           </View>
-        </ArrowCard>
-        <ArrowCard
+        </BaseCard>
+        <BaseCard
           title="학력/경력"
           style={{ marginBottom: theme.spacing.xl }}
-          onArrowPress={() => {
+          onPress={() => {
             navigation.navigate('EditSchoolAndWork');
           }}
         >
@@ -202,11 +200,11 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
               <Text>아직 경력 정보를 입력하지 않은 것 같아요.</Text>
             )}
           </View>
-        </ArrowCard>
-        <ArrowCard
+        </BaseCard>
+        <BaseCard
           title="기술스택/직무"
           style={{ marginBottom: theme.spacing.xl }}
-          onArrowPress={() => {
+          onPress={() => {
             navigation.navigate('EditSkillAndPosition');
           }}
         >
@@ -226,20 +224,22 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
             )}
             <View style={{ height: 20 }}></View>
 
+            <Text style={{ fontSize: 14, marginBottom: 5 }}>희망 기술스택</Text>
             {profile.skills?.map((skill, idx) => (
               <>
-                <Text style={{ fontSize: 14, marginBottom: 5 }}>희망 기술스택</Text>
-                <CustomSlider
-                  text={skill.skillName}
-                  value={Level[skill.level ?? 'low']}
-                  onChangeValue={function (value: number | number[]): void {}}
-                  minimumTrackTintColor={sliderColors[idx % 3]}
-                />
+                <View style={{ flex: 1, flexDirection: 'row' }}>
+                  <CustomSlider
+                    text={skill.skillName}
+                    value={Level[skill.level ?? 'low']}
+                    onChangeValue={function (_: number | number[]): void {}}
+                    minimumTrackTintColor={sliderColors[idx % 3]}
+                  />
+                </View>
                 <View style={{ height: 10 }}></View>
               </>
             ))}
           </View>
-        </ArrowCard>
+        </BaseCard>
       </ScrollView>
     );
   else return <></>;

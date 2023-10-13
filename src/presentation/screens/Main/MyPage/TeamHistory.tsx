@@ -6,7 +6,7 @@ import { MainStackScreenProps } from '@/presentation/navigation/types';
 import { reviewKeys } from '@/reactQuery/key/ReviewKeys';
 import { PageRequest } from '@/reactQuery/util/useModelList';
 import React, { Suspense } from 'react';
-import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, TouchableOpacity, View } from 'react-native';
 import { UseQueryResult, useQuery, useQueryErrorResetBoundary } from 'react-query';
 import { Loading } from '../../Loading';
 
@@ -48,14 +48,14 @@ function TeamHistoryComponent({ navigation, route }: MainStackScreenProps<'TeamH
       <View style={{ backgroundColor: 'white', flex: 1 }}>
         <FlatList
           showsHorizontalScrollIndicator={false}
-          keyExtractor={item => item.toString()}
+          keyExtractor={item => item.teamId.toString()}
           data={data}
           renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => navigation.navigate('TeamReview', { teamId: item.teamId })}
-            >
-              <TeamBanner teamMembersCnt={item.teamMemberCnts} teamName={item.projectName} />
-            </TouchableOpacity>
+            <TeamBanner
+              teamMembersCnt={item.teamMemberCnts}
+              teamName={item.projectName}
+              onArrowPress={() => navigation.navigate('TeamReview', { teamId: item.teamId })}
+            />
           )}
         />
       </View>

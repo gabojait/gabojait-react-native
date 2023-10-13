@@ -12,9 +12,9 @@ import { MainStackScreenProps } from '@/presentation/navigation/types';
 import useGlobalStyles from '@/presentation/styles';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
-import { useTheme } from '@rneui/themed';
+import { useTheme, Text } from '@rneui/themed';
 import React, { Suspense, useState } from 'react';
-import { ScrollView, Text, TextInput, View } from 'react-native';
+import { ScrollView, TextInput, View } from 'react-native';
 import { UseQueryResult, useQuery, useQueryClient, useQueryErrorResetBoundary } from 'react-query';
 import { Loading } from '../../Loading';
 
@@ -53,9 +53,10 @@ export const ManageTeammateComponent = ({
   const { mutation: fireTeammateMutation } = useMutationDialog(
     teamKeys.fireTeammate,
     async (userId: number) => fireTeammate(userId),
+    'CENTER',
     {
       onSuccessClick() {
-        queryClient.invalidateQueries(teamKeys.myTeam);
+        queryClient.fetchQuery(teamKeys.myTeam);
       },
     },
   );
@@ -81,7 +82,7 @@ export const ManageTeammateComponent = ({
     modal?.show({
       content: (
         <BottomModalContent
-          title="팀원을 신고하시겠습니까?"
+          header="팀원을 신고하시겠습니까?"
           children={
             <View style={{ justifyContent: 'center', alignContent: 'center', width: '100%' }}>
               <Text style={[globalStyles.textLight13, { textAlign: 'center', paddingBottom: 10 }]}>
@@ -159,6 +160,7 @@ export const ManageTeammateComponent = ({
                   onPress={() => {
                     confirmBeforeFire(parseInt(item.userId));
                   }}
+                  style={{ paddingBottom: 10 }}
                 />
                 <OutlinedButton
                   title={'신고하기'}

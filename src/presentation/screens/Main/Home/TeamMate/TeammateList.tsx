@@ -1,20 +1,18 @@
 import React from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import FrontendList from './FrontendList';
-import BackendList from './BackendList';
-import DesignerList from './DesignerList';
-import PMList from './PMList';
 import { useTheme } from '@rneui/themed';
 import { Dimensions } from 'react-native';
-import { TeammateStackParamListProps } from '@/presentation/navigation/types';
+import MateList from '@/presentation/screens/Main/Home/TeamMate/MateList';
+import { Position } from '@/data/model/type/Position';
+import { BoardStackParamListProps, PositionTabParamList } from '@/presentation/navigation/types';
+import { t } from 'i18next';
 
-const Tab = createMaterialTopTabNavigator();
-
-const TeammateList = ({ navigation, route }: TeammateStackParamListProps<'TeammateList'>) => {
+const TeammateList = ({ navigation, route }: BoardStackParamListProps<'TeamMate'>) => {
   const { theme } = useTheme();
+  const Tab = createMaterialTopTabNavigator<PositionTabParamList>();
   return (
     <Tab.Navigator
-      initialRouteName="Frontend"
+      initialRouteName={t('position_frontend')}
       initialLayout={{ width: Dimensions.get('window').width }}
       screenOptions={{
         tabBarInactiveTintColor: theme.colors.black,
@@ -37,10 +35,26 @@ const TeammateList = ({ navigation, route }: TeammateStackParamListProps<'Teamma
         },
       }}
     >
-      <Tab.Screen name="Frontend" component={FrontendList} />
-      <Tab.Screen name="Backend" component={BackendList} />
-      <Tab.Screen name="Designer" component={DesignerList} />
-      <Tab.Screen name="PM" component={PMList} />
+      <Tab.Screen
+        name={t('position_frontend')}
+        component={MateList}
+        initialParams={{ position: Position.Frontend }}
+      />
+      <Tab.Screen
+        name={t('position_backend')}
+        component={MateList}
+        initialParams={{ position: Position.Backend }}
+      />
+      <Tab.Screen
+        name={t('position_designer')}
+        component={MateList}
+        initialParams={{ position: Position.Designer }}
+      />
+      <Tab.Screen
+        name={t('position_manager')}
+        component={MateList}
+        initialParams={{ position: Position.Manager }}
+      />
     </Tab.Navigator>
   );
 };

@@ -3,7 +3,7 @@ import React from 'react';
 import { MainStackParamList } from './types';
 import PositionSelector from '../screens/Main/Home/Group/PositionSelector';
 import GroupDetail from '../screens/Main/Home/Group/GroupDetail';
-import ApplyStatus from '../screens/Main/MyPage/ApplyStatus/ApplyStatus';
+import ApplyStatus from '../screens/Main/MyPage/OfferFromUser/ApplyStatus';
 import TeamHistory from '../screens/Main/MyPage/TeamHistory';
 import TitleWithCloseHeader from '../screens/Headers/TitleWithCloseHeader';
 import TeamReview from '../screens/Main/MyPage/TeamReview';
@@ -26,13 +26,13 @@ import { ManageTeammate } from '../screens/Main/Team/ManageTeammate';
 import ProfilePreview from '../screens/Main/Home/TeamMate/ProfilePreview';
 import TeamDetail from '../screens/Main/MyPage/OfferFromTeam/TeamDetail';
 import JoinTeam from '../screens/Main/MyPage/OfferFromTeam/JoinTeam';
-import OfferSentUser from '../screens/Main/MyPage/OfferSentUser/OfferSentUser';
+import OfferSentUser from '../screens/Main/MyPage/OfferSentToUser/OfferSentUser';
 import AlertPage from '../screens/Main/AlertPage';
 const Main = createStackNavigator<MainStackParamList>();
 
 const MainNavigation = () => {
   return (
-    <Main.Navigator initialRouteName="GroupDetail">
+    <Main.Navigator initialRouteName="GroupDetail" id="Main">
       <Main.Group>
         <Main.Screen
           name="Profile"
@@ -136,7 +136,8 @@ const MainNavigation = () => {
           name="GroupCreator"
           component={GroupCreator}
           options={{
-            headerShown: false,
+            header: TitleWithCloseHeader,
+            headerTitle: '',
           }}
         />
         <Main.Screen

@@ -1,5 +1,5 @@
-import '@rneui/themed'
-import {Button, ButtonProps, createTheme, Theme} from '@rneui/themed'
+import '@rneui/themed';
+import { Button, ButtonProps, createTheme, Theme } from '@rneui/themed';
 
 /**
  * StyleSheet FontWeight Type이에요.
@@ -16,7 +16,7 @@ export type FontWeight =
   | '700'
   | '800'
   | '900'
-  | undefined
+  | undefined;
 
 /**
  * 여기서 테마에 새로운 값을 정의해줄 수 있어요.
@@ -24,51 +24,51 @@ export type FontWeight =
 declare module '@rneui/themed' {
   export interface Theme {
     radius: {
-      xs: number
-      sm: number
-      md: number
-      lg: number
-      xl: number
-      xxl: number
-    }
+      xs: number;
+      sm: number;
+      md: number;
+      lg: number;
+      xl: number;
+      xxl: number;
+    };
     ratingBarSize: {
-      xs: number
-      sm: number
-      md: number
-      lg: number
-      xl: number
-    }
+      xs: number;
+      sm: number;
+      md: number;
+      lg: number;
+      xl: number;
+    };
     sliderSize: {
-      md: number
-      lg: number
-    }
+      md: number;
+      lg: number;
+    };
     fontSize: {
-      xs: number
-      sm: number
-      md: number
-      lg: number
-    }
+      xs: number;
+      sm: number;
+      md: number;
+      lg: number;
+    };
     emojiSize: {
-      sm: number
-      md: number
-      lg: number
-    }
+      sm: number;
+      md: number;
+      lg: number;
+    };
     fontWeight: {
-      light: FontWeight
-      medium: FontWeight
-      semibold: FontWeight
-      bold: FontWeight
-    }
+      light: FontWeight;
+      medium: FontWeight;
+      semibold: FontWeight;
+      bold: FontWeight;
+    };
     shadow: {
-      opacity: number
-      radius: number
-      elevation: number
-      marginVertical: number
+      opacity: number;
+      radius: number;
+      elevation: number;
+      marginVertical: number;
       shadowOffset: {
-        width: number
-        height: number
-      }
-    }
+        width: number;
+        height: number;
+      };
+    };
   }
 }
 
@@ -82,7 +82,7 @@ export const theme = createTheme({
     disabled: '#D9D9D9',
     grey0: '#EEEEEE',
     grey1: '#6C6C6C',
-    grey2: '#8E8E8E',
+    grey2: '#B4B4B4',
   },
   mode: 'light',
   components: {
@@ -151,4 +151,4 @@ export const theme = createTheme({
       height: 2,
     },
   },
-})
+});

@@ -1,7 +1,15 @@
 import { FilledButton } from '@/presentation/components/Button';
 import { Text } from '@rneui/themed';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import { OnboardingScreenProps } from '@/presentation/navigation/types';
 import color from '@/presentation/res/styles/color';
 import CustomInput from '@/presentation/components/CustomInput';
@@ -14,6 +22,9 @@ import OkDialogModalContent from '@/presentation/components/modalContent/OkDialo
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import useGlobalStyles from '@/presentation/styles';
 import useModal from '@/presentation/components/modal/useModal';
+import { DialogLoading } from '@rneui/base/dist/Dialog/Dialog.Loading';
+import messaging from '@react-native-firebase/messaging';
+import { RootStackNavigationProps } from '@/presentation/navigation/RootNavigation';
 
 const Login = ({ navigation }: OnboardingScreenProps<'Login'>) => {
   const [loginState, setLoginState] = useState({ username: '', password: '' } as LoginRequestDTO);
@@ -22,9 +33,16 @@ const Login = ({ navigation }: OnboardingScreenProps<'Login'>) => {
   const modal = useModal();
 
   useEffect(() => {
+    modal?.hide();
+    if (loading) {
+      modal?.show({ content: <DialogLoading /> });
+      return;
+    }
     if (!loading) {
       if (data && !error) {
-        navigation.getParent()?.navigate('MainBottomTabNavigation', { screen: 'Home ' });
+        navigation
+          .getParent<RootStackNavigationProps>()
+          ?.replace('MainBottomTabNavigation', { screen: 'Home' });
       } else if (error) {
         modal?.show({
           content: (
@@ -39,62 +57,68 @@ const Login = ({ navigation }: OnboardingScreenProps<'Login'>) => {
         });
       }
     }
-  }, [data]);
+  }, [data, loading, error]);
   const globalStyles = useGlobalStyles();
 
   return (
-    <View style={[globalStyles.container, { justifyContent: 'space-between' }]}>
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Gabojait name="gabojait" color={color.primary} size={35} />
-      </View>
-      <View style={styles.inputView}>
-        <CustomInput
-          placeholder={'아이디'}
-          onChangeText={(text: string) =>
-            setLoginState(prevState => ({ ...prevState, username: text }))
-          }
-          value={loginState.username}
-          shape="round"
-          containerStyle={{ marginBottom: 28 }}
-        />
-        <CustomInput
-          placeholder={'비밀번호'}
-          onChangeText={(text: string) =>
-            setLoginState(prevState => ({ ...prevState, password: text }))
-          }
-          secureTextEntry
-          shape="round"
-          value={loginState.password}
-          containerStyle={{ marginBottom: 28 }}
-        />
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{ flex: 1 }}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={[globalStyles.container, { justifyContent: 'space-between' }]}>
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Gabojait name="gabojait" color={color.primary} size={35} />
+          </View>
+          <View style={styles.inputView}>
+            <CustomInput
+              placeholder={'아이디'}
+              onChangeText={(text: string) =>
+                setLoginState(prevState => ({ ...prevState, username: text }))
+              }
+              value={loginState.username}
+              shape="round"
+              containerStyle={{ marginBottom: 28 }}
+            />
+            <CustomInput
+              placeholder={'비밀번호'}
+              onChangeText={(text: string) =>
+                setLoginState(prevState => ({ ...prevState, password: text }))
+              }
+              secureTextEntry
+              shape="round"
+              value={loginState.password}
+              containerStyle={{ marginBottom: 28 }}
+            />
 
-        <FilledButton
-          size="sm"
-          title="로그인"
-          onPress={async () => {
-            console.log(loginState.username, loginState.password);
-            await AsyncStorage.setItem('accessToken', '');
-            await AsyncStorage.setItem('refreshToken', '');
-            dispatch(
-              login({
-                username: loginState.username,
-                password: loginState.password,
-                fcmToken: 'testToken',
-              }),
-            );
-          }}
-          containerStyle={{ marginBottom: 10 }}
-        />
-        <TouchableOpacity onPress={() => navigation.navigate('FindAccount')}>
-          <Text style={styles.text}>아이디 찾기/ 비밀번호 찾기</Text>
-        </TouchableOpacity>
-      </View>
-
-      <TouchableOpacity style={styles.registerLink} onPress={() => navigation.navigate('Register')}>
-        <Text style={styles.text}>아직 가보자잇에 가입하지 않으셨나요?</Text>
-        <Text style={styles.highlightText}> 회원가입</Text>
-      </TouchableOpacity>
-    </View>
+            <FilledButton
+              size="sm"
+              title="로그인"
+              onPress={async () => {
+                console.log(loginState.username, loginState.password);
+                await AsyncStorage.setItem('accessToken', '');
+                await AsyncStorage.setItem('refreshToken', '');
+                dispatch(
+                  login({
+                    username: loginState.username,
+                    password: loginState.password,
+                    fcmToken: await messaging().getToken(),
+                  }),
+                );
+              }}
+              containerStyle={{ marginBottom: 10 }}
+            />
+            <TouchableOpacity onPress={() => navigation.push('FindAccount')}>
+              <Text style={styles.text}>아이디 찾기/ 비밀번호 찾기</Text>
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity style={styles.registerLink} onPress={() => navigation.push('Register')}>
+            <Text style={styles.text}>아직 가보자잇에 가입하지 않으셨나요?</Text>
+            <Text style={styles.highlightText}> 회원가입</Text>
+          </TouchableOpacity>
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 

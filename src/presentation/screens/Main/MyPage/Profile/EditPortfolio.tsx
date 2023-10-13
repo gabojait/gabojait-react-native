@@ -58,8 +58,8 @@ const EditPortfolio = () => {
 };
 
 const placeHolders = {
-  link: 'URL 주소를 입력해주세요!',
-  file: '.jpg, .jpeg, .png, .pdf 포맷만 가능합니다!',
+  LINK: 'URL 주소를 입력해주세요!',
+  FILE: '.jpg, .jpeg, .png, .pdf 포맷만 가능합니다!',
 };
 
 export const PortfolioList = ({
@@ -146,6 +146,7 @@ export const SquareIcon = ({ ...props }: IconProps) => (
   <Icon
     size={props.size ?? 20}
     style={[{ borderWidth: 1, padding: 2, borderRadius: 8, borderColor: 'black' }, props.style]}
+    color="#000000"
     {...props}
   />
 );

@@ -25,6 +25,7 @@ export const TeamComplete = ({ navigation }: MainStackScreenProps<'TeamComplete'
   const { mutation: completeTeamMutation } = useMutationDialog(
     teamKeys.completeTeam,
     async (dto: ProjectUrl) => completeTeam(dto),
+    'CENTER',
     {
       onSuccessClick() {
         queryClient.invalidateQueries(teamKeys.myTeam);

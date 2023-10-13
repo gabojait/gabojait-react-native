@@ -1,47 +1,41 @@
 import { CustomSwitch } from '@/presentation/components/CustomSwitch';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
-import { useTheme } from '@rneui/themed';
+import { useTheme, Text } from '@rneui/themed';
 import React, { useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AsyncStorageKey } from '@/lib/asyncStorageKey';
 import { useMutation } from 'react-query';
 import { userKeys } from '@/reactQuery/key/UserKeys';
 import { updateNotification } from '@/data/api/accounts';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import LoadingSpinner from '@/presentation/screens/Loading';
+import { getUser } from '@/redux/action/login';
 
 const AlarmSetting = ({ navigation }: MainStackScreenProps<'AlarmSetting'>) => {
   const { theme } = useTheme();
-  const alertEnabledValue = {
-    true: 'true',
-    false: 'false',
-  };
   const { mutate } = useMutation(
     userKeys.updateNotification,
     (isNotified: boolean) => updateNotification(isNotified),
     {
-      onSuccess: () => {
-        setIsEnabled(previousState => !previousState);
-        AsyncStorage.setItem(AsyncStorageKey.alertEnabled, alertEnabledValue.true);
+      onSuccess: async () => {
+        dispatch(getUser());
       },
     },
   );
-  const [isEnabled, setIsEnabled] = useState(false);
 
+  const { data: user, loading, error } = useAppSelector(state => state.loginReducer.user);
+
+  const dispatch = useAppDispatch();
   useEffect(() => {
-    async () => {
-      const value = await AsyncStorage.getItem(AsyncStorageKey.alertEnabled);
-      setIsEnabled(mapStringToBoolean(value ?? alertEnabledValue.false));
-    };
+    dispatch(getUser());
   }, []);
-
-  function mapStringToBoolean(value: string) {
-    if (value == alertEnabledValue.true) return true;
-    else return false;
-  }
-
   function toggleSwitch() {
-    mutate(isEnabled);
+    mutate(!user?.isNotified);
   }
+
+  if (loading) return <LoadingSpinner />;
+  if (error) return <></>;
 
   return (
     <View style={{ backgroundColor: 'white', flex: 1 }}>
@@ -65,7 +59,7 @@ const AlarmSetting = ({ navigation }: MainStackScreenProps<'AlarmSetting'>) => {
         >
           모든 알림
         </Text>
-        <CustomSwitch onChange={toggleSwitch} value={isEnabled} />
+        <CustomSwitch onChange={toggleSwitch} value={user?.isNotified} />
       </View>
     </View>
   );

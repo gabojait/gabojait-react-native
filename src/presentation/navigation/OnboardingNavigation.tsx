@@ -1,17 +1,17 @@
-import React, {ReactComponentElement} from 'react'
-import {CompositeNavigationProp, NavigationProp, useNavigation} from '@react-navigation/native'
-import {createStackNavigator, StackNavigationProp} from '@react-navigation/stack'
-import Login from '@/presentation/screens/Onboarding/Login'
-import Register from '@/presentation/screens/Onboarding/Register'
-import FindAccount from '@/presentation/screens/Onboarding/FindAccount'
-import CompleteOnboarding from '@/presentation/screens/Onboarding/CompleteOnboarding'
-import BackHeader from '@/presentation/screens/Headers/TitleWithCloseHeader'
-import TitleHeader from '@/presentation/screens/Headers/TitleHeader'
-import {OnboardingStackParamList} from '@/presentation/navigation/types'
-import {RootStackNavigationProps} from '@/presentation/navigation/RootNavigation'
-import RegisterCompleted from '../screens/Onboarding/RegisterCompleted'
+import React, { ReactComponentElement } from 'react';
+import { CompositeNavigationProp, NavigationProp, useNavigation } from '@react-navigation/native';
+import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
+import Login from '@/presentation/screens/Onboarding/Login';
+import Register from '@/presentation/screens/Onboarding/Register';
+import FindAccount from '@/presentation/screens/Onboarding/FindAccount';
+import CompleteOnboarding from '@/presentation/screens/Onboarding/CompleteOnboarding';
+import BackHeader from '@/presentation/screens/Headers/TitleWithCloseHeader';
+import TitleHeader from '@/presentation/screens/Headers/TitleHeader';
+import { OnboardingStackParamList } from '@/presentation/navigation/types';
+import { RootStackNavigationProps } from '@/presentation/navigation/RootNavigation';
+import RegisterCompleted from '../screens/Onboarding/RegisterCompleted';
 
-const OnboardingStack = createStackNavigator<OnboardingStackParamList>()
+const OnboardingStack = createStackNavigator<OnboardingStackParamList>();
 
 const OnboardingNavigation = () => {
   return (
@@ -44,7 +44,7 @@ const OnboardingNavigation = () => {
       <OnboardingStack.Screen
         name="RegisterCompleted"
         component={RegisterCompleted}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <OnboardingStack.Screen
         name="CompleteOnboarding"
@@ -54,7 +54,7 @@ const OnboardingNavigation = () => {
         }}
       />
     </OnboardingStack.Navigator>
-  )
-}
+  );
+};
 
-export default OnboardingNavigation
+export default OnboardingNavigation;

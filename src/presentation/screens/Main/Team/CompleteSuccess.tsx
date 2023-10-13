@@ -1,6 +1,7 @@
+/* eslint-disable react-native/no-inline-styles */
 import { FilledButton } from '@/presentation/components/Button';
-import { useTheme } from '@rneui/themed';
-import { Text, View } from 'react-native';
+import { useTheme, Text } from '@rneui/themed';
+import { View } from 'react-native';
 import React from 'react';
 import useGlobalStyles from '@/presentation/styles';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
@@ -42,7 +43,7 @@ export const CompleteSuccess = ({ navigation }: MainStackScreenProps<'CompleteSu
         title={'완료하기'}
         containerStyle={{ paddingTop: 10 }}
         onPress={() => {
-          queryClient.invalidateQueries(teamKeys.myTeam);
+          queryClient.fetchQuery(teamKeys.myTeam);
           navigation.navigate('Team');
         }}
       />

@@ -1,6 +1,5 @@
 import { ApiErrorCode, ApiErrorCodeType } from '@/data/api/ApiErrorCode';
 import React, { ReactNode } from 'react';
-import { Text } from 'react-native';
 import { Fallback500, Fallback503 } from './Fallback';
 
 export interface ErrorBoundaryState {

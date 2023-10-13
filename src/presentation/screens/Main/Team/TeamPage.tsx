@@ -89,7 +89,7 @@ export const TeamPage = ({ navigation, route }: MainBottomTabNavigationProps<'Te
 
   return (
     <Suspense fallback={Loading()}>
-      <Error404Boundary onReset={reset}>
+      <Error404Boundary onReset={reset} message="현재 진행 중인 팀이 없어요">
         <TeamPageComponent navigation={navigation} route={route} />
       </Error404Boundary>
     </Suspense>
@@ -121,9 +121,11 @@ export const TeamPageComponent = ({ navigation, route }: MainBottomTabNavigation
   const { mutation: deleteTeamMutation } = useMutationDialog(
     teamKeys.incompleteTeam,
     async () => incompleteTeam(),
+    'CENTER',
     {
       onSuccessClick() {
-        queryClient.invalidateQueries([teamKeys.myTeam, profileKeys.myProfile]);
+        queryClient.fetchQuery(teamKeys.myTeam);
+        queryClient.invalidateQueries([profileKeys.myProfile]);
       },
     },
   );
@@ -230,7 +232,6 @@ export const TeamPageComponent = ({ navigation, route }: MainBottomTabNavigation
               }}
               onPressDelete={() => {
                 deleteTeamMutation.mutate(undefined);
-                console.log('워워');
               }}
             />
           ) : (
