@@ -72,7 +72,8 @@ const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
     modal?.show({
       content: (
         <InputModalContent
-          ref={modalInputRef} // Assign the ref to the BottomModal
+          headerComponent={<Text h4 style={{fontWeight: 'bold', marginBottom: 20}}>현재 비밀번호를 입력해주세요</Text>}
+          ref={modalInputRef}
           visible={modal?.modal}
           onBackgroundPress={modal?.hide}
           inputProcessor={text => {

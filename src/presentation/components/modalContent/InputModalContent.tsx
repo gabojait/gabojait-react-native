@@ -13,9 +13,13 @@ export type InputModalProps = BottomSlideModalContentProps & {
 export const InputModalContent = forwardRef(
   (
     {
+      headerComponent,
       inputWrapper,
       ...props
-    }: InputModalProps & { inputWrapper?: (children: React.ReactNode) => React.ReactNode },
+    }: InputModalProps & {
+      headerComponent?: React.ReactNode;
+      inputWrapper?: (children: React.ReactNode) => React.ReactNode;
+    },
     ref: React.ForwardedRef<Input>,
   ) => {
     const [input, setInput] = useState('');
@@ -31,6 +35,7 @@ export const InputModalContent = forwardRef(
     );
     return (
       <BottomModalContent {...props}>
+        {headerComponent}
         {inputWrapper ? inputWrapper(inputComponent()) : inputComponent()}
       </BottomModalContent>
     );
