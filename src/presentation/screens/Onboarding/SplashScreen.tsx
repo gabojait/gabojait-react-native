@@ -36,27 +36,39 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
   async function checkCodePush() {
     console.log('checking update');
     // Todo: 플랫폼별 업데이트 체크
-    const update = await CodePush.checkForUpdate();
-    if (update) {
-      console.log('update exists: ', update);
-      update
-        .download((progress: DownloadProgress) =>
-          console.log(`downloading app: ${(progress.receivedBytes / progress.totalBytes) * 100} %`),
-        )
-        .then((newPackage: LocalPackage) =>
-          newPackage.install(CodePush.InstallMode.IMMEDIATE).then(() => CodePush.restartApp()),
-        );
-      return true;
+    try {
+      const update = await CodePush.checkForUpdate();
+      console.log(
+        `${update?.deploymentKey}, ${
+          process.env[`CODEPUSH_DEPLOYMENT_KEY_STAGING_${Platform.OS.toUpperCase()}`]
+        }`,
+      );
+      if (update) {
+        console.log('update exists: ', update);
+        update
+          .download((progress: DownloadProgress) =>
+            console.log(
+              `downloading app: ${(progress.receivedBytes / progress.totalBytes) * 100} %`,
+            ),
+          )
+          .then((newPackage: LocalPackage) =>
+            newPackage.install(CodePush.InstallMode.IMMEDIATE).then(() => BackHandler.exitApp()),
+          );
+        return true;
+      }
+      console.log('update not exists');
+      return false;
+    } catch (e) {
+      return false;
     }
-    console.log('update not exists');
-    return false;
   }
 
   const setupFCM = async () => {
     await messaging().registerDeviceForRemoteMessages();
-    console.log(
-      '[FCM]',
-      `
+    if (messaging().isDeviceRegisteredForRemoteMessages) {
+      console.log(
+        '[FCM]',
+        `
       FCM 설정을 시작합니다.
       Firebase Messaging SDK Version: ${messaging.SDK_VERSION}
       ${Platform.OS === 'ios' ? 'Headless 여부: ' + (await messaging().getIsHeadless()) : ''}
@@ -65,7 +77,11 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
       기기 등록 여부: ${messaging().isDeviceRegisteredForRemoteMessages}
       
     `,
-    );
+      );
+      return true;
+    } else {
+      return false;
+    }
   };
 
   async function isEverBeenLogin() {
@@ -107,6 +123,9 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
   };
 
   async function handleLogin() {
+    if (!messaging().isDeviceRegisteredForRemoteMessages) {
+      return;
+    }
     const token = await messaging().getToken();
     const isEverBeenLoginValue = await isEverBeenLogin();
     if (isEverBeenLoginValue) {
@@ -188,26 +207,33 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
   };
 
   const initApp = async () => {
-    checkNetworkConnection();
-    console.log('네트워크 연결 상태 체크 완료');
-    // 개발모드이거나 개발모드가 아닌데 코드푸시 업데이트가 존재하지 않으면 로그인 처리
-    if (__DEV__ || (!__DEV__ && !(await checkCodePush()))) {
-      await handleLogin();
-    }
-    Splash.hide();
-    const authStatus = await requestUserPermission();
-    console.log('알림 권한 요청 완료. 알림 권한:', authStatus);
-    if (authStatus) {
-      await setupFCM();
-      console.log('FCM 셋업 완료');
-      handleSubscribe();
-      console.log('메시지 핸들러 셋업 완료 ');
-      handleFcmTokenRefresh();
+    try {
+      checkNetworkConnection();
+      console.log('네트워크 연결 상태 체크 완료');
+      // 개발모드이거나 개발모드가 아닌데 코드푸시 업데이트가 존재하지 않으면 로그인 처리
+      if (__DEV__ || (!__DEV__ && !(await checkCodePush()))) {
+        await handleLogin();
+      }
+      Splash.hide();
+      const authStatus = await requestUserPermission();
+      console.log('알림 권한 요청 완료. 알림 권한:', authStatus);
+      if (authStatus) {
+        if (!(await setupFCM())) {
+          return;
+        }
+        console.log('FCM 셋업 완료');
+        handleSubscribe();
+        console.log('메시지 핸들러 셋업 완료 ');
+        handleFcmTokenRefresh();
+      }
+    } catch (e) {
+      Splash.hide();
+      Alert.alert((e as Error)?.message);
     }
   };
 
   useEffect(() => {
-    initApp();
+    initApp().catch(e => Alert.alert(e.message));
   }, []);
 
   return (

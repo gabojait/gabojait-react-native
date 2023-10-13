@@ -534,7 +534,7 @@
 				CODE_SIGN_ENTITLEMENTS = gabojait/gabojait.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 7LF5463DRN;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = gabojait/Info.plist;
@@ -571,8 +571,12 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.gabojait.app;
 				PRODUCT_NAME = gabojait;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -586,7 +590,7 @@
 				CODE_SIGN_ENTITLEMENTS = gabojait/gabojait.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 7LF5463DRN;
 				INFOPLIST_FILE = gabojait/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "가보자잇";
@@ -620,7 +624,11 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.gabojait.app;
 				PRODUCT_NAME = gabojait;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -845,7 +853,7 @@
 				CODE_SIGN_ENTITLEMENTS = gabojait/gabojait.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 7LF5463DRN;
 				INFOPLIST_FILE = gabojait/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "가보자잇";
@@ -863,7 +871,11 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.gabojait.app;
 				PRODUCT_NAME = gabojait;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Staging;
