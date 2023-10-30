@@ -67,7 +67,8 @@ buck-out/
 .vscode/.react/*
 /ios/GoogleService-Info.plist
 /android/app/google-services.json
-
+/android/app/release.keystore
 .env*
 
 android/app/releaseStaging/
+
