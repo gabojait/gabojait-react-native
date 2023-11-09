@@ -36,7 +36,7 @@ const ApplyListComponent = ({
   const styles = useStyles();
   const { data, isLoading, error, fetchNextPage, refetch, isRefreshing } = useModelList({
     initialParam: {
-      pageFrom: 0,
+      pageFrom: 1,
       pageSize: 20,
       position: route.params.position,
     },

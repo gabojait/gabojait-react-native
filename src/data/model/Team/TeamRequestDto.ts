@@ -6,4 +6,9 @@ export default interface TeamRequestDto {
   projectDescription: string;
   projectName: string;
   teamMemberRecruitCnts: PositionCountDto[];
+  frontendMaxCnt: number;
+  backendMaxCnt: number;
+  managerMaxCnt: number;
+  designerMaxCnt: number;
+  otherMaxCnt: number;
 }

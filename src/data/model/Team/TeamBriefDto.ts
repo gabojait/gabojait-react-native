@@ -7,6 +7,16 @@ export default interface TeamBriefDto {
   projectName: string;
   teamId: string;
   teamMemberCnts: PositionRecruiting[];
+  frontendMaxCnt: number;
+  backendMaxCnt: number;
+  managerMaxCnt: number;
+  designerMaxCnt: number;
+  otherMaxCnt: number;
+  frontendCurrentCnt: number;
+  backendCurrentCnt: number;
+  managerCurrentCnt: number;
+  designerCurrentCnt: number;
+  otherCurrentCnt: number;
   teamMembers: BriefProfileDto[];
   updatedAt: string;
 }

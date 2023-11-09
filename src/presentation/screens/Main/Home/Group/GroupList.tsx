@@ -7,15 +7,21 @@ import { BoardStackParamListProps } from '@/presentation/navigation/types';
 import { getRecruiting, GetRecruitingProps } from '@/data/api/team';
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useModelList } from '@/reactQuery/util/useModelList';
+import { PageModel, useModelList } from '@/reactQuery/util/useModelList';
 import RecruitingTeamDto from '@/data/model/Team/TeamBriefDto';
 import useModal from '@/presentation/components/modal/useModal';
-import { Position } from '@/data/model/type/Position';
+import {
+  Position,
+  PositionCurrentCntField,
+  PositionFromIndex,
+  PositionMaxCntField,
+} from '@/data/model/type/Position';
 import { TeamOrder } from '@/data/model/type/TeamOrder';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { Loading } from '@/presentation/screens/Loading';
 import { BoardSwitchActionType } from '@/redux/action_types/boardSwitchTypes';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import PositionRecruiting from '@/presentation/model/PositionRecruitng';
 
 const GroupList = ({ navigation, route }: BoardStackParamListProps<'GroupList'>) => {
   return (
@@ -30,16 +36,17 @@ const GroupListComponent = ({ navigation }: BoardStackParamListProps<'GroupList'
   const modal = useModal();
   const GUIDE_MODE_MODAL_KEY = 'guideModeModalKey';
   const GUIDE_MODE_MODAL_VALUE = 'guideModeModalValue';
+  const initialParam = {
+    pageFrom: 1,
+    pageSize: 20,
+    position: Position.None,
+    teamOrder: TeamOrder.Created,
+  };
   const { data, isLoading, error, fetchNextPage, refetch, isRefreshing } = useModelList<
     GetRecruitingProps,
     RecruitingTeamDto
   >({
-    initialParam: {
-      pageFrom: 0,
-      pageSize: 20,
-      position: Position.None,
-      teamOrder: TeamOrder.Created,
-    },
+    initialParam,
     idName: 'teamId',
     key: teamKeys.recruiting,
     fetcher: async ({ pageParam, queryKey: [_, params] }) => {
@@ -150,7 +157,25 @@ const GroupListComponent = ({ navigation }: BoardStackParamListProps<'GroupList'
       {data && (
         <FlatList
           keyExtractor={(item, _) => item?.projectName.concat(item.teamId)}
-          data={data?.pages.map(page => page.data).flat()}
+          data={data?.pages
+            .map(page =>
+              page.data.map(item => {
+                const teamCnts = [];
+                for (let i = 0; i < 5; i++) {
+                  teamCnts.push({
+                    currentCnt: item[PositionCurrentCntField[PositionFromIndex[i]]],
+                    recruitCnt: item[PositionMaxCntField[PositionFromIndex[i]]],
+                    position: PositionFromIndex[i],
+                  });
+                }
+                console.log(teamCnts);
+                return {
+                  ...item,
+                  teamMemberCnts: teamCnts,
+                };
+              }),
+            )
+            .flat()}
           renderItem={({ item }) => (
             <TeamBanner
               teamMembersCnt={item?.teamMemberCnts ?? []}

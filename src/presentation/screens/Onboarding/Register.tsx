@@ -38,9 +38,9 @@ import useValidator, {
   FormField,
   ValidationLevel,
 } from '@/presentation/screens/Onboarding/useValidator';
-import Collapsible from 'react-native-collapsible';
 import useFormField from '@/presentation/screens/Onboarding/useFormField';
 import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent';
+import messaging from '@react-native-firebase/messaging';
 
 export type RegisterRequestForm = { [key in keyof RegisterRequestDto]: FormField<any> };
 
@@ -127,17 +127,13 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
       },
       onSuccessClick(result) {
         setLastEmailVerified(stateSeperatedForm.email?.value!);
+        stateSeperatedForm.verificationCode?.setValue('');
         console.log(result);
-      },
-    },
-    {
-      onSuccess: token => {
-        setEmailAuthToken(token);
       },
     },
   );
   const { mutation: emailVerificationMutation } = useMutationDialog(
-    QueryKey.emailVerification(registerState.email, registerState.authCode),
+    QueryKey.emailVerification(registerState.email, registerState.verificationCode),
     verifyAuthCode,
     'CENTER',
     {
@@ -202,7 +198,6 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
   };
 
   const [lastEmailVerified, setLastEmailVerified] = useState('');
-  const [emailAuthToken, setEmailAuthToken] = useState<string | null>(null);
 
   const stateSeperatedForm: RegisterRequestForm = {
     username: useValidator<string>(
@@ -305,7 +300,7 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
       },
       ValidationLevel.Format,
     ),
-    authCode: useValidator<string>(
+    verificationCode: useValidator<string>(
       '',
       (value: string) => {
         if (!authCodeRegex.test(value)) {
@@ -323,28 +318,23 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
             const result = await emailVerificationMutation.mutateAsync({
               email: stateSeperatedForm.email?.value,
               verificationCode: value,
-              token: emailAuthToken,
             });
             return { state: ValidatorState.valid };
           } catch (e) {
             return { state: ValidatorState.invalid, message: (e as Error)?.message };
           }
         },
-        [emailAuthToken],
+        [emailVerificationMutation],
       ),
       ValidationLevel.Format,
     ),
     gender: useFormField(Gender.Female),
   };
-  const authCodeCollapsed = useMemo(
-    () =>
-      !(
-        emailDupCheckMutation.isSuccess &&
-        lastEmailVerified === stateSeperatedForm.email?.value &&
-        emailAuthToken != null
-      ),
-    [emailDupCheckMutation.status, lastEmailVerified, emailAuthToken],
-  );
+  const authCodeCollapsed = useMemo(() => {
+    return !(
+      emailDupCheckMutation.isSuccess && lastEmailVerified === stateSeperatedForm.email?.value
+    );
+  }, [emailDupCheckMutation.status, lastEmailVerified, emailDupCheckMutation]);
 
   return (
     <View>
@@ -444,8 +434,8 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
                   size="sm"
                   style={{ flex: 1 }}
                   onPress={() => {
-                    if (emailAuthToken != null) {
-                      stateSeperatedForm.authCode?.validate();
+                    if (lastEmailVerified === stateSeperatedForm.email?.value) {
+                      stateSeperatedForm.verificationCode?.validate();
                     }
                     // if (registerState.authCode && authCodeRegex.test(registerState.authCode)) {
                     //   emailVerificationMutation.mutate({
@@ -456,9 +446,9 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
                   }}
                 />
               }
-              value={stateSeperatedForm.authCode?.value}
-              onChangeText={stateSeperatedForm.authCode?.setValue}
-              validatorResult={stateSeperatedForm.authCode?.state}
+              value={stateSeperatedForm.verificationCode?.value}
+              onChangeText={stateSeperatedForm.verificationCode?.setValue}
+              validatorResult={stateSeperatedForm.verificationCode?.state}
             />
           </View>
         )}
@@ -566,7 +556,7 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
         </View>
         <FilledButton
           title="가입하기"
-          onPress={() => {
+          onPress={async () => {
             if (checkAllFieldsValidate()) {
               const req: RegisterRequestDto = {};
               Object.entries(stateSeperatedForm).forEach(([k, v]) => {
@@ -574,10 +564,11 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
                 req[key] = v.value;
               });
               console.log(req);
+              const fcmToken = await messaging().getToken();
               registerMutation.mutate({
                 ...req,
                 birthdate: new Date(registerState.birthdate!).format('yyyy-MM-dd'),
-                emailAuthToken: emailAuthToken,
+                fcmToken,
               });
             }
           }}

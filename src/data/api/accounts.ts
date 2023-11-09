@@ -7,6 +7,7 @@ import messaging from '@react-native-firebase/messaging';
 import { Platform } from 'react-native';
 import { FindPasswordDto } from '@/data/model/FindPasswordDto';
 import { ApiErrorCode } from '@/data/api/ApiErrorCode';
+import { ResponseWrapper } from '@/data/model/ResponseWrapper';
 
 export const login = async (dto: LoginRequestDTO) => {
   // Get the device token
@@ -39,7 +40,6 @@ export const register = async (dto: RegisterRequestDto) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + dto.emailAuthToken ?? '',
     },
     body: JSON.stringify({ ...dto, emailAuthToken: undefined }),
   };
@@ -47,26 +47,13 @@ export const register = async (dto: RegisterRequestDto) => {
   if (result.ok) {
     return result;
   } else {
-    throw { name: 'TOKEN_UNAUTHORIZED', message: '승인되지 않은 요청입니다.' };
+    const res = (await result.json()) as ResponseWrapper;
+    throw { name: res.responseCode, message: res.responseMessage };
   }
 };
 
 export const sendAuthCode = async (email: string) => {
-  const request = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ email }),
-  };
-
-  const result = await fetch(`${axiosConfig.baseURL}/contact`, request);
-  console.log(result);
-  if (result.ok && (await result.json()).responseCode === 'VERIFICATION_CODE_SENT') {
-    return result.headers.get('Authorization') as string | null;
-  } else {
-    return null;
-  }
+  return await client.post('contact', { email });
 };
 
 export const verifyAuthCode = async (requestDto: EmailVerifyDto) => {
@@ -74,15 +61,18 @@ export const verifyAuthCode = async (requestDto: EmailVerifyDto) => {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + requestDto.token,
     },
     body: JSON.stringify({ ...requestDto, token: undefined }),
   };
 
   const result = await fetch(`${axiosConfig.baseURL}/contact`, request);
   console.log(result);
-  // if (result.ok && (await result.json()).responseCode === 'EMAIL_VERIFIED')
-};
+  if (result.ok) {
+    return result;
+  } else {
+    const res = (await result.json()) as ResponseWrapper;
+    throw { name: res.responseCode, message: res.responseMessage };
+  }};
 
 export const findUserName = async (request: { email: string }) => {
   const result = await client.post('user/username', request);

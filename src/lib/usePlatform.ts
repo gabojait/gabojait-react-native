@@ -29,16 +29,35 @@ export default function () {
     });
   }, []);
 
-  const isDev = useMemo(
+  const isStaging = useMemo(
     () =>
       latestVersionPackage?.deploymentKey ===
-        env[`CODEPUSH_DEPLOYMENT_KEY_STAGING_${osNameToUpperCase(Platform.OS)}`] || __DEV__,
+      env[`CODEPUSH_DEPLOYMENT_KEY_STAGING_${osNameToUpperCase(Platform.OS)}`],
     [latestVersionPackage],
   );
+  const isRelease = useMemo(
+    () =>
+      latestVersionPackage?.deploymentKey ===
+      env[`CODEPUSH_DEPLOYMENT_KEY_RELEASE_${osNameToUpperCase(Platform.OS)}`],
+    [latestVersionPackage],
+  );
+
+  const isDebug = __DEV__;
+
+  const isDev = useMemo(() => isStaging || isDebug, [isStaging]);
+
+  const alertOnDev = isDev
+    ? (title: string = '코드푸시 디버거', message: string) => {
+        Alert.alert(title, message);
+      }
+    : null;
+
   return {
-    isDev,
-    isDebug: __DEV__,
-    isStaging: !__DEV__ && isDev,
+    isDebug,
+    isDev, // staging or debug
+    isRelease,
+    isStaging,
     currentPackage: latestVersionPackage,
+    alertOnDev,
   };
 }

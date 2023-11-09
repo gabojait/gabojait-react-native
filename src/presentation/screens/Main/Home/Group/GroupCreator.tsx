@@ -5,14 +5,12 @@ import { Text, useTheme, makeStyles } from '@rneui/themed';
 import React, { useRef, useState } from 'react';
 import { KeyboardAvoidingView, Platform, TextInput, TouchableOpacity, View } from 'react-native';
 import TeamRequestDto from '@/data/model/Team/TeamRequestDto';
-import { ModalContext } from '@/presentation/components/modal/context';
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent';
 import CardWrapper from '@/presentation/components/CardWrapper';
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
 import { ScrollView } from 'react-native-gesture-handler';
 import { PositionDropdownMaker } from '@/presentation/components/PositionDropdownMaker';
 import PositionCountDto from '@/data/model/Team/PostionCountDto';
-import { useCreateTeam } from '@/reactQuery/useCreateTeam';
 import useGlobalStyles from '@/presentation/styles';
 import useModal from '@/presentation/components/modal/useModal';
 import { ModalType, useMutationDialog } from '@/reactQuery/util/useMutationDialog';
@@ -20,6 +18,8 @@ import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { createTeam } from '@/data/api/team';
 import { HEIGHT } from '@/presentation/utils/util';
 import { t } from 'i18next';
+import { Position } from '@/data/model/type/Position';
+import RegisterRequestDto from '@/data/model/RegisterRequestDto';
 
 const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'>) => {
   const { theme } = useTheme();
@@ -31,6 +31,11 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
     projectDescription: '',
     projectName: '',
     teamMemberRecruitCnts: [],
+    frontendMaxCnt: 0,
+    backendMaxCnt: 0,
+    managerMaxCnt: 0,
+    designerMaxCnt: 0,
+    otherMaxCnt: 0,
   });
   const globalStyles = useGlobalStyles();
   const ref_input1 = useRef<TextInput | null>(null);
@@ -52,8 +57,26 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
     },
   );
 
+  const positionToCntField: {
+    [key in Position]:
+      | 'managerMaxCnt'
+      | 'backendMaxCnt'
+      | 'frontendMaxCnt'
+      | 'designerMaxCnt'
+      | 'otherMaxCnt';
+  } = {
+    [Position.Manager]: 'managerMaxCnt',
+    [Position.Backend]: 'backendMaxCnt',
+    [Position.Frontend]: 'frontendMaxCnt',
+    [Position.Designer]: 'designerMaxCnt',
+    [Position.None]: 'otherMaxCnt',
+  };
   function handleCreateTeam() {
-    createTeamMutation.mutate(teamCreateState);
+    const _teamCreateState = { ...teamCreateState };
+    _teamCreateState.teamMemberRecruitCnts.forEach(cnt => {
+      _teamCreateState[positionToCntField[cnt.position]] = cnt.totalRecruitCnt;
+    });
+    createTeamMutation.mutate(_teamCreateState);
   }
 
   function updateExpectation(text: string) {
@@ -61,7 +84,12 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
   }
 
   function updateOpenchatUrl(text: string) {
-    setTeamCreateState(prevState => ({ ...prevState, openChatUrl: text }));
+    const regex = new RegExp('(https|http)?://(www\\.)?' + 'open.kakao.com' + '/o/.+', 'g');
+
+    setTeamCreateState(prevState => ({
+      ...prevState,
+      openChatUrl: text.match(regex)?.[0]?.toString() ?? '',
+    }));
   }
 
   function updateProjectDescription(text: string) {
@@ -80,14 +108,19 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
     const pattern = /^https\:\/\/open\.kakao\.com\/.+$/;
     const result = pattern.test(teamCreateState.openChatUrl);
 
-    if (result) return true;
-    else throw Error(t('warn_openchatlink_invalid_format'));
+    if (result) {
+      return true;
+    } else {
+      throw Error(t('warn_openchatlink_invalid_format'));
+    }
   }
 
   function isRecruitCntValidate() {
-    if (teamCreateState.teamMemberRecruitCnts.length == 0) {
-      throw Error(t('warn_teammate_notExist'));
-    } else return true;
+    // if (teamCreateState.teamMemberRecruitCnts.length == 0) {
+    //   throw Error(t('warn_teammate_notExist'));
+    // } else {
+    //   return true;
+    // }
   }
 
   function isEmptyInputExisted() {
@@ -104,7 +137,9 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
       openChatUrl.length != 0
     ) {
       return true;
-    } else throw Error(t('warn_input_empty'));
+    } else {
+      throw Error(t('warn_input_empty'));
+    }
   }
 
   function isAllInputValidate() {

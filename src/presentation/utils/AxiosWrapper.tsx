@@ -11,6 +11,7 @@ import messaging from '@react-native-firebase/messaging';
 // import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '@/presentation/navigation/types';
 import { NativeStackNavigationProp } from 'react-native-screens/native-stack';
+import { AsyncStorageKey } from '@/lib/asyncStorageKey';
 
 /**
  * @param children
@@ -27,7 +28,7 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
     }
     let fcmToken = await messaging().getToken();
 
-    const refreshToken = await AsyncStorage.getItem('refreshToken');
+    const refreshToken = await AsyncStorage.getItem(AsyncStorageKey.refreshToken);
     if (!refreshToken) {
       throw {
         name: 'UNAUTHORIZED',
@@ -47,12 +48,18 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
       .then(async res => {
         const headers = res.headers as unknown as AxiosHeaders;
         if (res.status === 200 || res.status === 201) {
-          await AsyncStorage.setItem('accessToken', res.headers.get('authorization')!);
-          await AsyncStorage.setItem('refreshToken', res.headers.get('refresh-token')!);
+          await AsyncStorage.setItem(
+            AsyncStorageKey.accessToken,
+            res.headers.get('Authorization')!,
+          );
+          await AsyncStorage.setItem(
+            AsyncStorageKey.refreshToken,
+            res.headers.get('refresh-token')!,
+          );
           const newRequest = JSON.parse(JSON.stringify(originalRequest));
           newRequest.headers = {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${res.headers.get('authorization')}`,
+            Authorization: `Bearer ${headers.Authorization}`,
             'refresh-token': `Bearer ${headers['refresh-token']}`,
           };
           new Axios(newRequest);
@@ -61,8 +68,8 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
         }
       })
       .catch(async err => {
-        await AsyncStorage.removeItem('accessToken');
-        await AsyncStorage.removeItem('refreshToken');
+        await AsyncStorage.removeItem(AsyncStorageKey.accessToken);
+        await AsyncStorage.removeItem(AsyncStorageKey.refreshToken);
         console.log(navigation);
         navigation.dispatch(
           StackActions.replace('OnboardingNavigation', {
@@ -88,18 +95,18 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
         if (isSuccess(res.status)) {
           // Todo: Interceptor에서 AsyncStorage에 item을 set 하는 것 보다 헤더의 토큰을 reducer로 전달할 방법을 찾고, 전달 받은 토큰을 반영하는 방법을 찾아야 함.
           console.log(res.headers);
-          if (res.headers.authorization) {
-            await AsyncStorage.setItem('accessToken', res.headers.authorization);
+          if (res.headers.Authorization) {
+            await AsyncStorage.setItem(AsyncStorageKey.accessToken, res.headers.Authorization);
           }
           if (res.headers['refresh-token']) {
-            await AsyncStorage.setItem('refreshToken', res.headers['refresh-token']);
+            await AsyncStorage.setItem(AsyncStorageKey.refreshToken, res.headers['refresh-token']);
           }
           // Todo: res.status == 200 일 때 responseCode를 이용해 분기처리
-          if (!res.data.responseData || res.status == 204) {
+          if (!res.data.responseData || res.status === 204) {
             //Todo: Handle No Content
             //Todo: 빈 리스트(204?)/201 대응
             return [];
-          } else if (res.status == 200 || res.status == 201) {
+          } else if (res.status === 200 || res.status === 201) {
             return res.data.responseData;
           }
         } else {
@@ -126,7 +133,7 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
         '\nStatusCode:',
         e.response?.status,
         '\nAccessToken: ',
-        e.config?.headers.authorization,
+        e.config?.headers.Authorization,
         '\nRefreshToken: ',
         e.config?.headers['refresh-token'],
         '\nResponse:',
@@ -139,8 +146,8 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
       }
       //로그인 화면으로 보내야 할 것
       if (response.responseCode == ApiErrorCode[403].TOKEN_UNAUTHORIZED.name) {
-        AsyncStorage.removeItem('accessToken');
-        AsyncStorage.removeItem('refreshToken');
+        AsyncStorage.removeItem(AsyncStorageKey.accessToken);
+        AsyncStorage.removeItem(AsyncStorageKey.refreshToken);
         navigation.replace('OnboardingNavigation', { screen: 'Login' });
         throw {
           name: 'UNAUTHORIZED',

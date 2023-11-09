@@ -37,7 +37,7 @@ const MateListComponent = ({
 }: PositionTabParamListProps<keyof PositionTabParamList>) => {
   const { theme } = useTheme();
   const initialParam: GetProfileProps = {
-    pageFrom: 0,
+    pageFrom: 1,
     pageSize: 20,
     position: route.params.position,
     profileOrder: 'ACTIVE',

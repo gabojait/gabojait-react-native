@@ -22,14 +22,15 @@ const HomeHeader: React.FC<StackHeaderProps> = ({ navigation, route, options, ba
   const title = getHeaderTitle(options, route.name);
   const dispatch = useAppDispatch();
   const { switchTitle } = useAppSelector(state => state.boardSwitchReducer);
-  //TODO: 뭔가 반응이 느려서 답답함.
+  // TODO: 뭔가 반응이 느려서 답답함.
+  // Todo: 네비게이션 상태 관리를 Redux가 아닌 Navigator로 이전할 필요가.. 흑흑
   async function switchBoard() {
-    if (switchTitle == BoardSwitchActionType.FiND_TEAMATE_SWITCH) {
-      await dispatch({ type: BoardSwitchActionType.FiND_TEAMATE_SWITCH });
-      navigation.navigate('TeamMate');
+    if (switchTitle === BoardSwitchActionType.FIND_TEAMMATE_SWITCH) {
+      dispatch({ type: BoardSwitchActionType.FIND_TEAMMATE_SWITCH });
+      navigation.replace('TeamMate');
     } else {
-      await dispatch({ type: BoardSwitchActionType.FIND_GROUP_SWITCH });
-      navigation.navigate('GroupList');
+      dispatch({ type: BoardSwitchActionType.FIND_GROUP_SWITCH });
+      navigation.replace('GroupList');
     }
   }
 
