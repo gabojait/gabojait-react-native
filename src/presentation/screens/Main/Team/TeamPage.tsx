@@ -1,6 +1,6 @@
 import CardWrapper from '@/presentation/components/CardWrapper';
 import { makeStyles, Text, useTheme } from '@rneui/themed';
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useMemo, useState } from 'react';
 import { Platform, ScrollView, TouchableOpacity, View } from 'react-native';
 import PositionWaveIcon from '@/presentation/components/PositionWaveIcon';
 import { OutlinedButton } from '@/presentation/components/Button';
@@ -17,6 +17,12 @@ import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 import { Loading } from '../../Loading';
+import {
+  Position,
+  PositionCurrentCntField,
+  PositionFromIndex,
+  PositionMaxCntField,
+} from '@/data/model/type/Position';
 
 interface LeaderHeaderParams {
   onPressEditor: () => void;
@@ -109,6 +115,21 @@ export const TeamPageComponent = ({ navigation, route }: MainBottomTabNavigation
     retry: 1,
   });
 
+  const teamRecruits = useMemo(() => {
+    const teamCnts = [];
+    for (let i = 0; i < 5; i++) {
+      if (teamData) {
+        teamCnts.push({
+          currentCnt: teamData[PositionCurrentCntField[PositionFromIndex[i]]],
+          recruitCnt: teamData[PositionMaxCntField[PositionFromIndex[i]]],
+          position: PositionFromIndex[i],
+        });
+      }
+    }
+    console.log(teamCnts);
+    return teamCnts;
+  }, [teamData]);
+
   const {
     data: dataUser,
     isLoading: isLoadingData,
@@ -154,16 +175,18 @@ export const TeamPageComponent = ({ navigation, route }: MainBottomTabNavigation
             >
               <Text style={styles.teamname}>{teamData?.projectName}</Text>
               <View style={styles.partIcon}>
-                {teamData?.teamMemberCnts.map(item => (
-                  <PositionWaveIcon
-                    currentCnt={item.currentCnt}
-                    recruitNumber={item.recruitCnt}
-                    textView={
-                      <Text style={globalStyles.itnitialText}>{mapToInitial(item.position)}</Text>
-                    }
-                    key={item.position}
-                  />
-                ))}
+                {teamRecruits
+                  .filter(recruit => recruit.position != Position.None)
+                  .map(item => (
+                    <PositionWaveIcon
+                      currentCnt={item.currentCnt}
+                      recruitNumber={item.recruitCnt}
+                      textView={
+                        <Text style={globalStyles.itnitialText}>{mapToInitial(item.position)}</Text>
+                      }
+                      key={item.position}
+                    />
+                  ))}
               </View>
               {isLeader(dataUser?.isLeader) ? (
                 <TouchableOpacity

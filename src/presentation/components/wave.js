@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Animated, StyleSheet, Easing } from 'react-native';
+import { View, Animated, StyleSheet, Easing, PixelRatio } from 'react-native';
 import Svg, { G, Path } from 'react-native-svg';
+import { ThemeContext, useTheme } from '@rneui/themed';
 
 const AnimatedSvg = Animated.createAnimatedComponent(Svg);
 
@@ -62,6 +63,27 @@ class Wave extends React.PureComponent {
     let { H, waveParams } = this.state;
 
     let waves = [];
+    const theme = this.props.theme;
+    // If water level (H) is zero, do not render waves
+    if (H === 0) {
+      return (
+        <View
+          style={{
+            borderColor: theme.colors.primary,
+            borderWidth: 1,
+            display: 'flex',
+            position: 'absolute',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: PixelRatio.getPixelSizeForLayoutSize(38),
+            width: PixelRatio.getPixelSizeForLayoutSize(20),
+            height: PixelRatio.getPixelSizeForLayoutSize(20),
+            marginHorizontal: PixelRatio.getPixelSizeForLayoutSize(2),
+            backgroundColor: 'white',
+          }}
+        />
+      );
+    }
 
     for (let i = 0; i < waveParams.length; i++) {
       let { A, T, fill } = waveParams[i];
@@ -99,7 +121,9 @@ class Wave extends React.PureComponent {
   }
 
   setWaveParams(waveParams) {
-    if (!waveParams) return;
+    if (!waveParams) {
+      return;
+    }
 
     let animated = this._animated;
     let newWaveCount = waveParams.length;
