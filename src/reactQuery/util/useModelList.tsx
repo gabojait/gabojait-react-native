@@ -46,7 +46,6 @@ export function useModelList<
       staleTime: 200000,
       getNextPageParam: (lastPage: PageModel<R>) => {
         // 현재 페이지의 요소 수가 페이지 크기보다 적을 때 last page!
-        console.log(lastPage.page);
         if (lastPage.data.length < initialParam.pageSize) {
           return undefined;
         } else {
@@ -56,7 +55,6 @@ export function useModelList<
       useErrorBoundary: true,
     },
   );
-  console.log('data:', data);
   return {
     data,
     isLoading: isLoading,

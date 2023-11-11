@@ -176,7 +176,7 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
   }, [image]);
 
   useEffect(() => {
-    const refetch_key = mapToSeekingTeamKey(profile?.position);
+    const refetch_key = mapToSeekingTeamKey[profile?.position ?? Position.None];
     queryClient.invalidateQueries(refetch_key);
   }, [profile?.isSeekingTeam]);
 
