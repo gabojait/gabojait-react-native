@@ -1,4 +1,5 @@
 import { Position } from '../type/Position';
+import Skill from '@/data/model/Profile/Skill';
 
 export default interface UserProfileDto {
   createdAt: string;
@@ -8,4 +9,5 @@ export default interface UserProfileDto {
   reviewCnt: number;
   updatedAt: string;
   userId: string;
+  skills: Skill[];
 }

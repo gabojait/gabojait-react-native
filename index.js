@@ -14,24 +14,24 @@ import { AlertType } from '@/data/model/type/AlertType';
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.log('Message handled in the background!', remoteMessage);
-  try {
-    const db = await getDBConnection();
-    const notificationRepository = new NotificationRepository(db);
-    await notificationRepository.createTableIfNotExists();
-    await notificationRepository.save(
-      new Notification({
-        read: false,
-        id: remoteMessage.messageId ?? '-9999',
-        title: remoteMessage.data?.title ?? '',
-        body: remoteMessage.data?.body ?? '',
-        time: remoteMessage.data?.time ?? '',
-        type: remoteMessage.data?.type ?? '',
-      }),
-    );
-    await db.close();
-  } catch (e) {
-    console.error(e);
-  }
+  // try {
+  //   const db = await getDBConnection();
+  //   const notificationRepository = new NotificationRepository(db);
+  //   await notificationRepository.createTableIfNotExists();
+  //   await notificationRepository.save(
+  //     new Notification({
+  //       read: false,
+  //       id: remoteMessage.messageId ?? '-9999',
+  //       title: remoteMessage.data?.title ?? '',
+  //       body: remoteMessage.data?.body ?? '',
+  //       time: remoteMessage.data?.time ?? '',
+  //       type: remoteMessage.data?.type ?? '',
+  //     }),
+  //   );
+  //   await db.close();
+  // } catch (e) {
+  //   console.error(e);
+  // }
 });
 let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_START };
 AppRegistry.registerComponent(appName, () => codePush(codePushOptions)(HeadlessCheck));

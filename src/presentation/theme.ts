@@ -69,6 +69,11 @@ declare module '@rneui/themed' {
         height: number;
       };
     };
+    customColors: {
+      red: string;
+      orange: string;
+      yellow: string;
+    };
   }
 }
 
@@ -83,6 +88,11 @@ export const theme = createTheme({
     grey0: '#EEEEEE',
     grey1: '#6C6C6C',
     grey2: '#B4B4B4',
+  },
+  customColors: {
+    red: '#F04823',
+    orange: '#F06823',
+    yellow: '#FFDB20',
   },
   mode: 'light',
   components: {

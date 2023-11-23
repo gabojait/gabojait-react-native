@@ -8,6 +8,8 @@ import UserProfileDto from '@/data/model/User/UserProfileDto';
 import UserProfileOfferDto from '@/data/model/User/UserProfileBriefDto';
 import { Position } from '@/data/model/type/Position';
 import { mapPositionToKorean } from '../utils/PositionDropdownUtils';
+import { Chip, sliderColors } from '@/presentation/screens/Main/MyPage/Profile';
+import { Level } from '@/data/model/Profile/Skill';
 
 export const UserCard = ({
   item,
@@ -40,10 +42,24 @@ export const UserCard = ({
         >
           <View>
             <Text style={styles.name}>{item.nickname}</Text>
-            <Text style={styles.position}>{mapPositionToKorean(position)}</Text>
             <View style={{ flexDirection: 'row', paddingBottom: 10 }}>
               <RatingBar ratingScore={item.rating} />
               <Text style={styles.score}>{item.rating}</Text>
+            </View>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+              {item.skills.map(skill => (
+                <Chip
+                  style={[
+                    styles[skill.level],
+                    {
+                      borderRadius: theme.radius.sm,
+                      padding: 10,
+                    },
+                  ]}
+                >
+                  <Text>{skill.skillName}</Text>
+                </Chip>
+              ))}
             </View>
           </View>
           <TouchableOpacity style={{ justifyContent: 'center' }}>
@@ -71,5 +87,14 @@ const useStyles = makeStyles(theme => ({
     fontWeight: theme.fontWeight?.bold,
     color: 'black',
     paddingLeft: 10,
+  },
+  LOW: {
+    backgroundColor: theme.customColors.red,
+  },
+  MID: {
+    backgroundColor: theme.customColors.orange,
+  },
+  HIGH: {
+    backgroundColor: theme.customColors.yellow,
   },
 }));
