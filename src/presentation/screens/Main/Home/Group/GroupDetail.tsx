@@ -10,7 +10,7 @@ import PositionRecruiting from '@/presentation/model/PositionRecruitng';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import { makeStyles, Text, useTheme } from '@rneui/themed';
 import React, { Suspense, useEffect, useRef, useState } from 'react';
-import { ScrollView, TouchableOpacity, View } from 'react-native';
+import { ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
 import {
   useMutation,
   useQuery,
@@ -31,6 +31,9 @@ import { Loading } from '@/presentation/screens/Loading';
 import { BottomInputModalContent } from '@/presentation/components/modalContent/BottomInputModalContent';
 import { ReportCompleteModal } from '@/presentation/components/ReportCompleteModal';
 import BookMarkHeader from '@/presentation/screens/Headers/BookmarkHeader';
+import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
+import CustomInput from '@/presentation/components/CustomInput';
+import { InputModalContent } from '@/presentation/components/modalContent/InputModalContent';
 
 const GroupDetail = ({ navigation, route }: MainStackScreenProps<'GroupDetail'>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -70,11 +73,13 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
       },
     },
   );
+
   const positions: Array<PositionRecruiting> = data?.teamMemberCnts || [];
   const [reportButtonState, setReportButtonState] = useState({
     text: '신고하기',
     isDisabled: true,
   });
+
   useEffect(() => {
     if ((reportStateRef.current?.props?.value?.length ?? 0) > 0) {
       setReportButtonState({ text: '완료', isDisabled: false });
@@ -93,37 +98,15 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
   const handleReportModal = () => {
     modal?.show({
       content: (
-        <BottomModalContent
-          title="팀을 신고하시겠습니까?"
-          children={
-            <View style={{ justifyContent: 'center', alignContent: 'center', width: '100%' }}>
-              <Text style={[globalStyles.textLight13, { textAlign: 'center', paddingBottom: 10 }]}>
-                신고 사유를 적어주세요
-              </Text>
-              <CardWrapper style={{ minHeight: 75, maxWidth: 400 }}>
-                <TextInput
-                  ref={reportStateRef}
-                  inputProps={{
-                    style: { width: '100%' },
-                    multiline: true,
-                    maxLength: 500,
-                    shape: 'none',
-                  }}
-                  value={reportState.text}
-                  style={{ width: '100%' }}
-                  onChangeText={(text: string) => {
-                    setReportState(prevState => ({ ...prevState, text: text }));
-                  }}
-                  multiline={true}
-                  maxLength={500}
-                />
-              </CardWrapper>
-            </View>
-          }
+        <InputModalContent
+          header={<Text h4>팀을 신고하시겠습니까?</Text>}
+          ref={reportStateRef}
+          visible={modal?.modal}
+          onBackgroundPress={modal?.hide}
           yesButton={{
             title: '신고하기',
             onPress: () => {
-              console.log('신고하기');
+              console.log('신고하기', reportStateRef.current);
               modal.hide();
               reportCompletedModal();
             },
@@ -134,10 +117,6 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
               console.log('신고하기');
               modal.hide();
             },
-          }}
-          onInputValueChange={(text: string) => {
-            setReportState({ text: text });
-            console.log(`text:${text}`);
           }}
         />
       ),

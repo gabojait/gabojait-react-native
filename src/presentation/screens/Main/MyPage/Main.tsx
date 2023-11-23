@@ -14,6 +14,7 @@ import { getMyProfile } from '@/data/api/profile';
 import ProfileViewResponse from '@/data/model/Profile/ProfileViewResponse';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 import Loading from '../../Loading';
+import { Position } from '@/data/model/type/Position';
 
 const Main = ({ navigation, route }: MainBottomTabNavigationProps<'MyPage'>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -122,8 +123,18 @@ const MainComponent = ({ navigation }: MainBottomTabNavigationProps<'MyPage'>) =
       <View style={styles.divider}>
         {profileData?.isLeader ? (
           <LeaderComponent
-            onPressApply={() => navigation.navigate('MainNavigation', { screen: 'ApplyStatus' })}
-            onPressTeam={() => navigation.push('MainNavigation', { screen: 'OfferSentUser' })}
+            onPressApply={() =>
+              navigation.navigate('MainNavigation', {
+                screen: 'ApplyStatus',
+                params: { screen: 'Frontend', params: { position: Position.Frontend } },
+              })
+            }
+            onPressTeam={() =>
+              navigation.push('MainNavigation', {
+                screen: 'OfferSentUser',
+                params: { screen: 'Frontend', params: { position: Position.Frontend } },
+              })
+            }
             onPressHistory={() => navigation.navigate('MainNavigation', { screen: 'TeamHistory' })}
           />
         ) : (
@@ -288,7 +299,7 @@ const MyReview = ({ data }: { data: ProfileViewDto }) => {
           horizontal={true}
           data={data?.reviews}
           renderItem={({ item }) => (
-            <ReviewItem name={item.reviewerNickname} score={2.5} content={item.post} />
+            <ReviewItem name={item.reviewer} score={2.5} content={item.post} />
           )}
         />
       </View>

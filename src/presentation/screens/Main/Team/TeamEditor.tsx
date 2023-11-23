@@ -73,6 +73,11 @@ export const TeamEditorComponent = ({ navigation, route }: MainStackScreenProps<
     projectDescription: '',
     projectName: '',
     teamMemberRecruitCnts: [],
+    managerMaxCnt: 0,
+    designerMaxCnt: 0,
+    frontendMaxCnt: 0,
+    backendMaxCnt: 0,
+    otherMaxCnt: 0,
   });
 
   useEffect(() => {
@@ -82,6 +87,11 @@ export const TeamEditorComponent = ({ navigation, route }: MainStackScreenProps<
       projectDescription: teamData?.projectDescription!,
       projectName: teamData?.projectName!,
       teamMemberRecruitCnts: initializeTeamMemberRecruitCnts()!,
+      managerMaxCnt: teamData?.managerMaxCnt ?? 0,
+      designerMaxCnt: teamData?.designerMaxCnt ?? 0,
+      frontendMaxCnt: teamData?.frontendMaxCnt ?? 0,
+      backendMaxCnt: teamData?.backendMaxCnt ?? 0,
+      otherMaxCnt: 0,
     });
   }, [teamData]);
 

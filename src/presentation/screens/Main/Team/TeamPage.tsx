@@ -126,7 +126,6 @@ export const TeamPageComponent = ({ navigation, route }: MainBottomTabNavigation
         });
       }
     }
-    console.log(teamCnts);
     return teamCnts;
   }, [teamData]);
 

@@ -1,14 +1,7 @@
-import { MainStackScreenProps, TeammateStackParamListProps } from '@/presentation/navigation/types';
+import { MainStackScreenProps } from '@/presentation/navigation/types';
 import React, { Suspense, useEffect, useState } from 'react';
 import { Text, useTheme } from '@rneui/themed';
-import {
-  ImageBackground,
-  Linking,
-  ScrollView,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ImageBackground, Linking, ScrollView, View } from 'react-native';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { RatingBar } from '@/presentation/components/RatingBar';
 import { Level } from '@/data/model/Profile/Skill';
@@ -34,19 +27,13 @@ import {
 import ProfileViewResponse from '@/data/model/Profile/ProfileViewResponse';
 import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 import { getProfile } from '@/data/api/profile';
-import CustomHeader from '@/presentation/components/CustomHeader';
-import CustomIcon from '@/presentation/components/icon/Gabojait';
-import { Icon } from '@rneui/base';
 import { FilledButton } from '@/presentation/components/Button';
 import { favoriteKeys } from '@/reactQuery/key/FavoriteKeys';
 import FavoriteUpdateDto from '@/data/model/Favorite/FavoriteUpdateDto';
 import { postFavoriteUser } from '@/data/api/favorite';
 import { isFavorite } from '@/presentation/utils/util';
 import useModal from '@/presentation/components/modal/useModal';
-import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent';
-import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
 import useGlobalStyles from '@/presentation/styles';
-import CardWrapper from '@/presentation/components/CardWrapper';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { offerKeys } from '@/reactQuery/key/OfferKeys';
 import { cancelOfferToUser, sendOfferToUser } from '@/data/api/offer';
@@ -55,10 +42,6 @@ import { Loading } from '@/presentation/screens/Loading';
 import { BottomInputModalContent } from '@/presentation/components/modalContent/BottomInputModalContent';
 import { ReportCompleteModal } from '@/presentation/components/ReportCompleteModal';
 import BookMarkHeader from '@/presentation/screens/Headers/BookmarkHeader';
-import {
-  StackHeaderInterpolationProps,
-  StackHeaderInterpolatedStyle,
-} from '@react-navigation/stack';
 
 const ProfilePreview = ({ navigation, route }: MainStackScreenProps<'ProfilePreview'>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -94,16 +77,27 @@ const ProfilePreviewComponent = ({ navigation, route }: MainStackScreenProps<'Pr
     data: profile,
     isLoading,
     error,
-  }: UseQueryResult<ProfileViewResponse> = useQuery([profileKeys.profileUserId], () =>
-    getProfile(userId),
+  }: UseQueryResult<ProfileViewResponse> = useQuery(
+    profileKeys.profileUserId(userId),
+    ({ queryKey: [_, _userId] }) => getProfile(_userId),
   );
+
   const { mutate: mutateFavorite, data: favoriteResponse } = useMutation(
     favoriteKeys.favoriteByTeam,
     (args: [string, FavoriteUpdateDto]) => postFavoriteUser(...args),
     {
       useErrorBoundary: true,
-      onSuccess: () => {
-        queryClient.invalidateQueries([profileKeys.profileUserId, favoriteKeys.favoriteByUserList]);
+      onSettled: (data, error, [_userId], context) => {
+        // 쿼리의 캐시를 날리고 새로운 서버 데이터를 갖고 오게 한다.
+        queryClient.invalidateQueries(profileKeys.profileUserId(_userId));
+      },
+      onMutate: async ([_userId, { isAddFavorite }]) => {
+        await queryClient.cancelQueries(profileKeys.profileUserId(_userId));
+        const oldData = queryClient.getQueryData(
+          profileKeys.profileUserId(_userId),
+        ) as ProfileViewResponse;
+        const newData = { ...oldData, isFavorite: isAddFavorite };
+        queryClient.setQueryData(profileKeys.profileUserId(_userId), newData);
       },
     },
   );

@@ -140,12 +140,12 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
         e.response,
       );
       //재요청 필요한 것
-      if (response.responseCode == ApiErrorCode[401].TOKEN_UNAUTHENTICATED.name) {
+      if (response?.responseCode == ApiErrorCode[401].TOKEN_UNAUTHENTICATED.name) {
         console.log('------------refreshToken needs-----------------------------------');
         requestRefreshToken(e.config!);
       }
       //로그인 화면으로 보내야 할 것
-      if (response.responseCode == ApiErrorCode[403].TOKEN_UNAUTHORIZED.name) {
+      if (response?.responseCode == ApiErrorCode[403].TOKEN_UNAUTHORIZED.name) {
         AsyncStorage.removeItem(AsyncStorageKey.accessToken);
         AsyncStorage.removeItem(AsyncStorageKey.refreshToken);
         navigation.replace('OnboardingNavigation', { screen: 'Login' });

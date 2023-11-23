@@ -168,7 +168,6 @@ const GroupListComponent = ({ navigation }: BoardStackParamListProps<'GroupList'
                     position: PositionFromIndex[i],
                   });
                 }
-                console.log(teamCnts);
                 return {
                   ...item,
                   teamMemberCnts: teamCnts,

@@ -10,7 +10,6 @@ import { useTranslation } from 'react-i18next';
 import { verifyPassword } from '@/data/api/accounts';
 import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent';
 import { useAppDispatch } from '@/redux/hooks';
-import { useNotificationRepository } from '@/data/localdb/notificationProvider';
 import { Input } from '@rneui/base';
 import { InputModalContent } from '@/presentation/components/modalContent/InputModalContent';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -66,13 +65,16 @@ const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
   const modal = useModal();
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const notificationRepository = useNotificationRepository();
   const modalInputRef = useRef<Input>(null);
   const openFooConfirmDialog = () => {
     modal?.show({
       content: (
         <InputModalContent
-          headerComponent={<Text h4 style={{fontWeight: 'bold', marginBottom: 20}}>현재 비밀번호를 입력해주세요</Text>}
+          headerComponent={
+            <Text h4 style={{ fontWeight: 'bold', marginBottom: 20 }}>
+              현재 비밀번호를 입력해주세요
+            </Text>
+          }
           ref={modalInputRef}
           visible={modal?.modal}
           onBackgroundPress={modal?.hide}
@@ -125,7 +127,6 @@ const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
 
   const platform = usePlatform();
 
-  const repository = useNotificationRepository();
   const onVersionClick = async () => {
     if (!platform.isDev) {
       return;
@@ -149,12 +150,6 @@ const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
           }`,
           [
             {
-              text: '알림 저장용 로컬 DB 초기화',
-              onPress: () => {
-                repository?.clear();
-              },
-            },
-            {
               text: '닫기',
             },
           ],
@@ -175,7 +170,6 @@ const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
       <MenuItem
         title="로그아웃"
         onClick={async () => {
-          await notificationRepository?.clear();
           dispatch(signOut());
           navigation.goBack();
           navigation

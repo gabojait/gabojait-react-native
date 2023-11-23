@@ -12,10 +12,11 @@ import { offerKeys } from '@/reactQuery/key/OfferKeys';
 import { PageRequest, useModelList } from '@/reactQuery/util/useModelList';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { makeStyles, useTheme } from '@rneui/themed';
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 import { PositionTabParamList, PositionTabParamListProps } from '@/presentation/navigation/types';
 import { Loading } from '@/presentation/screens/Loading';
+import { mapToSeekingTeamKey } from '@/presentation/utils/util';
 
 const ApplyList = ({
   navigation,
@@ -41,10 +42,8 @@ const ApplyListComponent = ({
       position: route.params.position,
     },
     idName: 'offerId',
-    key: offerKeys.getOffersFromFrontend,
+    key: mapToSeekingTeamKey[route.params.position],
     fetcher: async ({ pageParam, queryKey: [_, params] }) => {
-      console.log('fetch!!');
-      console.log('pageParam:', pageParam);
       return await getOffersFromUser({
         ...(params as GetOfferFromOthersProps),
         pageFrom: pageParam,
@@ -64,6 +63,13 @@ const ApplyListComponent = ({
     'CENTER',
   );
 
+  useEffect(() => {
+    console.log(route, navigation.getState().routes);
+    if (route.params.position === route.name.toLowerCase()) {
+      refetch();
+    }
+  }, [route]);
+
   if (!data) {
     return null;
   }
@@ -80,6 +86,14 @@ const ApplyListComponent = ({
     >
       <FlatList
         showsVerticalScrollIndicator={false}
+        onRefresh={() => {
+          refetch();
+        }}
+        refreshing={isRefreshing}
+        onEndReached={() => {
+          fetchNextPage();
+        }}
+        onEndReachedThreshold={0.6}
         keyExtractor={item => item.user.nickname}
         data={data?.pages?.map(page => page.data).flat()}
         renderItem={({ item }) => (

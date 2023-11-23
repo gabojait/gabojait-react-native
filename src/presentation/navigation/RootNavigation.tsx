@@ -19,31 +19,29 @@ export const RootNavigation = () => {
   return (
     <NavigationContainer>
       {/* initialRouteName은 일시적. 추후 자동로그인 가능 여부에 따라 OnboardingNavigation, MainNavigation으로 라우팅될 예정 */}
-      <NotificationProvider>
-        <AxiosWrapper>
-          <RootStack.Navigator initialRouteName={'SplashScreen'}>
+      <AxiosWrapper>
+        <RootStack.Navigator initialRouteName={'SplashScreen'}>
+          <RootStack.Screen
+            name="WebView"
+            component={WebViewPage}
+            options={{ headerBackTitleVisible: false }}
+          />
+          <RootStack.Group screenOptions={{ headerShown: false }}>
             <RootStack.Screen
-              name="WebView"
-              component={WebViewPage}
-              options={{ headerBackTitleVisible: false }}
+              name="OnboardingNavigation"
+              component={OnboardingNavigation}
+              options={{ gestureEnabled: false }}
             />
-            <RootStack.Group screenOptions={{ headerShown: false }}>
-              <RootStack.Screen
-                name="OnboardingNavigation"
-                component={OnboardingNavigation}
-                options={{ gestureEnabled: false }}
-              />
-              <RootStack.Screen name="SplashScreen" component={SplashScreen} />
-              <RootStack.Screen name="MainNavigation" component={MainNavigation} />
-              <RootStack.Screen
-                name="MainBottomTabNavigation"
-                component={MainBottomTabNavigation}
-                options={{ gestureEnabled: false, headerMode: 'screen' }}
-              />
-            </RootStack.Group>
-          </RootStack.Navigator>
-        </AxiosWrapper>
-      </NotificationProvider>
+            <RootStack.Screen name="SplashScreen" component={SplashScreen} />
+            <RootStack.Screen name="MainNavigation" component={MainNavigation} />
+            <RootStack.Screen
+              name="MainBottomTabNavigation"
+              component={MainBottomTabNavigation}
+              options={{ gestureEnabled: false, headerMode: 'screen' }}
+            />
+          </RootStack.Group>
+        </RootStack.Navigator>
+      </AxiosWrapper>
     </NavigationContainer>
   );
 };
