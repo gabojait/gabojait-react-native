@@ -1,0 +1,73 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+
+	before_all do |_lane, options|
+	  ENV["FASTLANE_ITUNES_TRANSPORTER_USE_SHELL_SCRIPT"]="1"
+	  ENV["FASTLANE_ITUNES_TRANSPORTER_PATH"]="/Applications/Transporter.app/Contents/itms"
+	end
+
+	desc "Runs all the tests"
+	lane :test do
+    run_tests(
+      workspace: "gabojait.xcworkspace",
+      scheme: "gabojait",
+      clean: false
+      )
+	end
+
+	desc "Build"
+	lane :build do
+		build_app(workspace: "gabojait.xcworkspace", scheme: "gabojait")
+	end
+
+  desc "Push a new beta build to TestFlight"
+  lane :beta do
+    match(type: "appstore")
+    increment_build_number(xcodeproj: "gabojait.xcodeproj")
+    build_app(workspace: "gabojait.xcworkspace", scheme: "gabojait")
+    upload_to_testflight
+    slack(
+      message: "iOS Gabojait 버전 #{new_version_number} - TestFlight 업로드 완료",
+      slack_url: "it-09s6933.slack.com"
+    )
+  end
+
+  desc "Push a new release build to the App Store"
+    lane :release do |options|
+      if options[:version]
+        match(type: "appstore")
+	      increment_version_number(version_number: options[:version])
+	      increment_build_number(xcodeproj: "gabojait.xcodeproj")
+	      build_app(workspace: "gabojait.xcworkspace", scheme: "gabojait")
+	      upload_to_app_store(
+	        reject_if_possible: false,
+	        force: true,
+	        skip_screenshots: false,
+          skip_metadata: false,
+          language:["ko"]
+	        submit_for_review: true,
+	        automatic_release: true,
+	      )
+	      new_version_number = get_version_number(xcodeproj: "gabojait.xcodeproj",target: "App")
+	      slack(
+	        message: "iOS Gabojait 버전 #{new_version_number} - App Store 배포 완료",
+	        slack_url: "it-09s6933.slack.com"
+	      )
+    end
+end
