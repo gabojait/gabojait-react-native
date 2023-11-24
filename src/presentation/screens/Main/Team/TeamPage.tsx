@@ -1,6 +1,6 @@
 import CardWrapper from '@/presentation/components/CardWrapper';
 import { makeStyles, Text, useTheme } from '@rneui/themed';
-import React, { Suspense, useMemo, useState } from 'react';
+import React, { Suspense, useEffect, useMemo, useState } from 'react';
 import { Platform, ScrollView, TouchableOpacity, View } from 'react-native';
 import PositionWaveIcon from '@/presentation/components/PositionWaveIcon';
 import { OutlinedButton } from '@/presentation/components/Button';
@@ -23,6 +23,7 @@ import {
   PositionFromIndex,
   PositionMaxCntField,
 } from '@/data/model/type/Position';
+import { useRoute } from '@react-navigation/native';
 
 interface LeaderHeaderParams {
   onPressEditor: () => void;
@@ -110,10 +111,17 @@ export const TeamPageComponent = ({ navigation, route }: MainBottomTabNavigation
     data: teamData,
     isLoading: isTeamDataLoading,
     error: teamDataError,
+    refetch,
   }: UseQueryResult<TeamDto> = useQuery(teamKeys.myTeam, () => getMyTeam(), {
     useErrorBoundary: true,
     retry: 1,
   });
+  useEffect(() => {
+    console.log(route.name);
+    if (route.name === 'Team') {
+      refetch();
+    }
+  }, [route]);
 
   const teamRecruits = useMemo(() => {
     const teamCnts = [];

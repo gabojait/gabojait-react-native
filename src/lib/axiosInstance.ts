@@ -15,6 +15,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const axiosConfig: AxiosRequestConfig = {
   baseURL: 'https://gabojait-dev.nogamsung.com/api/v1',
   headers: {} as AxiosRequestHeaders,
+  timeout: 10 * 1000,
 };
 
 interface AdaptAxiosRequestConfig extends AxiosRequestConfig {
@@ -47,16 +48,22 @@ interface CustomResponseInterceptorManager
   ): number;
 }
 
-export const isSuccess = (statusCode: number) => 200 <= statusCode && statusCode < 300;
+export const isSuccess = (statusCode: number) => statusCode >= 200 && statusCode < 300;
 
 const client: CustomInstance = axios.create(axiosConfig);
 export const reqInterceptor = async (req: AdaptAxiosRequestConfig) => {
   // Todo: 재시도 구현
-  if (!req.headers) throw new Error('Unexpected Request');
+  if (!req.headers) {
+    throw new Error('Unexpected Request');
+  }
   const accessToken = await AsyncStorage.getItem('accessToken');
   const refreshToken = await AsyncStorage.getItem('refreshToken');
-  if (accessToken) req.headers.Authorization = `Bearer ${accessToken}`;
-  if (refreshToken) req.headers['refresh-token'] = `Bearer ${refreshToken}`;
+  if (accessToken) {
+    req.headers.Authorization = `Bearer ${accessToken}`;
+  }
+  if (refreshToken) {
+    req.headers['refresh-token'] = `Bearer ${refreshToken}`;
+  }
   console.info(`'${req.url}'\nHeader:`, req.headers, req);
   return req;
 };

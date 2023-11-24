@@ -37,7 +37,9 @@ export const Fallback404 = (props: FallbackProps) => {
 export const Fallback500 = (props: FallbackProps) => {
   const { theme } = useTheme();
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <View
+      style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'white' }}
+    >
       <Text style={{ fontSize: WIDTH / 3, paddingBottom: 20 }}>🧐</Text>
       <Text style={{ fontSize: 22, fontWeight: theme.fontWeight.medium, paddingBottom: 20 }}>
         서버 에러
@@ -67,6 +69,29 @@ export const Fallback503 = () => {
         title={'새로고침'}
         size="lg"
         onPress={() => BackHandler.exitApp()}
+        buttonStyle={{ width: WIDTH * 0.9 }}
+      />
+    </View>
+  );
+};
+
+export const FallbackNetworkFail = (props: FallbackProps) => {
+  const { theme } = useTheme();
+  return (
+    <View
+      style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'white' }}
+    >
+      <Text style={{ fontSize: WIDTH / 3, paddingBottom: 20 }}>🛜</Text>
+      <Text style={{ fontSize: 22, fontWeight: theme.fontWeight.medium, paddingBottom: 20 }}>
+        네트워크 상태가 원활하지 않습니다.
+      </Text>
+      <Text style={{ fontSize: 14, fontWeight: theme.fontWeight.medium, paddingBottom: 20 }}>
+        나중에 다시 시도해주세요.
+      </Text>
+      <FilledButton
+        title={'새로고침'}
+        size="lg"
+        onPress={() => props.onPressReset()}
         buttonStyle={{ width: WIDTH * 0.9 }}
       />
     </View>

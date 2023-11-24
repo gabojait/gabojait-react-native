@@ -1,4 +1,3 @@
-import LoginRequestDTO from '@/data/model/LoginRequestDto';
 import client from '@/lib/axiosInstance';
 import { PageModel, PageRequest } from '@/reactQuery/util/useModelList';
 import { objectToQueryString } from '@/lib/urlUtils';
@@ -10,4 +9,9 @@ export const getNotifications = async (pageRequest: PageRequest) => {
 
   console.log(result);
   return result as PageModel<Notification>;
+};
+
+export const makeReadNotification = async (notificationId: string) => {
+  const result = await client.patch(`user/notification/${notificationId}`);
+  return true;
 };

@@ -6,10 +6,7 @@ import { AlertType } from '@/data/model/type/AlertType';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import { RootStackNavigationProps } from '@/presentation/navigation/RootNavigation';
 import { useModelList } from '@/reactQuery/util/useModelList';
-import { mapToSeekingTeamKey } from '@/presentation/utils/util';
-import { GetOfferFromOthersProps, getOffersFromUser } from '@/data/api/offer';
-import { Notification } from '@/data/model/Notification';
-import { getNotifications } from '@/data/api/notification';
+import { getNotifications, makeReadNotification } from '@/data/api/notification';
 import { Position } from '@/data/model/type/Position';
 
 const NotificationQueryKey = {
@@ -54,6 +51,10 @@ export default function AlertPage({ navigation }: MainStackScreenProps<'AlertPag
               key={item.notificationId}
               style={{ marginHorizontal: 20, marginVertical: 9 }}
               onPress={() => {
+                // 읽기 처리 결과는 상관 없음
+                try {
+                  makeReadNotification(item.notificationId);
+                } catch (e) {}
                 switch (AlertType[item.notificationType]) {
                   case AlertType.TEAM_PROFILE: {
                     // 팀/팀원 합류로 인한 알림. 현재 팀 페이지로 이동

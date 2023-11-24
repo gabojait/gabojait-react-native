@@ -1,6 +1,7 @@
 import { ApiErrorCode, ApiErrorCodeType } from '@/data/api/ApiErrorCode';
 import React, { ReactNode } from 'react';
-import { Fallback500, Fallback503 } from './Fallback';
+import {Fallback500, Fallback503, FallbackNetworkFail} from './Fallback';
+import { Alert } from 'react-native';
 
 export interface ErrorBoundaryState {
   hasError: boolean;
@@ -54,13 +55,17 @@ class GeneralErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
     const { children } = this.props;
 
     if (hasError) {
-      if (error?.name == ApiErrorCodeType[500]) {
-        return <Fallback500 onPressReset={this.onResetErrorBoundary} />;
-      } else if (error?.name == ApiErrorCodeType[503]) {
-        return <Fallback503 />;
+      switch (error?.name) {
+        case ApiErrorCodeType[500]:
+          return <Fallback500 onPressReset={this.onResetErrorBoundary} />;
+        case ApiErrorCodeType[503]:
+          return <Fallback503 />;
+        case 'TIMEOUT':
+          return <FallbackNetworkFail onPressReset={this.onResetErrorBoundary} />;
+        default:
+          return children;
       }
     }
-
     return children;
   }
 }

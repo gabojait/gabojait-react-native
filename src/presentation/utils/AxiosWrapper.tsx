@@ -103,8 +103,6 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
           }
           // Todo: res.status == 200 일 때 responseCode를 이용해 분기처리
           if (!res.data.responseData || res.status === 204) {
-            //Todo: Handle No Content
-            //Todo: 빈 리스트(204?)/201 대응
             return [];
           } else if (res.status === 200 || res.status === 201) {
             return res.data.responseData;
@@ -127,9 +125,12 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
     const errorInterceptor = (error: AxiosError) => {
       const e = error as AxiosError;
       const response = e.response?.data as ResponseWrapper<undefined>;
+
       console.error(
         'Path:',
         e.config?.url,
+        '\ncode: ',
+        e.code,
         '\nStatusCode:',
         e.response?.status,
         '\nAccessToken: ',
@@ -140,12 +141,19 @@ export default function AxiosWrapper({ children }: { children: ReactNode }) {
         e.response,
       );
       //재요청 필요한 것
-      if (response?.responseCode == ApiErrorCode[401].TOKEN_UNAUTHENTICATED.name) {
+      if (error.code === 'ECONNABORTED') {
+        throw {
+          name: 'TIMEOUT',
+          message: '네트워크 상태가 원활하지 않습니다. 나중에 다시 시도해주세요.',
+          stack: error.stack,
+        };
+      }
+      if (response?.responseCode === ApiErrorCode[401].TOKEN_UNAUTHENTICATED.name) {
         console.log('------------refreshToken needs-----------------------------------');
         requestRefreshToken(e.config!);
       }
       //로그인 화면으로 보내야 할 것
-      if (response?.responseCode == ApiErrorCode[403].TOKEN_UNAUTHORIZED.name) {
+      if (response?.responseCode === ApiErrorCode[403].TOKEN_UNAUTHORIZED.name) {
         AsyncStorage.removeItem(AsyncStorageKey.accessToken);
         AsyncStorage.removeItem(AsyncStorageKey.refreshToken);
         navigation.replace('OnboardingNavigation', { screen: 'Login' });

@@ -34,6 +34,7 @@ import BookMarkHeader from '@/presentation/screens/Headers/BookmarkHeader';
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
 import CustomInput from '@/presentation/components/CustomInput';
 import { InputModalContent } from '@/presentation/components/modalContent/InputModalContent';
+import GeneralErrorBoundary from '@/presentation/components/errorComponent/ErrorBoundary';
 
 const GroupDetail = ({ navigation, route }: MainStackScreenProps<'GroupDetail'>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -60,6 +61,9 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
     () => getTeam(teamId),
     {
       useErrorBoundary: true,
+      onError: e => {
+        console.log('hihihihi', e);
+      },
     },
   );
   const { mutate: mutateFavorite, data: favoriteResponse } = useMutation(

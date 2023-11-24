@@ -54,6 +54,7 @@ export const UserCard = ({
                     {
                       borderRadius: theme.radius.sm,
                       padding: 10,
+                      borderWidth: 0,
                     },
                   ]}
                 >
