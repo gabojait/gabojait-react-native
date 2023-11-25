@@ -24,15 +24,17 @@ platform :ios do
 
 	desc "Runs all the tests"
 	lane :test do
+		match(type: "appstore")
     run_tests(
       workspace: "gabojait.xcworkspace",
       scheme: "gabojait",
-      clean: false
+      clean: true
       )
 	end
 
 	desc "Build"
 	lane :build do
+		match(type: "appstore")
 		build_app(workspace: "gabojait.xcworkspace", scheme: "gabojait")
 	end
 
