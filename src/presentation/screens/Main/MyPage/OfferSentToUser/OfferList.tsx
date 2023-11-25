@@ -26,11 +26,11 @@ const OfferListComponent = ({
   route,
 }: PositionTabParamListProps<keyof PositionTabParamList>) => {
   const initialParam: GetOfferFromOthersProps = {
-    pageFrom: 0,
+    pageFrom: 1,
     pageSize: 20,
     position: route.params.position,
   };
-  const [params, setParams] = useState({ pageFrom: 0, pageSize: 20 } as PageRequest);
+  const [params, setParams] = useState({ pageFrom: 1, pageSize: 20 } as PageRequest);
   const { data, isLoading, error, fetchNextPage, refetch, isRefreshing } = useModelList<
     GetOfferFromOthersProps,
     OffersFromOtherDto

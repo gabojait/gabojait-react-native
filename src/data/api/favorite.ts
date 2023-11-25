@@ -6,15 +6,15 @@ import UserProfileOfferDto from '../model/User/UserProfileBriefDto';
 import UserProfileDto from '../model/User/UserProfileDto';
 
 export const postFavoriteTeam = async (teamId: string, dto: FavoriteUpdateDto) => {
-  return await client.post(`user/favorite/team/${teamId}`, dto);
+  return await client.post(`favorite/team/${teamId}`, dto);
 };
 
 export const postFavoriteUser = async (userId: string, dto: FavoriteUpdateDto) => {
-  return await client.post(`team/favorite/user/${userId}`, dto);
+  return await client.post(`favorite/user/${userId}`, dto);
 };
 
 export const getFavoriteTeams = async (pageRequest: PageRequest) => {
-  return (await client.get('user/favorite/team', {
+  return (await client.get('favorite/team', {
     params: {
       'page-size': pageRequest.pageSize,
       'page-from': pageRequest.pageFrom,
@@ -23,7 +23,7 @@ export const getFavoriteTeams = async (pageRequest: PageRequest) => {
 };
 
 export const getFavoriteUsers = async (pageRequest: PageRequest) => {
-  return (await client.get('team/favorite/user', {
+  return (await client.get('favorite/user', {
     params: {
       'page-size': pageRequest.pageSize,
       'page-from': pageRequest.pageFrom,

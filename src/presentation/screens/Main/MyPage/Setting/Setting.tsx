@@ -10,15 +10,11 @@ import { useTranslation } from 'react-i18next';
 import { verifyPassword } from '@/data/api/accounts';
 import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent';
 import { useAppDispatch } from '@/redux/hooks';
-import { useNotificationRepository } from '@/data/localdb/notificationProvider';
 import { Input } from '@rneui/base';
 import { InputModalContent } from '@/presentation/components/modalContent/InputModalContent';
-import CodePush, { LocalPackage } from 'react-native-code-push';
-import {
-  TouchableHighlight,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-} from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import useInterval from '@/presentation/utils/useInterval';
+import usePlatform from '@/lib/usePlatform';
 
 const MenuItem = ({
   title,
@@ -30,6 +26,7 @@ const MenuItem = ({
   onClick?: () => void;
 }) => {
   const { theme } = useTheme();
+
   return (
     <TouchableOpacity
       disabled={!onClick}
@@ -68,13 +65,17 @@ const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
   const modal = useModal();
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const notificationRepository = useNotificationRepository();
   const modalInputRef = useRef<Input>(null);
   const openFooConfirmDialog = () => {
     modal?.show({
       content: (
         <InputModalContent
-          ref={modalInputRef} // Assign the ref to the BottomModal
+          headerComponent={
+            <Text h4 style={{ fontWeight: 'bold', marginBottom: 20 }}>
+              현재 비밀번호를 입력해주세요
+            </Text>
+          }
+          ref={modalInputRef}
           visible={modal?.modal}
           onBackgroundPress={modal?.hide}
           inputProcessor={text => {
@@ -119,23 +120,15 @@ const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
 
   const [clickCnt, setClickCnt] = useState(0);
   const [lastClick, setLastClick] = useState(0);
-  const [latestVersionPackage, setLatestVersionPackage] = useState<LocalPackage | null>(null);
+  const [currTime, setCurrTime] = useState(new Date().getTime());
+  const interval = useInterval(() => {
+    setCurrTime(new Date().getTime());
+  }, 1000);
 
-  useEffect(() => {
-    CodePush.getUpdateMetadata().then(r => {
-      setLatestVersionPackage(r);
-    });
-  }, []);
+  const platform = usePlatform();
 
-  const isDev = useMemo(
-    () =>
-      latestVersionPackage?.deploymentKey ===
-        process.env[`CODEPUSH_DEPLOYMENT_KEY_STAGING_${Platform.OS.toUpperCase()}`] || __DEV__,
-    [latestVersionPackage],
-  );
-  const repository = useNotificationRepository();
   const onVersionClick = async () => {
-    if (!isDev) {
+    if (!platform.isDev) {
       return;
     }
     const currTime = new Date().getTime();
@@ -148,20 +141,14 @@ const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
           '개발자 히든메뉴',
           `OS: ${Platform.OS} ${Platform.Version}
           ${
-            latestVersionPackage != null
+            platform.currentPackage != null
               ? '코드푸시 버전: ' +
-                latestVersionPackage?.appVersion +
+                platform.currentPackage?.appVersion +
                 '/' +
-                latestVersionPackage?.label
-              : ''
+                platform.currentPackage?.label
+              : '디버그 모드입니다. 코드푸시가 비활성화 되어 있습니다.'
           }`,
           [
-            {
-              text: '알림 저장용 로컬 DB 초기화',
-              onPress: () => {
-                repository?.clear();
-              },
-            },
             {
               text: '닫기',
             },
@@ -183,7 +170,6 @@ const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
       <MenuItem
         title="로그아웃"
         onClick={async () => {
-          await notificationRepository?.clear();
           dispatch(signOut());
           navigation.goBack();
           navigation

@@ -11,7 +11,7 @@ export type GetOfferFromOthersProps = {
 };
 
 export const applyToTeam = async (position: string, teamId: string) => {
-  const body = { position: position };
+  const body = { offerPosition: position };
   const result = await client.post(`user/team/${teamId}/offer`, body);
   return result;
 };
@@ -38,7 +38,7 @@ export const getOffersFromUser = async (params: GetOfferFromOthersProps) => {
 };
 
 export const sendOfferToUser = async (userId: string, position: Position) => {
-  return await client.post(`team/user/${userId}/offer`, { position: position });
+  return await client.post(`team/user/${userId}/offer`, { offerPosition: position });
 };
 
 export const cancelOfferToUser = async (offerId: number) => {

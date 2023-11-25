@@ -3,11 +3,11 @@ import React from 'react';
 import { BoardSwitchActionType } from '../action_types/boardSwitchTypes';
 
 export interface BoardSwitchState {
-  switchTitle: BoardSwitchActionType.FiND_TEAMATE_SWITCH;
+  switchTitle: BoardSwitchActionType.FIND_TEAMMATE_SWITCH;
 }
 
 const initialStates = {
-  switchTitle: BoardSwitchActionType.FiND_TEAMATE_SWITCH,
+  switchTitle: BoardSwitchActionType.FIND_TEAMMATE_SWITCH,
 } as BoardSwitchState;
 
 const boardSwitchReducer = (
@@ -18,10 +18,10 @@ const boardSwitchReducer = (
     case BoardSwitchActionType.FIND_GROUP_SWITCH: {
       return {
         ...state,
-        switchTitle: BoardSwitchActionType.FiND_TEAMATE_SWITCH,
+        switchTitle: BoardSwitchActionType.FIND_TEAMMATE_SWITCH,
       };
     }
-    case BoardSwitchActionType.FiND_TEAMATE_SWITCH: {
+    case BoardSwitchActionType.FIND_TEAMMATE_SWITCH: {
       return {
         ...state,
         switchTitle: BoardSwitchActionType.FIND_GROUP_SWITCH,

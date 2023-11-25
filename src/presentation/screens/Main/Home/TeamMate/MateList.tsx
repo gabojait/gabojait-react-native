@@ -8,7 +8,7 @@ import {
   PositionTabParamList,
   PositionTabParamListProps,
 } from '@/presentation/navigation/types';
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { FlatList, TouchableOpacity, View } from 'react-native';
 import { UserCard } from '@/presentation/components/UserCard';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
@@ -37,7 +37,7 @@ const MateListComponent = ({
 }: PositionTabParamListProps<keyof PositionTabParamList>) => {
   const { theme } = useTheme();
   const initialParam: GetProfileProps = {
-    pageFrom: 0,
+    pageFrom: 1,
     pageSize: 20,
     position: route.params.position,
     profileOrder: 'ACTIVE',
@@ -48,11 +48,16 @@ const MateListComponent = ({
   >({
     initialParam,
     idName: 'userId',
-    key: mapToSeekingTeamKey(route.params.position),
+    key: mapToSeekingTeamKey[route.params.position],
     fetcher: async ({ pageParam, queryKey: [_, param] }) => {
       return await getUserSeekingTeam({ ...(param as GetProfileProps), pageFrom: pageParam });
     },
   });
+
+  useEffect(() => {
+    console.log('currentPosition: ', route.params.position);
+    refetch();
+  }, [route]);
 
   if (!data) {
     return null;

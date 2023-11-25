@@ -10,8 +10,6 @@ import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch } from '@/redux/hooks';
 import { signOut } from '@/redux/action/login';
-import { clearNotificationTable } from '@/data/localdb';
-import { useNotificationRepository } from '@/data/localdb/notificationProvider';
 
 const UserModifier = ({ navigation }: MainStackScreenProps<'UserModifier'>) => {
   const { theme } = useTheme();
@@ -19,7 +17,6 @@ const UserModifier = ({ navigation }: MainStackScreenProps<'UserModifier'>) => {
   const [nickname, setNickname] = useState('');
   const [passwords, setPasswords] = useState<string[]>([]);
   const [dupChecked, setDupChecked] = useState(false);
-  const db = useNotificationRepository();
   const { t } = useTranslation();
   const { mutation: checkNicknameDuplicateMutation } = useMutationDialog(
     ['checkNicknameDuplicate', nickname],
@@ -57,7 +54,6 @@ const UserModifier = ({ navigation }: MainStackScreenProps<'UserModifier'>) => {
     'CENTER',
     {
       onSuccessClick: async () => {
-        await clearNotificationTable(db!);
         dispatch(signOut());
         navigation.getParent()?.navigate('OnboardingNavigation', { screen: 'Login' });
       },

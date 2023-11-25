@@ -1,6 +1,6 @@
 export const profileKeys = {
   myProfile: ['myProfile'] as const,
-  profileUserId: ['profile', 'userId'],
+  profileUserId: (userId: string) => ['profile', userId],
   frontendSeekingTeam: 'frontend',
   backendSeekingTeam: 'backend',
   designerSeekingTeam: 'designer',

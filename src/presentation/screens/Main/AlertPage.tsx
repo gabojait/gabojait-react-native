@@ -1,69 +1,61 @@
 import { BaseCard } from '@/presentation/components/BaseCard';
-import { Notification } from '@/data/localdb';
 import { Text } from '@rneui/themed';
-import { useEffect, useState } from 'react';
 import React from 'react';
 import { FlatList, View } from 'react-native';
-import { useNotificationRepository } from '@/data/localdb/notificationProvider';
 import { AlertType } from '@/data/model/type/AlertType';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import { RootStackNavigationProps } from '@/presentation/navigation/RootNavigation';
+import { useModelList } from '@/reactQuery/util/useModelList';
+import { getNotifications, makeReadNotification } from '@/data/api/notification';
+import { Position } from '@/data/model/type/Position';
 
-export function useNotification() {
-  const [notifications, setNotifications] = useState([] as Notification[]);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [page, setPage] = useState(0);
+const NotificationQueryKey = {
+  all: ['notification'],
+};
 
-  const notificationRepository = useNotificationRepository();
+export default function AlertPage({ navigation }: MainStackScreenProps<'AlertPage'>) {
+  // Todo: DB 기반 알림 조회 도입
 
-  const refetch = () => notificationRepository?.findByPage(page);
-
-  useEffect(() => {
-    refetch();
-  }, [page]);
-  const fetchNextPage = () => {
-    setPage(prev => prev + 1);
+  const initialParam = {
+    pageFrom: 1,
+    pageSize: 20,
   };
 
-  useEffect(() => {
-    if (notificationRepository) {
-      setIsRefreshing(true);
-      notificationRepository
-        .findByPage(0)
-        .then(res => {
-          setIsRefreshing(false);
-          setNotifications(res);
-        })
-        .catch(e => {
-          setIsRefreshing(false);
-        });
-    }
-  }, [notificationRepository]);
-
-  return {
-    notifications,
+  const {
+    data: notifications,
     isRefreshing,
     fetchNextPage,
     refetch,
-  };
-}
-
-export default function AlertPage({ navigation }: MainStackScreenProps<'AlertPage'>) {
-  const { notifications, isRefreshing, fetchNextPage, refetch } = useNotification();
+  } = useModelList({
+    initialParam,
+    idName: 'notificationId',
+    key: NotificationQueryKey.all,
+    fetcher: async ({ pageParam = initialParam.pageFrom }) => {
+      console.log(pageParam, initialParam.pageSize);
+      return await getNotifications({
+        pageFrom: pageParam,
+        pageSize: initialParam.pageSize,
+      });
+    },
+  });
   return (
     <>
       <View style={{ backgroundColor: 'white', flex: 1, paddingTop: 16 }}>
         <FlatList
           showsHorizontalScrollIndicator={false}
-          keyExtractor={item => item.id.toString()}
-          data={notifications}
+          keyExtractor={item => item.notificationId}
+          data={notifications?.pages.flatMap(page => page.data)}
           renderItem={({ item }) => (
             <BaseCard
               title={item.title}
-              key={item.id}
+              key={item.notificationId}
               style={{ marginHorizontal: 20, marginVertical: 9 }}
               onPress={() => {
-                switch (AlertType[item.type]) {
+                // 읽기 처리 결과는 상관 없음
+                try {
+                  makeReadNotification(item.notificationId);
+                } catch (e) {}
+                switch (AlertType[item.notificationType]) {
                   case AlertType.TEAM_PROFILE: {
                     // 팀/팀원 합류로 인한 알림. 현재 팀 페이지로 이동
                     return navigation
@@ -75,7 +67,10 @@ export default function AlertPage({ navigation }: MainStackScreenProps<'AlertPag
                   }
                   // Offer from User to Team
                   case AlertType.USER_OFFER: {
-                    return navigation.push('ApplyStatus');
+                    return navigation.push('ApplyStatus', {
+                      screen: 'Frontend',
+                      params: { position: Position.Frontend },
+                    });
                   }
                   // Offer from Team to User
                   case AlertType.TEAM_OFFER: {

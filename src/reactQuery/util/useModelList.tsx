@@ -36,24 +36,25 @@ export function useModelList<
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { data, isLoading, error, fetchNextPage, refetch } = useInfiniteQuery(
     typeof key === 'string' ? [key, { ...initialParam, pageFrom: undefined }] : key,
-    async ({ pageParam = 0, queryKey }) => {
+    async ({ pageParam = undefined, queryKey }) => {
       const res = await fetcher({ pageParam, queryKey });
       setIsRefreshing(false);
       return res;
     },
     {
+      ...options,
       staleTime: 200000,
       getNextPageParam: (lastPage: PageModel<R>) => {
         // 현재 페이지의 요소 수가 페이지 크기보다 적을 때 last page!
-        console.log(lastPage.page);
-        if (lastPage.data.length < initialParam.pageSize) return undefined;
-        else return (lastPage.data[lastPage.data.length - 1] as any)[idName];
+        if (lastPage.data.length < initialParam.pageSize) {
+          return undefined;
+        } else {
+          return (lastPage.data[lastPage.data.length - 1] as any)[idName];
+        }
       },
       useErrorBoundary: true,
-      ...options,
     },
   );
-  console.log('data:', data);
   return {
     data,
     isLoading: isLoading,

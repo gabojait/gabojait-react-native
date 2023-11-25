@@ -1,12 +1,27 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, TouchableWithoutFeedback, View, ViewProps } from 'react-native';
 import colors from '@/presentation/res/styles/color';
 import { makeStyles, useTheme } from '@rneui/themed';
 
-const CardWrapper = ({ children, style }: any) => {
+const CardWrapper = ({
+  children,
+  style,
+  onPress,
+  ...props
+}: ViewProps & { onPress?: () => void }) => {
   const { theme } = useTheme();
   const styles = useStyles();
-  return <View style={[styles.card, style]}>{children}</View>;
+  return onPress ? (
+    <TouchableWithoutFeedback onPress={onPress}>
+      <View style={[styles.card, style]} {...props}>
+        {children}
+      </View>
+    </TouchableWithoutFeedback>
+  ) : (
+    <View style={[styles.card, style]} {...props}>
+      {children}
+    </View>
+  );
 };
 
 export default CardWrapper;

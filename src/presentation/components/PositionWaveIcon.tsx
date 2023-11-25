@@ -20,7 +20,7 @@ const PositionWaveIcon = ({
   const styles = useStyles();
   const { theme } = useTheme();
   //80이 Wave가 꽉 차보이는 최대 높이이다
-  const waveHeight = (currentCnt / recruitCnt) * 80;
+  const waveHeight = recruitCnt !== 0 ? (currentCnt / recruitCnt) * 80 : 0;
 
   function handleColor() {
     if (color == '#D9D9D9') {
@@ -53,6 +53,7 @@ const PositionWaveIcon = ({
           { A: 20, T: 100, fill: '#1CDF71' },
         ]}
         animated={true}
+        theme={theme}
       />
       {textView}
     </View>

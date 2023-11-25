@@ -25,8 +25,8 @@ export const updateTeam = async (dto: TeamRequestDto) => {
 export async function getRecruiting(props: GetRecruitingProps) {
   const { pageFrom, pageSize, position, teamOrder } = props;
   let params = {
-    'page-from': pageFrom.toString(),
-    'page-size': pageSize.toString(),
+    'page-from': pageFrom?.toString() ?? undefined,
+    'page-size': pageSize?.toString() ?? undefined,
     position: position,
     'team-order': teamOrder,
   };
@@ -42,15 +42,15 @@ export const getTeam = async (teamId: string) => {
 };
 
 export const getMyTeam = async () => {
-  return await client.get(`user/team`);
+  return await client.get('user/team');
 };
 
 export const completeTeam = async (dto: ProjectUrl) => {
-  return await client.patch(`team/complete`, dto);
+  return await client.patch('team/complete', dto);
 };
 
 export const incompleteTeam = async () => {
-  return await client.delete(`team/incomplete`);
+  return await client.delete('team/incomplete');
 };
 
 export const fireTeammate = async (userId: number) => {

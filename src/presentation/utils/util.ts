@@ -21,12 +21,18 @@ export function uuidv4() {
   });
 }
 export const isInitializable = (loading: any, data: any) => {
-  if (!loading && data != null) return true;
-  else return false;
+  if (!loading && data != null) {
+    return true;
+  } else {
+    return false;
+  }
 };
 export const isDataAvailable = (loading: any, data: any, contentData: any) => {
-  if (!loading && contentData != null && data != null) return true;
-  else return false;
+  if (!loading && contentData != null && data != null) {
+    return true;
+  } else {
+    return false;
+  }
 };
 export const WIDTH = Dimensions.get('window').width;
 export const HEIGHT = Dimensions.get('window').height;
@@ -55,11 +61,17 @@ export const getFirstAlphabet = (text: string) => {
 export const chagneToOfficialWord = (text: string | undefined) => {
   let word = '';
 
-  if (text == 'BACKEND') word = t('position_backend');
-  else if (text == 'FRONTEND') word = t('프론트엔드');
-  else if (text == 'DESIGNER') word = t('position_designer');
-  else if (text == 'PM') word = t('position_manager');
-  else word = '';
+  if (text == 'BACKEND') {
+    word = t('position_backend');
+  } else if (text == 'FRONTEND') {
+    word = t('프론트엔드');
+  } else if (text == 'DESIGNER') {
+    word = t('position_designer');
+  } else if (text == 'PM') {
+    word = t('position_manager');
+  } else {
+    word = '';
+  }
 
   return word;
 };
@@ -69,14 +81,21 @@ export function mapToInitial(position: Position) {
 }
 
 export const isEmptyArray = (array: any[] | undefined) => {
-  if (array == undefined) return false;
-  else if (array.length == 0) return true;
-  else return false;
+  if (array == undefined) {
+    return false;
+  } else if (array.length == 0) {
+    return true;
+  } else {
+    return false;
+  }
 };
 
 export const isLeader = (isLeader: boolean | undefined) => {
-  if (isLeader) return true;
-  else return false;
+  if (isLeader) {
+    return true;
+  } else {
+    return false;
+  }
 };
 
 export const DiffType = {
@@ -188,8 +207,9 @@ export var DiffUtil = (function <T extends {}>() {
             const df = this.map(arr1[i], arr2[i]) as Diff<typeof el>;
             let diffType: DiffType = DiffType.VALUE_UNCHANGED;
             for (let key of Object.keys(df)) {
-              if ((df[key] as SingleDiff).type != DiffType.VALUE_UNCHANGED)
+              if ((df[key] as SingleDiff).type != DiffType.VALUE_UNCHANGED) {
                 diffType = DiffType.VALUE_UPDATED;
+              }
             }
             diff.push({ type: diffType, data: df } as SingleDiff);
           } else if (this.isArray(arr1[i]) && this.isArray(arr2[i])) {
@@ -225,9 +245,17 @@ export function isFavorite(isFavorite: boolean) {
   return 'black';
 }
 
-export function mapToSeekingTeamKey(position: Position) {
-  if (position == Position.Backend) return profileKeys.backendSeekingTeam;
-  else if (position == Position.Designer) return profileKeys.designerSeekingTeam;
-  else if (position == Position.Frontend) return profileKeys.frontendSeekingTeam;
-  else if (position == Position.Manager) return profileKeys.managerSeekingTeam;
-}
+// export function mapToSeekingTeamKey(position: Position) {
+//   if (position == Position.Backend) return profileKeys.backendSeekingTeam;
+//   else if (position == Position.Designer) return profileKeys.designerSeekingTeam;
+//   else if (position == Position.Frontend) return profileKeys.frontendSeekingTeam;
+//   else if (position == Position.Manager) return profileKeys.managerSeekingTeam;
+// }
+
+export const mapToSeekingTeamKey = {
+  [Position.Backend]: Position.Backend.toLowerCase(),
+  [Position.Designer]: Position.Designer.toLowerCase(),
+  [Position.Frontend]: Position.Frontend.toLowerCase(),
+  [Position.Manager]: Position.Manager.toLowerCase(),
+  [Position.None]: Position.None.toLowerCase(),
+};

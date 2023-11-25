@@ -54,9 +54,6 @@ export const PositionDropdownMaker = ({
     updatePositionState();
   }, [state]);
 
-  useEffect(() => {
-    console.log(state.positionDropdownArray);
-  }, [state.positionDropdownArray]);
 
   function updatePositionState() {
     const selectedPositions = teamMemberRecruit.map(item => {

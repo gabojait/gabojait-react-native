@@ -49,7 +49,7 @@ const FavoriteTeams = ({ navigation, route }: MainStackScreenProps<'BookMark'>) 
       { ...filter, pageFrom: undefined },
     ],
   };
-  const [params, setParams] = useState({ pageFrom: 0, pageSize: 20 } as PageRequest);
+  const [params, setParams] = useState({ pageFrom: 1, pageSize: 20 } as PageRequest);
   const { data, isLoading, error, fetchNextPage, refetch, isRefreshing } = useModelList({
     initialParam: { ...params },
     idName: 'teamId',
@@ -99,7 +99,7 @@ const FavoriteUsers = ({ navigation, route }: MainStackScreenProps<'BookMark'>) 
       { ...filter, pageFrom: undefined },
     ],
   };
-  const [params, setParams] = useState({ pageFrom: 0, pageSize: 20 } as PageRequest);
+  const [params, setParams] = useState({ pageFrom: 1, pageSize: 20 } as PageRequest);
   const { data, isLoading, error, fetchNextPage, refetch, isRefreshing } = useModelList({
     initialParam: { ...params },
     idName: 'userId',

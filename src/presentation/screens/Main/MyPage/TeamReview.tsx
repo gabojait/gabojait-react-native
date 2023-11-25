@@ -48,6 +48,7 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
   const queryClient = useQueryClient();
   const { teamId } = route.params!;
   const ref_input1 = useRef<TextInput | null>(null);
+
   const {
     data: teamData,
     isLoading: isTeamDataLoading,
@@ -128,8 +129,11 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
   };
 
   const isLastindex = (index: number) => {
-    if (index == teamData?.teamMembers.length! - 1) return true;
-    else false;
+    if (index == teamData?.teamMembers.length! - 1) {
+      return true;
+    } else {
+      false;
+    }
   };
 
   if (!teamData) {
@@ -267,7 +271,7 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
                       lineHeight: 25,
                     }}
                   >
-                    {`리뷰는 수정이 어려우니\n 신중하게 선택해주세요`}
+                    {'리뷰는 수정이 어려우니\n 신중하게 선택해주세요'}
                   </Text>
                   <Text style={{ fontSize: 40, textAlign: 'center' }}>🥺</Text>
                   <FilledButton title={'확인'} onPress={() => moveToNextPage(pageCount)} />
@@ -286,7 +290,7 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
                       onPress={() => {
                         setReviewResultState(prevState => [...prevState, ...reviewState]);
                         setReviewState([]);
-                        console.log(`reviewResultState:`);
+                        console.log('reviewResultState:');
                         reviewResultState.map(item => {
                           console.log(
                             `item.answer:${item.post}, item.rate:${item.rate}, item.revieweeUserId:${item.userId}`,
@@ -306,7 +310,7 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
                       disabled={buttonDisabled}
                       onPress={() => {
                         setReviewResultState(prevState => [...prevState, ...reviewState]);
-                        console.log(`reviewResultState:`);
+                        console.log('reviewResultState:');
                         reviewResultState.map(item => {
                           console.log(
                             `item.answer:${item.post}, item.rate:${item.rate}, item.revieweeUserId:${item.userId}`,

@@ -4,8 +4,8 @@ export interface FindGroupSwitchAction {
   type: BoardSwitchActionType.FIND_GROUP_SWITCH;
 }
 
-export interface FindTeamateSwitchAction {
-  type: BoardSwitchActionType.FiND_TEAMATE_SWITCH;
+export interface FindTeammateSwitchAction {
+  type: BoardSwitchActionType.FIND_TEAMMATE_SWITCH;
 }
 
-export type BoardSwitchActions = FindGroupSwitchAction | FindTeamateSwitchAction;
+export type BoardSwitchActions = FindGroupSwitchAction | FindTeammateSwitchAction;
