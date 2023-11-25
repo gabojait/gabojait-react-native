@@ -60,7 +60,7 @@ platform :ios do
 	        force: true,
 	        skip_screenshots: false,
           skip_metadata: false,
-          language:["ko"]
+          language:["ko"],
 	        submit_for_review: true,
 	        automatic_release: true,
 	      )
@@ -69,5 +69,6 @@ platform :ios do
 	        message: "iOS Gabojait 버전 #{new_version_number} - App Store 배포 완료",
 	        slack_url: "it-09s6933.slack.com"
 	      )
+	      end
     end
 end
