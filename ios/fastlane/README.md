@@ -39,6 +39,22 @@ Build
 
 Push a new beta build to TestFlight
 
+### ios codepush_release
+
+```sh
+[bundle exec] fastlane ios codepush_release
+```
+
+Push a new release hotfix update through Codepush
+
+### ios codepush_staging
+
+```sh
+[bundle exec] fastlane ios codepush_staging
+```
+
+Push a new staging hotfix update through Codepush
+
 ### ios release
 
 ```sh
@@ -46,6 +62,22 @@ Push a new beta build to TestFlight
 ```
 
 Push a new release build to the App Store
+
+### ios hotfix_ios
+
+```sh
+[bundle exec] fastlane ios hotfix_ios
+```
+
+test increment_hotfix_number
+
+### ios test_version_number
+
+```sh
+[bundle exec] fastlane ios test_version_number
+```
+
+test increment_version_number
 
 ----
 

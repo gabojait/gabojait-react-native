@@ -83,7 +83,7 @@ platform :android do
     	        build_type: "Release"
     	    )
     	    appcenter_upload(
-    	        api_token: "3342172323f62b93fb2def11a41b145d8f46d6df",
+    	        api_token:ENV['APPCENTER_API_TOKEN'],
     	        owner_name: "Gabojait",
     	        owner_type: "organization",
     	        app_name: "Gabojait_Android",
@@ -100,7 +100,7 @@ platform :android do
 	        build_type: "Release"
 	    )
 	    appcenter_codepush_release_react(
-	        api_token: "3342172323f62b93fb2def11a41b145d8f46d6df",
+	        api_token: ENV['APPCENTER_API_TOKEN'],
 	        owner_name: "Gabojait",
 	        app_name: "Gabojait_Android",
 	        deployment: "Staging"
@@ -125,7 +125,7 @@ platform :android do
 		upload_to_play_store(track: "internal")
 		slack(
           message: "Android Gabojait 버전 #{new_version_number} - 구글 내부 테스트 업로드 완료",
-          slack_url: "it-09s6933.slack.com"
+          slack_url: ENV['SLACK_URL']
     )
 		end
 
@@ -142,7 +142,7 @@ platform :android do
 	    )
 		  slack(
 		    message: "Android Gabojait 버전 #{new_version_number} - 구글 플레이 업로드 완료",
-		    slack_url: "it-09s6933.slack.com"
+		    slack_url: ENV['SLACK_URL']
 		  )
 	end
 end

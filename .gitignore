@@ -73,6 +73,5 @@ buck-out/
 /android/app/release.keystore
 .env*
 /android/faslane-supply.json
-
 android/app/releaseStaging/
 

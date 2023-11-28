@@ -63,6 +63,14 @@ Submit a new version to the internal track in the Google Play
 
 Deploy a new version to the Google Play
 
+### android test_env
+
+```sh
+[bundle exec] fastlane android test_env
+```
+
+test env file
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
