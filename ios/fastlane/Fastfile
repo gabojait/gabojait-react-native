@@ -19,11 +19,6 @@ platform :ios do
 
 	require 'json'
 
-# 	before_all do |_lane, options|
-# 		ENV["FASTLANE_USER"]="nogamsung97@gmail.com"
-# 		ENV["FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD"]="okhc-upqj-liwj-bfhc"
-# 		ENV["SLACK_URL"] = "https://hooks.slack.com/services/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"
-# 	end
 # //TODO: 빌드&테스트는 브랜치 액션으로 자동화하고 테스트&릴리즈 배포는 명령어로 수행하도록!
 	desc "Runs all the tests"
 	lane :test do
