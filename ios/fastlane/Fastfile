@@ -49,14 +49,15 @@ platform :ios do
     version_number = get_version_number(xcodeproj: "gabojait.xcodeproj")
     build_number = get_build_number.to_i
     slack(
-          message: "iOS Gabojait 버전 #{version_number} - TestFlight 업로드 완료",
-          payload: { "Version": version_number + "(" + build_number.to_s + ")" },
-      )
+      message: "iOS Gabojait 버전 #{version_number} - TestFlight 업로드 완료",
+      payload: { "Version": version_number + "(" + build_number.to_s + ")" },
+    )
   end
 
   desc "Push a new release hotfix update through Codepush"
   lane :codepush_release do
     match(type: "appstore")
+    #codepush_staging으로 디버깅을 끝내고 실행하는 걸 전제로 두기때문에 hotifix version 업데이트 하지 않음
     version_number = get_version_number(xcodeproj: "gabojait.xcodeproj")
     hotfix_number = read_and_parse_json('../../package.json')['hotfixVersion'].to_i
     appcenter_codepush_release_react(
@@ -72,32 +73,25 @@ platform :ios do
 	desc "Push a new staging hotfix update through Codepush"
 	lane :codepush_staging do
 		match(type: "appstore")
+		increment_hotfix_number
     version_number = get_version_number(xcodeproj: "gabojait.xcodeproj")
     hotfix_number = read_and_parse_json('../../package.json')['hotfixVersion'].to_i
-#     appcenter_codepush_release_react(
-#       api_token: "3342172323f62b93fb2def11a41b145d8f46d6df",
-#       owner_name: "Gabojait",
-#       app_name: "Gabojait_iOS",
-#       description:"version #{version_number} -#{hotfix_number} \n Staging distribute 업로드 테스트",
-#       deployment:"Staging",
-#       target_version: "#{version_number}"
-#      )
-		appcenter_upload(
-	    api_token: ENV['APPCENTER_API_TOKEN'],
-	    owner_name: "Gabojait",
-	    app_name: "Gabojait_iOS",
-	    file:"../gabojait.ipa",
-	    release_notes: "version #{version_number} -#{hotfix_number} \n Staging distribute 업로드 테스트",
-	    notify_testers: true
-		)
 
+		appcenter_upload(
+		  api_token: ENV['APPCENTER_API_TOKEN'],
+		  owner_name: "Gabojait",
+		  app_name: "Gabojait_iOS",
+		  file:"./gabojait.ipa",
+		  release_notes: "version #{version_number} -#{hotfix_number} \n Staging distribute 업로드 테스트",
+		  notify_testers: true
+		)
 	end
 
   desc "Push a new release build to the App Store"
     lane :release do |options|
       if options[:version]
         match(type: "appstore")
-	      increment_version_number(version_number: options[:version])
+        handle_semantic_version_number(bump_type: options[:version])
 	      upload_to_app_store(
 	        reject_if_possible: false,
 	        force: true,
@@ -107,7 +101,6 @@ platform :ios do
 	        submit_for_review: true,
 	        automatic_release: true,
 	      )
-	      new_version_number = get_version_number(xcodeproj: "gabojait.xcodeproj",target: "App")
 	      slack(
 	        message: "iOS Gabojait 버전 #{new_version_number} - App Store 배포 완료",
 	        slack_url: ENV['SLACK_URL']
@@ -116,17 +109,31 @@ platform :ios do
 	      end
     end
 
-    desc "test increment_hotfix_number"
-    lane :hotfix_ios do
-      increment_hotfix_number()
-    end
-
     desc "test increment_version_number"
     lane :test_version_number do |options|
       increment_version_number(version_number: options[:version], xcodeproj:"gabojait.xcodeproj")
       new_version_number = get_version_number(xcodeproj: "gabojait.xcodeproj")
       puts "updated version_number to #{new_version_number}"
     end
+
+    def handle_semantic_version_number(bump_type: nil)
+      if ["major", "minor", "patch"].include?(bump_type)
+	      increment_version_number(bump_type:bump_type, xcodeproj:"gabojait.xcodeproj")
+	      new_version_number = get_version_number(xcodeproj: "gabojait.xcodeproj")
+	      update_package_version(new_version_number)
+	      initialize_hotfix_number
+	    end
+    end
+
+    def update_package_version(new_version)
+      path = '../../package.json'
+      data = read_and_parse_json(path)
+      data['version'] = new_version
+      updated_data = JSON.pretty_generate(data)
+
+      write_updated_json(path,updated_data)
+      puts "package version updated to #{data['hotfixVersion']} in #{path}"
+      end
 
     def increment_hotfix_number
       path = '../../package.json'
@@ -141,9 +148,9 @@ platform :ios do
 
     	def initialize_hotfix_number
     		path = '../../package.json'
-          data = read_and_parse_json(path)
-          data['hotfixVersion'] = "0"
-          updated_data = JSON.pretty_generate(data)
+        data = read_and_parse_json(path)
+        data['hotfixVersion'] = "0"
+        updated_data = JSON.pretty_generate(data)
 
         write_updated_json(path,updated_data)
         puts "hotfixVersion initialized to #{data['hotfixVersion']} in #{path}"
