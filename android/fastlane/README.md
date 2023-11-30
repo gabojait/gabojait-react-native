@@ -29,7 +29,7 @@ Runs all the tests
 [bundle exec] fastlane android codepush_to_release
 ```
 
-Codepush to android release 
+Codepush to android production track
 
 ### android codepush_to_staging
 
@@ -53,7 +53,7 @@ Build
 [bundle exec] fastlane android deploy_internal
 ```
 
-Submit a new version to the internal track in the Google Play
+구글 플레이 내부 업데이트(Submit a new version to the internal track in the Google Play)
 
 ### android deploy
 
@@ -61,15 +61,23 @@ Submit a new version to the internal track in the Google Play
 [bundle exec] fastlane android deploy
 ```
 
-Deploy a new version to the Google Play
+구글 플레이 출시(Deploy a new version to the Google Play)
 
-### android test_env
+### android test_update_android_version
 
 ```sh
-[bundle exec] fastlane android test_env
+[bundle exec] fastlane android test_update_android_version
 ```
 
-test env file
+android native 버전 증가 테스트
+
+### android test_hotfix
+
+```sh
+[bundle exec] fastlane android test_hotfix
+```
+
+gabojait-react-native/package.json의 android-hotfixVersion을 증가시키는 테스트
 
 ----
 

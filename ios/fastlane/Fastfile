@@ -1,35 +1,10 @@
-# This file contains the fastlane.tools configuration
-# You can find the documentation at https://docs.fastlane.tools
-#
-# For a list of all available actions, check out
-#
-#     https://docs.fastlane.tools/actions
-#
-# For a list of all available plugins, check out
-#
-#     https://docs.fastlane.tools/plugins/available-plugins
-#
-
-# Uncomment the line if you want fastlane to automatically update itself
-# update_fastlane
-
 default_platform(:ios)
 
 platform :ios do
 
 	require 'json'
-
-# //TODO: 빌드&테스트는 브랜치 액션으로 자동화하고 테스트&릴리즈 배포는 명령어로 수행하도록!
-	desc "Runs all the tests"
-	lane :test do
-		match(type: "appstore")
-    run_tests(
-      workspace: "gabojait.xcworkspace",
-      scheme: "gabojait",
-      clean: true
-      )
-	end
-
+	require '../../fastlane_functions'
+	# //TODO: 빌드&테스트는 브랜치 액션으로 자동화하고 테스트&릴리즈 배포는 명령어로 수행하도록!
 	desc "Build"
 	lane :build do
 		match(type: "appstore")
@@ -50,116 +25,73 @@ platform :ios do
   end
 
   desc "Push a new release hotfix update through Codepush"
-  lane :codepush_release do
+  lane :codepush_production do
     match(type: "appstore")
     #codepush_staging으로 디버깅을 끝내고 실행하는 걸 전제로 두기때문에 hotifix version 업데이트 하지 않음
     version_number = get_version_number(xcodeproj: "gabojait.xcodeproj")
-    hotfix_number = read_and_parse_json('../../package.json')['hotfixVersion'].to_i
-    appcenter_codepush_release_react(
-      api_token: ENV['APPCENTER_API_TOKEN'],
-      owner_name: "Gabojait",
-      app_name: "Gabojait_iOS",
-      dsym: "../www/gabojait.app.dSYM.zip",
-      description:"version #{version_number}-#{hotfix_number}",
-      notify_testers: true
-     )
+    hotfix_number = read_and_parse_json('../../package.json')[ENV['IOS_HOTFIX_VERSION']].to_i
+    Dir.chdir('../../') do
+      sh "appcenter codepush release-react  --app #{ENV['OWNER_NAME']}/#{ENV['APP_NAME']} --deployment-name Production --development true --description 'version #{version_number}-#{hotfix_number} Production codepush test' --mandatory true --disable-duplicate-release-error"
+    end
+    slack(
+      message: "iOS Gabojait 사용자 버전 #{version_number}-#{hotfix_number} - Codepush Production 업로드 완료",
+      slack_url: ENV['SLACK_URL']
+    )
   end
 
 	desc "Push a new staging hotfix update through Codepush"
 	lane :codepush_staging do
 		match(type: "appstore")
-		increment_hotfix_number
+		increment_hotfix_number(ENV['IOS_HOTFIX_VERSION'])
     version_number = get_version_number(xcodeproj: "gabojait.xcodeproj")
-    hotfix_number = read_and_parse_json('../../package.json')['hotfixVersion'].to_i
-
-		appcenter_upload(
-		  api_token: ENV['APPCENTER_API_TOKEN'],
-		  owner_name: "Gabojait",
-		  app_name: "Gabojait_iOS",
-		  file:"./gabojait.ipa",
-		  release_notes: "version #{version_number} -#{hotfix_number} \n Staging distribute 업로드 테스트",
-		  notify_testers: true
-		)
+    hotfix_number = read_and_parse_json('../../package.json')[ENV['IOS_HOTFIX_VERSION']].to_i
+    Dir.chdir('../../') do
+      sh "appcenter codepush release-react  --app #{ENV['OWNER_NAME']}/#{ENV['APP_NAME']} --deployment-name Staging --development true --description 'version #{version_number}-#{hotfix_number} Staging codepush test' --mandatory true --disable-duplicate-release-error"
+		end
+		slack(
+      message: "iOS Gabojait 테스트 버전 #{version_number}-#{hotfix_number} - Codepush Staging 업로드 완료",
+      slack_url: ENV['SLACK_URL']
+    )
 	end
 
   desc "Push a new release build to the App Store"
-    lane :release do |options|
-      if options[:version]
-        match(type: "appstore")
-        handle_semantic_version_number(bump_type: options[:version])
-	      upload_to_app_store(
-	        reject_if_possible: false,
-	        force: true,
-	        skip_screenshots: false,
-          skip_metadata: false,
-          language:["ko"],
-	        submit_for_review: true,
-	        automatic_release: true,
-	      )
-	      slack(
-	        message: "iOS Gabojait 버전 #{new_version_number} - App Store 배포 완료",
-	        slack_url: ENV['SLACK_URL']
-	      )
-	      sh "watchbuild"
-	      end
-    end
-
-    desc "test increment_version_number"
-    lane :test_version_number do |options|
+  lane :release do |options|
+    if options[:version]
+      match(type: "appstore")
       increment_version_number(version_number: options[:version], xcodeproj:"gabojait.xcodeproj")
-      new_version_number = get_version_number(xcodeproj: "gabojait.xcodeproj")
-      puts "updated version_number to #{new_version_number}"
-    end
-
-    def handle_semantic_version_number(bump_type: nil)
-      if ["major", "minor", "patch"].include?(bump_type)
-	      increment_version_number(bump_type:bump_type, xcodeproj:"gabojait.xcodeproj")
-	      new_version_number = get_version_number(xcodeproj: "gabojait.xcodeproj")
-	      update_package_version(new_version_number)
-	      initialize_hotfix_number
-	    end
-    end
-
-    def update_package_version(new_version)
-      path = '../../package.json'
-      data = read_and_parse_json(path)
-      data['version'] = new_version
-      updated_data = JSON.pretty_generate(data)
-
-      write_updated_json(path,updated_data)
-      puts "package version updated to #{data['hotfixVersion']} in #{path}"
+      handle_semantic_version_number(bump_type: options[:version],os_hotfix_version:ENV['IOS_HOTFIX_VERSION'])
+      upload_to_app_store(
+        reject_if_possible: false,
+        force: true,
+        skip_screenshots: false,
+        skip_metadata: false,
+        language:["ko"],
+        submit_for_review: true,
+        automatic_release: true,
+      )
+      slack(
+        message: "iOS Gabojait 스토어 버전 #{new_version_number} - App Store 배포 완료",
+        slack_url: ENV['SLACK_URL']
+      )
+      sh "watchbuild"
       end
+  end
 
-    def increment_hotfix_number
-      path = '../../package.json'
-      data = read_and_parse_json(path)
-      hotfix_version = data.fetch('hotfixVersion').to_i
-      data['hotfixVersion'] = (hotfix_version + 1).to_s
-      updated_data = JSON.pretty_generate(data)
+  desc "test increment_version_number"
+  lane :test_version_number do |options|
+    increment_version_number(version_number: options[:version], xcodeproj:"gabojait.xcodeproj")
+    new_version_number = get_version_number(xcodeproj: "gabojait.xcodeproj")
+    puts "updated version_number to #{new_version_number}"
+  end
 
-      write_updated_json(path,updated_data)
-      puts "hotfixVersion updated to #{data['hotfixVersion']} in #{path}"
-    	end
+  desc "test handle_semantic_version_number"
+  lane :test_handle_semantic_version_number do |options|
+    handle_semantic_version_number(bump_type: options[:version],os_hotfix_version:ENV['IOS_HOTFIX_VERSION'])
+  end
 
-    	def initialize_hotfix_number
-    		path = '../../package.json'
-        data = read_and_parse_json(path)
-        data['hotfixVersion'] = "0"
-        updated_data = JSON.pretty_generate(data)
+  desc "test ios hotfix_version_update"
+  lane :test_hotfix do
+    increment_hotfix_number(ENV['IOS_HOTFIX_VERSION'])
+  end
 
-        write_updated_json(path,updated_data)
-        puts "hotfixVersion initialized to #{data['hotfixVersion']} in #{path}"
-    	end
-
-    	def read_and_parse_json(file_path)
-        json_data = File.read(file_path)
-        JSON.parse(json_data)
-      end
-
-    	def write_updated_json(file_path, updated_json_data)
-        # 파일에 쓰기
-        File.open(file_path, 'w') do |file|
-          file.puts(updated_json_data)
-        end
-      end
 end

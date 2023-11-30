@@ -63,14 +63,6 @@ Push a new staging hotfix update through Codepush
 
 Push a new release build to the App Store
 
-### ios hotfix_ios
-
-```sh
-[bundle exec] fastlane ios hotfix_ios
-```
-
-test increment_hotfix_number
-
 ### ios test_version_number
 
 ```sh
@@ -78,6 +70,22 @@ test increment_hotfix_number
 ```
 
 test increment_version_number
+
+### ios test_handle_semantic_version_number
+
+```sh
+[bundle exec] fastlane ios test_handle_semantic_version_number
+```
+
+test handle_semantic_version_number
+
+### ios test_hotfix
+
+```sh
+[bundle exec] fastlane ios test_hotfix
+```
+
+test ios hotfix_version_update
 
 ----
 
