@@ -34,7 +34,7 @@ platform :ios do
       sh "appcenter codepush release-react  --app #{ENV['OWNER_NAME']}/#{ENV['APP_NAME']} --deployment-name Production --development true --description 'version #{version_number}-#{hotfix_number} Production codepush test' --mandatory true --disable-duplicate-release-error"
     end
     slack(
-      message: "iOS Gabojait 사용자 버전 #{version_number}-#{hotfix_number} - Codepush Production 업로드 완료",
+      message: "iOS Gabojait 사용자 버전 #{version_number}-#{hotfix_number} Codepush Production 업로드 완료",
       slack_url: ENV['SLACK_URL']
     )
   end
@@ -49,7 +49,7 @@ platform :ios do
       sh "appcenter codepush release-react  --app #{ENV['OWNER_NAME']}/#{ENV['APP_NAME']} --deployment-name Staging --development true --description 'version #{version_number}-#{hotfix_number} Staging codepush test' --mandatory true --disable-duplicate-release-error"
 		end
 		slack(
-      message: "iOS Gabojait 테스트 버전 #{version_number}-#{hotfix_number} - Codepush Staging 업로드 완료",
+      message: "iOS Gabojait 테스트 버전 #{version_number}-#{hotfix_number} Codepush Staging 업로드 완료",
       slack_url: ENV['SLACK_URL']
     )
 	end
