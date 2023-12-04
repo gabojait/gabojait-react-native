@@ -11,18 +11,18 @@ import { Asset } from 'react-native-image-picker';
 import {
   CustomSlider,
   IconLabel,
+  portfolioTypeIconName,
   PortfolioView,
   ReviewItem,
-  ToggleButton,
-  portfolioTypeIconName,
   sliderColors,
+  ToggleButton,
 } from '../../MyPage/Profile';
 import {
-  UseQueryResult,
   useMutation,
   useQuery,
   useQueryClient,
   useQueryErrorResetBoundary,
+  UseQueryResult,
 } from 'react-query';
 import ProfileViewResponse from '@/data/model/Profile/ProfileViewResponse';
 import { profileKeys } from '@/reactQuery/key/ProfileKeys';
@@ -83,13 +83,16 @@ const ProfilePreviewComponent = ({ navigation, route }: MainStackScreenProps<'Pr
   );
 
   const { mutate: mutateFavorite, data: favoriteResponse } = useMutation(
-    favoriteKeys.favoriteByTeam,
+    favoriteKeys.favoriteUser,
     (args: [string, FavoriteUpdateDto]) => postFavoriteUser(...args),
     {
       useErrorBoundary: true,
       onSettled: (data, error, [_userId], context) => {
         // 쿼리의 캐시를 날리고 새로운 서버 데이터를 갖고 오게 한다.
-        queryClient.invalidateQueries(profileKeys.profileUserId(_userId));
+        queryClient.invalidateQueries([
+          profileKeys.profileUserId(_userId),
+          favoriteKeys.favoriteUser,
+        ]);
       },
       onMutate: async ([_userId, { isAddFavorite }]) => {
         await queryClient.cancelQueries(profileKeys.profileUserId(_userId));

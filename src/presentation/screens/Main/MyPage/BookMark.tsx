@@ -1,19 +1,12 @@
 import TeamBanner from '@/presentation/components/TeamBanner';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
-import React, { Suspense, useState } from 'react';
-import { FlatList, Text, TouchableOpacity, View } from 'react-native';
-import TeamBriefDto from '@/data/model/Team/TeamBriefDto';
+import React, { Suspense, useEffect, useState } from 'react';
+import { FlatList, TouchableOpacity, View } from 'react-native';
 import { PageRequest, useModelList } from '@/reactQuery/util/useModelList';
 import { getFavoriteTeams, getFavoriteUsers } from '@/data/api/favorite';
-import CardWrapper from '@/presentation/components/CardWrapper';
-import { RatingBar } from '@/presentation/components/RatingBar';
-import Gabojait from '@/presentation/components/icon/Gabojait';
-import styles from '@/presentation/styles';
-import { theme } from '@/presentation/theme';
 import { useTheme } from '@rneui/themed';
 import { UserCard } from '@/presentation/components/UserCard';
 import { favoriteKeys } from '@/reactQuery/key/FavoriteKeys';
-import { isLeader } from '@/presentation/utils/util';
 import { Loading } from '../../Loading';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 import { useQueryErrorResetBoundary } from 'react-query';
@@ -42,7 +35,7 @@ const BookMark = ({ navigation, route }: MainStackScreenProps<'BookMark'>) => {
  */
 const FavoriteTeams = ({ navigation, route }: MainStackScreenProps<'BookMark'>) => {
   const QueryKey = {
-    all: favoriteKeys.favoriteByTeamList,
+    all: favoriteKeys.favoriteTeam,
     filtered: (filter: PageRequest) => [
       ...QueryKey.all,
       'filtered',
@@ -58,6 +51,12 @@ const FavoriteTeams = ({ navigation, route }: MainStackScreenProps<'BookMark'>) 
       return getFavoriteTeams({ ...(params as PageRequest), pageFrom: pageParam });
     },
   });
+
+  useEffect(() => {
+    navigation.addListener('focus', () => {
+      refetch();
+    });
+  }, [navigation]);
 
   return (
     <View style={{ backgroundColor: 'white', flex: 1 }}>
@@ -92,9 +91,9 @@ const FavoriteTeams = ({ navigation, route }: MainStackScreenProps<'BookMark'>) 
 const FavoriteUsers = ({ navigation, route }: MainStackScreenProps<'BookMark'>) => {
   const { theme } = useTheme();
   const QueryKey = {
-    all: favoriteKeys.favoriteByUserList,
+    all: favoriteKeys.favoriteUser,
     filtered: (filter: PageRequest) => [
-      ...QueryKey.all,
+      favoriteKeys.favoriteUser,
       'filtered',
       { ...filter, pageFrom: undefined },
     ],
@@ -108,6 +107,12 @@ const FavoriteUsers = ({ navigation, route }: MainStackScreenProps<'BookMark'>) 
       return getFavoriteUsers({ ...(params as PageRequest), pageFrom: pageParam });
     },
   });
+
+  useEffect(() => {
+    navigation.addListener('focus', () => {
+      refetch();
+    });
+  }, [navigation]);
 
   return (
     <View style={{ backgroundColor: 'white', flex: 1 }}>
