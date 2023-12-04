@@ -3,14 +3,12 @@ import { getTeam } from '@/data/api/team';
 import TeamDetailDto from '@/data/model/Team/TeamDetailDto';
 import { FilledButton } from '@/presentation/components/Button';
 import CardWrapper from '@/presentation/components/CardWrapper';
-import CustomHeader from '@/presentation/components/CustomHeader';
 import PositionWaveIcon from '@/presentation/components/PositionWaveIcon';
-import CustomIcon from '@/presentation/components/icon/Gabojait';
 import PositionRecruiting from '@/presentation/model/PositionRecruitng';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import { makeStyles, Text, useTheme } from '@rneui/themed';
 import React, { Suspense, useEffect, useRef, useState } from 'react';
-import { ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import {
   useMutation,
   useQuery,
@@ -19,22 +17,18 @@ import {
   UseQueryResult,
 } from 'react-query';
 import useGlobalStyles from '@/presentation/styles';
-import { isFavorite, mapToInitial, WIDTH } from '@/presentation/utils/util';
+import { isFavorite, mapToInitial } from '@/presentation/utils/util';
 import FavoriteUpdateDto from '@/data/model/Favorite/FavoriteUpdateDto';
-import { Icon, Input } from '@rneui/base';
-import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent';
+import { Input } from '@rneui/base';
 import useModal from '@/presentation/components/modal/useModal';
 import { favoriteKeys } from '@/reactQuery/key/FavoriteKeys';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 import { Loading } from '@/presentation/screens/Loading';
-import { BottomInputModalContent } from '@/presentation/components/modalContent/BottomInputModalContent';
 import { ReportCompleteModal } from '@/presentation/components/ReportCompleteModal';
 import BookMarkHeader from '@/presentation/screens/Headers/BookmarkHeader';
-import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
-import CustomInput from '@/presentation/components/CustomInput';
 import { InputModalContent } from '@/presentation/components/modalContent/InputModalContent';
-import GeneralErrorBoundary from '@/presentation/components/errorComponent/ErrorBoundary';
+import { Position } from '@/data/model/type/Position';
 
 const GroupDetail = ({ navigation, route }: MainStackScreenProps<'GroupDetail'>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -61,9 +55,6 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
     () => getTeam(teamId),
     {
       useErrorBoundary: true,
-      onError: e => {
-        console.log('hihihihi', e);
-      },
     },
   );
   const { mutate: mutateFavorite, data: favoriteResponse } = useMutation(
@@ -78,7 +69,28 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
     },
   );
 
-  const positions: Array<PositionRecruiting> = data?.teamMemberCnts || [];
+  const positions: Array<PositionRecruiting> = [
+    {
+      currentCnt: data?.designerCurrentCnt || 0,
+      position: Position.Designer,
+      recruitCnt: data?.designerMaxCnt || 0,
+    },
+    {
+      currentCnt: data?.backendCurrentCnt || 0,
+      position: Position.Backend,
+      recruitCnt: data?.backendMaxCnt || 0,
+    },
+    {
+      currentCnt: data?.frontendCurrentCnt || 0,
+      position: Position.Frontend,
+      recruitCnt: data?.frontendMaxCnt || 0,
+    },
+    {
+      currentCnt: data?.managerCurrentCnt || 0,
+      position: Position.Manager,
+      recruitCnt: data?.managerMaxCnt || 0,
+    },
+  ];
   const [reportButtonState, setReportButtonState] = useState({
     text: '신고하기',
     isDisabled: true,
@@ -122,6 +134,7 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
               modal.hide();
             },
           }}
+          inputProps={{ shape: 'round' }}
         />
       ),
       modalProps: { animationType: 'slide', justifying: 'bottom' },

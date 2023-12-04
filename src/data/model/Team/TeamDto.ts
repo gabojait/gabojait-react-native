@@ -1,5 +1,4 @@
-import PositionRecruiting from '@/presentation/model/PositionRecruitng';
-import BriefProfileDto from '../Profile/BriefProfileDto';
+import BriefProfileDto from "../Profile/BriefProfileDto";
 
 export default interface TeamDto {
   createdAt: string;
@@ -8,7 +7,6 @@ export default interface TeamDto {
   projectDescription?: string;
   projectName: string;
   teamId: string;
-  teamMemberCnts: Array<PositionRecruiting>;
   backendCurrentCnt: number;
   backendMaxCnt: number;
   designerCurrentCnt: number;
