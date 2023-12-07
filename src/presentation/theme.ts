@@ -1,5 +1,5 @@
 import '@rneui/themed';
-import { Button, ButtonProps, createTheme, Theme } from '@rneui/themed';
+import { createTheme } from '@rneui/themed';
 
 /**
  * StyleSheet FontWeight Type이에요.
@@ -73,6 +73,11 @@ declare module '@rneui/themed' {
       red: string;
       orange: string;
       yellow: string;
+    };
+    positionIconRadious: {
+      sm: number;
+      md: number;
+      lg: number;
     };
   }
 }
@@ -160,5 +165,10 @@ export const theme = createTheme({
       width: 0,
       height: 2,
     },
+  },
+  positionIconRadious: {
+    sm: 22,
+    md: 32,
+    lg: 42,
   },
 });

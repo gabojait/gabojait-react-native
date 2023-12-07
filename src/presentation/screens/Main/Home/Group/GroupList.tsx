@@ -1,27 +1,21 @@
 import FloatingButton from '@/presentation/components/FloatingButton';
-import { makeStyles, useTheme, Text } from '@rneui/themed';
+import { makeStyles, useTheme } from '@rneui/themed';
 import React, { Suspense, useEffect } from 'react';
 import { FlatList, View } from 'react-native';
 import TeamBanner from '@/presentation/components/TeamBanner';
 import { BoardStackParamListProps } from '@/presentation/navigation/types';
 import { getRecruiting, GetRecruitingProps } from '@/data/api/team';
-import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { PageModel, useModelList } from '@/reactQuery/util/useModelList';
+import { useModelList } from '@/reactQuery/util/useModelList';
 import RecruitingTeamDto from '@/data/model/Team/TeamBriefDto';
 import useModal from '@/presentation/components/modal/useModal';
-import {
-  Position,
-  PositionCurrentCntField,
-  PositionFromIndex,
-  PositionMaxCntField,
-} from '@/data/model/type/Position';
+import { Position } from '@/data/model/type/Position';
 import { TeamOrder } from '@/data/model/type/TeamOrder';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { Loading } from '@/presentation/screens/Loading';
 import { BoardSwitchActionType } from '@/redux/action_types/boardSwitchTypes';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import PositionRecruiting from '@/presentation/model/PositionRecruitng';
+import { mapTeamDtoToPositionRecruiting } from '@/presentation/model/mapper/mapTeamDtoToPositionRecruiting';
 
 const GroupList = ({ navigation, route }: BoardStackParamListProps<'GroupList'>) => {
   return (
@@ -160,14 +154,7 @@ const GroupListComponent = ({ navigation }: BoardStackParamListProps<'GroupList'
           data={data?.pages
             .map(page =>
               page.data.map(item => {
-                const teamCnts = [];
-                for (let i = 0; i < 5; i++) {
-                  teamCnts.push({
-                    currentCnt: item[PositionCurrentCntField[PositionFromIndex[i]]],
-                    recruitCnt: item[PositionMaxCntField[PositionFromIndex[i]]],
-                    position: PositionFromIndex[i],
-                  });
-                }
+                const teamCnts = mapTeamDtoToPositionRecruiting(item);
                 return {
                   ...item,
                   teamMemberCnts: teamCnts,

@@ -179,6 +179,7 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
                   textView={
                     <Text style={globalStyles.itnitialText}>{mapToInitial(item.position)}</Text>
                   }
+                  radious={theme.positionIconRadious.md}
                   key={item.position}
                 />
               ))}

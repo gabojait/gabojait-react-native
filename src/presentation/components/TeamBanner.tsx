@@ -8,10 +8,13 @@ import { BaseCard } from '@/presentation/components/BaseCard';
 import { Position } from '@/data/model/type/Position';
 
 const TeamBanner: React.FC<
-  CardProps & { teamMembersCnt: PositionRecruiting[]; teamName: string; onArrowPress: () => void }
+  CardProps & {
+    teamMembersCnt: PositionRecruiting[];
+    teamName: string;
+    onArrowPress: () => void;
+  }
 > = ({ teamMembersCnt: teamMembers, teamName, onArrowPress, containerStyle, wrapperStyle }) => {
   const { theme } = useTheme();
-
   const IsRecruitDone = (item: PositionRecruiting) => {
     return item.currentCnt === item.recruitCnt;
   };
@@ -19,13 +22,23 @@ const TeamBanner: React.FC<
   return (
     <View style={[containerStyle, { paddingTop: 16 }]}>
       <BaseCard title={teamName} arrowColor={theme.colors.primary} onPress={onArrowPress}>
-        <View style={{ paddingTop: 10, flexDirection: 'row', justifyContent: 'flex-start' }}>
+        <View
+          style={{
+            paddingTop: 10,
+            flexDirection: 'row',
+            justifyContent: 'center',
+            flex: 1,
+          }}
+        >
           {teamMembers
             ?.filter(item => item.position !== Position.None)
             .map((item, index) => (
               <PositionIcon
                 position={item.position}
                 isRecruitDone={IsRecruitDone(item)}
+                currentCnt={item.currentCnt}
+                recruitNumber={item.recruitCnt}
+                radious={theme.positionIconRadious.md}
                 key={index}
               />
             ))}

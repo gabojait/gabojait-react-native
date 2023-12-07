@@ -1,7 +1,6 @@
 import { makeStyles, Text } from '@rneui/themed';
 import React from 'react';
 import { StyleProp, TouchableOpacity, View, ViewStyle } from 'react-native';
-import CustomIcon from '@/presentation/components/icon/Gabojait';
 import CardWrapper from './CardWrapper';
 
 export const BaseCard = ({
@@ -43,7 +42,7 @@ export const BaseCard = ({
                 justifyContent: 'space-between',
               }}
             >
-              <View>{children}</View>
+              <View style={{ flex: 1 }}>{children}</View>
             </View>
           </View>
         </View>

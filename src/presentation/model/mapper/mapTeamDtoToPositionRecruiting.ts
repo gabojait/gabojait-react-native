@@ -1,9 +1,10 @@
 import TeamDto from '@/data/model/Team/TeamDto';
 import PositionRecruiting from '@/presentation/model/PositionRecruitng';
 import { Position } from '@/data/model/type/Position';
+import TeamBriefDto from '@/data/model/Team/TeamBriefDto';
 
 export function mapTeamDtoToPositionRecruiting(
-  teamData: TeamDto | undefined,
+  teamData: TeamDto | undefined | TeamBriefDto,
 ): PositionRecruiting[] {
   const result: PositionRecruiting[] = [];
   if (!teamData) {

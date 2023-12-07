@@ -1,14 +1,15 @@
 import { Text, useTheme } from '@rneui/themed';
 import React from 'react';
-import { PixelRatio, TouchableOpacity, View } from 'react-native';
+import { PixelRatio, TouchableOpacity } from 'react-native';
 import CustomIcon from '@/presentation/components/icon/Gabojait';
-import { getOwnPropertyDescriptors } from 'immer/dist/internal';
 import { ScreenWidth } from '@rneui/base';
+import { HEIGHT, WIDTH } from '@/presentation/utils/util';
 
 interface FloatingButtonProps {
   title?: string;
   onPress?: any;
 }
+
 const FloatingButton = ({ title, onPress }: FloatingButtonProps) => {
   const { theme } = useTheme();
   console.log(ScreenWidth);
@@ -23,14 +24,8 @@ const FloatingButton = ({ title, onPress }: FloatingButtonProps) => {
         display: 'flex',
         position: 'absolute',
         borderRadius: PixelRatio.getPixelSizeForLayoutSize(38),
-        width:
-          ScreenWidth > 350
-            ? PixelRatio.getPixelSizeForLayoutSize(38)
-            : PixelRatio.getPixelSizeForLayoutSize(50),
-        height:
-          ScreenWidth > 350
-            ? PixelRatio.getPixelSizeForLayoutSize(38)
-            : PixelRatio.getPixelSizeForLayoutSize(50),
+        width: WIDTH * 0.264,
+        height: HEIGHT * 0.122,
         marginHorizontal: PixelRatio.getPixelSizeForLayoutSize(2),
         backgroundColor: theme.colors.primary,
       }}

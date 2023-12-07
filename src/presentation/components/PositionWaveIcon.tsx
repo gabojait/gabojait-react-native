@@ -1,14 +1,15 @@
-import { makeStyles, useTheme, Text } from '@rneui/themed';
-import React, { ReactNode, useEffect, useState } from 'react';
+import { makeStyles, useTheme } from '@rneui/themed';
+import React, { ReactNode } from 'react';
 import { View } from 'react-native';
 import Wave from './wave';
 import { theme } from '../theme';
 
-export interface waveComponenetProps {
+export interface WaveComponentProps {
   currentCnt: number;
   recruitNumber: number;
-  textView: ReactNode;
+  textView?: ReactNode;
   color?: string;
+  radious: number;
 }
 
 const PositionWaveIcon = ({
@@ -16,7 +17,8 @@ const PositionWaveIcon = ({
   recruitNumber: recruitCnt = 1,
   textView,
   color = theme.lightColors?.primary,
-}: waveComponenetProps) => {
+  radious,
+}: WaveComponentProps) => {
   const styles = useStyles();
   const { theme } = useTheme();
   //80이 Wave가 꽉 차보이는 최대 높이이다
@@ -24,16 +26,12 @@ const PositionWaveIcon = ({
 
   function handleColor() {
     if (color == '#D9D9D9') {
-      console.log('D9--------------------------');
-      console.log(color);
       return [
         { A: 10, T: 180, fill: 'rgba(217, 217, 217, 0.4)' },
         { A: 15, T: 140, fill: 'rgba(217, 217, 217, 0.6)' },
         { A: 20, T: 100, fill: color },
       ];
     } else {
-      console.log('1C--------------------------');
-      console.log(color);
       return [
         { A: 10, T: 180, fill: 'rgba(28, 223, 113, 0.4)' },
         { A: 15, T: 140, fill: 'rgba(28, 223, 113, 0.6)' },
@@ -45,7 +43,7 @@ const PositionWaveIcon = ({
   return (
     <View style={styles.container}>
       <Wave
-        style={[styles.waveBall, { borderColor: color }]}
+        style={[styles.waveBall, { borderColor: color, width: radious * 2 }]}
         H={waveHeight}
         waveParams={[
           { A: 10, T: 180, fill: 'rgba(28, 223, 113, 0.4)' },
@@ -67,7 +65,6 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
   },
   waveBall: {
-    width: 70,
     aspectRatio: 1,
     borderRadius: 35,
     overflow: 'hidden',
