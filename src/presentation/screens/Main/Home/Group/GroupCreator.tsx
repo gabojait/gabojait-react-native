@@ -1,7 +1,7 @@
 import { FilledButton } from '@/presentation/components/Button';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import color from '@/presentation/res/styles/color';
-import { Text, useTheme, makeStyles } from '@rneui/themed';
+import { makeStyles, Text, useTheme } from '@rneui/themed';
 import React, { useRef, useState } from 'react';
 import { KeyboardAvoidingView, Platform, TextInput, TouchableOpacity, View } from 'react-native';
 import TeamRequestDto from '@/data/model/Team/TeamRequestDto';
@@ -13,13 +13,16 @@ import { PositionDropdownMaker } from '@/presentation/components/PositionDropdow
 import PositionCountDto from '@/data/model/Team/PostionCountDto';
 import useGlobalStyles from '@/presentation/styles';
 import useModal from '@/presentation/components/modal/useModal';
-import { ModalType, useMutationDialog } from '@/reactQuery/util/useMutationDialog';
+import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { createTeam } from '@/data/api/team';
-import { HEIGHT } from '@/presentation/utils/util';
 import { t } from 'i18next';
 import { Position } from '@/data/model/type/Position';
-import RegisterRequestDto from '@/data/model/RegisterRequestDto';
+import {
+  isEmptyInputExisted,
+  isOpenChatUrlValidate,
+  isRecruitCntValidate,
+} from '@/presentation/utils/TeamCreateOrEditUtils';
 
 const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'>) => {
   const { theme } = useTheme();
@@ -30,12 +33,10 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
     openChatUrl: '',
     projectDescription: '',
     projectName: '',
-    teamMemberRecruitCnts: [],
     frontendMaxCnt: 0,
     backendMaxCnt: 0,
     managerMaxCnt: 0,
     designerMaxCnt: 0,
-    otherMaxCnt: 0,
   });
   const globalStyles = useGlobalStyles();
   const ref_input1 = useRef<TextInput | null>(null);
@@ -71,12 +72,9 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
     [Position.Designer]: 'designerMaxCnt',
     [Position.None]: 'otherMaxCnt',
   };
+
   function handleCreateTeam() {
-    const _teamCreateState = { ...teamCreateState };
-    _teamCreateState.teamMemberRecruitCnts.forEach(cnt => {
-      _teamCreateState[positionToCntField[cnt.position]] = cnt.totalRecruitCnt;
-    });
-    createTeamMutation.mutate(_teamCreateState);
+    createTeamMutation.mutate(teamCreateState);
   }
 
   function updateExpectation(text: string) {
@@ -101,64 +99,36 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
   }
 
   function updateTeamMemberRecruitCnts(data: PositionCountDto[]) {
-    setTeamCreateState(prevState => ({ ...prevState, teamMemberRecruitCnts: data }));
-  }
-
-  function isOpenChatUrlValidate() {
-    const pattern = /^https\:\/\/open\.kakao\.com\/.+$/;
-    const result = pattern.test(teamCreateState.openChatUrl);
-
-    if (result) {
-      return true;
-    } else {
-      throw Error(t('warn_openchatlink_invalid_format'));
-    }
-  }
-
-  function isRecruitCntValidate() {
-    // if (teamCreateState.teamMemberRecruitCnts.length == 0) {
-    //   throw Error(t('warn_teammate_notExist'));
-    // } else {
-    //   return true;
-    // }
-  }
-
-  function isEmptyInputExisted() {
-    //공백제거하기
-    const projectName = teamCreateState.projectName.replace(/ /gi, '');
-    const projectDescription = teamCreateState.projectDescription.replace(/ /gi, '');
-    const expectation = teamCreateState.expectation.replace(/ /gi, '');
-    const openChatUrl = teamCreateState.openChatUrl.replace(/ /gi, '');
-
-    if (
-      projectName.length != 0 &&
-      projectDescription.length != 0 &&
-      expectation.length != 0 &&
-      openChatUrl.length != 0
-    ) {
-      return true;
-    } else {
-      throw Error(t('warn_input_empty'));
-    }
+    const frontendCnt = data.find(it => it.position === Position.Frontend)?.totalRecruitCnt || 0;
+    const backendCnt = data.find(it => it.position === Position.Backend)?.totalRecruitCnt || 0;
+    const designerCnt = data.find(it => it.position === Position.Designer)?.totalRecruitCnt || 0;
+    const managerCnt = data.find(it => it.position === Position.Manager)?.totalRecruitCnt || 0;
+    setTeamCreateState(prevState => ({
+      ...prevState,
+      frontendMaxCnt: frontendCnt,
+      backendMaxCnt: backendCnt,
+      designerMaxCnt: designerCnt,
+      managerMaxCnt: managerCnt,
+    }));
   }
 
   function isAllInputValidate() {
     try {
-      isRecruitCntValidate();
+      isRecruitCntValidate(teamCreateState);
     } catch (error) {
       RecruitCntValidationWarningModal();
       return false;
     }
 
     try {
-      isEmptyInputExisted();
+      isEmptyInputExisted(teamCreateState);
     } catch (error) {
       EmptyInputWarningModal();
       return false;
     }
 
     try {
-      isOpenChatUrlValidate();
+      isOpenChatUrlValidate(teamCreateState);
     } catch (error) {
       OpenChatValidationWarningModal();
       return false;

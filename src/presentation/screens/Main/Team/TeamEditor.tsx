@@ -5,7 +5,6 @@ import {
   Platform,
   ScrollView,
   TextInput,
-  TextInputProps,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -22,12 +21,18 @@ import SymbolModalContent from '@/presentation/components/modalContent/SymbolMod
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
 import { PositionDropdownEditor } from '@/presentation/components/PositionDropdownEditor';
 import useModal from '@/presentation/components/modal/useModal';
-import { mapPositionRecruitingToPositionCount } from '@/presentation/model/mapper/mapPositionRecruitingToPositionCount';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
-import { useMutationForm } from '@/reactQuery/util/useMutationForm';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 import { Loading } from '../../Loading';
+import PositionRecruiting from '@/presentation/model/PositionRecruitng';
+import { mapTeamDtoToPositionRecruiting } from '@/presentation/model/mapper/mapTeamDtoToPositionRecruiting';
+import { Position } from '@/data/model/type/Position';
+import {
+  isEmptyInputExisted,
+  isOpenChatUrlValidate,
+  isRecruitCntValidate,
+} from '@/presentation/utils/TeamCreateOrEditUtils';
 
 export const TeamEditor = ({ navigation, route }: MainStackScreenProps<'TeamEditor'>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -72,13 +77,13 @@ export const TeamEditorComponent = ({ navigation, route }: MainStackScreenProps<
     openChatUrl: '',
     projectDescription: '',
     projectName: '',
-    teamMemberRecruitCnts: [],
     managerMaxCnt: 0,
     designerMaxCnt: 0,
     frontendMaxCnt: 0,
     backendMaxCnt: 0,
-    otherMaxCnt: 0,
   });
+
+  const [initializedTeamMember, setinitializedTeamMember] = useState<PositionRecruiting[]>([]);
 
   useEffect(() => {
     setTeamUpdateState({
@@ -86,21 +91,14 @@ export const TeamEditorComponent = ({ navigation, route }: MainStackScreenProps<
       openChatUrl: teamData?.openChatUrl!,
       projectDescription: teamData?.projectDescription!,
       projectName: teamData?.projectName!,
-      teamMemberRecruitCnts: initializeTeamMemberRecruitCnts()!,
       managerMaxCnt: teamData?.managerMaxCnt ?? 0,
       designerMaxCnt: teamData?.designerMaxCnt ?? 0,
       frontendMaxCnt: teamData?.frontendMaxCnt ?? 0,
       backendMaxCnt: teamData?.backendMaxCnt ?? 0,
-      otherMaxCnt: 0,
     });
+    setinitializedTeamMember(mapTeamDtoToPositionRecruiting(teamData));
+    console.log(`TeamEditor------------------initializedTeamMember:${initializedTeamMember}`);
   }, [teamData]);
-
-  function initializeTeamMemberRecruitCnts() {
-    const result = teamData?.teamMemberCnts.map(item => {
-      return mapPositionRecruitingToPositionCount(item);
-    });
-    return result;
-  }
 
   function updateExpectation(text: string) {
     setTeamUpdateState(prevState => ({ ...prevState, expectation: text }));
@@ -119,63 +117,36 @@ export const TeamEditorComponent = ({ navigation, route }: MainStackScreenProps<
   }
 
   function updateTeamMemberRecruitCnts(data: PositionCountDto[]) {
-    setTeamUpdateState(prevState => ({ ...prevState, teamMemberRecruitCnts: data }));
-  }
-  function isOpenChatUrlValidate() {
-    const pattern = /^https\:\/\/open\.kakao\.com\/.+$/;
-    const result = pattern.test(teamUpdateState.openChatUrl);
-
-    if (result) {
-      return true;
-    } else {
-      throw Error('유효한 카카오톡 오픈채팅 링크가 아닙니다');
-    }
-  }
-
-  function isRecruitCntValidate() {
-    if (teamUpdateState.teamMemberRecruitCnts.length == 0) {
-      throw Error('팀원이 존재하지 않습니다');
-    } else {
-      return true;
-    }
-  }
-
-  function isEmptyInputExisted() {
-    //공백제거하기
-    const projectName = teamUpdateState.projectName.replace(/ /gi, '');
-    const projectDescription = teamUpdateState.projectDescription.replace(/ /gi, '');
-    const expectation = teamUpdateState.expectation.replace(/ /gi, '');
-    const openChatUrl = teamUpdateState.openChatUrl.replace(/ /gi, '');
-
-    if (
-      projectName.length != 0 &&
-      projectDescription.length != 0 &&
-      expectation.length != 0 &&
-      openChatUrl.length != 0
-    ) {
-      return true;
-    } else {
-      throw Error('빈 입력란이 있습니다');
-    }
+    const frontendCnt = data.find(it => it.position === Position.Frontend)?.totalRecruitCnt || 0;
+    const backendCnt = data.find(it => it.position === Position.Backend)?.totalRecruitCnt || 0;
+    const designerCnt = data.find(it => it.position === Position.Designer)?.totalRecruitCnt || 0;
+    const managerCnt = data.find(it => it.position === Position.Manager)?.totalRecruitCnt || 0;
+    setTeamUpdateState(prevState => ({
+      ...prevState,
+      frontendMaxCnt: frontendCnt,
+      backendMaxCnt: backendCnt,
+      designerMaxCnt: designerCnt,
+      managerMaxCnt: managerCnt,
+    }));
   }
 
   function isAllInputValidate() {
     try {
-      isRecruitCntValidate();
+      isRecruitCntValidate(teamUpdateState);
     } catch (error) {
       RecruitCntValidationWarningModal();
       return false;
     }
 
     try {
-      isEmptyInputExisted();
+      isEmptyInputExisted(teamUpdateState);
     } catch (error) {
       EmptyInputWarningModal();
       return false;
     }
 
     try {
-      isOpenChatUrlValidate();
+      isOpenChatUrlValidate(teamUpdateState);
     } catch (error) {
       OpenChatValidationWarningModal();
       return false;
@@ -230,7 +201,7 @@ export const TeamEditorComponent = ({ navigation, route }: MainStackScreenProps<
     modal?.show({
       content: (
         <BottomModalContent
-          header="글 수정을 취소하시겠어요?"
+          header={<Text>"글 수정을 취소하시겠어요?"</Text>}
           yesButton={{
             title: '확인',
             onPress: () => {
@@ -314,9 +285,8 @@ export const TeamEditorComponent = ({ navigation, route }: MainStackScreenProps<
             <PositionDropdownEditor
               onTeamMemberRecruitChanged={(data: PositionCountDto[]) => {
                 updateTeamMemberRecruitCnts(data);
-                console.log(data);
               }}
-              currentTeamMembers={teamData?.teamMemberCnts!}
+              initializedTeamMembers={initializedTeamMember}
             />
           </CardWrapper>
         </View>
@@ -362,7 +332,7 @@ export const TeamEditorComponent = ({ navigation, route }: MainStackScreenProps<
           </TouchableOpacity>
         </View>
 
-        <View style={{ paddingHorizontal: 30 }}>
+        <View>
           <FilledButton
             title={'완료'}
             disabled={false}
@@ -375,6 +345,7 @@ export const TeamEditorComponent = ({ navigation, route }: MainStackScreenProps<
           <FilledButton
             title={'취소하기'}
             buttonStyle={{ backgroundColor: theme.colors.grey0 }}
+            style={{ paddingTop: 20 }}
             onPress={() => {
               CancelConfirmModal();
             }}

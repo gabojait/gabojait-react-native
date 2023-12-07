@@ -1,4 +1,4 @@
-import {Text, useTheme} from '@rneui/themed';
+import { Text, useTheme } from '@rneui/themed';
 import React, { useEffect, useState } from 'react';
 import { Animated, ScrollView, TouchableOpacity, View } from 'react-native';
 import CustomIcon from '@/presentation/components/icon/Gabojait';
@@ -25,12 +25,12 @@ interface PositionDropdownProps {
 
 interface PositionDropdownEditorProps {
   onTeamMemberRecruitChanged: (data: PositionCountDto[]) => void;
-  currentTeamMembers: PositionRecruiting[];
+  initializedTeamMembers: PositionRecruiting[];
 }
 
 export const PositionDropdownEditor = ({
   onTeamMemberRecruitChanged,
-  currentTeamMembers,
+  initializedTeamMembers,
 }: PositionDropdownEditorProps) => {
   const modal = useModal();
   const [animatedValue, setAnimatedValue] = useState(() => new Animated.Value(0));
@@ -49,7 +49,7 @@ export const PositionDropdownEditor = ({
     { key: Position.Backend, value: KoreanPosition.BACKEND, disabled: false },
     { key: Position.Frontend, value: KoreanPosition.FRONTEND, disabled: false },
     { key: Position.Designer, value: KoreanPosition.DESIGNER, disabled: false },
-    // { key: Position.Manager, value: KoreanPosition.MANAGER, disabled: false },
+    { key: Position.Manager, value: KoreanPosition.MANAGER, disabled: false },
   ]);
 
   const AlertCantRemoveView = () => {
@@ -66,7 +66,7 @@ export const PositionDropdownEditor = ({
   };
   useEffect(() => {
     initializeView();
-  }, []);
+  }, [initializedTeamMembers]);
 
   useEffect(() => {
     onTeamMemberRecruitChanged(teamMemberRecruit);
@@ -126,7 +126,7 @@ export const PositionDropdownEditor = ({
 
   async function initializeView() {
     let initialIndex = 0;
-    currentTeamMembers.map(item => {
+    initializedTeamMembers.map(item => {
       animatedValue.setValue(0);
       const newlyAddedValue: PositionDropdownProps = {
         index: initialIndex,

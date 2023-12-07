@@ -58,13 +58,13 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
     },
   );
   const { mutate: mutateFavorite, data: favoriteResponse } = useMutation(
-    favoriteKeys.favoriteByUser,
+    favoriteKeys.favoriteTeam,
     (args: [string, FavoriteUpdateDto]) => postFavoriteTeam(...args),
     {
       useErrorBoundary: true,
       retry: 0,
       onSuccess: () => {
-        queryClient.invalidateQueries([teamKeys.getTeam, teamId]);
+        queryClient.invalidateQueries([teamKeys.getTeam, teamId, favoriteKeys.favoriteTeam]);
       },
     },
   );
