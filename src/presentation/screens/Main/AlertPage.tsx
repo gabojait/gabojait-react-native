@@ -1,13 +1,14 @@
 import { BaseCard } from '@/presentation/components/BaseCard';
-import { Text } from '@rneui/themed';
+import { Text, useTheme } from '@rneui/themed';
 import React from 'react';
-import { FlatList, View } from 'react-native';
+import { Animated, FlatList, View } from 'react-native';
 import { AlertType } from '@/data/model/type/AlertType';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import { RootStackNavigationProps } from '@/presentation/navigation/RootNavigation';
 import { useModelList } from '@/reactQuery/util/useModelList';
 import { getNotifications, makeReadNotification } from '@/data/api/notification';
 import { Position } from '@/data/model/type/Position';
+import { Swipeable, TouchableOpacity } from 'react-native-gesture-handler';
 
 const NotificationQueryKey = {
   all: ['notification'],
@@ -38,6 +39,41 @@ export default function AlertPage({ navigation }: MainStackScreenProps<'AlertPag
       });
     },
   });
+  const { theme } = useTheme();
+
+  const renderRightActions = (
+    progress: Animated.AnimatedInterpolation<number>,
+    dragAnimatedValue: Animated.AnimatedInterpolation<number>,
+  ) => {
+    const opacity = dragAnimatedValue.interpolate({
+      inputRange: [-150, 0],
+      outputRange: [1, 0],
+      extrapolate: 'clamp',
+    });
+    return (
+      <View
+        style={{
+          justifyContent: 'center',
+        }}
+      >
+        <View>
+          <Text
+            style={{
+              fontSize: theme.fontSize.md,
+            }}
+          >
+            알림을 삭제할까요?
+          </Text>
+        </View>
+        <Animated.View style={[{ opacity }]}>
+          <TouchableOpacity>
+            <Text>예</Text>
+          </TouchableOpacity>
+        </Animated.View>
+      </View>
+    );
+  };
+
   return (
     <>
       <View style={{ backgroundColor: 'white', flex: 1, paddingTop: 16 }}>
@@ -49,32 +85,43 @@ export default function AlertPage({ navigation }: MainStackScreenProps<'AlertPag
             <BaseCard
               title={item.title}
               key={item.notificationId}
-              style={{ marginHorizontal: 20, marginVertical: 9 }}
+              style={{
+                marginHorizontal: 20,
+                marginVertical: 9,
+                paddingHorizontal: 20,
+                borderColor: item.isRead ? theme.colors.grey2 : theme.colors.primary,
+                opacity: item.isRead ? 0.6 : 1,
+              }}
+              enabled={!item.isRead}
               onPress={() => {
                 // 읽기 처리 결과는 상관 없음
                 try {
                   makeReadNotification(item.notificationId);
                 } catch (e) {}
                 switch (AlertType[item.notificationType]) {
-                  case AlertType.TEAM_PROFILE: {
+                  case AlertType.NEW_TEAM_MEMBER:
+                  case AlertType.FIRED_TEAM_MEMBER:
+                  case AlertType.QUIT_TEAM_MEMBER:
+                  case AlertType.TEAM_INCOMPLETE:
+                  case AlertType.TEAM_PROFILE_UPDATED: {
                     // 팀/팀원 합류로 인한 알림. 현재 팀 페이지로 이동
                     return navigation
                       .getParent<RootStackNavigationProps>()
-                      .push('MainBottomTabNavigation', { screen: 'Team' });
+                      .replace('MainBottomTabNavigation', { screen: 'Team' });
                   }
-                  case AlertType.REVIEW: {
-                    return navigation.push('TeamReview', { teamId: '' });
+                  case AlertType.TEAM_COMPLETE: {
+                    return navigation.replace('TeamReview', { teamId: '' });
                   }
                   // Offer from User to Team
                   case AlertType.USER_OFFER: {
-                    return navigation.push('ApplyStatus', {
+                    return navigation.replace('ApplyStatus', {
                       screen: 'Frontend',
                       params: { position: Position.Frontend },
                     });
                   }
                   // Offer from Team to User
                   case AlertType.TEAM_OFFER: {
-                    return navigation.push('OfferFromTeamPage');
+                    return navigation.replace('OfferFromTeamPage');
                   }
                 }
               }}
