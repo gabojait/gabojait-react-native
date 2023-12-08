@@ -1,0 +1,97 @@
+default_platform(:ios)
+
+platform :ios do
+
+	require 'json'
+	require '../../fastlane_functions'
+	# //TODO: 빌드&테스트는 브랜치 액션으로 자동화하고 테스트&릴리즈 배포는 명령어로 수행하도록!
+	desc "Build"
+	lane :build do
+		match(type: "appstore")
+		increment_build_number(xcodeproj: "gabojait.xcodeproj")
+		build_app(workspace: "gabojait.xcworkspace", scheme: "gabojait")
+	end
+
+  desc "Push a new beta build to TestFlight"
+  lane :beta do
+    match(type: "appstore")
+    upload_to_testflight
+    version_number = get_version_number(xcodeproj: "gabojait.xcodeproj")
+    build_number = get_build_number.to_i
+    slack(
+      message: "iOS Gabojait 버전 #{version_number} - TestFlight 업로드 완료",
+      payload: { "Version": version_number + "(" + build_number.to_s + ")" },
+    )
+  end
+
+  desc "Push a new release hotfix update through Codepush"
+  lane :codepush_production do
+    match(type: "appstore")
+    #codepush_staging으로 디버깅을 끝내고 실행하는 걸 전제로 두기때문에 hotifix version 업데이트 하지 않음
+    version_number = get_version_number(xcodeproj: "gabojait.xcodeproj")
+    hotfix_number = read_and_parse_json('../../package.json')[ENV['IOS_HOTFIX_VERSION']].to_i
+    Dir.chdir('../../') do
+      sh "appcenter codepush release-react  --app #{ENV['OWNER_NAME']}/#{ENV['APP_NAME']} --deployment-name Production --development true --description 'version #{version_number}-#{hotfix_number} Production codepush test' --mandatory true --disable-duplicate-release-error"
+    end
+    slack(
+      message: "iOS Gabojait 사용자 버전 #{version_number}-#{hotfix_number} - Codepush Production 업로드 완료",
+      slack_url: ENV['SLACK_URL']
+    )
+  end
+
+	desc "Push a new staging hotfix update through Codepush"
+	lane :codepush_staging do
+		match(type: "appstore")
+		increment_hotfix_number(ENV['IOS_HOTFIX_VERSION'])
+    version_number = get_version_number(xcodeproj: "gabojait.xcodeproj")
+    hotfix_number = read_and_parse_json('../../package.json')[ENV['IOS_HOTFIX_VERSION']].to_i
+    Dir.chdir('../../') do
+      sh "appcenter codepush release-react  --app #{ENV['OWNER_NAME']}/#{ENV['APP_NAME']} --deployment-name Staging --development true --description 'version #{version_number}-#{hotfix_number} Staging codepush test' --mandatory true --disable-duplicate-release-error"
+		end
+		slack(
+      message: "iOS Gabojait 테스트 버전 #{version_number}-#{hotfix_number} - Codepush Staging 업로드 완료",
+      slack_url: ENV['SLACK_URL']
+    )
+	end
+
+  desc "Push a new release build to the App Store"
+  lane :release do |options|
+    if options[:version]
+      match(type: "appstore")
+      increment_version_number(version_number: options[:version], xcodeproj:"gabojait.xcodeproj")
+      handle_semantic_version_number(bump_type: options[:version],os_hotfix_version:ENV['IOS_HOTFIX_VERSION'])
+      upload_to_app_store(
+        reject_if_possible: false,
+        force: true,
+        skip_screenshots: false,
+        skip_metadata: false,
+        language:["ko"],
+        submit_for_review: true,
+        automatic_release: true,
+      )
+      slack(
+        message: "iOS Gabojait 스토어 버전 #{new_version_number} - App Store 배포 완료",
+        slack_url: ENV['SLACK_URL']
+      )
+      sh "watchbuild"
+      end
+  end
+
+  desc "test increment_version_number"
+  lane :test_version_number do |options|
+    increment_version_number(version_number: options[:version], xcodeproj:"gabojait.xcodeproj")
+    new_version_number = get_version_number(xcodeproj: "gabojait.xcodeproj")
+    puts "updated version_number to #{new_version_number}"
+  end
+
+  desc "test handle_semantic_version_number"
+  lane :test_handle_semantic_version_number do |options|
+    handle_semantic_version_number(bump_type: options[:version],os_hotfix_version:ENV['IOS_HOTFIX_VERSION'])
+  end
+
+  desc "test ios hotfix_version_update"
+  lane :test_hotfix do
+    increment_hotfix_number(ENV['IOS_HOTFIX_VERSION'])
+  end
+
+end

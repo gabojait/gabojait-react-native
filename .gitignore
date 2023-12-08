@@ -65,9 +65,13 @@ buck-out/
 #vscode
 .vscode/.react/
 .vscode/.react/*
+
 /ios/GoogleService-Info.plist
+/ios/gabojait.app.dSYM
+/ios/gabojait.app.dSYM.zip
 /android/app/google-services.json
-
+/android/app/release.keystore
 .env*
-
+/android/faslane-supply.json
 android/app/releaseStaging/
+

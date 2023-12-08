@@ -81,12 +81,24 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     namespace "com.gabojait.app"
+
+    compileOptions {
+        sourceCompatibility = 17
+        targetCompatibility = 17
+    }
+
+    java{
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(17))
+        }
+    }
+
     defaultConfig {
         applicationId "com.gabojait.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 4
-        versionName "1.0"
+        versionCode 5
+        versionName "1.0.0"
         multiDexEnabled true
     }
     signingConfigs {
@@ -98,9 +110,9 @@ android {
         }
         release {
             storeFile file('release.keystore')
-            storePassword properties.getProperty("STORE_PASSWORD")
-            keyAlias properties.getProperty("KEY_ALIAS")
-            keyPassword properties.getProperty("KEY_PASSWORD")
+            storePassword 'android'
+            keyAlias 'playstore-release-key'
+            keyPassword 'android'
         }
     }
     buildTypes {
