@@ -10,16 +10,18 @@ export const BaseCard = ({
   children,
   onPress,
   style,
+  enabled = true,
 }: {
   title: string;
   arrowColor?: string;
   children: React.ReactNode;
   onPress?: () => void;
   style?: StyleProp<ViewStyle>;
+  enabled?: boolean;
 }) => {
   const styles = useStyles();
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity onPress={onPress} disabled={!enabled}>
       <CardWrapper style={[styles.card, style]}>
         <View
           style={{

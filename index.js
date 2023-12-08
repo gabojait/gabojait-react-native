@@ -12,6 +12,20 @@ import codePush from 'react-native-code-push';
 import { getDBConnection, Notification, NotificationRepository } from '@/data/localdb';
 import { AlertType } from '@/data/model/type/AlertType';
 
+import { CacheManager } from '@georstat/react-native-image-cache';
+import { Dirs } from 'react-native-file-access';
+
+CacheManager.config = {
+  baseDir: `${Dirs.CacheDir}/images_cache/`,
+  blurRadius: 15,
+  cacheLimit: 0,
+  maxRetries: 1 /* optional, if not provided defaults to 0 */,
+  retryDelay: 1000 /* in milliseconds, optional, if not provided defaults to 0 */,
+  sourceAnimationDuration: 1000,
+  thumbnailAnimationDuration: 1000,
+};
+
+
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.log('Message handled in the background!', remoteMessage);
   // try {

@@ -10,4 +10,5 @@ export default interface UserProfileDto {
   updatedAt: string;
   userId: string;
   skills: Skill[];
+  imageUrl: string;
 }

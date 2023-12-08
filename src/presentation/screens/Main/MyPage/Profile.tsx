@@ -2,6 +2,7 @@ import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { CheckBox, makeStyles, Text, useTheme } from '@rneui/themed';
 import {
   ActivityIndicator,
+  Alert,
   ImageBackground,
   Linking,
   RefreshControl,
@@ -93,6 +94,10 @@ export const ProfileImage = ({
               selectionLimit: 1,
             });
             if ((result.assets?.length ?? 0) === 1) {
+              if ((result.assets?.[0].fileSize ?? 0) / 1024 / 1024 > 3) {
+                Alert.alert('사진 용량', '사진 용량은 3MB를 넘을 수 없습니다.');
+              }
+
               setImage(result.assets?.[0]!);
             }
           }}

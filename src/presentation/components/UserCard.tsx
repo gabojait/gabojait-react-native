@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import CardWrapper from './CardWrapper';
 import { RatingBar } from './RatingBar';
@@ -9,8 +9,11 @@ import UserProfileOfferDto from '@/data/model/User/UserProfileBriefDto';
 import { Position } from '@/data/model/type/Position';
 import { mapPositionToKorean } from '../utils/PositionDropdownUtils';
 import { Chip, sliderColors } from '@/presentation/screens/Main/MyPage/Profile';
-import { Level } from '@/data/model/Profile/Skill';
+import { Image } from 'react-native';
+import LoadingSpinner from '@/presentation/screens/Loading';
+import { CachedImage } from '@georstat/react-native-image-cache';
 
+const DefaultProfileImage = require('@/assets/images/default_profile_image.png');
 export const UserCard = ({
   item,
   position,
@@ -20,6 +23,7 @@ export const UserCard = ({
 }) => {
   const { theme } = useTheme();
   const styles = useStyles();
+  const [imagesNotValid, setImagesNotValid] = useState(new Set());
   return (
     <>
       <CardWrapper
@@ -35,11 +39,26 @@ export const UserCard = ({
             flexDirection: 'row',
             width: '100%',
             paddingVertical: 32,
-            paddingHorizontal: 10,
+            paddingHorizontal: 24,
             justifyContent: 'space-between',
             alignContent: 'center',
+            gap: 20,
           }}
         >
+          <View style={{ height: '100%', display: 'flex' }}>
+            <CachedImage
+              style={{ flex: 1, aspectRatio: 1, borderRadius: 8.8 }}
+              imageStyle={{ flex: 1, aspectRatio: 1, borderRadius: 8.8 }}
+              source={
+                !item.imageUrl || imagesNotValid.has(item.imageUrl)
+                  ? DefaultProfileImage
+                  : item.imageUrl
+              }
+              resizeMode={'cover'}
+              onError={() => setImagesNotValid(prev => prev.add(item.imageUrl))}
+              loadingImageComponent={LoadingSpinner}
+            />
+          </View>
           <View>
             <Text style={styles.name}>{item.nickname}</Text>
             <View style={{ flexDirection: 'row', paddingBottom: 10 }}>
@@ -47,7 +66,8 @@ export const UserCard = ({
               <Text style={styles.score}>{item.rating}</Text>
             </View>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-              {item.skills.map(skill => (
+              {item.skills.length === 0 && <View style={{ height: 38, padding: 10 }} />}
+              {item.skills?.map(skill => (
                 <Chip
                   style={[
                     styles[skill.level],
