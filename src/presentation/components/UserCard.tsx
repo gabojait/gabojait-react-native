@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { Text, View } from 'react-native';
 import CardWrapper from './CardWrapper';
 import { RatingBar } from './RatingBar';
-import Gabojait from './icon/Gabojait';
 import { makeStyles, useTheme } from '@rneui/themed';
 import UserProfileDto from '@/data/model/User/UserProfileDto';
 import UserProfileOfferDto from '@/data/model/User/UserProfileBriefDto';
 import { Position } from '@/data/model/type/Position';
-import { mapPositionToKorean } from '../utils/PositionDropdownUtils';
-import { Chip, sliderColors } from '@/presentation/screens/Main/MyPage/Profile';
-import { Image } from 'react-native';
+import { Chip } from '@/presentation/screens/Main/MyPage/Profile';
 import LoadingSpinner from '@/presentation/screens/Loading';
 import { CachedImage } from '@georstat/react-native-image-cache';
+import { defaultProfile } from '@/assets/images/imageUrls';
 
 const DefaultProfileImage = require('@/assets/images/default_profile_image.png');
 export const UserCard = ({
@@ -38,31 +36,41 @@ export const UserCard = ({
           style={{
             flexDirection: 'row',
             width: '100%',
-            paddingVertical: 32,
-            paddingHorizontal: 24,
-            justifyContent: 'space-between',
+            paddingVertical: 31,
+            paddingHorizontal: 20,
+            justifyContent: 'flex-start',
             alignContent: 'center',
             gap: 20,
           }}
         >
           <View style={{ height: '100%', display: 'flex' }}>
             <CachedImage
-              style={{ flex: 1, aspectRatio: 1, borderRadius: 8.8 }}
-              imageStyle={{ flex: 1, aspectRatio: 1, borderRadius: 8.8 }}
+              style={{
+                flex: 1,
+                aspectRatio: 1,
+                borderRadius: 10,
+                backgroundColor: theme.colors.disabled,
+                justifyContent: 'center',
+              }}
+              imageStyle={{
+                flex: 1,
+                aspectRatio: 1,
+                borderRadius: 10,
+                backgroundColor: theme.colors.disabled,
+                justifyContent: 'center',
+              }}
               source={
-                !item.imageUrl || imagesNotValid.has(item.imageUrl)
-                  ? DefaultProfileImage
-                  : item.imageUrl
+                !item.imageUrl || imagesNotValid.has(item.imageUrl) ? defaultProfile : item.imageUrl
               }
               resizeMode={'cover'}
               onError={() => setImagesNotValid(prev => prev.add(item.imageUrl))}
               loadingImageComponent={LoadingSpinner}
             />
           </View>
-          <View>
+          <View style={{ paddingStart: 20 }}>
             <Text style={styles.name}>{item.nickname}</Text>
-            <View style={{ flexDirection: 'row', paddingBottom: 10 }}>
-              <RatingBar ratingScore={item.rating} />
+            <View style={{ flexDirection: 'row', paddingBottom: 15 }}>
+              <RatingBar ratingScore={item.rating} size={20} />
               <Text style={styles.score}>{item.rating}</Text>
             </View>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
@@ -72,8 +80,8 @@ export const UserCard = ({
                   style={[
                     styles[skill.level],
                     {
-                      borderRadius: theme.radius.sm,
-                      padding: 10,
+                      borderRadius: theme.radius.xs,
+                      padding: 5,
                       borderWidth: 0,
                     },
                   ]}
@@ -83,9 +91,6 @@ export const UserCard = ({
               ))}
             </View>
           </View>
-          <TouchableOpacity style={{ justifyContent: 'center' }}>
-            <Gabojait name="arrow-next" size={28} color={theme.colors.disabled} />
-          </TouchableOpacity>
         </View>
       </CardWrapper>
     </>
@@ -93,18 +98,18 @@ export const UserCard = ({
 };
 const useStyles = makeStyles(theme => ({
   name: {
-    fontSize: 18,
+    fontSize: theme.fontSize.lg,
     fontWeight: theme.fontWeight?.semibold,
     color: 'black',
+    paddingBottom: 5,
   },
   position: {
-    fontSize: 12,
+    fontSize: theme.fontSize.md,
     fontWeight: theme.fontWeight?.light,
     color: 'black',
-    paddingBottom: 10,
   },
   score: {
-    fontSize: 20,
+    fontSize: theme.fontSize.md,
     fontWeight: theme.fontWeight?.bold,
     color: 'black',
     paddingLeft: 10,
