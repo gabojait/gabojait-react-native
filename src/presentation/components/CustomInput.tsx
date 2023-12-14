@@ -1,6 +1,6 @@
 import { Icon, Input, makeStyles, Text, useTheme } from '@rneui/themed';
-import React, { forwardRef, useMemo, useState } from 'react';
-import { View } from 'react-native';
+import React, { forwardRef, useState } from 'react';
+import { KeyboardAvoidingView, Platform, View } from 'react-native';
 import color from '../res/styles/color';
 import { CustomInputProps, ValidatorState } from '@/presentation/components/props/StateProps';
 
@@ -45,71 +45,75 @@ const CustomInput = forwardRef(
     const { theme } = useTheme();
 
     return (
-      <View style={[{ marginBottom: theme.spacing.xs }, props.containerStyle]}>
-        <View
-          style={{
-            width: '100%',
-            justifyContent: 'flex-end',
-            flexDirection: 'row',
-          }}
-        >
-          <View style={{ flex: 5 }}>
-            <Input
-              {...props}
-              ref={ref}
-              disabled={props.disabled}
-              containerStyle={[styles.container, { marginBottom: 0 }]}
-              inputContainerStyle={[
-                shape === 'underline'
-                  ? styles.underlineInputContainer
-                  : shape === 'round'
-                  ? styles.roundInputContainer
-                  : { borderBottomWidth: 0 },
-                inputContainerStyle,
-              ]}
-              style={[
-                shape === 'underline'
-                  ? styles.underlineInput
-                  : shape === 'round'
-                  ? styles.roundInput
-                  : { borderBottomWidth: 0 },
-                props.style,
-              ]}
-              placeholderTextColor={color.grey}
-              placeholder={placeholder}
-              rightIcon={inputIcon}
-              secureTextEntry={props.secureTextEntry ? secure : false}
-              labelStyle={styles.label}
-              renderErrorMessage={false}
-              autoCapitalize="none"
-              autoComplete="off"
-              autoCorrect={false}
-            />
-          </View>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <View style={[props.containerStyle]}>
           <View
-            id={'rightChildren'}
             style={{
-              flexDirection: 'column',
-              alignContent: 'stretch',
-              alignItems: 'stretch',
-              marginStart: theme.spacing.xs,
+              width: '100%',
+              justifyContent: 'flex-end',
+              flexDirection: 'row',
             }}
           >
-            {rightChildren && rightChildren}
+            <View style={{ flex: 5 }}>
+              <Input
+                {...props}
+                ref={ref}
+                disabled={props.disabled}
+                containerStyle={[styles.container, { width: '100%' }]}
+                inputContainerStyle={[
+                  shape === 'underline'
+                    ? styles.underlineInputContainer
+                    : shape === 'round'
+                    ? styles.roundInputContainer
+                    : {},
+                  inputContainerStyle,
+                  { backgroundColor: 'white', width: '100%' },
+                ]}
+                style={[
+                  shape === 'underline'
+                    ? styles.underlineInput
+                    : shape === 'round'
+                    ? styles.roundInput
+                    : {},
+                  props.style,
+                  { fontSize: theme.fontSize.sm, width: '100%' },
+                ]}
+                placeholderTextColor={color.grey}
+                placeholder={placeholder}
+                rightIcon={inputIcon}
+                secureTextEntry={props.secureTextEntry ? secure : false}
+                labelStyle={styles.label}
+                renderErrorMessage={false}
+                autoCapitalize="none"
+                autoComplete="off"
+                autoCorrect={false}
+              />
+            </View>
+            <View
+              id={'rightChildren'}
+              style={{
+                flexDirection: 'column',
+                alignContent: 'stretch',
+                alignItems: 'stretch',
+                marginStart: theme.spacing.xs,
+              }}
+            >
+              {rightChildren && rightChildren}
+            </View>
           </View>
+          {
+            <Text
+              style={{
+                color: theme.colors.error,
+                marginTop: theme.spacing.xs,
+                marginStart: theme.spacing.sm,
+              }}
+            >
+              {validatorResult.message && validatorResult.message}
+            </Text>
+          }
         </View>
-        {
-          <Text
-            style={{
-              color: theme.colors.error,
-              marginTop: theme.spacing.xs,
-              marginStart: theme.spacing.sm,
-            }}
-          >
-            {validatorResult.message && validatorResult.message}
-          </Text>
-        }
-      </View>
+      </KeyboardAvoidingView>
     );
   },
 );
@@ -153,7 +157,6 @@ const useStyles = makeStyles(
         borderColor: shapeToColors[shape][state],
         borderRadius: theme.radius[size],
         padding: 3,
-        // paddingStart: 0,
         paddingEnd: 10,
       },
       roundInput: {

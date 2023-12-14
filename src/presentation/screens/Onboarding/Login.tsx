@@ -1,5 +1,5 @@
 import { FilledButton } from '@/presentation/components/Button';
-import { Text } from '@rneui/themed';
+import { Text, useTheme } from '@rneui/themed';
 import React, { useEffect, useState } from 'react';
 import {
   Keyboard,
@@ -17,7 +17,6 @@ import Gabojait from '@/presentation/components/icon/Gabojait';
 import { login } from '@/redux/action/login';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import LoginRequestDTO from '@/data/model/LoginRequestDto';
-import { ModalContext } from '@/presentation/components/modal/context';
 import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import useGlobalStyles from '@/presentation/styles';
@@ -31,7 +30,7 @@ const Login = ({ navigation }: OnboardingScreenProps<'Login'>) => {
   const dispatch = useAppDispatch();
   const { data, loading, error } = useAppSelector(state => state.loginReducer.loginResult);
   const modal = useModal();
-
+  const { theme } = useTheme();
   useEffect(() => {
     modal?.hide();
     if (loading) {
@@ -61,36 +60,44 @@ const Login = ({ navigation }: OnboardingScreenProps<'Login'>) => {
   const globalStyles = useGlobalStyles();
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{ flex: 1 }}
-    >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={[globalStyles.container, { justifyContent: 'space-between' }]}>
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Gabojait name="gabojait" color={color.primary} size={35} />
-          </View>
-          <View style={styles.inputView}>
+    <View style={[globalStyles.container, { backgroundColor: 'white', paddingBottom: 54 }]}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1.1 }}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+            <View
+              style={{
+                flex: 0.77,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <Gabojait name="gabojait" color={color.primary} size={35} />
+            </View>
             <CustomInput
-              placeholder={'아이디'}
+              placeholder={'아이디를 입력하세요'}
               onChangeText={(text: string) =>
                 setLoginState(prevState => ({ ...prevState, username: text }))
               }
               value={loginState.username}
               shape="round"
-              containerStyle={{ marginBottom: 28 }}
+              inputContainerStyle={{ borderColor: theme.colors.grey3, height: 50 }}
             />
             <CustomInput
-              placeholder={'비밀번호'}
+              placeholder={'비밀번호를 입력하세요'}
               onChangeText={(text: string) =>
                 setLoginState(prevState => ({ ...prevState, password: text }))
               }
               secureTextEntry
               shape="round"
               value={loginState.password}
-              containerStyle={{ marginBottom: 28 }}
+              containerStyle={{
+                marginBottom: 18,
+              }}
+              inputContainerStyle={{ borderColor: theme.colors.grey3, height: 50 }}
             />
-
             <FilledButton
               size="sm"
               title="로그인"
@@ -108,17 +115,19 @@ const Login = ({ navigation }: OnboardingScreenProps<'Login'>) => {
               }}
               containerStyle={{ marginBottom: 10 }}
             />
-            <TouchableOpacity onPress={() => navigation.push('FindAccount')}>
-              <Text style={styles.text}>아이디 찾기/ 비밀번호 찾기</Text>
-            </TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.registerLink} onPress={() => navigation.push('Register')}>
-            <Text style={styles.text}>아직 가보자잇에 가입하지 않으셨나요?</Text>
-            <Text style={styles.highlightText}> 회원가입</Text>
-          </TouchableOpacity>
-        </View>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+      <View style={{ justifyContent: 'space-between', flex: 0.3 }}>
+        <TouchableOpacity onPress={() => navigation.push('FindAccount')}>
+          <Text style={styles.text}>아이디 찾기/ 비밀번호 찾기</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.registerLink]} onPress={() => navigation.push('Register')}>
+          <Text style={styles.text}>아직 가보자잇에 가입하지 않으셨나요?</Text>
+          <Text style={styles.highlightText}> 회원가입</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 };
 
@@ -129,8 +138,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   inputView: {
-    flex: 2,
-    justifyContent: 'flex-start',
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'blue',
   },
   linkTextView: {
     alignItems: 'center',
