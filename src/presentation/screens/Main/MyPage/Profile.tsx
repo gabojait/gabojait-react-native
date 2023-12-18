@@ -1,43 +1,41 @@
 import React, { ReactNode, useEffect, useMemo, useState } from 'react';
-import { CheckBox, makeStyles, Text, useTheme } from '@rneui/themed';
+import { makeStyles, Text, useTheme } from '@rneui/themed';
 import {
   ActivityIndicator,
-  Alert,
-  ImageBackground,
   Linking,
   RefreshControl,
   ScrollView,
   StyleProp,
-  TextStyle,
+  TouchableOpacity,
   View,
   ViewStyle,
 } from 'react-native';
 import { FilledButton } from '@/presentation/components/Button';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import ProfileViewDto from '@/data/model/Profile/ProfileViewDto';
-import { Slider } from '@miblanchard/react-native-slider';
 
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { RatingBar } from '@/presentation/components/RatingBar';
-import Review from '@/data/model/Profile/ReviewResponse';
 import { Link } from '@react-navigation/native';
 import { ProfileStackParamListProps } from '@/presentation/navigation/types';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import { StackHeaderProps } from '@react-navigation/stack';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { getProfile, setProfileVisibility } from '@/redux/reducers/profileReducer';
+import { getProfile } from '@/redux/reducers/profileReducer';
 import { Level } from '@/data/model/Profile/Skill';
 import useGlobalStyles from '@/presentation/styles';
 import { calcMonth, mapToSeekingTeamKey } from '@/presentation/utils/util';
-import { isProfileExist } from './ProfileUtils';
 import { Position } from '@/data/model/type/Position';
 import { KoreanPosition } from '@/presentation/model/type/Position';
-import { Asset, launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { Asset } from 'react-native-image-picker';
 import { setProfileImage } from '@/redux/action/profileActions';
 import { getUser } from '@/redux/action/login';
 import CustomIcon from '@/presentation/components/icon/Gabojait';
 import { useQueryClient } from 'react-query';
-import { profileKeys } from '@/reactQuery/key/ProfileKeys';
+import { ToggleButton } from '@/presentation/components/ToggleButton';
+import { CustomSlider } from '@/presentation/components/CustomSlider';
+import { ProfileImage } from '@/presentation/components/ProfileImage';
+import { ProfileReviewItem } from '@/presentation/components/ProfileReviewItem';
+import { isProfileExist, isSkillExists } from '@/presentation/utils/ProfileUtils';
+import { ProjectIcon } from '@/presentation/components/icon/CustomIcon';
 
 const Header = ({ navigation }: StackHeaderProps) => {
   const { theme } = useTheme();
@@ -57,56 +55,10 @@ const Header = ({ navigation }: StackHeaderProps) => {
 
 export const portfolioTypeIconName = {
   pdf: 'description',
+  link: 'link',
 };
 
 export const sliderColors = ['#FFDB20', '#F06823', '#F04823'];
-export const ProfileImage = ({
-  image,
-  setImage,
-}: {
-  image: Asset | null;
-  setImage: (asset: Asset) => void;
-}) => {
-  const styles = useStyles();
-  return !image ? (
-    <View style={styles.profileContainer}>
-      <TouchableOpacity
-        onPress={async () => {
-          const result = await launchImageLibrary({
-            mediaType: 'photo',
-            selectionLimit: 1,
-          });
-          setImage(result.assets?.[0]!);
-          console.log(result.assets?.[0]?.fileName);
-        }}
-        style={styles.profileTouchArea}
-      >
-        <MaterialIcon name="camera-alt" size={25} color="#6C6C6C" />
-      </TouchableOpacity>
-    </View>
-  ) : (
-    <View style={styles.profileContainer}>
-      <ImageBackground source={image} borderRadius={8}>
-        <TouchableOpacity
-          onPress={async () => {
-            const result = await launchImageLibrary({
-              mediaType: 'photo',
-              selectionLimit: 1,
-            });
-            if ((result.assets?.length ?? 0) === 1) {
-              if ((result.assets?.[0].fileSize ?? 0) / 1024 / 1024 > 3) {
-                Alert.alert('사진 용량', '사진 용량은 3MB를 넘을 수 없습니다.');
-              }
-
-              setImage(result.assets?.[0]!);
-            }
-          }}
-          style={styles.profileTouchArea}
-        />
-      </ImageBackground>
-    </View>
-  );
-};
 
 const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
   const { theme } = useTheme();
@@ -203,66 +155,44 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
       }
     >
       <View style={{ flex: 0.2, backgroundColor: '#f5f5f5', marginBottom: '30%' }} />
-      <View style={{ flex: 0.8 }}>
-        {!profileExist && !refreshing ? (
+      {!profileExist && !refreshing ? (
+        <View
+          style={{
+            backgroundColor: 'white',
+            borderTopLeftRadius: 18,
+            borderRightColor: 18,
+            paddingHorizontal: 20,
+            paddingVertical: 50,
+          }}
+        >
+          <ProfileImage image={image} setImage={image => setImage(image)} />
+          <PortfolioNotExist />
+        </View>
+      ) : profileExist && profile ? (
+        <>
           <View
             style={{
               backgroundColor: 'white',
-              borderTopStartRadius: 18,
-              borderTopEndRadius: 18,
+              borderTopLeftRadius: 18,
+              borderTopRightRadius: 18,
               paddingHorizontal: 20,
-              paddingVertical: 50,
+              paddingTop: 50,
+              paddingBottom: 20,
             }}
           >
             <ProfileImage image={image} setImage={image => setImage(image)} />
-            <PortfolioNotExist />
-          </View>
-        ) : profileExist && profile ? (
-          <>
+            <PortfolioView profile={profile} />
             <View
               style={{
                 backgroundColor: 'white',
-                borderRadius: 18,
-                paddingHorizontal: 20,
-                paddingVertical: 50,
-              }}
-            >
-              <ProfileImage image={image} setImage={image => setImage(image)} />
-              <PortfolioView
-                profile={profile}
-                rightChild={
-                  <>
-                    <CheckBox
-                      checked={profile.isSeekingTeam ?? false}
-                      onPress={() => dispatch(setProfileVisibility(!profile.isSeekingTeam))}
-                      checkedIcon={
-                        <MaterialIcon name="check-box" size={18} color={theme.colors.primary} />
-                      }
-                      uncheckedIcon={
-                        <MaterialIcon
-                          name="check-box-outline-blank"
-                          size={18}
-                          color={theme.colors.grey2}
-                        />
-                      }
-                      containerStyle={{ padding: 0 }}
-                      title="팀 초대 허용"
-                    />
-                  </>
-                }
-              />
-            </View>
-            <View
-              style={{
-                backgroundColor: 'white',
-                borderRadius: 18,
+                borderTopLeftRadius: 18,
+                borderTopRightRadius: 18,
                 alignItems: 'flex-start',
                 flexWrap: 'nowrap',
-                padding: 20,
-                marginTop: 20,
+                paddingTop: 15,
               }}
             >
-              <Text style={{ marginBottom: 11, fontSize: 17 }}>학력/경력</Text>
+              <Text style={{ marginBottom: 11, marginTop: 30, fontSize: 17 }}>학력/경력</Text>
               {profile.educations?.length ?? 0 > 0 ? (
                 <View style={{ marginBottom: 4 }}>
                   <IconLabel
@@ -286,43 +216,37 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
                 <Text>아직 경력 정보를 입력하지 않은 것 같아요.</Text>
               )}
 
-              <Text style={{ marginVertical: 11, marginTop: 30, fontSize: 17 }}>기술스택/직무</Text>
-              {profile.position !== Position.None ? (
-                <ToggleButton
-                  title={KoreanPosition[profile.position ?? Position.None]}
-                  titleStyle={{
-                    fontSize: 14,
-                    fontWeight: '500',
-                    margin: 3,
-                  }}
-                  style={{ borderRadius: 10 }}
-                />
+              <Text style={{ marginTop: 30, fontSize: 17 }}>기술스택/직무</Text>
+              {isSkillExists(profile) ? (
+                profile.skills?.map((skill, idx) => (
+                  <View style={{ marginTop: 12 }}>
+                    <CustomSlider
+                      text={skill.skillName}
+                      value={Level[skill.level ?? 'low']}
+                      onChangeValue={function (value: number | number[]): void {}}
+                      minimumTrackTintColor={sliderColors[idx % 3]}
+                    />
+                  </View>
+                ))
               ) : (
-                <Text>아직 직무 정보를 입력하지 않은 것 같아요.</Text>
+                <Text style={{ marginTop: 12 }}>아직 기술스택 정보를 입력하지 않은 것 같아요.</Text>
               )}
-              <View style={{ height: 20 }} />
-
-              {profile.skills?.map((skill, idx) => (
-                <>
-                  <Text style={{ fontSize: 14 }}>희망 기술스택</Text>
-                  <CustomSlider
-                    text={skill.skillName}
-                    value={Level[skill.level ?? 'low']}
-                    enabled={false}
-                    minimumTrackTintColor={sliderColors[Level[skill.level ?? 'low'] - 1]}
-                  />
-                  <View style={{ height: 10 }} />
-                </>
-              ))}
-
-              <Text style={{ marginVertical: 10, marginTop: 20, fontSize: 17 }}>포트폴리오</Text>
-
-              <View style={{ flexWrap: 'wrap', flexDirection: 'row', marginBottom: 20 }}>
+              <Text style={{ marginBottom: 10, marginTop: 30, fontSize: 17 }}>포트폴리오</Text>
+              <ScrollView
+                horizontal={true}
+                style={{ flexWrap: 'wrap', flexDirection: 'row', marginTop: 0 }}
+              >
                 {profile.portfolios?.length ?? 0 > 0 ? (
                   profile.portfolios?.map(portfolio => (
                     <ToggleButton
                       title={portfolio.portfolioName}
-                      icon={<MaterialIcon name={portfolioTypeIconName.pdf} size={15} />}
+                      icon={
+                        <MaterialIcon
+                          name={portfolioTypeIconName.link}
+                          size={theme.fontSize.lg}
+                          style={{ paddingTop: 0 }}
+                        />
+                      }
                       style={{
                         backgroundColor: '#fff',
                         marginRight: 10,
@@ -337,152 +261,83 @@ const Profile = ({ navigation }: ProfileStackParamListProps<'View'>) => {
                 ) : (
                   <Text>아직 포트폴리오 정보를 입력하지 않은 것 같아요.</Text>
                 )}
-              </View>
-              <View style={{ height: 1, width: '100%', backgroundColor: '#D9D9D9' }} />
-
-              <Text style={{ fontSize: 17, marginVertical: 14 }}>이전 프로젝트</Text>
-              {profile.completedTeams?.length ?? 0 > 0 ? (
-                profile.completedTeams?.map(team => (
+              </ScrollView>
+              <Text style={{ fontSize: 17, marginBottom: 10, marginTop: 30 }}>이전 프로젝트</Text>
+              <ScrollView horizontal={true} style={{ flexWrap: 'wrap', flexDirection: 'row' }}>
+                {profile.completedTeams?.length ?? 0 > 0 ? (
+                  profile.completedTeams?.map(team => (
+                    <ToggleButton
+                      title={team.projectName}
+                      icon={<ProjectIcon name="" size={theme.fontSize.md} />}
+                      style={{
+                        backgroundColor: '#fff',
+                        marginRight: 10,
+                        justifyContent: 'flex-start',
+                      }}
+                      onClick={async () => {}}
+                    />
+                  ))
+                ) : (
                   <Text style={{ lineHeight: 22, fontSize: 14 }}>
-                    프로젝트 '{team.projectName}' -
-                    {
-                      KoreanPosition[
-                        team.teamMembers.find(member => member.userId === user?.userId)?.position ??
-                          Position.None
-                      ]
-                    }
+                    아직 이전 프로젝트 정보를 입력하지 않은 것 같아요.
                   </Text>
-                ))
-              ) : (
-                <Text style={{ lineHeight: 22, fontSize: 14 }}>
-                  아직 이전 프로젝트 정보를 입력하지 않은 것 같아요.
-                </Text>
-              )}
-              <View
-                style={{ height: 1, width: '100%', backgroundColor: '#D9D9D9', marginVertical: 14 }}
-              />
-
-              <Text h4 style={{ marginBottom: 11, fontWeight: theme.fontWeight.medium }}>
-                리뷰
-              </Text>
-              {profile.reviews?.length ?? 0 > 0 ? (
-                <>
-                  <View style={{ flexDirection: 'row', marginBottom: 30 }}>
-                    <Text h2 style={{ fontWeight: 'bold', marginEnd: 10 }}>
-                      {profile.rating}
-                    </Text>
-                    <View>
-                      <RatingBar ratingScore={profile.rating} />
-                      <Text>{profile.reviews?.length ?? 0}개 리뷰</Text>
-                    </View>
-                  </View>
-                  <View style={{ marginTop: 25 }}>
-                    {profile.reviews?.map(review => (
-                      <ReviewItem review={review} />
-                    ))}
-                    <Link to={''} style={{ color: theme.colors.primary, textAlign: 'right' }}>
-                      더보기
-                    </Link>
-                  </View>
-                </>
-              ) : (
-                <Text>아직 리뷰가 작성되지 않은 것 같아요.</Text>
-              )}
+                )}
+              </ScrollView>
             </View>
-          </>
-        ) : (
-          <></>
-        )}
-      </View>
+          </View>
+          <View
+            style={{
+              backgroundColor: 'white',
+              alignItems: 'flex-start',
+              marginTop: 20,
+              padding: 20,
+            }}
+          >
+            <Text h4 style={{ marginBottom: 11, fontWeight: theme.fontWeight.medium }}>
+              리뷰
+            </Text>
+            {profile.reviews?.length ?? 0 > 0 ? (
+              <>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text h2 style={{ fontWeight: 'bold', marginEnd: 10 }}>
+                    {profile.rating.toFixed(1)}
+                  </Text>
+                  <View>
+                    <RatingBar ratingScore={profile.rating} />
+                    <Text style={{ color: theme.colors.grey2 }}>
+                      {profile.reviews?.length ?? 0}개 리뷰
+                    </Text>
+                  </View>
+                </View>
+                <View style={{ marginTop: 25 }}>
+                  {profile.reviews?.slice(0, 3).map(review => (
+                    <ProfileReviewItem review={review} />
+                  ))}
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.getParent()?.navigate('MainNavigation', {
+                        screen: 'MoreReview',
+                        params: { userId: 2 },
+                      });
+                    }}
+                  >
+                    <Text style={{ color: theme.colors.primary, textAlign: 'right' }}>더보기</Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            ) : (
+              <Text>아직 리뷰가 작성되지 않은 것 같아요.</Text>
+            )}
+          </View>
+        </>
+      ) : (
+        <></>
+      )}
     </ScrollView>
   ) : (
     <View style={globalStyles.container}>
       <Text>{profileError?.message}</Text>
     </View>
-  );
-};
-
-export const ReviewItem = ({ review }: { review: Review }) => {
-  const { theme } = useTheme();
-  return (
-    <View
-      style={{
-        marginBottom: 20,
-        width: '100%',
-      }}
-    >
-      <View
-        style={{
-          marginBottom: 10,
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}
-      >
-        <View style={{ flexDirection: 'column', width: '100%' }}>
-          <Text
-            style={{
-              fontSize: theme.fontSize.md,
-              fontWeight: theme.fontWeight.semibold,
-              color: 'black',
-              paddingEnd: 7,
-              paddingTop: 4,
-              marginBottom: 4,
-            }}
-          >
-            {review.reviewer}
-          </Text>
-          <RatingBar ratingScore={2.5} size={20} />
-        </View>
-      </View>
-      <Text
-        style={{ fontWeight: theme.fontWeight.light, color: theme.colors.grey1, lineHeight: 25 }}
-        numberOfLines={3}
-        ellipsizeMode="tail"
-      >
-        {review.post}
-      </Text>
-      <Text
-        style={{ fontWeight: theme.fontWeight.light, color: theme.colors.grey1, lineHeight: 25 }}
-      >
-        {new Date(review.createdAt).format('yyyy-MM-dd')}
-      </Text>
-    </View>
-  );
-};
-
-export const ToggleButton = ({
-  title,
-  titleStyle,
-  icon,
-  onClick,
-  style,
-}: {
-  title?: string;
-  icon?: React.ReactNode;
-  onClick?: () => void;
-  titleStyle?: StyleProp<TextStyle>;
-  style?: StyleProp<ViewStyle>;
-}) => {
-  const { theme } = useTheme();
-  return (
-    <TouchableOpacity onPress={onClick}>
-      <View
-        style={[
-          {
-            borderWidth: 1,
-            borderColor: 'black',
-            backgroundColor: theme.colors.primary,
-            borderRadius: 10,
-            padding: 6,
-            flexDirection: 'row',
-          },
-          style,
-        ]}
-      >
-        {icon ? <View style={{ marginEnd: 3 }}>{icon}</View> : null}
-        <Text style={titleStyle}>{title}</Text>
-      </View>
-    </TouchableOpacity>
   );
 };
 
@@ -533,66 +388,6 @@ export const IconLabel = ({
   </View>
 );
 
-export const CustomSlider = ({
-  text,
-  value,
-  onChangeValue,
-  minimumTrackTintColor,
-  enabled = false,
-  size = 'md',
-}: {
-  text?: string;
-  value: number;
-  onChangeValue?: (value: number | number[]) => void;
-  minimumTrackTintColor: string;
-  enabled?: boolean;
-  size?: 'md' | 'lg';
-}) => {
-  const { theme } = useTheme();
-  return (
-    <View style={{ width: '100%' }}>
-      <Slider
-        containerStyle={{
-          width: '100%',
-          overflow: 'hidden',
-          height: theme.sliderSize[size],
-          borderWidth: 1,
-          borderColor: 'black',
-          borderRadius: 7,
-        }}
-        trackClickable={enabled}
-        step={1}
-        maximumValue={3}
-        trackStyle={{
-          height: theme.sliderSize[size],
-          borderRadius: 7,
-          backgroundColor: 'white',
-        }}
-        trackMarks={[1, 2]}
-        renderTrackMarkComponent={() => (
-          <View style={{ width: 1, height: theme.sliderSize.md, backgroundColor: 'black' }} />
-        )}
-        value={value}
-        onValueChange={onChangeValue}
-        thumbStyle={{ backgroundColor: 'transparent', width: 0, borderWidth: 0 }}
-        minimumTrackTintColor={minimumTrackTintColor}
-      />
-      <View
-        style={{
-          height: '100%',
-          position: 'absolute',
-          left: 5,
-          top: 0,
-          display: 'flex',
-          justifyContent: 'center',
-        }}
-      >
-        <Text>{text}</Text>
-      </View>
-    </View>
-  );
-};
-
 export const PortfolioView = ({
   profile,
   rightChild,
@@ -601,31 +396,56 @@ export const PortfolioView = ({
   rightChild?: ReactNode;
 }) => {
   const { theme } = useTheme();
-
+  const styles = useStyles();
   const workTime = calcMonth(
     new Date(profile.works?.[profile.works.length - 1]?.endedAt ?? ''),
     new Date(profile.works?.[0]?.startedAt ?? ''),
   );
 
+  function isReviewExists(data: ProfileViewDto) {
+    if (data.reviews?.length ?? 0 > 0) {
+      return true;
+    }
+    return false;
+  }
+
+  function isWorkExists(data: ProfileViewDto) {
+    if (data.works?.length ?? 0 > 0) {
+      return true;
+    }
+    return false;
+  }
+
   return (
     <View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text
-          style={{
-            fontSize: theme.fontSize.lg,
-            fontWeight: theme.fontWeight.semibold,
-            marginBottom: 12,
-          }}
-        >
-          {profile.nickname}
-        </Text>
+        <View>
+          <Text
+            style={{
+              fontSize: theme.fontSize.lg,
+              fontWeight: theme.fontWeight.bold,
+              marginBottom: 12,
+            }}
+          >
+            {profile.nickname}
+          </Text>
+          <ToggleButton
+            title={KoreanPosition[profile.position ?? Position.None]}
+            titleStyle={styles.profileText3}
+            style={{
+              paddingHorizontal: 18,
+              justifyContent: 'center',
+              borderRadius: 18,
+              height: 40,
+            }}
+            onClick={() => {}}
+          />
+        </View>
         {rightChild}
       </View>
-      <Text style={{ fontSize: theme.fontSize.md, fontWeight: '300' }}>
-        {KoreanPosition[profile.position ?? Position.None]}
-      </Text>
+
       {profile.profileDescription ? (
-        <Text style={{ fontSize: theme.fontSize.md, marginVertical: 12 }}>
+        <Text style={{ fontSize: theme.fontSize.sm, marginVertical: 12 }}>
           {profile.profileDescription}
         </Text>
       ) : (
@@ -639,33 +459,29 @@ export const PortfolioView = ({
           >
             팀 매칭
           </Text>
-          <Text style={{ fontWeight: theme.fontWeight.bold, textAlign: 'center', fontSize: 17 }}>
-            {profile.completedTeams?.length ?? 0}회
-          </Text>
+          <Text style={styles.profileText1}>{profile.completedTeams?.length ?? 0}회</Text>
         </View>
         <View>
           <Text
-            style={{ fontWeight: theme.fontWeight.light, textAlign: 'center', marginBottom: 8 }}
+            style={{
+              fontWeight: theme.fontWeight.light,
+              textAlign: 'center',
+              marginBottom: 8,
+            }}
           >
             리뷰
           </Text>
-          <Text
-            style={{
-              textAlign: 'center',
-              fontWeight:
-                profile.reviews?.length ?? 0 > 0 ? theme.fontWeight.medium : theme.fontWeight.bold,
-              fontSize: 17,
-            }}
-          >
-            {profile.reviews?.length ?? 0 > 0 ? (
-              <>
-                <MaterialIcon name="star" color={theme.colors.primary} />
-                {profile.rating}({profile.rating})
-              </>
+          <View style={{ flexDirection: 'row' }}>
+            {isReviewExists(profile) ? (
+              <View style={{ flexDirection: 'row' }}>
+                <MaterialIcon name="star" color={theme.colors.primary} size={22} />
+                <Text style={styles.profileText1}>{profile.rating?.toFixed(1)}</Text>
+                <Text style={styles.profileText2}>(5)</Text>
+              </View>
             ) : (
-              <Text>없음</Text>
+              <Text style={styles.profileText1}>없음</Text>
             )}
-          </Text>
+          </View>
         </View>
         <View>
           <Text
@@ -674,12 +490,8 @@ export const PortfolioView = ({
             총 경력
           </Text>
           {
-            <Text style={{ fontWeight: theme.fontWeight.bold, textAlign: 'center', fontSize: 17 }}>
-              {profile.works?.length ?? 0 > 0
-                ? workTime == 0
-                  ? '1개월 미만'
-                  : `${workTime} 개월`
-                : '없음'}
+            <Text style={styles.profileText1}>
+              {isWorkExists(profile) ? (workTime == 0 ? '1개월 미만' : `${workTime} 개월`) : '없음'}
             </Text>
           }
         </View>
@@ -701,30 +513,26 @@ const useCardStyles = makeStyles(theme => ({
     paddingVertical: 40,
     flexDirection: 'row',
     justifyContent: 'space-around',
+    alignItems: 'center',
   },
 }));
 
 const useStyles = makeStyles(theme => ({
+  profileText1: {
+    fontWeight: theme.fontWeight.bold,
+    fontSize: theme.fontSize.md,
+  },
+  profileText2: {
+    fontSize: theme.fontSize.sm,
+  },
+  profileText3: {
+    fontSize: theme.fontSize.md,
+    fontWeight: theme.fontWeight.light,
+  },
   textStyle: {
     fontSize: theme.fontSize.md,
     fontWeight: theme.fontWeight.semibold,
     textAlign: 'center',
-  },
-  profileContainer: {
-    position: 'absolute',
-    width: 100,
-    height: 100,
-    backgroundColor: '#d9d9d9',
-    borderRadius: 8,
-    top: -(100 - 30),
-    left: 20,
-  },
-  profileTouchArea: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 100,
-    height: 100,
   },
 }));
 

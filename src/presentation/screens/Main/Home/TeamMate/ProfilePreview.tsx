@@ -1,21 +1,17 @@
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import React, { Suspense, useEffect, useState } from 'react';
 import { Text, useTheme } from '@rneui/themed';
-import { ImageBackground, Linking, ScrollView, View } from 'react-native';
+import { Linking, ScrollView, TouchableOpacity, View } from 'react-native';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { RatingBar } from '@/presentation/components/RatingBar';
 import { Level } from '@/data/model/Profile/Skill';
 import { Position } from '@/data/model/type/Position';
-import { KoreanPosition } from '@/presentation/model/type/Position';
 import { Asset } from 'react-native-image-picker';
 import {
-  CustomSlider,
   IconLabel,
   portfolioTypeIconName,
   PortfolioView,
-  ReviewItem,
   sliderColors,
-  ToggleButton,
 } from '../../MyPage/Profile';
 import {
   useMutation,
@@ -27,7 +23,6 @@ import {
 import ProfileViewResponse from '@/data/model/Profile/ProfileViewResponse';
 import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 import { getProfile } from '@/data/api/profile';
-import { FilledButton } from '@/presentation/components/Button';
 import { favoriteKeys } from '@/reactQuery/key/FavoriteKeys';
 import FavoriteUpdateDto from '@/data/model/Favorite/FavoriteUpdateDto';
 import { postFavoriteUser } from '@/data/api/favorite';
@@ -38,10 +33,17 @@ import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { offerKeys } from '@/reactQuery/key/OfferKeys';
 import { cancelOfferToUser, sendOfferToUser } from '@/data/api/offer';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
-import { Loading } from '@/presentation/screens/Loading';
+import LoadingSpinner, { Loading } from '@/presentation/screens/Loading';
 import { BottomInputModalContent } from '@/presentation/components/modalContent/BottomInputModalContent';
 import { ReportCompleteModal } from '@/presentation/components/ReportCompleteModal';
 import BookMarkHeader from '@/presentation/screens/Headers/BookmarkHeader';
+import { ToggleButton } from '@/presentation/components/ToggleButton';
+import { CustomSlider } from '@/presentation/components/CustomSlider';
+import { defaultProfile } from '@/assets/images/imageUrls';
+import { CachedImage } from '@georstat/react-native-image-cache';
+import { FilledButton } from '@/presentation/components/Button';
+import { ProfileReviewItem } from '@/presentation/components/ProfileReviewItem';
+import { isSkillExists } from '@/presentation/utils/ProfileUtils';
 
 const ProfilePreview = ({ navigation, route }: MainStackScreenProps<'ProfilePreview'>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -69,10 +71,14 @@ const ProfilePreviewComponent = ({ navigation, route }: MainStackScreenProps<'Pr
     text: '신고하기',
     isDisabled: true,
   });
-  const [buttonState, setButtonState] = useState<{ color: string; title: buttonTitle }>({
+  const [buttonState, setButtonState] = useState<{
+    color: string;
+    title: buttonTitle;
+  }>({
     color: theme.colors.primary,
     title: '초대하기',
   });
+  const [imagesNotValid, setImagesNotValid] = useState(new Set());
   const {
     data: profile,
     isLoading,
@@ -148,7 +154,7 @@ const ProfilePreviewComponent = ({ navigation, route }: MainStackScreenProps<'Pr
     modal?.show({
       content: (
         <BottomInputModalContent
-          header={'팀을 신고하시겠습니까?'}
+          header={<Text style={globalStyles.modalTitle}>'사용자를 신고하시겠습니까?'</Text>}
           content={'신고사유를 적어주세요'}
           yesButton={{
             title: '신고하기',
@@ -208,129 +214,151 @@ const ProfilePreviewComponent = ({ navigation, route }: MainStackScreenProps<'Pr
       />
       <ScrollView style={{ flex: 1 }}>
         <View style={{ flex: 0.2, backgroundColor: '#f5f5f5', marginBottom: '30%' }} />
-        <View style={{ flex: 0.8 }}>
-          <View
-            style={{
-              backgroundColor: 'white',
-              borderRadius: 18,
-              paddingHorizontal: 20,
-              paddingVertical: 50,
-            }}
-          >
-            <View style={globalStyles.profileContainer}>
-              {image && <ImageBackground source={image} borderRadius={8} />}
-            </View>
+        <View
+          style={{
+            backgroundColor: 'white',
+            borderRadius: 18,
+            paddingHorizontal: 20,
+            paddingTop: 50,
+            paddingBottom: 20,
+          }}
+        >
+          <CachedImage
+            imageStyle={[
+              globalStyles.profileContainer,
+              {
+                flex: 1,
+                aspectRatio: 1,
+                borderRadius: 10,
+                backgroundColor: theme.colors.disabled,
+                justifyContent: 'center',
+              },
+            ]}
+            source={
+              !profile.imageUrl || imagesNotValid.has(profile.imageUrl)
+                ? defaultProfile
+                : profile.imageUrl
+            }
+            resizeMode={'cover'}
+            onError={() => setImagesNotValid(prev => prev.add(profile.imageUrl))}
+            loadingImageComponent={LoadingSpinner}
+          />
+          <View style={{ paddingTop: 15 }}>
             <PortfolioView
               profile={profile}
               rightChild={
                 <FilledButton
+                  title={'초대하기'}
                   onPress={() => {
                     handleOfferMutation();
                   }}
-                  title={buttonState.title}
-                  style={{ minWidth: 123, minHeight: 40, borderRadius: 10 }}
-                  buttonStyle={{ backgroundColor: buttonState.color }}
-                  titleStyle={{ fontSize: 14, fontWeight: '400' }}
                 />
               }
             />
           </View>
-          <View
-            style={{
-              backgroundColor: 'white',
-              borderRadius: 18,
-              alignItems: 'flex-start',
-              flexWrap: 'nowrap',
-              padding: 20,
-              marginTop: 20,
-            }}
-          >
-            <Text style={{ marginBottom: 11, fontSize: 17 }}>학력/경력</Text>
-            {profile.educations?.length ?? 0 > 0 ? (
-              <View style={{ marginBottom: 4 }}>
-                <IconLabel
-                  iconName="school"
-                  label={profile.educations?.[profile.educations.length - 1]?.institutionName ?? ''}
-                  size={20}
-                />
-              </View>
-            ) : (
-              <Text>아직 학교 정보를 입력하지 않은 것 같아요.</Text>
-            )}
-            {profile.works?.length ?? 0 > 0 ? (
-              profile.works
-                ?.map(work => <IconLabel iconName="work" label={work.corporationName} size={20} />)
-                .slice(0, 2)
-            ) : (
-              <Text>아직 경력 정보를 입력하지 않은 것 같아요.</Text>
-            )}
-            <Text style={{ marginVertical: 11, marginTop: 30, fontSize: 17 }}>기술스택/직무</Text>
-            <ToggleButton
-              title={KoreanPosition[profile.position ?? Position.None]}
-              titleStyle={{
-                fontSize: 14,
-                fontWeight: '500',
-                margin: 3,
-              }}
-              style={{ borderRadius: 10 }}
-            />
-            <View style={{ height: 20 }} />
-            {profile.skills?.map((skill, idx) => (
-              <>
-                <Text style={{ fontSize: 14 }}>희망 기술스택</Text>
+          <Text style={{ marginBottom: 11, marginTop: 30, fontSize: 17 }}>학력/경력</Text>
+          {profile.educations?.length ?? 0 > 0 ? (
+            <View style={{ marginBottom: 4 }}>
+              <IconLabel
+                iconName="school"
+                label={profile.educations?.[profile.educations.length - 1]?.institutionName ?? ''}
+                size={20}
+              />
+            </View>
+          ) : (
+            <Text>아직 학교 정보를 입력하지 않은 것 같아요.</Text>
+          )}
+          {profile.works?.length ?? 0 > 0 ? (
+            profile.works
+              ?.map(work => <IconLabel iconName="work" label={work.corporationName} size={20} />)
+              .slice(0, 2)
+          ) : (
+            <Text>아직 경력 정보를 입력하지 않은 것 같아요.</Text>
+          )}
+          <Text style={{ marginTop: 30, fontSize: 17 }}>기술스택/직무</Text>
+          {isSkillExists(profile) ? (
+            profile.skills?.map((skill, idx) => (
+              <View style={{ marginTop: 12 }}>
                 <CustomSlider
                   text={skill.skillName}
                   value={Level[skill.level ?? 'low']}
                   onChangeValue={function (value: number | number[]): void {}}
                   minimumTrackTintColor={sliderColors[idx % 3]}
                 />
-                <View style={{ height: 10 }} />
-              </>
-            ))}
-            <Text style={{ marginVertical: 10, marginTop: 20, fontSize: 17 }}>포트폴리오</Text>
-            <View style={{ flexWrap: 'wrap', flexDirection: 'row', marginBottom: 20 }}>
-              {profile.portfolios?.length ?? 0 > 0 ? (
-                profile.portfolios?.map(portfolio => (
-                  <ToggleButton
-                    title={portfolio.portfolioName}
-                    icon={<MaterialIcon name={portfolioTypeIconName.pdf} size={15} />}
-                    style={{
-                      backgroundColor: '#fff',
-                      marginRight: 10,
-                    }}
-                    onClick={async () => {
-                      if (await Linking.canOpenURL(portfolio.portfolioUrl)) {
-                        Linking.openURL(portfolio.portfolioUrl);
-                      }
-                    }}
-                  />
-                ))
-              ) : (
-                <Text>아직 포트폴리오 정보를 입력하지 않은 것 같아요.</Text>
-              )}
-            </View>
-            <View style={{ height: 1, width: '100%', backgroundColor: '#D9D9D9' }} />
-            <Text style={{ fontSize: 17, marginVertical: 14 }}>이전 프로젝트</Text>
+              </View>
+            ))
+          ) : (
+            <Text style={{ marginTop: 12 }}>아직 기술스택 정보를 입력하지 않은 것 같아요.</Text>
+          )}
+          <Text style={{ marginBottom: 10, marginTop: 30, fontSize: 17 }}>포트폴리오</Text>
+          <ScrollView
+            horizontal={true}
+            style={{ flexWrap: 'wrap', flexDirection: 'row', marginTop: 0 }}
+          >
+            {profile.portfolios?.length ?? 0 > 0 ? (
+              profile.portfolios?.map(portfolio => (
+                <ToggleButton
+                  title={portfolio.portfolioName}
+                  icon={
+                    <MaterialIcon
+                      name={portfolioTypeIconName.link}
+                      size={theme.fontSize.lg}
+                      style={{ paddingTop: 0 }}
+                    />
+                  }
+                  style={{
+                    backgroundColor: '#fff',
+                    marginRight: 10,
+                  }}
+                  onClick={async () => {
+                    if (await Linking.canOpenURL(portfolio.portfolioUrl)) {
+                      Linking.openURL(portfolio.portfolioUrl);
+                    }
+                  }}
+                />
+              ))
+            ) : (
+              <Text>아직 포트폴리오 정보를 입력하지 않은 것 같아요.</Text>
+            )}
+          </ScrollView>
+          <Text style={{ fontSize: 17, marginBottom: 10, marginTop: 30 }}>이전 프로젝트</Text>
+          <ScrollView horizontal={true} style={{ flexWrap: 'wrap', flexDirection: 'row' }}>
             {profile.completedTeams?.length ?? 0 > 0 ? (
               profile.completedTeams?.map(team => (
-                <Text style={{ lineHeight: 22, fontSize: 14 }}>
-                  프로젝트 '{team.projectName}' -
-                  {
-                    KoreanPosition[
-                      team.teamMembers.find(member => member.userId === userId)?.position ??
-                        Position.None
-                    ]
+                <ToggleButton
+                  title={team.projectName}
+                  icon={
+                    <MaterialIcon
+                      name={portfolioTypeIconName.project}
+                      size={theme.fontSize.lg}
+                      style={{ paddingTop: 0 }}
+                    />
                   }
-                </Text>
+                  style={{
+                    backgroundColor: '#fff',
+                    marginRight: 10,
+                    justifyContent: 'flex-start',
+                  }}
+                  onClick={async () => {}}
+                />
               ))
             ) : (
               <Text style={{ lineHeight: 22, fontSize: 14 }}>
                 아직 이전 프로젝트 정보를 입력하지 않은 것 같아요.
               </Text>
             )}
-            <View
-              style={{ height: 1, width: '100%', backgroundColor: '#D9D9D9', marginVertical: 14 }}
-            />
+          </ScrollView>
+        </View>
+        <View>
+          <View
+            style={{
+              backgroundColor: 'white',
+              alignItems: 'flex-start',
+              flexWrap: 'nowrap',
+              padding: 20,
+              marginTop: 20,
+            }}
+          >
             <Text h4>리뷰</Text>
             {profile.reviews?.length ?? 0 > 0 ? (
               <>
@@ -346,9 +374,19 @@ const ProfilePreviewComponent = ({ navigation, route }: MainStackScreenProps<'Pr
                   </View>
                 </View>
                 <View style={{ marginTop: 25 }}>
-                  {profile.reviews?.map(review => (
-                    <ReviewItem review={review} />
+                  {profile.reviews?.slice(0, 3).map(review => (
+                    <ProfileReviewItem review={review} />
                   ))}
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.getParent()?.navigate('MainNavigation', {
+                        screen: 'MoreReview',
+                        params: { userId: 2 },
+                      });
+                    }}
+                  >
+                    <Text style={{ color: theme.colors.primary, textAlign: 'right' }}>더보기</Text>
+                  </TouchableOpacity>
                 </View>
               </>
             ) : (

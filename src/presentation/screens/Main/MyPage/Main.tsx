@@ -1,5 +1,5 @@
 import { FlatList, ScrollView, TouchableOpacity, View } from 'react-native';
-import React, { Suspense, useEffect } from 'react';
+import React, { Suspense } from 'react';
 import { Icon, makeStyles, Text, useTheme } from '@rneui/themed';
 import { MainBottomTabNavigationProps } from '@/presentation/navigation/types';
 import CardWrapper from '@/presentation/components/CardWrapper';
@@ -7,14 +7,15 @@ import Gabojait from '@/presentation/components/icon/Gabojait';
 import DivideWrapper from '@/presentation/components/DivideWrapper';
 import { RatingBar } from '@/presentation/components/RatingBar';
 import ProfileViewDto from '@/data/model/Profile/ProfileViewDto';
-import { WIDTH, chagneToOfficialWord, isEmptyArray } from '@/presentation/utils/util';
-import { UseQueryResult, useQuery, useQueryErrorResetBoundary } from 'react-query';
+import { chagneToOfficialWord, isEmptyArray, WIDTH } from '@/presentation/utils/util';
+import { useQuery, useQueryErrorResetBoundary, UseQueryResult } from 'react-query';
 import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 import { getMyProfile } from '@/data/api/profile';
 import ProfileViewResponse from '@/data/model/Profile/ProfileViewResponse';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 import Loading from '../../Loading';
 import { Position } from '@/data/model/type/Position';
+import { ReviewItem } from '@/presentation/components/ReviewItem';
 
 const Main = ({ navigation, route }: MainBottomTabNavigationProps<'MyPage'>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -165,63 +166,6 @@ const MainComponent = ({ navigation }: MainBottomTabNavigationProps<'MyPage'>) =
   );
 };
 
-interface ReviewItemProps {
-  name: string;
-  score: number;
-  content: string;
-}
-
-const ReviewItem = ({ name, score, content }: ReviewItemProps) => {
-  const { theme } = useTheme();
-  useEffect(() => {
-    console.log(WIDTH);
-  }, []);
-  return (
-    <CardWrapper
-      style={{
-        minHeight: 180,
-        width: WIDTH / 1.2,
-        marginHorizontal: 10,
-        padding: 20,
-        marginVertical: 10,
-        borderWidth: 1,
-        borderColor: theme.colors.disabled,
-      }}
-    >
-      <View
-        style={{
-          width: '100%',
-        }}
-      >
-        <View style={{ flexDirection: 'row', paddingBottom: 10 }}>
-          <Text
-            style={{
-              fontSize: theme.fontSize.sm,
-              fontWeight: theme.fontWeight.bold,
-              paddingRight: 5,
-            }}
-          >
-            {name}
-          </Text>
-          <RatingBar ratingScore={score} size={theme.ratingBarSize.xs} />
-        </View>
-        <Text
-          numberOfLines={5}
-          ellipsizeMode="tail"
-          style={{
-            color: theme.colors.grey1,
-            fontSize: theme.fontSize.xs,
-            fontWeight: theme.fontWeight.light,
-            lineHeight: 25,
-          }}
-        >
-          {content}
-        </Text>
-      </View>
-    </CardWrapper>
-  );
-};
-
 interface Component {
   onPressApply: () => void;
   onPressTeam: () => void;
@@ -295,11 +239,17 @@ const MyReview = ({ data }: { data: ProfileViewDto }) => {
       </View>
       <View style={{ paddingBottom: 70 }}>
         <FlatList
+          style={{ paddingStart: 20 }}
           showsHorizontalScrollIndicator={false}
           horizontal={true}
           data={data?.reviews}
           renderItem={({ item }) => (
-            <ReviewItem name={item.reviewer} score={2.5} content={item.post} />
+            <ReviewItem
+              name={item.reviewer}
+              score={2.5}
+              content={item.post}
+              style={{ width: WIDTH * 0.7, marginEnd: 10 }}
+            />
           )}
         />
       </View>
