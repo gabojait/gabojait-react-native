@@ -1,16 +1,14 @@
-import GroupListCard from '@/presentation/components/TeamBanner';
-import { MainStackScreenProps } from '@/presentation/navigation/types';
-import React, { Suspense, useState } from 'react';
-import { FlatList, TouchableOpacity, View } from 'react-native';
-import { useAppSelector } from '@/redux/hooks';
-import TeamBriefDto from '@/data/model/Team/TeamBriefDto';
 import TeamBanner from '@/presentation/components/TeamBanner';
-import { getOffersFromTeam, getOffersSentToTeam } from '@/data/api/offer';
-import { useModelList, PageRequest } from '@/reactQuery/util/useModelList';
+import { MainStackScreenProps } from '@/presentation/navigation/types';
+import React, { Suspense, useEffect, useState } from 'react';
+import { FlatList, View } from 'react-native';
+import { getOffersSentToTeam } from '@/data/api/offer';
+import { PageRequest, useModelList } from '@/reactQuery/util/useModelList';
 import { offerKeys } from '@/reactQuery/key/OfferKeys';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 import { useQueryErrorResetBoundary } from 'react-query';
-import { Loading } from '../../Loading';
+import { Loading } from '../../../Loading';
+import { mapTeamDtoToPositionRecruiting } from '@/presentation/model/mapper/mapTeamDtoToPositionRecruiting';
 
 const OfferToTeamHistory = ({ navigation, route }: MainStackScreenProps<'OfferToTeamHistory'>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -52,6 +50,12 @@ const OfferToTeamHistoryComponent = ({
     key: QueryKey.filtered(params),
   });
 
+  useEffect(() => {
+    navigation.addListener('focus', () => {
+      refetch();
+    });
+  }, [navigation]);
+
   if (!data) {
     return null;
   }
@@ -64,11 +68,21 @@ const OfferToTeamHistoryComponent = ({
         }}
         refreshing={isRefreshing}
         showsHorizontalScrollIndicator={false}
-        keyExtractor={item => item.offerId.toString()}
-        data={data?.pages?.map(page => page.data).flat()}
+        keyExtractor={(item, index) => item?.team.projectName.concat(item.offerId.toString())}
+        data={data?.pages
+          ?.map(page =>
+            page.data.map(item => {
+              const teamCnts = mapTeamDtoToPositionRecruiting(item.team);
+              return {
+                ...item,
+                teamMemberCnts: teamCnts,
+              };
+            }),
+          )
+          .flat()}
         renderItem={({ item }) => (
           <TeamBanner
-            teamMembersCnt={item?.team.teamMemberCnts ?? []}
+            teamMembersCnt={item?.teamMemberCnts ?? []}
             teamName={item?.team.projectName ?? ''}
             onArrowPress={() => navigation.navigate('GroupDetail', { teamId: item.team.teamId })}
             containerStyle={{ marginHorizontal: 20 }}
