@@ -15,7 +15,7 @@ export const ReportCompleteModal = ({ onPressYesButton, onPressNoButton }: Modal
   return (
     <BottomModalContent
       header={<Text style={globalStyles.modalEmoji}>✅</Text>}
-      children={<Text style={globalStyles.modalTitle}>신고완료</Text>}
+      inputContent={<Text style={globalStyles.modalTitle}>신고완료</Text>}
       yesButton={{ title: '완료', onPress: () => onPressYesButton() }}
     />
   );

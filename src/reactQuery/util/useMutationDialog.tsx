@@ -1,10 +1,8 @@
 import useModal from '@/presentation/components/modal/useModal';
-import { MutationKey, MutationFunction, useMutation, UseMutationOptions } from 'react-query';
+import { MutationFunction, MutationKey, useMutation, UseMutationOptions } from 'react-query';
 import React, { useEffect } from 'react';
-import { DialogLoading } from '@rneui/base/dist/Dialog/Dialog.Loading';
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
-import { Text } from 'react-native';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import useGlobalStyles from '@/presentation/styles';
 import LoadingSpinner from '@/presentation/screens/Loading';
 import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent';
@@ -77,7 +75,7 @@ export function useMutationDialog<TVariables, TData>(
           ) : (
             <BottomModalContent
               header={<Text style={globalStyles.modalEmoji}>{icon}</Text>}
-              children={
+              inputContent={
                 <View>
                   {<Text style={[globalStyles.modalTitle, { paddingBottom: 12 }]}>{title}</Text>}
                   {<Text style={globalStyles.modalContent}>{content}</Text>}
@@ -108,7 +106,7 @@ export function useMutationDialog<TVariables, TData>(
           ) : (
             <BottomModalContent
               header={<Text style={globalStyles.modalEmoji}>😔</Text>}
-              children={
+              inputContent={
                 <View style={{ justifyContent: 'center' }}>
                   <Text style={globalStyles.modalTitle}>에러가 발생했습니다</Text>
                   <Text style={globalStyles.modalContent}>{error.message}</Text>

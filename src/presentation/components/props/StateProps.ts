@@ -18,6 +18,5 @@ export interface CustomInputProps extends TextInputProps {
   inputContainerStyle?: StyleProp<ViewStyle>;
   disabled?: boolean;
   rightChildren?: React.ReactNode;
-
   validatorResult?: { state: ValidatorState; message?: string | null };
 }

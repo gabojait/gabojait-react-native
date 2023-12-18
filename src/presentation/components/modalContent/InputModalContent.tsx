@@ -1,12 +1,13 @@
-import BottomModalContent, {
-  BottomSlideModalContentProps,
-} from '@/presentation/components/modalContent/BottomModalContent';
 import { CustomInputProps } from '@/presentation/components/props/StateProps';
 import React, { forwardRef, useState } from 'react';
 import { Input } from '@rneui/base';
 import CustomInput from '@/presentation/components/CustomInput';
+import {
+  BottomInputModalContent,
+  BottomInputModalContentProps,
+} from '@/presentation/components/modalContent/BottomInputModalContent';
 
-export type InputModalProps = BottomSlideModalContentProps & {
+export type InputModalProps = BottomInputModalContentProps & {
   inputProps?: CustomInputProps;
   inputProcessor?: (text: string) => string;
 };
@@ -23,21 +24,28 @@ export const InputModalContent = forwardRef(
     ref: React.ForwardedRef<Input>,
   ) => {
     const [input, setInput] = useState('');
+    const { inputProps, inputProcessor, ...bottomInputModalContentProps } = props;
     const inputComponent = () => (
       <CustomInput
         ref={ref}
         value={input}
+        shape="round"
         onChangeText={value => {
-          setInput(props.inputProcessor ? props.inputProcessor(value) : value);
+          setInput(inputProcessor ? inputProcessor(value) : value);
         }}
         {...props.inputProps}
       />
     );
     return (
-      <BottomModalContent {...props}>
-        {headerComponent}
-        {inputWrapper ? inputWrapper(inputComponent()) : inputComponent()}
-      </BottomModalContent>
+      <BottomInputModalContent
+        inputContent={inputComponent()}
+        header={bottomInputModalContentProps.header}
+        yesButton={bottomInputModalContentProps.yesButton}
+        noButton={bottomInputModalContentProps.noButton}
+        onBackgroundPress={bottomInputModalContentProps.onBackgroundPress}
+        content={bottomInputModalContentProps.content}
+        onInputValueChange={bottomInputModalContentProps.onInputValueChange}
+      />
     );
   },
 );

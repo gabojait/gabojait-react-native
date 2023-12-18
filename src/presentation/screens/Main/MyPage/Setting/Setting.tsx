@@ -1,7 +1,7 @@
 import Gabojait from '@/presentation/components/icon/Gabojait';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import { Text, useTheme } from '@rneui/themed';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Alert, Platform, View } from 'react-native';
 import { signOut } from '@/redux/action/login';
 import { RootStackNavigationProps } from '@/presentation/navigation/RootNavigation';
@@ -15,6 +15,7 @@ import { InputModalContent } from '@/presentation/components/modalContent/InputM
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import useInterval from '@/presentation/utils/useInterval';
 import usePlatform from '@/lib/usePlatform';
+import useGlobalStyles from '@/presentation/styles';
 
 const MenuItem = ({
   title,
@@ -61,7 +62,7 @@ const MenuItem = ({
 
 const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
   const { theme } = useTheme();
-
+  const globalStyle = useGlobalStyles();
   const modal = useModal();
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -70,11 +71,7 @@ const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
     modal?.show({
       content: (
         <InputModalContent
-          headerComponent={
-            <Text h4 style={{ fontWeight: 'bold', marginBottom: 20 }}>
-              현재 비밀번호를 입력해주세요
-            </Text>
-          }
+          header={<Text style={globalStyle.modalTitle}>현재 비밀번호를 입력해주세요</Text>}
           ref={modalInputRef}
           visible={modal?.modal}
           onBackgroundPress={modal?.hide}
@@ -113,6 +110,7 @@ const Setting = ({ navigation }: MainStackScreenProps<'Setting'>) => {
             title: t('action_goBack'),
             onPress: modal?.hide,
           }}
+          onInputValueChange={() => {}}
         />
       ),
     });

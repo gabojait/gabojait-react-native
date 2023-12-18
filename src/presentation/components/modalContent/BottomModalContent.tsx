@@ -3,12 +3,10 @@ import { FilledButton } from '../Button';
 import React, { ReactNode } from 'react';
 import { makeStyles, Text, useTheme } from '@rneui/themed';
 import useGlobalStyles from '@/presentation/styles';
-import useModal from '../modal/useModal';
-import { HEIGHT } from '@/presentation/utils/util';
 
 export interface BottomSlideModalContentProps {
   header?: string | ReactNode;
-  children?: ReactNode;
+  inputContent?: ReactNode;
   neverSeeAgainShow?: boolean;
   yesButton?: ButtonProps;
   noButton?: ButtonProps;
@@ -21,6 +19,13 @@ const BottomModalContent: React.FC<BottomSlideModalContentProps> = props => {
   const { theme } = useTheme();
   const globalStyles = useGlobalStyles();
   const style = useStyles(theme);
+
+  function isOneButtonContent() {
+    if (props.yesButton && props.noButton) {
+      return false;
+    }
+    return true;
+  }
 
   return (
     <>
@@ -51,27 +56,41 @@ const BottomModalContent: React.FC<BottomSlideModalContentProps> = props => {
       >
         <View style={[style.modal, { paddingHorizontal: 20, paddingBottom: 70 }]}>
           {props.header}
-          <View style={[style.children, { width: '100%' }]}>{props.children}</View>
-          <View style={{ width: '100%', paddingTop: 20 }}>
-            {props.yesButton ? (
+          <View style={[style.children, { width: '100%' }]}>{props.inputContent}</View>
+          <View
+            style={{
+              width: '100%',
+              paddingTop: 20,
+              flexDirection: isOneButtonContent() ? 'column' : 'row',
+            }}
+          >
+            {props.noButton ? (
               <FilledButton
-                style={style.button}
-                buttonStyle={{ backgroundColor: theme.colors.primary, width: '100%' }}
+                style={[style.button, { paddingBottom: 10 }]}
+                containerStyle={{
+                  width: isOneButtonContent() ? '100%' : '50%',
+                  paddingEnd: isOneButtonContent() ? 0 : 10,
+                }}
+                buttonStyle={{ backgroundColor: theme.colors.disabled }}
                 titleStyle={style.title}
-                title={props.yesButton?.title}
-                onPress={props.yesButton?.onPress}
+                title={props.noButton?.title}
+                onPress={props.noButton?.onPress}
                 size="xs"
               />
             ) : (
               <></>
             )}
-            {props.noButton ? (
+            {props.yesButton ? (
               <FilledButton
-                style={[style.button, { paddingBottom: 10 }]}
-                buttonStyle={{ backgroundColor: theme.colors.disabled, width: '100%' }}
+                style={[style.button]}
+                containerStyle={{
+                  width: isOneButtonContent() ? '100%' : '50%',
+                  paddingStart: isOneButtonContent() ? 0 : 10,
+                }}
+                buttonStyle={{ backgroundColor: theme.colors.primary }}
                 titleStyle={style.title}
-                title={props.noButton?.title}
-                onPress={props.noButton?.onPress}
+                title={props.yesButton?.title}
+                onPress={props.yesButton?.onPress}
                 size="xs"
               />
             ) : (

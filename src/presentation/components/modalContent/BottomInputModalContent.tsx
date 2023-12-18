@@ -1,12 +1,11 @@
 import useGlobalStyles from '@/presentation/styles';
-import { Text, makeStyles, useTheme } from '@rneui/themed';
+import { makeStyles, Text, useTheme } from '@rneui/themed';
 import { BottomSlideModalContentProps } from './BottomModalContent';
 import { HEIGHT, WIDTH } from '@/presentation/utils/util';
-import { TouchableOpacity, KeyboardAvoidingView, View, TextInput } from 'react-native';
+import { KeyboardAvoidingView, TextInput, TouchableOpacity, View } from 'react-native';
 import { FilledButton } from '../Button';
 import React, { useState } from 'react';
 import CardWrapper from '../CardWrapper';
-import styles from '@/presentation/styles';
 
 export interface BottomInputModalContentProps extends BottomSlideModalContentProps {
   content?: string;
@@ -15,7 +14,7 @@ export interface BottomInputModalContentProps extends BottomSlideModalContentPro
 
 export const BottomInputModalContent: React.FC<BottomInputModalContentProps> = ({
   header: title,
-  children,
+  inputContent,
   neverSeeAgainShow,
   yesButton,
   noButton,
@@ -28,12 +27,10 @@ export const BottomInputModalContent: React.FC<BottomInputModalContentProps> = (
   const globalStyles = useGlobalStyles();
   const style = useStyles(theme);
   const [reportState, setReportState] = useState({ text: '' });
-
   return (
     <>
       <TouchableOpacity
         style={{
-          flex: 1.1,
           width: '100%',
           justifyContent: 'flex-end',
         }}
@@ -43,7 +40,7 @@ export const BottomInputModalContent: React.FC<BottomInputModalContentProps> = (
         }}
       />
       <KeyboardAvoidingView
-        behavior="position"
+        behavior="height"
         style={{
           flex: 1,
           width: '100%',
@@ -51,24 +48,35 @@ export const BottomInputModalContent: React.FC<BottomInputModalContentProps> = (
         }}
       >
         <View style={[style.modal, { paddingHorizontal: 20 }]}>
-          <Text style={style.title}>{title}</Text>
+          {title}
           <View style={[style.children, { width: '100%' }]}>
             <View style={{ justifyContent: 'center', alignContent: 'center', width: '100%' }}>
-              <Text style={[globalStyles.textLight13, { textAlign: 'center', paddingBottom: 29 }]}>
-                {content}
-              </Text>
-              <CardWrapper style={{ height: HEIGHT / 8, maxWidth: WIDTH - 40 }}>
-                <TextInput
-                  value={reportState.text}
-                  style={{ width: '100%', padding: 24 }}
-                  onChangeText={(text: string) => {
-                    setReportState({ text: text });
-                    onInputValueChange(text);
-                  }}
-                  multiline={true}
-                  maxLength={500}
-                />
-              </CardWrapper>
+              {content ? (
+                <Text
+                  style={[globalStyles.textLight13, { textAlign: 'center', paddingBottom: 29 }]}
+                >
+                  {content}
+                </Text>
+              ) : (
+                <></>
+              )}
+
+              {inputContent ? (
+                inputContent
+              ) : (
+                <CardWrapper style={{ height: HEIGHT / 8, maxWidth: WIDTH - 40 }}>
+                  <TextInput
+                    value={reportState.text}
+                    style={{ width: '100%', padding: 24, color: 'black' }}
+                    onChangeText={(text: string) => {
+                      setReportState({ text: text });
+                      onInputValueChange(text);
+                    }}
+                    multiline={true}
+                    maxLength={500}
+                  />
+                </CardWrapper>
+              )}
               <View
                 style={{
                   flexDirection: 'row',
@@ -77,7 +85,7 @@ export const BottomInputModalContent: React.FC<BottomInputModalContentProps> = (
                 }}
               >
                 <FilledButton
-                  style={{ paddingVertical: 7 }}
+                  style={{ paddingVertical: 18 }}
                   buttonStyle={{ backgroundColor: theme.colors.primary, width: WIDTH / 2 - 27 }}
                   title={noButton?.title}
                   titleStyle={style.buttonTitle}
@@ -85,7 +93,7 @@ export const BottomInputModalContent: React.FC<BottomInputModalContentProps> = (
                   size="xs"
                 />
                 <FilledButton
-                  style={{ paddingVertical: 7 }}
+                  style={{ paddingVertical: 18 }}
                   buttonStyle={{ backgroundColor: theme.colors.disabled, width: WIDTH / 2 - 27 }}
                   title={yesButton?.title}
                   titleStyle={style.buttonTitle}
