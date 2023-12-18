@@ -7,11 +7,13 @@ import Portfolio from './Portfolio';
 import ReviewResponse from './ReviewResponse';
 
 export default interface ProfileViewDto {
+  createdAt?: string;
   completedTeams?: TeamBriefDto[];
-  currentTeamId?: string;
-  profileDescription?: string;
+  currentTeam?: TeamBriefDto;
   educations?: Education[];
+  profileDescription?: string;
   imageUrl?: string;
+  isLeader?: boolean;
   nickname?: string;
   portfolios?: Portfolio[];
   reviews?: ReviewResponse[];
@@ -22,4 +24,5 @@ export default interface ProfileViewDto {
   works?: Work[];
   teamMemberStatus?: string;
   isSeekingTeam?: boolean;
+  updatedAt?: string;
 }

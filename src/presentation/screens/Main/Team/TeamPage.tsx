@@ -1,6 +1,6 @@
 import CardWrapper from '@/presentation/components/CardWrapper';
 import { makeStyles, Text, useTheme } from '@rneui/themed';
-import React, { Suspense, useEffect, useMemo, useState } from 'react';
+import React, { Suspense, useEffect, useMemo } from 'react';
 import { Platform, ScrollView, TouchableOpacity, View } from 'react-native';
 import PositionWaveIcon from '@/presentation/components/PositionWaveIcon';
 import { OutlinedButton } from '@/presentation/components/Button';
@@ -23,7 +23,6 @@ import {
   PositionFromIndex,
   PositionMaxCntField,
 } from '@/data/model/type/Position';
-import { useRoute } from '@react-navigation/native';
 
 interface LeaderHeaderParams {
   onPressEditor: () => void;
@@ -126,7 +125,7 @@ export const TeamPageComponent = ({ navigation, route }: MainBottomTabNavigation
   const teamRecruits = useMemo(() => {
     const teamCnts = [];
     for (let i = 0; i < 5; i++) {
-      if (teamData) {
+      if (teamData && teamData[PositionMaxCntField[PositionFromIndex[i]]] > 0) {
         teamCnts.push({
           currentCnt: teamData[PositionCurrentCntField[PositionFromIndex[i]]],
           recruitCnt: teamData[PositionMaxCntField[PositionFromIndex[i]]],
@@ -192,6 +191,7 @@ export const TeamPageComponent = ({ navigation, route }: MainBottomTabNavigation
                         <Text style={globalStyles.itnitialText}>{mapToInitial(item.position)}</Text>
                       }
                       key={item.position}
+                      radious={theme.positionIconRadious.md}
                     />
                   ))}
               </View>

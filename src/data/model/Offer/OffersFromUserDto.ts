@@ -1,8 +1,8 @@
 import TeamBriefDto from '../Team/TeamBriefDto';
-import UserProfileOfferDto from '../User/UserProfileBriefDto';
 import BriefOfferDto from './BriefOfferDto';
+import UserProfileDto from '@/data/model/User/UserProfileDto';
 
 export default interface OffersFromOtherDto extends BriefOfferDto {
   team: TeamBriefDto;
-  user: UserProfileOfferDto;
+  user: UserProfileDto;
 }

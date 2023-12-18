@@ -1,12 +1,11 @@
-import { Position } from '@/data/model/type/Position';
-import PositionRecruiting from '@/presentation/model/PositionRecruitng';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
-import React, { Suspense, useState } from 'react';
-import { FlatList, TouchableOpacity, View } from 'react-native';
+import React, { Suspense, useEffect, useState } from 'react';
+import { FlatList, View } from 'react-native';
 import { PageRequest, useModelList } from '@/reactQuery/util/useModelList';
 import { getOffersFromTeam } from '@/data/api/offer';
 import TeamBanner from '@/presentation/components/TeamBanner';
 import { Loading } from '@/presentation/screens/Loading';
+import { mapTeamDtoToPositionRecruiting } from '@/presentation/model/mapper/mapTeamDtoToPositionRecruiting';
 
 const QueryKey = {
   all: ['GetOffers'],
@@ -43,6 +42,12 @@ const OfferFromTeamPageComponent = ({ navigation }: MainStackScreenProps<'OfferF
     key: QueryKey.filtered(params),
   });
 
+  useEffect(() => {
+    navigation.addListener('focus', () => {
+      refetch();
+    });
+  }, [navigation]);
+
   if (!data) {
     return null;
   }
@@ -52,10 +57,20 @@ const OfferFromTeamPageComponent = ({ navigation }: MainStackScreenProps<'OfferF
       <FlatList
         showsHorizontalScrollIndicator={false}
         keyExtractor={item => item.offerId.toString()}
-        data={data?.pages?.map(page => page.data).flat()}
+        data={data?.pages
+          ?.map(page =>
+            page.data.map(item => {
+              const teamCnts = mapTeamDtoToPositionRecruiting(item.team);
+              return {
+                ...item,
+                teamMemberCnts: teamCnts,
+              };
+            }),
+          )
+          .flat()}
         renderItem={({ item }) => (
           <TeamBanner
-            teamMembersCnt={item?.team.teamMemberCnts ?? []}
+            teamMembersCnt={item?.teamMemberCnts ?? []}
             teamName={item?.team.projectName ?? ''}
             onArrowPress={() => {
               navigation.navigate('TeamDetail', {

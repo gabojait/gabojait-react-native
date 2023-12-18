@@ -1,11 +1,8 @@
 export default interface ReviewResponse {
   createdAt: string;
   post: string;
-  rating: string;
+  rating: number;
   reviewId: number;
-  revieweeId: number;
-  reviewerId: number;
-  teamID: number;
   updatedAt: string;
   reviewer: string;
 }

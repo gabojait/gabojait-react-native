@@ -1,6 +1,6 @@
-import { makeStyles, Text, useTheme } from '@rneui/themed';
-import React, { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { makeStyles, useTheme } from '@rneui/themed';
+import React, { Suspense, useEffect, useMemo, useState } from 'react';
+import { FlatList, View } from 'react-native';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import { useQuery, useQueryClient, useQueryErrorResetBoundary, UseQueryResult } from 'react-query';
 import TeamDetailDto from '@/data/model/Team/TeamDetailDto';
@@ -21,7 +21,6 @@ import { offerKeys } from '@/reactQuery/key/OfferKeys';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 import { ApplyPositionCard, RecruitStatusType } from '@/presentation/components/ApplyPositionCard';
 import { Loading } from '@/presentation/screens/Loading';
-import { FlatList } from 'react-native';
 
 const PositionSelector = ({ navigation, route }: MainStackScreenProps<'PositionSelector'>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -47,17 +46,16 @@ const PositionSelectorComponent = ({
     [teamKeys.getTeam, teamId],
     () => getTeam(teamId),
   );
-  const positions = useMemo(() => {
-    if (!data) {
-      return [];
-    }
+  const teamRecruits = useMemo(() => {
     const teamCnts = [];
-    for (let i = 0; i < 4; i++) {
-      teamCnts.push({
-        currentCnt: data[PositionCurrentCntField[PositionFromIndex[i]]],
-        recruitCnt: data[PositionMaxCntField[PositionFromIndex[i]]],
-        position: PositionFromIndex[i],
-      });
+    for (let i = 0; i < 5; i++) {
+      if (data && data[PositionMaxCntField[PositionFromIndex[i]]] > 0) {
+        teamCnts.push({
+          currentCnt: data[PositionCurrentCntField[PositionFromIndex[i]]],
+          recruitCnt: data[PositionMaxCntField[PositionFromIndex[i]]],
+          position: PositionFromIndex[i],
+        });
+      }
     }
     return teamCnts;
   }, [data]);
@@ -87,7 +85,7 @@ const PositionSelectorComponent = ({
         style={{ backgroundColor: 'white' }}
         showsVerticalScrollIndicator={false}
         keyExtractor={item => item.position}
-        data={positions}
+        data={teamRecruits}
         renderItem={({ item }) => (
           <View style={{ paddingTop: 20 }}>
             <PositionSelectWrapper

@@ -11,5 +11,4 @@ export default interface Skill {
   skillId?: number;
   skillName: string;
   updatedAt?: string;
-  new?: boolean;
 }

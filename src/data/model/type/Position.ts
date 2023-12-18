@@ -15,29 +15,29 @@ export const PositionFromIndex = [
 ];
 export const PositionMaxCntField: {
   [key in Position]:
-    | 'managerMaxCnt'
     | 'backendMaxCnt'
     | 'frontendMaxCnt'
     | 'designerMaxCnt'
+    | 'managerMaxCnt'
     | 'otherMaxCnt';
 } = {
-  [Position.Manager]: 'managerMaxCnt',
   [Position.Backend]: 'backendMaxCnt',
   [Position.Frontend]: 'frontendMaxCnt',
   [Position.Designer]: 'designerMaxCnt',
+  [Position.Manager]: 'managerMaxCnt',
   [Position.None]: 'otherMaxCnt',
 };
 export const PositionCurrentCntField: {
   [key in Position]:
-    | 'managerCurrentCnt'
     | 'backendCurrentCnt'
     | 'frontendCurrentCnt'
     | 'designerCurrentCnt'
+    | 'managerCurrentCnt'
     | 'otherCurrentCnt';
 } = {
-  [Position.Manager]: 'managerCurrentCnt',
   [Position.Backend]: 'backendCurrentCnt',
   [Position.Frontend]: 'frontendCurrentCnt',
   [Position.Designer]: 'designerCurrentCnt',
+  [Position.Manager]: 'managerCurrentCnt',
   [Position.None]: 'otherCurrentCnt',
 };

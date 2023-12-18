@@ -4,10 +4,9 @@ import TeamDetailDto from '@/data/model/Team/TeamDetailDto';
 import { FilledButton } from '@/presentation/components/Button';
 import CardWrapper from '@/presentation/components/CardWrapper';
 import PositionWaveIcon from '@/presentation/components/PositionWaveIcon';
-import PositionRecruiting from '@/presentation/model/PositionRecruitng';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import { makeStyles, Text, useTheme } from '@rneui/themed';
-import React, { Suspense, useEffect, useRef, useState } from 'react';
+import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import {
   useMutation,
@@ -27,8 +26,13 @@ import Error404Boundary from '@/presentation/components/errorComponent/Error404B
 import { Loading } from '@/presentation/screens/Loading';
 import { ReportCompleteModal } from '@/presentation/components/ReportCompleteModal';
 import BookMarkHeader from '@/presentation/screens/Headers/BookmarkHeader';
-import { InputModalContent } from '@/presentation/components/modalContent/InputModalContent';
-import { Position } from '@/data/model/type/Position';
+import {
+  Position,
+  PositionCurrentCntField,
+  PositionFromIndex,
+  PositionMaxCntField,
+} from '@/data/model/type/Position';
+import { BottomInputModalContent } from '@/presentation/components/modalContent/BottomInputModalContent';
 
 const GroupDetail = ({ navigation, route }: MainStackScreenProps<'GroupDetail'>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -69,28 +73,6 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
     },
   );
 
-  const positions: Array<PositionRecruiting> = [
-    {
-      currentCnt: data?.designerCurrentCnt || 0,
-      position: Position.Designer,
-      recruitCnt: data?.designerMaxCnt || 0,
-    },
-    {
-      currentCnt: data?.backendCurrentCnt || 0,
-      position: Position.Backend,
-      recruitCnt: data?.backendMaxCnt || 0,
-    },
-    {
-      currentCnt: data?.frontendCurrentCnt || 0,
-      position: Position.Frontend,
-      recruitCnt: data?.frontendMaxCnt || 0,
-    },
-    {
-      currentCnt: data?.managerCurrentCnt || 0,
-      position: Position.Manager,
-      recruitCnt: data?.managerMaxCnt || 0,
-    },
-  ];
   const [reportButtonState, setReportButtonState] = useState({
     text: '신고하기',
     isDisabled: true,
@@ -114,9 +96,8 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
   const handleReportModal = () => {
     modal?.show({
       content: (
-        <InputModalContent
-          header={<Text h4>팀을 신고하시겠습니까?</Text>}
-          ref={reportStateRef}
+        <BottomInputModalContent
+          header={<Text style={globalStyles.modalTitle}>팀을 신고하시겠습니까?</Text>}
           visible={modal?.modal}
           onBackgroundPress={modal?.hide}
           yesButton={{
@@ -134,12 +115,26 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
               modal.hide();
             },
           }}
-          inputProps={{ shape: 'round' }}
+          onInputValueChange={(text: string) => {}}
         />
       ),
       modalProps: { animationType: 'slide', justifying: 'bottom' },
     });
   };
+
+  const teamRecruits = useMemo(() => {
+    const teamCnts = [];
+    for (let i = 0; i < 5; i++) {
+      if (data && data[PositionMaxCntField[PositionFromIndex[i]]] > 0) {
+        teamCnts.push({
+          currentCnt: data[PositionCurrentCntField[PositionFromIndex[i]]],
+          recruitCnt: data[PositionMaxCntField[PositionFromIndex[i]]],
+          position: PositionFromIndex[i],
+        });
+      }
+    }
+    return teamCnts;
+  }, [data]);
 
   useEffect(() => {
     isFavorite(data?.isFavorite!);
@@ -172,17 +167,19 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
           >
             <Text style={styles.teamname}>{data?.projectName}</Text>
             <View style={styles.partIcon}>
-              {positions.map((item, index) => (
-                <PositionWaveIcon
-                  currentCnt={item.currentCnt}
-                  recruitNumber={item.recruitCnt}
-                  textView={
-                    <Text style={globalStyles.itnitialText}>{mapToInitial(item.position)}</Text>
-                  }
-                  radious={theme.positionIconRadious.md}
-                  key={item.position}
-                />
-              ))}
+              {teamRecruits
+                .filter(recruit => recruit.position != Position.None)
+                .map(item => (
+                  <PositionWaveIcon
+                    currentCnt={item.currentCnt}
+                    recruitNumber={item.recruitCnt}
+                    textView={
+                      <Text style={globalStyles.itnitialText}>{mapToInitial(item.position)}</Text>
+                    }
+                    key={item.position}
+                    radious={theme.positionIconRadious.md}
+                  />
+                ))}
             </View>
             <FilledButton
               title={'함께 하기'}

@@ -6,7 +6,6 @@ export const PortfolioType = {
 
 export default interface Portfolio {
   portfolioId?: number;
-  new?: boolean;
   createdAt?: string;
   media: PortfolioType;
   portfolioName?: string;
