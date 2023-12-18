@@ -4,7 +4,7 @@ import { PositionTabParamList, PositionTabParamListProps } from '@/presentation/
 import { positionToSentOfferKey } from '@/reactQuery/key/OfferKeys';
 import { PageRequest, useModelList } from '@/reactQuery/util/useModelList';
 import { makeStyles } from '@rneui/themed';
-import { View, FlatList, TouchableOpacity } from 'react-native';
+import { FlatList, TouchableOpacity, View } from 'react-native';
 import React, { Suspense, useEffect, useState } from 'react';
 import { UserCard } from '@/presentation/components/UserCard';
 import OffersFromOtherDto from '@/data/model/Offer/OffersFromUserDto';
@@ -47,8 +47,10 @@ const OfferListComponent = ({
   });
 
   useEffect(() => {
-    refetch();
-  }, []);
+    navigation.addListener('focus', () => {
+      refetch();
+    });
+  }, [navigation]);
 
   if (!data) {
     return null;

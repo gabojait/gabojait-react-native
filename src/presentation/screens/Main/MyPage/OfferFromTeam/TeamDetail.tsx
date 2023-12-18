@@ -1,20 +1,20 @@
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
-import { UseQueryResult, useQuery, useQueryErrorResetBoundary } from 'react-query';
-import React, { Suspense, useEffect, useState } from 'react';
+import { useQuery, useQueryErrorResetBoundary, UseQueryResult } from 'react-query';
+import React, { Suspense } from 'react';
 import { FilledButton } from '@/presentation/components/Button';
 import CardWrapper from '@/presentation/components/CardWrapper';
 import PositionWaveIcon from '@/presentation/components/PositionWaveIcon';
-import styles from '@/presentation/styles';
-import { mapToInitial } from '@/presentation/utils/util';
-import { ScrollView, View, Text } from 'react-native';
 import useGlobalStyles from '@/presentation/styles';
+import { mapToInitial } from '@/presentation/utils/util';
+import { ScrollView, Text, View } from 'react-native';
 import { makeStyles, useTheme } from '@rneui/themed';
 import { getTeam } from '@/data/api/team';
 import TeamDetailDto from '@/data/model/Team/TeamDetailDto';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import PositionRecruiting from '@/presentation/model/PositionRecruitng';
 import { Loading } from '@/presentation/screens/Loading';
+import { mapTeamDtoToPositionRecruiting } from '@/presentation/model/mapper/mapTeamDtoToPositionRecruiting';
 
 const TeamDetail = ({ navigation, route }: MainStackScreenProps<'TeamDetail'>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -30,6 +30,7 @@ const TeamDetail = ({ navigation, route }: MainStackScreenProps<'TeamDetail'>) =
 
 const TeamDetailComponent = ({ navigation, route }: MainStackScreenProps<'TeamDetail'>) => {
   const globalStyles = useGlobalStyles();
+  const { theme } = useTheme();
   const { teamId } = route.params!;
   const styles = useStyles();
   const { data, isLoading, error }: UseQueryResult<TeamDetailDto> = useQuery(
@@ -39,7 +40,7 @@ const TeamDetailComponent = ({ navigation, route }: MainStackScreenProps<'TeamDe
       useErrorBoundary: true,
     },
   );
-  const positions: Array<PositionRecruiting> = data?.teamMemberCnts || [];
+  const positions: Array<PositionRecruiting> = mapTeamDtoToPositionRecruiting(data);
 
   if (!data) {
     return null;
@@ -67,6 +68,7 @@ const TeamDetailComponent = ({ navigation, route }: MainStackScreenProps<'TeamDe
                     <Text style={globalStyles.itnitialText}>{mapToInitial(item.position)}</Text>
                   }
                   key={item.position}
+                  radious={theme.positionIconRadious.md}
                 />
               ))}
             </View>

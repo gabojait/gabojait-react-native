@@ -10,6 +10,7 @@ import { favoriteKeys } from '@/reactQuery/key/FavoriteKeys';
 import { Loading } from '../../Loading';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 import { useQueryErrorResetBoundary } from 'react-query';
+import { mapTeamDtoToPositionRecruiting } from '@/presentation/model/mapper/mapTeamDtoToPositionRecruiting';
 
 const BookMark = ({ navigation, route }: MainStackScreenProps<'BookMark'>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -62,8 +63,18 @@ const FavoriteTeams = ({ navigation, route }: MainStackScreenProps<'BookMark'>) 
     <View style={{ backgroundColor: 'white', flex: 1 }}>
       <FlatList
         showsHorizontalScrollIndicator={false}
-        keyExtractor={item => item.teamId.toString()}
-        data={data?.pages?.map(page => page.data).flat()}
+        keyExtractor={item => item.projectName.concat(item.teamId)}
+        data={data?.pages
+          ?.map(page =>
+            page.data.map(item => {
+              const teamCnts = mapTeamDtoToPositionRecruiting(item);
+              return {
+                ...item,
+                teamMemberCnts: teamCnts,
+              };
+            }),
+          )
+          .flat()}
         renderItem={({ item }) => (
           <TeamBanner
             teamMembersCnt={item.teamMemberCnts}
@@ -118,7 +129,7 @@ const FavoriteUsers = ({ navigation, route }: MainStackScreenProps<'BookMark'>) 
     <View style={{ backgroundColor: 'white', flex: 1 }}>
       <FlatList
         showsHorizontalScrollIndicator={false}
-        keyExtractor={item => item.userId.toString()}
+        keyExtractor={item => item.nickname.concat(item.userId)}
         data={data?.pages?.map(page => page.data).flat()}
         renderItem={({ item }) => (
           <TouchableOpacity

@@ -2,7 +2,6 @@ import { Position } from '@/data/model/type/Position';
 import { PositionSymbol } from '../model/type/Position';
 import { Dimensions } from 'react-native';
 import { t } from 'i18next';
-import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 
 export const usernameRegex = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{5,15}$/; //5~15자 영문, 숫자 조합
 export const passwordRegex =
@@ -20,6 +19,7 @@ export function uuidv4() {
     return v.toString(16);
   });
 }
+
 export const isInitializable = (loading: any, data: any) => {
   if (!loading && data != null) {
     return true;
