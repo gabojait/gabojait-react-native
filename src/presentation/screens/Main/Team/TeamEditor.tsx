@@ -342,14 +342,6 @@ export const TeamEditorComponent = ({ navigation, route }: MainStackScreenProps<
               }
             }}
           />
-          <FilledButton
-            title={'취소하기'}
-            buttonStyle={{ backgroundColor: theme.colors.grey0 }}
-            style={{ paddingTop: 20 }}
-            onPress={() => {
-              CancelConfirmModal();
-            }}
-          />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
