@@ -10,6 +10,7 @@ import React, { useEffect, useState } from 'react';
 
 export type RecruitStatusType = '함께하기' | '모집완료' | '지원완료' | '수락하기';
 export type PositionTextNameType = '디자이너' | '기획자' | '프론트엔드' | '백엔드';
+
 export interface ApplyPositionCardProps {
   data: PositionRecruiting;
   offers: BriefOfferDto[];
@@ -17,6 +18,7 @@ export interface ApplyPositionCardProps {
   isButtonDisabled: boolean;
   onApplyButtonPressed: (position: Position) => void;
 }
+
 export interface ApplyPositionCardState {
   title: PositionTextNameType;
   buttonTitle: string;
@@ -78,6 +80,7 @@ export const ApplyPositionCard = ({
             }
             key={data.position}
             color={state.color}
+            radious={theme.positionIconRadious.md}
           />
           <Text style={styles.text}>{state.title}</Text>
         </View>

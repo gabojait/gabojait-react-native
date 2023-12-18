@@ -4,7 +4,6 @@ import { OutlinedButton } from '@/presentation/components/Button';
 import CardWrapper from '@/presentation/components/CardWrapper';
 import { PositionIcon } from '@/presentation/components/PartIcon';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
-import { Fallback404 } from '@/presentation/components/errorComponent/Fallback';
 import useModal from '@/presentation/components/modal/useModal';
 import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
 import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent';
@@ -12,10 +11,10 @@ import { MainStackScreenProps } from '@/presentation/navigation/types';
 import useGlobalStyles from '@/presentation/styles';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
-import { useTheme, Text } from '@rneui/themed';
+import { Text, useTheme } from '@rneui/themed';
 import React, { Suspense, useState } from 'react';
 import { ScrollView, TextInput, View } from 'react-native';
-import { UseQueryResult, useQuery, useQueryClient, useQueryErrorResetBoundary } from 'react-query';
+import { useQuery, useQueryClient, useQueryErrorResetBoundary, UseQueryResult } from 'react-query';
 import { Loading } from '../../Loading';
 
 export const ManageTeammate = ({ navigation, route }: MainStackScreenProps<'ManageTeammate'>) => {
@@ -67,7 +66,7 @@ export const ManageTeammateComponent = ({
         <SymbolModalContent
           title="신고완료!"
           symbol={<Text style={{ fontSize: theme.emojiSize.md, textAlign: 'center' }}>✅</Text>}
-          text={'신고가 완료되었습니다.'}
+          text="신고가 완료되었습니다."
           yesButton={{
             title: '확인',
             onPress: () => modal.hide(),
@@ -82,8 +81,8 @@ export const ManageTeammateComponent = ({
     modal?.show({
       content: (
         <BottomModalContent
-          header="팀원을 신고하시겠습니까?"
-          children={
+          header={<Text style={globalStyles.modalTitle}>"팀원을 신고하시겠습니까?"</Text>}
+          inputContent={
             <View style={{ justifyContent: 'center', alignContent: 'center', width: '100%' }}>
               <Text style={[globalStyles.textLight13, { textAlign: 'center', paddingBottom: 10 }]}>
                 신고 사유를 적어주세요
@@ -150,7 +149,11 @@ export const ManageTeammateComponent = ({
           <CardWrapper style={[globalStyles.card2]}>
             <View style={globalStyles.container2}>
               <View style={{ alignItems: 'center' }}>
-                <PositionIcon position={item.position} />
+                <PositionIcon
+                  position={item.position}
+                  isRecruitDone={true}
+                  radious={theme.positionIconRadious.md}
+                />
                 <Text style={globalStyles.textUnderPosition}>{item.nickname}</Text>
               </View>
               <View>
