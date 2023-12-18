@@ -9,7 +9,7 @@ import TitleWithCloseHeader from '../screens/Headers/TitleWithCloseHeader';
 import TeamReview from '../screens/Main/MyPage/TeamReview';
 import BookMark from '../screens/Main/MyPage/BookMark';
 import OfferFromTeamPage from '../screens/Main/MyPage/OfferFromTeam/OfferFromTeamPage';
-import OfferToTeamHistory from '../screens/Main/MyPage/OfferToTeamHistory';
+import OfferToTeamHistory from '../screens/Main/MyPage/OfferToTeam/OfferToTeamHistory';
 import Setting from '../screens/Main/MyPage/Setting/Setting';
 import AlarmSetting from '../screens/Main/MyPage/Setting/AlarmSetting';
 import UserModifier from '../screens/Main/MyPage/Setting/UserModifier';
@@ -28,6 +28,8 @@ import TeamDetail from '../screens/Main/MyPage/OfferFromTeam/TeamDetail';
 import JoinTeam from '../screens/Main/MyPage/OfferFromTeam/JoinTeam';
 import OfferSentUser from '../screens/Main/MyPage/OfferSentToUser/OfferSentUser';
 import AlertPage from '../screens/Main/AlertPage';
+import { MoreReview } from '@/presentation/screens/Main/MyPage/MoreReview';
+
 const Main = createStackNavigator<MainStackParamList>();
 
 const MainNavigation = () => {
@@ -38,6 +40,14 @@ const MainNavigation = () => {
           name="Profile"
           options={{ headerShown: false }}
           component={ProfileNavigation}
+        />
+        <Main.Screen
+          name={'MoreReview'}
+          options={{
+            header: TitleWithCloseHeader,
+            headerTitle: '리뷰',
+          }}
+          component={MoreReview}
         />
         <Main.Screen
           name="OfferSentUser"
@@ -195,7 +205,8 @@ const MainNavigation = () => {
         <Main.Screen
           name="TeamEditor"
           options={{
-            headerShown: false,
+            header: TitleWithCloseHeader,
+            headerTitle: '',
           }}
           component={TeamEditor}
         />

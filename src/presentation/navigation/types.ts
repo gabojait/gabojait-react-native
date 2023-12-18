@@ -1,12 +1,6 @@
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
-import {
-  CompositeScreenProps,
-  NavigatorScreenParams,
-  ParamListBase,
-} from '@react-navigation/native';
+import { CompositeScreenProps, NavigatorScreenParams } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
-import { BoardStackNavigationProps } from './BoardNavigation';
-import { MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
 import { Position } from '@/data/model/type/Position';
 
 interface WebViewPageProps {
@@ -72,6 +66,7 @@ export type MainStackParamList = {
   ManageTeammate: undefined;
   ProfilePreview: { userId: string };
   OfferSentUser: NavigatorScreenParams<PositionTabParamList>;
+  MoreReview: { userId: string };
 };
 
 export type MainBottomTabParamList = {
