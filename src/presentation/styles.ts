@@ -1,5 +1,4 @@
 import { makeStyles } from '@rneui/themed';
-import { StyleSheet } from 'react-native';
 
 const useGlobalStyles = makeStyles(theme => ({
   card: {
@@ -152,8 +151,7 @@ const useGlobalStyles = makeStyles(theme => ({
     height: 100,
     backgroundColor: '#d9d9d9',
     borderRadius: 8,
-    top: -(100 - 30),
-    left: 20,
+    top: -(140 - 30),
   },
 }));
 export default useGlobalStyles;

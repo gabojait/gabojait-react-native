@@ -3,7 +3,7 @@ import React from 'react';
 import { PixelRatio, TouchableOpacity } from 'react-native';
 import CustomIcon from '@/presentation/components/icon/Gabojait';
 import { ScreenWidth } from '@rneui/base';
-import { HEIGHT, WIDTH } from '@/presentation/utils/util';
+import { WIDTH } from '@/presentation/utils/util';
 
 interface FloatingButtonProps {
   title?: string;
@@ -25,7 +25,7 @@ const FloatingButton = ({ title, onPress }: FloatingButtonProps) => {
         position: 'absolute',
         borderRadius: PixelRatio.getPixelSizeForLayoutSize(38),
         width: WIDTH * 0.264,
-        height: HEIGHT * 0.122,
+        height: WIDTH * 0.264,
         marginHorizontal: PixelRatio.getPixelSizeForLayoutSize(2),
         backgroundColor: theme.colors.primary,
       }}

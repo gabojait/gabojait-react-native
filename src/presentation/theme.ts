@@ -23,6 +23,15 @@ export type FontWeight =
  */
 declare module '@rneui/themed' {
   export interface Theme {
+    boxComponentHeight: {
+      xs: number;
+      sm: number;
+      md: number;
+      xmd: number;
+      lg: number;
+      xl: number;
+      xxl: number;
+    };
     radius: {
       xs: number;
       sm: number;
@@ -54,6 +63,7 @@ declare module '@rneui/themed' {
       lg: number;
     };
     fontWeight: {
+      superLight: FontWeight;
       light: FontWeight;
       medium: FontWeight;
       semibold: FontWeight;
@@ -84,6 +94,15 @@ declare module '@rneui/themed' {
 
 // ⚠️ 테마 생성 옵션을 변경하고 난 다음에는 앱을 꼭 리로드해주세요!
 export const theme = createTheme({
+  boxComponentHeight: {
+    xs: 20,
+    sm: 28,
+    md: 33,
+    xmd: 38,
+    lg: 45,
+    xl: 48,
+    xxl: 62,
+  },
   lightColors: {
     white: '#FFFFFF',
     primary: '#1CDF71',
@@ -93,6 +112,7 @@ export const theme = createTheme({
     grey0: '#EEEEEE',
     grey1: '#6C6C6C',
     grey2: '#B4B4B4',
+    grey3: '#8E8E8E',
   },
   customColors: {
     red: '#F04823',
@@ -132,6 +152,7 @@ export const theme = createTheme({
     lg: 130,
   },
   fontWeight: {
+    superLight: '100',
     light: '300',
     medium: '500',
     semibold: '600',
@@ -141,7 +162,7 @@ export const theme = createTheme({
     xs: 5,
     sm: 10,
     md: 15,
-    lg: 20,
+    lg: 18,
     xl: 20,
     xxl: 24,
   },
