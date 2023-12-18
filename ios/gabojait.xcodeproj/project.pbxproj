@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* gabojaitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* gabojaitTests.m */; };
 		0C80B921A6F3F58F76C31292 /* libPods-gabojait.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-gabojait.a */; };
-		13267EB2336541A6883289B4 /* fontello.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EAC205FF6B6A4EAF8359348B /* fontello.ttf */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -18,6 +17,7 @@
 		D52F7C4E2A926D8600D5F9CF /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = D52F7C4B2A926D8600D5F9CF /* Fonts */; };
 		D52F7C4F2A926D8600D5F9CF /* www in Resources */ = {isa = PBXBuildFile; fileRef = D52F7C4C2A926D8600D5F9CF /* www */; };
 		D52F7C502A926D8600D5F9CF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D52F7C4D2A926D8600D5F9CF /* GoogleService-Info.plist */; };
+		18A93962327F4940A37BF2CD /* fontello.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 618D70262CBA476E89E1A1F2 /* fontello.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,8 +53,8 @@
 		D52F7C4B2A926D8600D5F9CF /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fonts; sourceTree = "<group>"; };
 		D52F7C4C2A926D8600D5F9CF /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; path = www; sourceTree = "<group>"; };
 		D52F7C4D2A926D8600D5F9CF /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		EAC205FF6B6A4EAF8359348B /* fontello.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = fontello.ttf; path = ../src/assets/fonts/fontello.ttf; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		618D70262CBA476E89E1A1F2 /* fontello.ttf */ = {isa = PBXFileReference; name = "fontello.ttf"; path = "../src/assets/fonts/fontello.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -169,7 +169,7 @@
 		C8C7E6D36222401EB5679529 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				EAC205FF6B6A4EAF8359348B /* fontello.ttf */,
+				618D70262CBA476E89E1A1F2 /* fontello.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -274,7 +274,7 @@
 				D52F7C502A926D8600D5F9CF /* GoogleService-Info.plist in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				13267EB2336541A6883289B4 /* fontello.ttf in Resources */,
+				18A93962327F4940A37BF2CD /* fontello.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

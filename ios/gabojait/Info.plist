@@ -57,7 +57,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Camera access for taking photos</string>
 	<key>NSFileProviderDomainUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Album permissions to get photos</string>
 	<key>UIAppFonts</key>
