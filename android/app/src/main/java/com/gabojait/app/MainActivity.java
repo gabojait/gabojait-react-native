@@ -9,7 +9,6 @@ import com.facebook.react.defaults.DefaultReactActivityDelegate;
 import android.os.Bundle;
 
 import org.devio.rn.splashscreen.SplashScreen;
-
 public class MainActivity extends ReactActivity {
 
     // React Navigation
@@ -40,5 +39,6 @@ public class MainActivity extends ReactActivity {
         getMainComponentName(),
         // If you opted-in for the New Architecture, we enable the Fabric Renderer.
         DefaultNewArchitectureEntryPoint.getFabricEnabled());
+
   }
 }
