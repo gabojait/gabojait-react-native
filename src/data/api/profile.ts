@@ -49,6 +49,10 @@ export const setProfileImage = async (formData: FormData) => {
   return client.postForm('user/image', formData);
 };
 
+export const updateDescription = async (descriptionDto: { profileDescription: string }) => {
+  return client.patch('user/description', descriptionDto);
+};
+
 export const updateProfileInfo = async (updateDto: {
   educations: Education[];
   portfolios: Portfolio[];
@@ -56,11 +60,18 @@ export const updateProfileInfo = async (updateDto: {
   skills: Skill[];
   works: Work[];
 }) => {
+  function isLinkTypePortfolio(portfolio: Portfolio) {
+    if (portfolio.media != PortfolioType.File) {
+      return true;
+    }
+    return false;
+  }
+
   // Todo: 업로드
   const axiosInstanceWithOutInterceptor = axios.create(axiosConfig);
   axiosInstanceWithOutInterceptor.interceptors.request.use(reqInterceptor);
   const filePromises = updateDto.portfolios.map(async portfolio => {
-    if (portfolio.media != PortfolioType.File || portfolio.portfolioId) {
+    if (isLinkTypePortfolio(portfolio)) {
       return portfolio;
     }
     const urlParts = decodeURI(portfolio.portfolioUrl).split('/');
@@ -84,7 +95,21 @@ export const updateProfileInfo = async (updateDto: {
   });
   // Todo: 파일 업로드 실패에 따른 콜백 필요!
 
-  const portfoliosWithRealUrl = await Promise.all(filePromises);
+  const portfoliosWithRealUrl = await Promise.all(filePromises)
+    .then(results => {
+      console.log(`portfoliosWithRealUrl 요청 성공! 응답결과: ${results}`);
+      results.map(value => {
+        console.log(`{portfolioId: ${value.portfolioId}, `);
+        console.log(`portfolioName: ${value.portfolioName}, `);
+        console.log(`media: ${value.media}, `);
+        console.log(`portfolioUrl: ${value.portfolioUrl}},\n`);
+      });
+      return results;
+    })
+    .catch(error => {
+      console.log(`portfoliosWithRealUrl 요청 실패... 에러: ${error}`);
+    });
+
   const result = await client.post('user/profile', {
     ...updateDto,
     portfolios: portfoliosWithRealUrl,

@@ -103,7 +103,8 @@ export type ProfileStackParamList = {
   EditMain: undefined;
   EditPortfolio: undefined;
   EditSchoolAndWork: undefined;
-  EditSkillAndPosition: undefined;
+  EditSkill: undefined;
+  EditPosition: undefined;
 };
 
 export type PositionTabParamListProps<T extends keyof PositionTabParamList> = StackScreenProps<

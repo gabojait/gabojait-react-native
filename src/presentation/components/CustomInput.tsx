@@ -59,7 +59,7 @@ const CustomInput = forwardRef(
                 {...props}
                 ref={ref}
                 disabled={props.disabled}
-                containerStyle={[styles.container, { width: '100%' }]}
+                containerStyle={[styles.container, { width: '100%', marginBottom: -25 }]}
                 inputContainerStyle={[
                   shape === 'underline'
                     ? styles.underlineInputContainer

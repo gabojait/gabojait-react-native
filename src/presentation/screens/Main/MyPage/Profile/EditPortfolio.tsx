@@ -1,28 +1,58 @@
 import Portfolio, { PortfolioType } from '@/data/model/Profile/Portfolio';
-import CustomInput from '@/presentation/components/CustomInput';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Input, Text, useTheme } from '@rneui/themed';
-import React, { useEffect, useState } from 'react';
-import { StyleProp, View, ViewStyle } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import { ToggleButton } from '../Profile';
+import React, { useEffect, useMemo, useRef } from 'react';
+import { ScrollView, TouchableOpacity, View } from 'react-native';
 import DocumentPicker, { types } from 'react-native-document-picker';
-import { IconProps } from 'react-native-vector-icons/Icon';
-import { ScreenWidth } from '@rneui/base';
-import { List } from './EditSchoolAndWork';
 import useGlobalStyles from '@/presentation/styles';
 import { createPortfolio, deletePortfolio, updatePortfolio } from '@/redux/action/profileActions';
+import { List } from '@/presentation/screens/Main/MyPage/Profile/EditEducationAndWork';
+import CustomInput from '@/presentation/components/CustomInput';
+import { DeleteIcon } from '@/presentation/components/icon/CustomIcon';
+import { WIDTH } from '@/presentation/utils/util';
 
 const EditPortfolio = () => {
   // Todo: Implement Portfolio Reducer
   const { data, loading, error } = useAppSelector(state => state.profileReducer.userProfile);
-  const portfolios = data?.portfolios ?? [];
   const dispatch = useAppDispatch();
-
   const globalStyles = useGlobalStyles();
+  const { theme } = useTheme();
+  const initializePortfolioRef = useRef(true);
+  let temporaryPortfolioIdCount = useRef(data?.portfolios?.length || 0);
+  const portfolios = useMemo(() => {
+    if (!data?.portfolios) {
+      return [];
+    }
+
+    if (initializePortfolioRef.current) {
+      return initializePortfolios();
+    }
+
+    return data.portfolios;
+  }, [data?.portfolios]);
+
+  function initializePortfolios() {
+    if (!data?.portfolios) {
+      return [];
+    }
+    initializePortfolioRef.current = false;
+
+    data.portfolios.forEach((it, idx) => {
+      if (it.portfolioId) {
+        dispatch(deletePortfolio(it.portfolioId));
+      }
+      createOriginalPortfolios({ ...it, portfolioId: idx });
+    });
+
+    return data.portfolios.map((it, idx) => ({ ...it, portfolioId: idx }));
+  }
+
+  function createOriginalPortfolios(portfolio: Portfolio) {
+    dispatch(createPortfolio(portfolio));
+  }
 
   const handleAdd = (portfolio: Portfolio) => {
-    dispatch(createPortfolio(portfolio));
+    dispatch(createPortfolio({ ...portfolio, portfolioId: temporaryPortfolioIdCount.current++ }));
   };
   const handleDelete = (id: number) => {
     dispatch(deletePortfolio(id));
@@ -31,29 +61,56 @@ const EditPortfolio = () => {
   const handleEdit = (portfolio: Portfolio) => {
     dispatch(updatePortfolio(portfolio.portfolioId!, portfolio));
   };
-  console.log(portfolios);
+
+  useEffect(() => {
+    console.log('포트폴리오 변경 감지');
+    portfolios.map(value => {
+      console.log(`{portfolioId: ${value.portfolioId}, `);
+      console.log(`portfolioUrl: ${value.portfolioUrl}, `);
+      console.log(`portfolioName: ${value.portfolioName}, `);
+      console.log(`createdAt: ${value.createdAt}, `);
+      console.log(`media: ${value.media}, `);
+      console.log(`updatedAt: ${value.updatedAt}}`);
+    });
+  }, [portfolios]);
 
   return (
-    <View style={globalStyles.container}>
+    <ScrollView style={globalStyles.container}>
+      <Text
+        style={{
+          fontSize: theme.fontSize.xmd,
+          fontWeight: theme.fontWeight.semibold,
+          marginBottom: 10,
+        }}
+      >
+        링크
+      </Text>
       <PortfolioList
-        title="링크"
         fieldType={PortfolioType.Url}
-        onAddPortfolio={handleAdd}
+        onAddPortfolio={portfolio => handleAdd(portfolio)}
         onChangePortfolio={handleEdit}
         onDeletePortfolio={handleDelete}
-        totalPortfolios={portfolios.length}
         portfolios={portfolios.filter(portfolio => portfolio.media == PortfolioType.Url)}
       />
+      <Text
+        style={{
+          fontSize: theme.fontSize.xmd,
+          fontWeight: theme.fontWeight.semibold,
+          paddingTop: 32,
+          marginBottom: 10,
+        }}
+      >
+        파일 업로드
+      </Text>
       <PortfolioList
-        title="파일 업로드"
         fieldType={PortfolioType.File}
-        onAddPortfolio={handleAdd}
+        onAddPortfolio={portfolio => handleAdd(portfolio)}
         onChangePortfolio={handleEdit}
         onDeletePortfolio={handleDelete}
-        totalPortfolios={portfolios.length}
         portfolios={portfolios.filter(portfolio => portfolio.media == PortfolioType.File)}
       />
-    </View>
+      <View style={{ height: 30 }} />
+    </ScrollView>
   );
 };
 
@@ -63,30 +120,36 @@ const placeHolders = {
 };
 
 export const PortfolioList = ({
-  totalPortfolios,
   portfolios,
   onChangePortfolio,
   onAddPortfolio,
   onDeletePortfolio,
-  title,
   fieldType,
 }: {
-  totalPortfolios: number;
+  portfolioIdCount: number;
   portfolios: Portfolio[];
   onChangePortfolio: (portfolio: Portfolio) => void;
   onAddPortfolio: (portfolio: Portfolio) => void;
   onDeletePortfolio: (portfolioId: number) => void;
-  title: string;
   fieldType: PortfolioType;
 }) => {
-  const pickDocument = (portfolio: Portfolio) => {
-    void DocumentPicker.pickSingle({
-      type: [types.pdf, '.jpeg .jpg .png', types.images],
-    }).then(res => {
-      portfolio.portfolioUrl = res.uri;
-      onChangePortfolio(portfolio);
-    });
-  };
+  const { theme } = useTheme();
+
+  async function pickDocument(portfolio: Portfolio) {
+    try {
+      console.log('pickDocument success!....');
+      await DocumentPicker.pickSingle({
+        type: [types.pdf, '.jpeg .jpg .png', types.images],
+        presentationStyle: 'fullScreen',
+        copyTo: 'cachesDirectory',
+      }).then(res => {
+        portfolio.portfolioUrl = res.uri;
+        onChangePortfolio(portfolio);
+      });
+    } catch (e) {
+      console.log('pickDocument failed....');
+    }
+  }
 
   return (
     <>
@@ -109,47 +172,51 @@ export const PortfolioList = ({
               name={portfolio.portfolioName}
               titleEditable
               fieldColor="white"
-              onDeleteItem={itemId => {
-                onDeletePortfolio(itemId);
+              onDeleteItem={() => {
+                console.log(`삭제할 포트폴리오ID는 ----------------${portfolio.portfolioId}입니다`);
+                onDeletePortfolio(portfolio.portfolioId!);
               }}
               onChangeName={text => onChangePortfolio({ ...portfolio, portfolioName: text })}
             >
-              <CustomInput
-                textContentType={fieldType == PortfolioType.Url ? 'URL' : undefined}
-                keyboardType={fieldType == PortfolioType.Url ? 'url' : undefined}
-                editable={portfolio.media == PortfolioType.Url}
-                placeholder={placeHolders[portfolio.media as PortfolioType]}
-                onPressOut={
-                  portfolio.media == PortfolioType.File ? () => pickDocument(portfolio) : undefined
-                }
-                onChangeText={text => onChangePortfolio({ ...portfolio, portfolioUrl: text })}
-                value={value}
-              />
+              <TouchableOpacity
+                onPress={() => {
+                  console.log(
+                    `portfolio.media = ${portfolio.media}, PortfolioType.File = ${PortfolioType.File}`,
+                  );
+                  portfolio.media == PortfolioType.File ? pickDocument(portfolio) : undefined;
+                }}
+              >
+                <CustomInput
+                  shape="round"
+                  textContentType={fieldType == PortfolioType.Url ? 'URL' : undefined}
+                  keyboardType={fieldType == PortfolioType.Url ? 'url' : undefined}
+                  editable={portfolio.media == PortfolioType.Url}
+                  placeholder={placeHolders[portfolio.media as PortfolioType]}
+                  onChangeText={text => onChangePortfolio({ ...portfolio, portfolioUrl: text })}
+                  value={value}
+                  inputContainerStyle={{
+                    height: theme.boxComponentHeight.lg,
+                    borderColor: theme.colors.grey2,
+                  }}
+                  style={{ textDecorationColor: theme.colors.grey2 }}
+                />
+              </TouchableOpacity>
             </EditItem>
           );
         }}
         onAdd={() =>
           onAddPortfolio({
-            portfolioId: totalPortfolios,
+            portfolioId: undefined,
             media: fieldType,
             portfolioName: '',
             portfolioUrl: '',
           })
         }
-        title={title}
       />
     </>
   );
 };
 
-export const SquareIcon = ({ ...props }: IconProps) => (
-  <Icon
-    size={props.size ?? 20}
-    style={[{ borderWidth: 1, padding: 2, borderRadius: 8, borderColor: 'black' }, props.style]}
-    color="#000000"
-    {...props}
-  />
-);
 export const EditItem = ({
   id,
   name,
@@ -169,30 +236,46 @@ export const EditItem = ({
 }) => {
   const { theme } = useTheme();
   return (
-    <View style={{ marginBottom: 10 }}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+    <View style={{ marginBottom: 22 }}>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'flex-start',
+          marginBottom: 10,
+        }}
+      >
         <Input
-          containerStyle={{ width: ScreenWidth * 0.3, margin: 0, paddingHorizontal: 0 }}
+          containerStyle={{ width: '60%', marginStart: -10 }}
           inputContainerStyle={{
             borderWidth: 1,
             borderRadius: 10,
             borderColor: theme.colors.grey2,
+            height: theme.boxComponentHeight.md,
+            minWidth: WIDTH * 0.4,
           }}
           errorStyle={{ display: 'none' }}
           inputStyle={{
             textAlign: 'center',
             fontSize: theme.fontSize.sm,
             fontWeight: theme.fontWeight.medium,
-            color: theme.colors.grey2,
-            paddingHorizontal: 10,
           }}
           editable={titleEditable}
-          placeholder={name}
+          value={name}
           onChangeText={onChangeName}
+          rightIcon={
+            <View style={{ alignContent: 'flex-start', marginEnd: 10 }}>
+              {onDeleteItem ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    onDeleteItem(id);
+                  }}
+                >
+                  <DeleteIcon name={''} size={25} />
+                </TouchableOpacity>
+              ) : null}
+            </View>
+          }
         />
-        <View style={{ alignContent: 'flex-start' }}>
-          {onDeleteItem ? <SquareIcon name="close" onPress={() => onDeleteItem(id)} /> : null}
-        </View>
       </View>
       {children}
     </View>

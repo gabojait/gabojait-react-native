@@ -1,28 +1,41 @@
-import { Asset, launchImageLibrary } from 'react-native-image-picker';
-import { Alert, ImageBackground, View } from 'react-native';
+import { StyleProp, View, ViewStyle } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import React from 'react';
-import { makeStyles } from '@rneui/themed';
+import { makeStyles, useTheme } from '@rneui/themed';
+import DocumentPicker, { DocumentPickerResponse, types } from 'react-native-document-picker';
+import LoadingSpinner from '@/presentation/screens/Loading';
+import { CachedImage } from '@georstat/react-native-image-cache';
 
 export const ProfileImage = ({
-  image,
-  setImage,
+  imageUrl,
+  onChangeImage,
+  containerStyle,
 }: {
-  image: Asset | null;
-  setImage: (asset: Asset) => void;
+  imageUrl: string | null;
+  onChangeImage: (newImage: DocumentPickerResponse) => void;
+  containerStyle?: StyleProp<ViewStyle>;
 }) => {
   const styles = useStyles();
-  return !image ? (
-    <View style={styles.profileContainer}>
+  const { theme } = useTheme();
+
+  async function pickNewImage() {
+    try {
+      await DocumentPicker.pickSingle({
+        type: [types.images],
+        presentationStyle: 'fullScreen',
+        copyTo: 'cachesDirectory',
+      }).then(res => {
+        onChangeImage(res);
+      });
+    } catch (e) {}
+  }
+
+  return !imageUrl ? (
+    <View style={[styles.profileContainer, containerStyle]}>
       <TouchableOpacity
-        onPress={async () => {
-          const result = await launchImageLibrary({
-            mediaType: 'photo',
-            selectionLimit: 1,
-          });
-          setImage(result.assets?.[0]!);
-          console.log(result.assets?.[0]?.fileName);
+        onPress={() => {
+          pickNewImage();
         }}
         style={styles.profileTouchArea}
       >
@@ -30,25 +43,31 @@ export const ProfileImage = ({
       </TouchableOpacity>
     </View>
   ) : (
-    <View style={styles.profileContainer}>
-      <ImageBackground source={image} borderRadius={8}>
-        <TouchableOpacity
-          onPress={async () => {
-            const result = await launchImageLibrary({
-              mediaType: 'photo',
-              selectionLimit: 1,
-            });
-            if ((result.assets?.length ?? 0) === 1) {
-              if ((result.assets?.[0].fileSize ?? 0) / 1024 / 1024 > 3) {
-                Alert.alert('사진 용량', '사진 용량은 3MB를 넘을 수 없습니다.');
-              }
-
-              setImage(result.assets?.[0]!);
-            }
+    <View style={{ width: 100 }}>
+      <TouchableOpacity
+        onPress={() => {
+          pickNewImage();
+        }}
+      >
+        <CachedImage
+          style={{
+            flex: 1,
+            aspectRatio: 1,
+            borderRadius: 10,
+            justifyContent: 'center',
           }}
-          style={styles.profileTouchArea}
+          imageStyle={{
+            flex: 1,
+            aspectRatio: 1,
+            borderRadius: 10,
+            backgroundColor: theme.colors.disabled,
+            justifyContent: 'center',
+          }}
+          source={imageUrl}
+          resizeMode={'cover'}
+          loadingImageComponent={LoadingSpinner}
         />
-      </ImageBackground>
+      </TouchableOpacity>
     </View>
   );
 };

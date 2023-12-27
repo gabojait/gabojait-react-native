@@ -4,7 +4,7 @@ export const KoreanPosition: Record<Position, string> = {
   [Position.Designer]: '디자이너',
   [Position.Backend]: '벡엔드',
   [Position.Frontend]: '프론트엔드',
-  [Position.Manager]: 'PM',
+  [Position.Manager]: '기획자',
   [Position.None]: '',
 };
 export type PositionTextName = keyof typeof KoreanPosition;

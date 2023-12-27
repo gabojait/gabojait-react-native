@@ -35,6 +35,7 @@ declare module '@rneui/themed' {
     radius: {
       xs: number;
       sm: number;
+      smd: number;
       md: number;
       lg: number;
       xl: number;
@@ -55,6 +56,7 @@ declare module '@rneui/themed' {
       xs: number;
       sm: number;
       md: number;
+      xmd: number;
       lg: number;
     };
     emojiSize: {
@@ -144,6 +146,7 @@ export const theme = createTheme({
     xs: 12,
     sm: 14,
     md: 17,
+    xmd: 20,
     lg: 22,
   },
   emojiSize: {
@@ -161,6 +164,7 @@ export const theme = createTheme({
   radius: {
     xs: 5,
     sm: 10,
+    smd: 12,
     md: 15,
     lg: 18,
     xl: 20,

@@ -44,6 +44,7 @@ import { CachedImage } from '@georstat/react-native-image-cache';
 import { FilledButton } from '@/presentation/components/Button';
 import { ProfileReviewItem } from '@/presentation/components/ProfileReviewItem';
 import { isSkillExists } from '@/presentation/utils/ProfileUtils';
+import { ProjectIcon } from '@/presentation/components/icon/CustomIcon';
 
 const ProfilePreview = ({ navigation, route }: MainStackScreenProps<'ProfilePreview'>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -327,13 +328,7 @@ const ProfilePreviewComponent = ({ navigation, route }: MainStackScreenProps<'Pr
               profile.completedTeams?.map(team => (
                 <ToggleButton
                   title={team.projectName}
-                  icon={
-                    <MaterialIcon
-                      name={portfolioTypeIconName.project}
-                      size={theme.fontSize.lg}
-                      style={{ paddingTop: 0 }}
-                    />
-                  }
+                  icon={<ProjectIcon name="" size={theme.fontSize.md} />}
                   style={{
                     backgroundColor: '#fff',
                     marginRight: 10,
