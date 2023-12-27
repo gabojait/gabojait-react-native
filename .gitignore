@@ -65,6 +65,7 @@ buck-out/
 #vscode
 .vscode/.react/
 .vscode/.react/*
+.vscode/extensions.json
 
 /ios/GoogleService-Info.plist
 /ios/gabojait.app.dSYM
