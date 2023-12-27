@@ -43,7 +43,7 @@ export const ProfileImage = ({
       </TouchableOpacity>
     </View>
   ) : (
-    <View style={{ width: 100 }}>
+    <View style={{ width: 100, borderRadius: 10 }}>
       <TouchableOpacity
         onPress={() => {
           pickNewImage();

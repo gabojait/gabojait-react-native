@@ -253,6 +253,11 @@ const ProfilePreviewComponent = ({ navigation, route }: MainStackScreenProps<'Pr
                   onPress={() => {
                     handleOfferMutation();
                   }}
+                  buttonStyle={{ height: 48, paddingVertical: -10 }}
+                  titleStyle={{
+                    fontSize: theme.fontSize.md,
+                    fontWeight: theme.fontWeight.semibold,
+                  }}
                 />
               }
             />
@@ -354,7 +359,9 @@ const ProfilePreviewComponent = ({ navigation, route }: MainStackScreenProps<'Pr
               marginTop: 20,
             }}
           >
-            <Text h4>리뷰</Text>
+            <Text style={{ fontSize: theme.fontSize.md, fontWeight: theme.fontWeight.medium }}>
+              리뷰
+            </Text>
             {profile.reviews?.length ?? 0 > 0 ? (
               <>
                 <View style={{ flexDirection: 'row' }}>
@@ -385,7 +392,7 @@ const ProfilePreviewComponent = ({ navigation, route }: MainStackScreenProps<'Pr
                 </View>
               </>
             ) : (
-              <Text>아직 리뷰가 작성되지 않은 것 같아요.</Text>
+              <Text style={{ paddingTop: 10 }}>아직 리뷰가 작성되지 않은 것 같아요.</Text>
             )}
           </View>
         </View>

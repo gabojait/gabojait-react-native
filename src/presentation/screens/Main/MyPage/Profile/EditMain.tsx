@@ -119,8 +119,6 @@ export function EditMainHeader() {
   );
 }
 
-// Todo: 완료 버튼 구현
-// Todo: Override React Navigation header
 const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
   const {
     data: profile,

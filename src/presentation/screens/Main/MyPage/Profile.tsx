@@ -24,7 +24,6 @@ import {
 } from 'react-query';
 import { ToggleButton } from '@/presentation/components/ToggleButton';
 import { CustomSlider } from '@/presentation/components/CustomSlider';
-import { ProfileImage } from '@/presentation/components/ProfileImage';
 import { ProfileReviewItem } from '@/presentation/components/ProfileReviewItem';
 import { isProfileExist, isSkillExists } from '@/presentation/utils/ProfileUtils';
 import { ProjectIcon } from '@/presentation/components/icon/CustomIcon';
@@ -35,6 +34,7 @@ import { getMyProfile, setProfileImage } from '@/data/api/profile';
 import ProfileViewResponse from '@/data/model/Profile/ProfileViewResponse';
 import { DocumentPickerResponse } from 'react-native-document-picker';
 import useGlobalStyles from '@/presentation/styles';
+import { ProfileImage } from '@/presentation/components/ProfileImage';
 
 const Header = ({ navigation }: StackHeaderProps) => {
   const { theme } = useTheme();
@@ -148,20 +148,35 @@ const ProfileComponent = ({ navigation, route }: ProfileStackParamListProps<'Vie
 
   return (
     <ScrollView style={{ flex: 1 }}>
+      <View style={{ flex: 0.2, marginBottom: '30%', position: 'absolute' }} />
       <View
-        style={{ flex: 0.2, backgroundColor: '#f5f5f5', marginBottom: '30%', position: 'absolute' }}
-      />
-      <ProfileImage
-        containerStyle={{ position: 'absolute' }}
-        imageUrl={profile.imageUrl}
-        onChangeImage={newImage => updateImage(newImage)}
-      />
+        style={{
+          flexDirection: 'row',
+          paddingTop: 35,
+        }}
+      >
+        <View style={{ flex: 0.1 }}>
+          <View style={{ flex: 1, height: 40 }} />
+          <View
+            style={{ flex: 1, backgroundColor: 'white', height: 40, borderTopLeftRadius: 18 }}
+          />
+        </View>
+        <ProfileImage
+          imageUrl={profile.imageUrl}
+          onChangeImage={newImage => updateImage(newImage)}
+        />
+        <View style={{ flex: 0.9 }}>
+          <View style={{ flex: 1, height: 40 }} />
+          <View
+            style={{ flex: 1, backgroundColor: 'white', height: 40, borderTopRightRadius: 18 }}
+          />
+        </View>
+      </View>
+
       {isEmptyProfile() ? (
         <View
           style={{
             backgroundColor: 'white',
-            borderTopLeftRadius: 18,
-            borderRightColor: 18,
             paddingHorizontal: 20,
             paddingVertical: 50,
           }}
@@ -173,13 +188,12 @@ const ProfileComponent = ({ navigation, route }: ProfileStackParamListProps<'Vie
           <View
             style={{
               backgroundColor: 'white',
-              borderRadius: 18,
               paddingHorizontal: 20,
-              paddingTop: 50,
+              paddingTop: -70,
               paddingBottom: 20,
             }}
           >
-            <View style={{ paddingTop: 15 }}>
+            <View style={{ paddingTop: 20, backgroundColor: 'white' }}>
               <PortfolioView profile={profile} />
             </View>
             <Text style={{ marginBottom: 11, marginTop: 30, fontSize: 17 }}>학력/경력</Text>
@@ -279,7 +293,9 @@ const ProfileComponent = ({ navigation, route }: ProfileStackParamListProps<'Vie
                 marginTop: 20,
               }}
             >
-              <Text h4>리뷰</Text>
+              <Text style={{ fontSize: theme.fontSize.md, fontWeight: theme.fontWeight.medium }}>
+                리뷰
+              </Text>
               {profile.reviews?.length ?? 0 > 0 ? (
                 <>
                   <View style={{ flexDirection: 'row' }}>
@@ -312,7 +328,7 @@ const ProfileComponent = ({ navigation, route }: ProfileStackParamListProps<'Vie
                   </View>
                 </>
               ) : (
-                <Text>아직 리뷰가 작성되지 않은 것 같아요.</Text>
+                <Text style={{ paddingTop: 10 }}>아직 리뷰가 작성되지 않은 것 같아요.</Text>
               )}
             </View>
           </View>
