@@ -101,17 +101,18 @@ const CustomInput = forwardRef(
               {rightChildren && rightChildren}
             </View>
           </View>
-          {
+          <View>
+            {!rightChildren ? <View style={{ height: 30 }} /> : <View style={{ height: 2 }} />}
             <Text
               style={{
                 color: theme.colors.error,
-                marginTop: theme.spacing.xs,
                 marginStart: theme.spacing.sm,
+                fontSize: theme.fontSize.xxs,
               }}
             >
               {validatorResult.message && validatorResult.message}
             </Text>
-          }
+          </View>
         </View>
       </KeyboardAvoidingView>
     );
