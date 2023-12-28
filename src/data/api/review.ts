@@ -1,6 +1,5 @@
 import client from '@/lib/axiosInstance';
 import Reviews from '@/data/model/Review/Reviews';
-import { PageRequest } from '@/reactQuery/util/useModelList';
 
 export type GetReviewProps = {
   pageFrom: number;
@@ -9,16 +8,12 @@ export type GetReviewProps = {
 };
 
 export const getTeamsToReview = async () => {
-  const result = await client.get(`user/team/review`);
+  const result = await client.get('user/team/review');
   return result;
 };
 
 export const getTeamToReview = async (teamId: string) => {
   const result = await client.get(`user/team/${teamId}/review`);
-  return result;
-};
-export const getReviewQuestions = async () => {
-  const result = await client.get(`review/questions`);
   return result;
 };
 

@@ -1,19 +1,18 @@
 import { FilledButton } from '@/presentation/components/Button';
 import CardWrapper from '@/presentation/components/CardWrapper';
 import { RatingInput } from '@/presentation/components/RatingInput';
-import { useTheme, Text } from '@rneui/themed';
+import { Text, useTheme } from '@rneui/themed';
 import React, { Suspense, useRef, useState } from 'react';
 import { TextInput, View } from 'react-native';
 import CustomInput from '@/presentation/components/CustomInput';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import PagerView from 'react-native-pager-view';
 import ReviewAnswer from '@/data/model/Review/ReviewAnswer';
-import { HEIGHT, WIDTH, changeToTitleCase } from '@/presentation/utils/util';
+import { changeToTitleCase, HEIGHT, WIDTH } from '@/presentation/utils/util';
 import useModal from '@/presentation/components/modal/useModal';
 import { PositionIcon } from '@/presentation/components/PartIcon';
-import TeamDto from '@/data/model/Team/TeamDto';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
-import { UseQueryResult, useQuery, useQueryClient, useQueryErrorResetBoundary } from 'react-query';
+import { useQuery, useQueryClient, useQueryErrorResetBoundary, UseQueryResult } from 'react-query';
 import { offerKeys } from '@/reactQuery/key/OfferKeys';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { reviewKeys } from '@/reactQuery/key/ReviewKeys';
@@ -24,6 +23,7 @@ import ProfileViewResponse from '@/data/model/Profile/ProfileViewResponse';
 import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 import { Loading } from '../../Loading';
+import TeamDto from '@/data/model/Team/TeamDto';
 
 interface ReviewQuestionsProps extends ReviewAnswer {
   questionId: number;
@@ -81,45 +81,57 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
   const [pageCount, setPageCount] = useState<number>(1);
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
 
-  function updateTextReview(userId: string, text: string) {
+  function updateTextReview(teamMemberId: string, text: string) {
     const questionId = 0;
     const otherQuestionId = 1;
     const newReview: ReviewQuestionsProps = {
       post: text,
-      rate: '',
-      userId: userId,
+      rating: '',
+      teamMemberId: teamMemberId,
       questionId: questionId,
     };
     const otherReviews: ReviewQuestionsProps = reviewState.find(
       item => item.questionId != questionId,
-    ) ?? { post: '', rate: '', userId: userId, questionId: otherQuestionId };
+    ) ?? { post: '', rating: '', teamMemberId: teamMemberId, questionId: otherQuestionId };
 
     const result: ReviewAnswer[] = [
-      { post: otherReviews.post, rate: otherReviews.rate, userId: otherReviews.userId },
+      {
+        post: otherReviews.post,
+        rating: otherReviews.rating,
+        teamMemberId: otherReviews.teamMemberId,
+      },
       newReview,
     ];
-    result.map(item => console.log(`answer: ${item.post}, rate: ${item.rate}, userId: ${userId}`));
+    result.map(item =>
+      console.log(`answer: ${item.post}, rate: ${item.rating}, userId: ${teamMemberId}`),
+    );
     setReviewState([otherReviews, newReview]);
   }
 
-  const updateRatingReview = (userId: string, score: string) => {
+  const updateRatingReview = (teamMemberId: string, score: string) => {
     const questionId = 0;
     const otherQuestionId = 1;
     const newReview: ReviewQuestionsProps = {
       post: '',
-      rate: score,
-      userId: userId,
+      rating: score,
+      teamMemberId: teamMemberId,
       questionId: questionId,
     };
     const otherReviews: ReviewQuestionsProps = reviewState.find(
       item => item.questionId != questionId,
-    ) ?? { post: '', rate: '', userId: userId, questionId: otherQuestionId };
+    ) ?? { post: '', rating: '', teamMemberId: teamMemberId, questionId: otherQuestionId };
 
     const result: ReviewAnswer[] = [
-      { post: otherReviews.post, rate: otherReviews.rate, userId: otherReviews.userId },
+      {
+        post: otherReviews.post,
+        rating: otherReviews.rating,
+        teamMemberId: otherReviews.teamMemberId,
+      },
       newReview,
     ];
-    result.map(item => console.log(`answer: ${item.post}, rate: ${item.rate}, userId: ${userId}`));
+    result.map(item =>
+      console.log(`answer: ${item.post}, rate: ${item.rating}, teamMemberId: ${teamMemberId}`),
+    );
     setReviewState([otherReviews, newReview]);
   };
 
@@ -152,7 +164,7 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
           backgroundColor: 'white',
         }}
       >
-        {teamData?.projectName}
+        {teamData.projectName}
       </Text>
       <PagerView
         style={{
@@ -165,7 +177,7 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
         collapsable={false}
         scrollEnabled={false}
       >
-        {teamData?.teamMembers.map((item, index) => (
+        {teamData.teamMembers.map((item, index) => (
           <View key={item.nickname}>
             {item.userId != profileData?.userId.toString() ? (
               <CardWrapper
@@ -175,7 +187,11 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
                   <View
                     style={{ flexDirection: 'row', paddingVertical: 20, paddingHorizontal: 20 }}
                   >
-                    <PositionIcon position={item.position} isRecruitDone={true} />
+                    <PositionIcon
+                      position={item.position}
+                      isRecruitDone={true}
+                      radious={theme.positionIconRadious.md}
+                    />
                     <View style={{ paddingHorizontal: 10, justifyContent: 'center' }}>
                       <Text
                         style={{
@@ -293,7 +309,7 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
                         console.log('reviewResultState:');
                         reviewResultState.map(item => {
                           console.log(
-                            `item.answer:${item.post}, item.rate:${item.rate}, item.revieweeUserId:${item.userId}`,
+                            `item.post:${item.post}, item.rating:${item.rating}, item.revieweeUserId:${item.teamMemberId}`,
                           );
                         });
                         submitReviewMutation.mutate([
@@ -313,7 +329,7 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
                         console.log('reviewResultState:');
                         reviewResultState.map(item => {
                           console.log(
-                            `item.answer:${item.post}, item.rate:${item.rate}, item.revieweeUserId:${item.userId}`,
+                            `item.post:${item.post}, item.rating:${item.rating}, item.revieweeUserId:${item.teamMemberId}`,
                           );
                         });
                         setReviewState([]);

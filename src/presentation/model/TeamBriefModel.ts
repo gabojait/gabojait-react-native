@@ -1,4 +1,6 @@
-export default interface TeamBriefResponseDto {
+import PositionRecruiting from '@/presentation/model/PositionRecruitng';
+
+export default interface TeamBriefModel {
   backendCurrentCnt: number;
   backendTotalRecruitCnt: number;
   designerCurrentCnt: number;
@@ -10,4 +12,5 @@ export default interface TeamBriefResponseDto {
   projectName: string;
   schemaVersion: string;
   teamId: string;
+  teamMembers: PositionRecruiting[];
 }

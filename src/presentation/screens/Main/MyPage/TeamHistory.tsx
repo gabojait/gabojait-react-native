@@ -6,9 +6,10 @@ import { MainStackScreenProps } from '@/presentation/navigation/types';
 import { reviewKeys } from '@/reactQuery/key/ReviewKeys';
 import { PageRequest } from '@/reactQuery/util/useModelList';
 import React, { Suspense } from 'react';
-import { FlatList, TouchableOpacity, View } from 'react-native';
-import { UseQueryResult, useQuery, useQueryErrorResetBoundary } from 'react-query';
+import { FlatList, View } from 'react-native';
+import { useQuery, useQueryErrorResetBoundary, UseQueryResult } from 'react-query';
 import { Loading } from '../../Loading';
+import { mapTeamDtoToPositionRecruiting } from '@/presentation/model/mapper/mapTeamDtoToPositionRecruiting';
 
 export default function TeamHistory({ navigation, route }: MainStackScreenProps<'TeamHistory'>) {
   const { reset } = useQueryErrorResetBoundary();
@@ -48,13 +49,20 @@ function TeamHistoryComponent({ navigation, route }: MainStackScreenProps<'TeamH
       <View style={{ backgroundColor: 'white', flex: 1 }}>
         <FlatList
           showsHorizontalScrollIndicator={false}
-          keyExtractor={item => item.teamId.toString()}
-          data={data}
+          keyExtractor={(item, _) => item?.projectName.concat(item.teamId)}
+          data={data.map(item => {
+            const teamCnts = mapTeamDtoToPositionRecruiting(item);
+            return {
+              ...item,
+              teamMemberCnts: teamCnts,
+            };
+          })}
           renderItem={({ item }) => (
             <TeamBanner
-              teamMembersCnt={item.teamMemberCnts}
+              teamMembersCnt={item.teamMemberCnts ?? []}
               teamName={item.projectName}
               onArrowPress={() => navigation.navigate('TeamReview', { teamId: item.teamId })}
+              containerStyle={{ marginHorizontal: 20 }}
             />
           )}
         />

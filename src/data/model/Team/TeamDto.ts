@@ -1,4 +1,4 @@
-import BriefProfileDto from "../Profile/BriefProfileDto";
+import BriefProfileDto from '@/data/model/Profile/BriefProfileDto';
 
 export default interface TeamDto {
   createdAt: string;
