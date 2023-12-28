@@ -33,18 +33,17 @@ import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { offerKeys } from '@/reactQuery/key/OfferKeys';
 import { cancelOfferToUser, sendOfferToUser } from '@/data/api/offer';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
-import LoadingSpinner, { Loading } from '@/presentation/screens/Loading';
+import { Loading } from '@/presentation/screens/Loading';
 import { BottomInputModalContent } from '@/presentation/components/modalContent/BottomInputModalContent';
 import { ReportCompleteModal } from '@/presentation/components/ReportCompleteModal';
 import BookMarkHeader from '@/presentation/screens/Headers/BookmarkHeader';
 import { ToggleButton } from '@/presentation/components/ToggleButton';
 import { CustomSlider } from '@/presentation/components/CustomSlider';
-import { defaultProfile } from '@/assets/images/imageUrls';
-import { CachedImage } from '@georstat/react-native-image-cache';
 import { FilledButton } from '@/presentation/components/Button';
 import { ProfileReviewItem } from '@/presentation/components/ProfileReviewItem';
 import { isSkillExists } from '@/presentation/utils/ProfileUtils';
 import { ProjectIcon } from '@/presentation/components/icon/CustomIcon';
+import { ProfileImage } from '@/presentation/components/ProfileImage';
 
 const ProfilePreview = ({ navigation, route }: MainStackScreenProps<'ProfilePreview'>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -214,36 +213,41 @@ const ProfilePreviewComponent = ({ navigation, route }: MainStackScreenProps<'Pr
         toChangeColor={isFavorite(profile?.isFavorite!)}
       />
       <ScrollView style={{ flex: 1 }}>
-        <View style={{ flex: 0.2, backgroundColor: '#f5f5f5', marginBottom: '30%' }} />
+        <View
+          style={{
+            flex: 0.2,
+            backgroundColor: '#f5f5f5',
+            marginBottom: '30%',
+            position: 'absolute',
+          }}
+        />
+        <View
+          style={{
+            flexDirection: 'row',
+            paddingTop: 35,
+          }}
+        >
+          <View style={{ flex: 0.1 }}>
+            <View style={{ flex: 1, height: 40 }} />
+            <View
+              style={{ flex: 1, backgroundColor: 'white', height: 40, borderTopLeftRadius: 18 }}
+            />
+          </View>
+          <ProfileImage imageUrl={profile.imageUrl} onChangeImage={() => {}} />
+          <View style={{ flex: 0.9 }}>
+            <View style={{ flex: 1, height: 40 }} />
+            <View
+              style={{ flex: 1, backgroundColor: 'white', height: 40, borderTopRightRadius: 18 }}
+            />
+          </View>
+        </View>
         <View
           style={{
             backgroundColor: 'white',
-            borderRadius: 18,
             paddingHorizontal: 20,
-            paddingTop: 50,
             paddingBottom: 20,
           }}
         >
-          <CachedImage
-            imageStyle={[
-              globalStyles.profileContainer,
-              {
-                flex: 1,
-                aspectRatio: 1,
-                borderRadius: 10,
-                backgroundColor: theme.colors.disabled,
-                justifyContent: 'center',
-              },
-            ]}
-            source={
-              !profile.imageUrl || imagesNotValid.has(profile.imageUrl)
-                ? defaultProfile
-                : profile.imageUrl
-            }
-            resizeMode={'cover'}
-            onError={() => setImagesNotValid(prev => prev.add(profile.imageUrl))}
-            loadingImageComponent={LoadingSpinner}
-          />
           <View style={{ paddingTop: 15 }}>
             <PortfolioView
               profile={profile}

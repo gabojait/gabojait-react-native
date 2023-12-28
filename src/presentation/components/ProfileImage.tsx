@@ -1,11 +1,10 @@
-import { StyleProp, View, ViewStyle } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import React from 'react';
-import { makeStyles, useTheme } from '@rneui/themed';
+import { StyleProp, TouchableOpacity, View, ViewStyle } from 'react-native';
+import React, { useEffect } from 'react';
+import { Icon, makeStyles, useTheme } from '@rneui/themed';
 import DocumentPicker, { DocumentPickerResponse, types } from 'react-native-document-picker';
 import LoadingSpinner from '@/presentation/screens/Loading';
 import { CachedImage } from '@georstat/react-native-image-cache';
+import { defaultProfile } from '@/assets/images/imageUrls';
 
 export const ProfileImage = ({
   imageUrl,
@@ -18,6 +17,9 @@ export const ProfileImage = ({
 }) => {
   const styles = useStyles();
   const { theme } = useTheme();
+  useEffect(() => {
+    console.log(imageUrl);
+  }, []);
 
   async function pickNewImage() {
     try {
@@ -31,24 +33,32 @@ export const ProfileImage = ({
     } catch (e) {}
   }
 
-  return !imageUrl ? (
-    <View style={[styles.profileContainer, containerStyle]}>
+  return (
+    <View
+      style={{
+        width: 100,
+        height: 100,
+        borderRadius: 10,
+        backgroundColor: theme.colors.disabled,
+      }}
+    >
       <TouchableOpacity
-        onPress={() => {
-          pickNewImage();
-        }}
-        style={styles.profileTouchArea}
-      >
-        <MaterialIcon name="camera-alt" size={25} color="#6C6C6C" />
-      </TouchableOpacity>
-    </View>
-  ) : (
-    <View style={{ width: 100, borderRadius: 10 }}>
-      <TouchableOpacity
+        style={{ flex: 1 }}
         onPress={() => {
           pickNewImage();
         }}
       >
+        {!imageUrl ? (
+          <Icon
+            type="ionicon"
+            name="camera-outline"
+            size={25}
+            color="#6C6C6C"
+            style={{ flex: 1, width: 100, borderRadius: 10, height: 100, justifyContent: 'center' }}
+          />
+        ) : (
+          <></>
+        )}
         <CachedImage
           style={{
             flex: 1,
@@ -63,7 +73,7 @@ export const ProfileImage = ({
             backgroundColor: theme.colors.disabled,
             justifyContent: 'center',
           }}
-          source={imageUrl}
+          source={imageUrl ?? defaultProfile}
           resizeMode={'cover'}
           loadingImageComponent={LoadingSpinner}
         />

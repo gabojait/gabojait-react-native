@@ -52,13 +52,13 @@ const agreementItems = [
     text: '이용약관에 동의합니다.(필수)',
     value: 'term',
     checked: false,
-    url: 'https://gs97ahninu.notion.site/ab7a6fd5262340e09eb657c569f59454',
+    url: 'https://gabojait-dev.nogamsung.com/docs/service',
   },
   {
     text: '개인정보 수집 및 이용에 동의합니다.(필수)',
     value: 'privacyPolicy',
     checked: false,
-    url: 'https://gs97ahninu.notion.site/29a9af66564b47c0ac758a882adf0b52',
+    url: 'https://gabojait-dev.nogamsung.com/docs/privacy',
   },
 ];
 
@@ -581,7 +581,7 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
               });
             }
           }}
-          containerStyle={{ marginBottom: 40 }}
+          containerStyle={{ marginBottom: 40, paddingTop: 20 }}
         />
       </ScrollView>
     </View>

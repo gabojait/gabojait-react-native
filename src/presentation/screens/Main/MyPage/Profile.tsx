@@ -91,6 +91,9 @@ const ProfileComponent = ({ navigation, route }: ProfileStackParamListProps<'Vie
       onSuccess: () => {
         queryClient.invalidateQueries([profileKeys.myProfile]);
       },
+      onError: (error: Error) => {
+        console.log(`이미지 업로드 실패:${error}`);
+      },
     },
   );
   const profileExist = useMemo(() => isProfileExist(profile), [profile]);
@@ -103,8 +106,14 @@ const ProfileComponent = ({ navigation, route }: ProfileStackParamListProps<'Vie
   const globalStyles = useGlobalStyles();
 
   const PortfolioNotExist = () => (
-    <View>
-      <Text style={{ fontSize: theme.fontSize.md, fontWeight: theme.fontWeight.semibold }}>
+    <View style={{ flex: 1, paddingTop: 20 }}>
+      <Text
+        style={{
+          fontSize: theme.fontSize.lg,
+          fontWeight: theme.fontWeight.bold,
+          marginBottom: 12,
+        }}
+      >
         {profile?.nickname}
       </Text>
       <Text style={{ fontSize: theme.emojiSize.lg, textAlign: 'center' }}>🕺</Text>
@@ -172,13 +181,11 @@ const ProfileComponent = ({ navigation, route }: ProfileStackParamListProps<'Vie
           />
         </View>
       </View>
-
       {isEmptyProfile() ? (
         <View
           style={{
             backgroundColor: 'white',
             paddingHorizontal: 20,
-            paddingVertical: 50,
           }}
         >
           <PortfolioNotExist />
@@ -413,6 +420,14 @@ export const PortfolioView = ({
     return false;
   }
 
+  function isPositionExists() {
+    if (!profile.position || profile.position == Position.None) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   return (
     <View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -426,17 +441,21 @@ export const PortfolioView = ({
           >
             {profile.nickname}
           </Text>
-          <ToggleButton
-            title={KoreanPosition[profile.position ?? Position.None]}
-            titleStyle={styles.profileText3}
-            style={{
-              paddingHorizontal: 18,
-              justifyContent: 'center',
-              borderRadius: theme.radius.smd,
-              height: theme.boxComponentHeight.md,
-            }}
-            onClick={() => {}}
-          />
+          {isPositionExists() ? (
+            <ToggleButton
+              title={KoreanPosition[profile.position ?? Position.None]}
+              titleStyle={styles.profileText3}
+              style={{
+                paddingHorizontal: 18,
+                justifyContent: 'center',
+                borderRadius: theme.radius.smd,
+                height: theme.boxComponentHeight.md,
+              }}
+              onClick={() => {}}
+            />
+          ) : (
+            <></>
+          )}
         </View>
         {rightChild}
       </View>
@@ -528,7 +547,7 @@ const useStyles = makeStyles(theme => ({
   },
   textStyle: {
     fontSize: theme.fontSize.md,
-    fontWeight: theme.fontWeight.semibold,
+    fontWeight: theme.fontWeight.bold,
     textAlign: 'center',
   },
 }));
