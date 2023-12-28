@@ -1,23 +1,35 @@
 import { CustomSwitch } from '@/presentation/components/CustomSwitch';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
-import { useTheme, Text } from '@rneui/themed';
-import React, { useEffect, useState } from 'react';
+import { Text, useTheme } from '@rneui/themed';
+import React, { Suspense, useEffect } from 'react';
 import { View } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AsyncStorageKey } from '@/lib/asyncStorageKey';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryErrorResetBoundary } from 'react-query';
 import { userKeys } from '@/reactQuery/key/UserKeys';
 import { updateNotification } from '@/data/api/accounts';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import LoadingSpinner from '@/presentation/screens/Loading';
+import LoadingSpinner, { Loading } from '@/presentation/screens/Loading';
 import { getUser } from '@/redux/action/login';
+import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 
-const AlarmSetting = ({ navigation }: MainStackScreenProps<'AlarmSetting'>) => {
+const AlarmSetting = ({ navigation, route }: MainStackScreenProps<'MoreReview'>) => {
+  const { reset } = useQueryErrorResetBoundary();
+
+  return (
+    <Suspense fallback={Loading()}>
+      <Error404Boundary onReset={reset} message="리뷰가 존재하지 않습니다">
+        <AlarmSettingComponent navigation={navigation} route={route} />
+      </Error404Boundary>
+    </Suspense>
+  );
+};
+
+const AlarmSettingComponent = ({ navigation, route }: MainStackScreenProps<'AlarmSetting'>) => {
   const { theme } = useTheme();
   const { mutate } = useMutation(
     userKeys.updateNotification,
     (isNotified: boolean) => updateNotification(isNotified),
     {
+      useErrorBoundary: true,
       onSuccess: async () => {
         dispatch(getUser());
       },
@@ -34,8 +46,12 @@ const AlarmSetting = ({ navigation }: MainStackScreenProps<'AlarmSetting'>) => {
     mutate(!user?.isNotified);
   }
 
-  if (loading) return <LoadingSpinner />;
-  if (error) return <></>;
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+  if (error) {
+    return <></>;
+  }
 
   return (
     <View style={{ backgroundColor: 'white', flex: 1 }}>

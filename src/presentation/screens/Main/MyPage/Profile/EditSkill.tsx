@@ -27,18 +27,6 @@ const EditSkill = () => {
   }, [data?.skills]);
   const temporarySkillId = useRef(data?.skills?.length || 0);
 
-  useEffect(() => {
-    console.log('경력 변경 감지');
-    skills.map(value => {
-      console.log(`{skillId: ${value.skillId}, `);
-      console.log(`isExperienced: ${value.isExperienced}, `);
-      console.log(`level: ${value.level}, `);
-      console.log(`skillId: ${value.skillId}, `);
-      console.log(`skillName: ${value.skillName}, `);
-      console.log(`updatedAt: ${value.updatedAt}}`);
-    });
-  }, [skills]);
-
   function initializeSkills() {
     if (!data?.skills) {
       return [];
@@ -77,6 +65,18 @@ const EditSkill = () => {
     }
   }
 
+  useEffect(() => {
+    console.log('기술 변경 감지');
+    skills.map(value => {
+      console.log(`{skillId: ${value.skillId}, `);
+      console.log(`isExperienced: ${value.isExperienced}, `);
+      console.log(`level: ${value.level}, `);
+      console.log(`skillId: ${value.skillId}, `);
+      console.log(`skillName: ${value.skillName}, `);
+      console.log(`updatedAt: ${value.updatedAt}}`);
+    });
+  }, [skills]);
+
   return (
     <ScrollView style={{ padding: 20, backgroundColor: 'white', flex: 1 }}>
       <Text style={{ fontSize: 20, fontWeight: '600' }}>기술스택</Text>
@@ -86,27 +86,21 @@ const EditSkill = () => {
           value={Level[skill.level ?? 'low']}
           title={skill.skillName}
           onTitleChange={title => {
-            if (skill.skillId) {
-              dispatch(updateSkill(skill.skillId, { ...skill, skillName: title }));
-            }
+            dispatch(updateSkill(skill.skillId!, { ...skill, skillName: title }));
           }}
           isChecked={skill.isExperienced ?? false}
           onCheckboxChange={checked => {
-            if (skill.skillId) {
-              dispatch(updateSkill(skill.skillId, { ...skill, isExperienced: checked }));
-            }
+            dispatch(updateSkill(skill.skillId!, { ...skill, isExperienced: checked }));
           }}
           onSliderChange={value => {
-            if (skill.skillId) {
-              dispatch(
-                updateSkill(skill.skillId, {
-                  ...skill,
-                  level: Object.entries(Level).find(
-                    ([_, lvl]) => lvl == value,
-                  )?.[0] as keyof typeof Level,
-                }),
-              );
-            }
+            dispatch(
+              updateSkill(skill.skillId!, {
+                ...skill,
+                level: Object.entries(Level).find(
+                  ([_, lvl]) => lvl == value,
+                )?.[0] as keyof typeof Level,
+              }),
+            );
           }}
           onDelete={() => {
             handleDelete(skill);

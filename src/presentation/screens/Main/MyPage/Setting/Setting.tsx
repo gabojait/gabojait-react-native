@@ -39,6 +39,7 @@ const MenuItem = ({
         paddingHorizontal: 20,
         borderTopWidth: 1,
         borderTopColor: theme.colors.disabled,
+        alignItems: 'center',
       }}
     >
       <Text

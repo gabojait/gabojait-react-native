@@ -145,6 +145,11 @@ const useGlobalStyles = makeStyles(theme => ({
     color: theme.colors.black,
     lineHeight: 22,
   },
+  contentTitle: {
+    fontSize: 17,
+    fontWeight: theme.fontWeight.bold,
+    color: theme.colors.black,
+  },
   profileContainer: {
     position: 'absolute',
     width: 100,

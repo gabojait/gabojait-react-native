@@ -196,7 +196,7 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
     );
     return !validatorResults.find(result => result.state === ValidatorState.invalid);
   };
-
+  const [authCodeDisable, setAuthCodeDisable] = useState(false);
   const [lastEmailVerified, setLastEmailVerified] = useState('');
 
   const stateSeperatedForm: RegisterRequestForm = {
@@ -346,9 +346,11 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
             placeholder="아이디 입력"
             rightChildren={
               <OutlinedButton
-                style={{ flex: 1 }}
+                style={{ flex: 1, height: theme.boxComponentHeight.xl }}
                 title="중복확인"
                 size="sm"
+                buttonStyle={{ marginVertical: -5 }}
+                containerStyle={{ height: theme.boxComponentHeight.xl }}
                 onPress={() => {
                   dispatch(signOut());
                   stateSeperatedForm.username?.validate();
@@ -369,9 +371,11 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
             shape={'round'}
             rightChildren={
               <OutlinedButton
-                style={{ flex: 1 }}
+                style={{ flex: 1, height: theme.boxComponentHeight.xl }}
                 title="중복확인"
                 size="sm"
+                buttonStyle={{ marginVertical: -5 }}
+                containerStyle={{ height: theme.boxComponentHeight.xl }}
                 onPress={async () => {
                   dispatch(signOut());
                   await stateSeperatedForm.nickname?.validate();
@@ -411,10 +415,11 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
               <OutlinedButton
                 title="인증하기"
                 size="sm"
-                style={{ flex: 1 }}
+                style={{ flex: 1, height: theme.boxComponentHeight.xl }}
                 onPress={() => {
                   dispatch(signOut());
                   stateSeperatedForm.email?.validate();
+                  setAuthCodeDisable(false);
                   // if (registerState.email && emailRegex.test(registerState.email)) {
                   //   emailDupCheckMutation.mutate(registerState.email!);
                   // }
@@ -424,18 +429,21 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
           />
         </View>
         {!authCodeCollapsed && (
-          <View style={[styles.item, { marginTop: -13 }]}>
+          <View style={[styles.item, { marginTop: 0 }]}>
             <CustomInput
               shape="round"
               placeholder="인증번호 입력"
+              inputContainerStyle={{ height: theme.boxComponentHeight.xl }}
               rightChildren={
                 <OutlinedButton
                   title="인증확인"
                   size="sm"
-                  style={{ flex: 1 }}
+                  style={{ flex: 1, height: theme.boxComponentHeight.xl }}
+                  disabled={authCodeDisable}
                   onPress={() => {
                     if (lastEmailVerified === stateSeperatedForm.email?.value) {
                       stateSeperatedForm.verificationCode?.validate();
+                      setAuthCodeDisable(true);
                     }
                     // if (registerState.authCode && authCodeRegex.test(registerState.authCode)) {
                     //   emailVerificationMutation.mutate({
@@ -499,6 +507,7 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
               style={[
                 styles.toggleButton,
                 registerState.gender == Gender.Female ? styles.active : null,
+                { height: theme.boxComponentHeight.xl },
               ]}
               titleStyle={registerState.gender == Gender.Female ? styles.active : styles.disabled}
             />
@@ -510,6 +519,7 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
               style={[
                 styles.toggleButton,
                 registerState.gender == Gender.Male ? styles.active : null,
+                { height: theme.boxComponentHeight.xl },
               ]}
               titleStyle={registerState.gender == Gender.Male ? styles.active : styles.disabled}
             />

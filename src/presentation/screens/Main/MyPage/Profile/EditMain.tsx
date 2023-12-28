@@ -150,23 +150,27 @@ const EditMain = ({ navigation }: ProfileStackParamListProps<'EditMain'>) => {
         }}
         style={{ marginBottom: theme.spacing.xl }}
       >
-        <ToggleButton
-          title={mapPositionToKorean(currentPosition)}
-          titleStyle={{
-            fontSize: theme.fontSize.md,
-            fontWeight: '300',
-            textAlign: 'center',
-            flex: 1,
-          }}
-          style={{
-            borderRadius: 12,
-            padding: -10,
-            width: ScreenWidth * 0.3,
-            marginBottom: 10,
-            backgroundColor: theme.colors.primary,
-            height: theme.boxComponentHeight.md,
-          }}
-        />
+        {currentPosition == Position.None ? (
+          <></>
+        ) : (
+          <ToggleButton
+            title={mapPositionToKorean(currentPosition)}
+            titleStyle={{
+              fontSize: theme.fontSize.md,
+              fontWeight: '300',
+              textAlign: 'center',
+              flex: 1,
+            }}
+            style={{
+              borderRadius: 12,
+              padding: -10,
+              width: ScreenWidth * 0.3,
+              marginBottom: 10,
+              backgroundColor: theme.colors.primary,
+              height: theme.boxComponentHeight.md,
+            }}
+          />
+        )}
       </BaseCard>
       <CardWrapper style={[globalStyles.card, { marginBottom: theme.spacing.xl, padding: 20 }]}>
         <Text style={{ fontSize: theme.fontSize.md, fontWeight: theme.fontWeight.bold }}>

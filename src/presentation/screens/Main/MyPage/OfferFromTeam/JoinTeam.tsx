@@ -6,16 +6,16 @@ import { MainStackScreenProps } from '@/presentation/navigation/types';
 import useGlobalStyles from '@/presentation/styles';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
 import React, { Suspense, useEffect, useState } from 'react';
-import { Text, ScrollView, View } from 'react-native';
-import { UseQueryResult, useQuery, useQueryClient, useQueryErrorResetBoundary } from 'react-query';
-import {} from '../../Home/Group/PositionSelector';
+import { ScrollView, View } from 'react-native';
+import { useQuery, useQueryClient, useQueryErrorResetBoundary, UseQueryResult } from 'react-query';
 import { ApplyPositionCard, RecruitStatusType } from '@/presentation/components/ApplyPositionCard';
 import PositionRecruiting from '@/presentation/model/PositionRecruitng';
 import BriefOfferDto from '@/data/model/Offer/BriefOfferDto';
-import { applyToTeam, decideOfferFromTeam } from '@/data/api/offer';
+import { decideOfferFromTeam } from '@/data/api/offer';
 import { offerKeys } from '@/reactQuery/key/OfferKeys';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { Loading } from '@/presentation/screens/Loading';
+import { mapTeamDtoToPositionRecruiting } from '@/presentation/model/mapper/mapTeamDtoToPositionRecruiting';
 
 const JoinTeam = ({ navigation, route }: MainStackScreenProps<'JoinTeam'>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -40,7 +40,7 @@ const TeamDetailComponent = ({ navigation, route }: MainStackScreenProps<'JoinTe
       useErrorBoundary: true,
     },
   );
-  const positions = data?.teamMemberCnts || [];
+  const positions = mapTeamDtoToPositionRecruiting(data) || [];
   const { mutation: decideMutation } = useMutationDialog<[number, boolean], unknown>(
     offerKeys.offerToTeam,
     (args: [number, boolean]) => decideOfferFromTeam(...args),
@@ -50,7 +50,7 @@ const TeamDetailComponent = ({ navigation, route }: MainStackScreenProps<'JoinTe
         content: '팀에 합류하셨습니다!',
       },
       onSuccessClick() {
-        queryClient.invalidateQueries([teamKeys.getTeam, teamId]);
+        queryClient.invalidateQueries([teamKeys.myTeam, teamId]);
       },
     },
   );

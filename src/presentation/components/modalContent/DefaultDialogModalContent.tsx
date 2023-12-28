@@ -1,9 +1,9 @@
-import { Button, ButtonProps, Text, useTheme } from '@rneui/themed';
-import { Alert, Modal, StyleSheet, View } from 'react-native';
-import DatePicker from 'react-native-date-picker';
+import { ButtonProps, Text, useTheme } from '@rneui/themed';
+import { StyleSheet, View } from 'react-native';
 import { FilledButton } from '../Button';
 import React from 'react';
 import { WIDTH } from '@/presentation/utils/util';
+import useGlobalStyles from '@/presentation/styles';
 
 interface DefaultDialogModalContentProps {
   title?: string;
@@ -14,14 +14,25 @@ interface DefaultDialogModalContentProps {
 
 const DefaultDialogModalContent: React.FC<DefaultDialogModalContentProps> = props => {
   const { theme } = useTheme();
+  const globalstyles = useGlobalStyles();
   return (
     <View style={style.container}>
       {props.title && (
-        <Text h3 style={{ textAlign: 'center', marginVertical: 10, marginBottom: 20 }}>
+        <Text
+          style={[
+            { textAlign: 'center', marginVertical: 10, marginBottom: 20 },
+            globalstyles.modalTitle,
+          ]}
+        >
           {props.title}
         </Text>
       )}
-      <Text style={{ margin: 20, marginTop: 0, fontSize: theme.fontSize.md, textAlign: 'center' }}>
+      <Text
+        style={[
+          { margin: 20, marginTop: 0, fontSize: theme.fontSize.md, textAlign: 'center' },
+          globalstyles.modalContent,
+        ]}
+      >
         {props.text}
       </Text>
       {props.yesButton ? <FilledButton {...props.yesButton} /> : null}

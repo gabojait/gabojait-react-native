@@ -6,6 +6,7 @@ import {
   BottomInputModalContent,
   BottomInputModalContentProps,
 } from '@/presentation/components/modalContent/BottomInputModalContent';
+import { useTheme } from '@rneui/themed';
 
 export type InputModalProps = BottomInputModalContentProps & {
   inputProps?: CustomInputProps;
@@ -25,11 +26,13 @@ export const InputModalContent = forwardRef(
   ) => {
     const [input, setInput] = useState('');
     const { inputProps, inputProcessor, ...bottomInputModalContentProps } = props;
+    const { theme } = useTheme();
     const inputComponent = () => (
       <CustomInput
         ref={ref}
         value={input}
         shape="round"
+        inputContainerStyle={{ height: theme.boxComponentHeight.xl }}
         onChangeText={value => {
           setInput(inputProcessor ? inputProcessor(value) : value);
         }}

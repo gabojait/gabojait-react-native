@@ -86,7 +86,7 @@ export const BottomInputModalContent: React.FC<BottomInputModalContentProps> = (
               >
                 <FilledButton
                   style={{ paddingVertical: 18 }}
-                  buttonStyle={{ backgroundColor: theme.colors.primary, width: WIDTH / 2 - 27 }}
+                  buttonStyle={{ backgroundColor: theme.colors.disabled, width: WIDTH / 2 - 27 }}
                   title={noButton?.title}
                   titleStyle={style.buttonTitle}
                   onPress={() => noButton?.onPress()}
@@ -94,7 +94,7 @@ export const BottomInputModalContent: React.FC<BottomInputModalContentProps> = (
                 />
                 <FilledButton
                   style={{ paddingVertical: 18 }}
-                  buttonStyle={{ backgroundColor: theme.colors.disabled, width: WIDTH / 2 - 27 }}
+                  buttonStyle={{ backgroundColor: theme.colors.primary, width: WIDTH / 2 - 27 }}
                   title={yesButton?.title}
                   titleStyle={style.buttonTitle}
                   onPress={() => {

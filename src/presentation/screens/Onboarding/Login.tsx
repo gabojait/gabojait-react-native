@@ -87,7 +87,6 @@ const Login = ({ navigation }: OnboardingScreenProps<'Login'>) => {
                 borderColor: theme.colors.grey3,
                 height: theme.boxComponentHeight.xl,
               }}
-              containerStyle={{ paddingBottom: 20 }}
             />
             <CustomInput
               placeholder={'비밀번호를 입력하세요'}

@@ -77,7 +77,7 @@ const UserModifier = ({ navigation }: MainStackScreenProps<'UserModifier'>) => {
         {t('changeNickNm')}
       </Text>
       <CustomInput
-        containerStyle={{ marginBottom: theme.spacing.md }}
+        inputContainerStyle={{ height: theme.boxComponentHeight.xl }}
         shape="round"
         value={nickname}
         disabled={dupChecked}
@@ -86,6 +86,8 @@ const UserModifier = ({ navigation }: MainStackScreenProps<'UserModifier'>) => {
       />
       <FilledButton
         style={{ marginBottom: theme.spacing.md }}
+        buttonStyle={{ marginVertical: -5 }}
+        containerStyle={{ height: theme.boxComponentHeight.xl }}
         title={dupChecked ? t('action_confirm') : t('action_checkDup')}
         disabled={!nicknameRegex.test(nickname)}
         onPress={() => {
@@ -98,6 +100,7 @@ const UserModifier = ({ navigation }: MainStackScreenProps<'UserModifier'>) => {
       />
       <Text
         style={{
+          paddingTop: 43,
           marginBottom: theme.spacing.md,
           fontSize: theme.fontSize.md,
           fontWeight: theme.fontWeight.semibold,
@@ -106,7 +109,7 @@ const UserModifier = ({ navigation }: MainStackScreenProps<'UserModifier'>) => {
         비밀번호 변경
       </Text>
       <CustomInput
-        containerStyle={{ marginBottom: theme.spacing.md }}
+        inputContainerStyle={{ height: theme.boxComponentHeight.xl }}
         shape="round"
         secureTextEntry
         value={passwords[0]}
@@ -114,7 +117,7 @@ const UserModifier = ({ navigation }: MainStackScreenProps<'UserModifier'>) => {
         placeholder="새로운 비밀번호를 입력하세요"
       />
       <CustomInput
-        containerStyle={{ marginBottom: theme.spacing.md }}
+        inputContainerStyle={{ height: theme.boxComponentHeight.xl }}
         shape="round"
         secureTextEntry
         value={passwords[1]}
@@ -122,6 +125,8 @@ const UserModifier = ({ navigation }: MainStackScreenProps<'UserModifier'>) => {
         placeholder="다시 한번 입력하세요"
       />
       <FilledButton
+        buttonStyle={{ marginVertical: -5 }}
+        containerStyle={{ height: theme.boxComponentHeight.xl }}
         title="완료"
         disabled={
           !(passwords[0] == passwords[1]) ||

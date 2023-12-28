@@ -1,15 +1,14 @@
 import {
-  GetOfferFromOthersProps,
   acceptOfferFromUser,
+  GetOfferFromOthersProps,
   getOffersFromUser,
   rejectOfferFromUser,
 } from '@/data/api/offer';
-import { Position } from '@/data/model/type/Position';
 import { OutlinedButton } from '@/presentation/components/Button';
 import CardWrapper from '@/presentation/components/CardWrapper';
 import { RatingBar } from '@/presentation/components/RatingBar';
 import { offerKeys } from '@/reactQuery/key/OfferKeys';
-import { PageRequest, useModelList } from '@/reactQuery/util/useModelList';
+import { useModelList } from '@/reactQuery/util/useModelList';
 import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { makeStyles, useTheme } from '@rneui/themed';
 import React, { Suspense, useEffect } from 'react';
@@ -17,6 +16,7 @@ import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 import { PositionTabParamList, PositionTabParamListProps } from '@/presentation/navigation/types';
 import { Loading } from '@/presentation/screens/Loading';
 import { mapToSeekingTeamKey } from '@/presentation/utils/util';
+import { teamKeys } from '@/reactQuery/key/TeamKeys';
 
 const ApplyList = ({
   navigation,
@@ -58,7 +58,7 @@ const ApplyListComponent = ({
   );
 
   const { mutation: acceptOfferMutation } = useMutationDialog(
-    offerKeys.acceptOfferFromUser,
+    [offerKeys.acceptOfferFromUser, teamKeys.myTeam],
     async (args: [number, boolean]) => acceptOfferFromUser(...args),
     'CENTER',
   );
