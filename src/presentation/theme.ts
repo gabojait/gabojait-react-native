@@ -53,6 +53,7 @@ declare module '@rneui/themed' {
       lg: number;
     };
     fontSize: {
+      xxs: number;
       xs: number;
       sm: number;
       md: number;
@@ -143,6 +144,7 @@ export const theme = createTheme({
     xl: 30,
   },
   fontSize: {
+    xxs: 10,
     xs: 12,
     sm: 14,
     md: 17,

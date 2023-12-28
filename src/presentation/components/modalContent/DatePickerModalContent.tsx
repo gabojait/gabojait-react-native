@@ -1,12 +1,10 @@
-import { Button, CheckBox, Text, useTheme } from '@rneui/themed';
-import { Alert, Modal, StyleSheet, View } from 'react-native';
+import { CheckBox, Text, useTheme } from '@rneui/themed';
+import { StyleSheet, View } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import { FilledButton } from '../Button';
 import React, { ReactNode, useState } from 'react';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import { useAppSelector } from '@/redux/hooks';
-import { profileReducer } from '@/redux/reducers/profileReducer';
-import useModal from '../modal/useModal';
+import useGlobalStyles from '@/presentation/styles';
 
 export interface DatePickerModalProps {
   title?: ReactNode;
@@ -30,7 +28,7 @@ const DatePickerModalContent: React.FC<DatePickerModalProps> = ({
 }) => {
   const { theme } = useTheme();
   const [isCurrent, setIsCurrent] = useState(initialIsCurrent);
-
+  const globalstyles = useGlobalStyles();
   const handleIsCurrentChange = (newValue: boolean) => {
     setIsCurrent(newValue);
     osIsCurrentChange?.(newValue);
@@ -47,9 +45,7 @@ const DatePickerModalContent: React.FC<DatePickerModalProps> = ({
       }}
     >
       <View style={{ margin: 20 }}>
-        <Text h3 style={{ textAlign: 'center' }}>
-          {title}
-        </Text>
+        <Text style={[{ textAlign: 'center' }, globalstyles.modalTitle]}>{title}</Text>
       </View>
       <DatePicker
         mode="date"

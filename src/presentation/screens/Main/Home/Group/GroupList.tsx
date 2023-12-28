@@ -1,7 +1,7 @@
 import FloatingButton from '@/presentation/components/FloatingButton';
 import { makeStyles, useTheme } from '@rneui/themed';
 import React, { Suspense, useEffect } from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList, Text, View } from 'react-native';
 import TeamBanner from '@/presentation/components/TeamBanner';
 import { BoardStackParamListProps } from '@/presentation/navigation/types';
 import { getRecruiting, GetRecruitingProps } from '@/data/api/team';
@@ -16,6 +16,8 @@ import { Loading } from '@/presentation/screens/Loading';
 import { BoardSwitchActionType } from '@/redux/action_types/boardSwitchTypes';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { mapTeamDtoToPositionRecruiting } from '@/presentation/model/mapper/mapTeamDtoToPositionRecruiting';
+import BottomModalContent from '@/presentation/components/modalContent/BottomModalContent';
+import useGlobalStyles from '@/presentation/styles';
 
 const GroupList = ({ navigation, route }: BoardStackParamListProps<'GroupList'>) => {
   return (
@@ -51,7 +53,7 @@ const GroupListComponent = ({ navigation }: BoardStackParamListProps<'GroupList'
   });
   const dispatch = useAppDispatch();
   const { switchTitle } = useAppSelector(state => state.boardSwitchReducer);
-
+  const globalstyles = useGlobalStyles();
   async function getGuideModeModalKey() {
     try {
       const value = await AsyncStorage.getItem(GUIDE_MODE_MODAL_KEY);
@@ -81,43 +83,43 @@ const GroupListComponent = ({ navigation }: BoardStackParamListProps<'GroupList'
     getGuideModeModalKey().then(result => {
       console.log(`result 값 확인: ${result}`);
       if (!result) {
-        // modal?.show({
-        //   content: (
-        //     <BottomModalContent
-        //       header="팀 찾기 모드로 변경하시겠어요?"
-        //       children={
-        //         <View>
-        //           <Text style={styles.text}>팀 찾기 모드로 변경하면</Text>
-        //           <Text style={styles.text}> 원하는 팀을 찾아서 함께할 수 있습니다!</Text>
-        //         </View>
-        //       }
-        //       yesButton={{
-        //         title: '변경하기',
-        //         onPress: () => {
-        //           navigation.navigate('TeamMate', {
-        //             screen: 'TeammateList',
-        //             params: {
-        //               screen: 'Frontend',
-        //             },
-        //           });
-        //           modal.hide();
-        //         },
-        //       }}
-        //       noButton={{
-        //         title: '나중에 하기',
-        //         onPress: () => {
-        //           modal.hide();
-        //         },
-        //       }}
-        //       neverSeeAgainShow={true}
-        //       onNeverSeeAgainPress={() => {
-        //         return handleNeverSeeAgain();
-        //       }}
-        //       onBackgroundPress={modal?.hide}
-        //     />
-        //   ),
-        //   modalProps: { animationType: 'slide', justifying: 'bottom' },
-        // });
+        modal?.show({
+          content: (
+            <BottomModalContent
+              header={<Text style={globalstyles.modalTitle}>팀 찾기 모드로 변경하시겠어요?</Text>}
+              inputContent={
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.text}>팀 찾기 모드로 변경하면</Text>
+                  <Text style={styles.text}> 원하는 팀을 찾아서 함께할 수 있습니다!</Text>
+                </View>
+              }
+              yesButton={{
+                title: '변경하기',
+                onPress: () => {
+                  navigation.navigate('TeamMate', {
+                    screen: 'TeammateList',
+                    params: {
+                      screen: 'Frontend',
+                    },
+                  });
+                  modal.hide();
+                },
+              }}
+              noButton={{
+                title: '나중에 하기',
+                onPress: () => {
+                  modal.hide();
+                },
+              }}
+              neverSeeAgainShow={true}
+              onNeverSeeAgainPress={() => {
+                return handleNeverSeeAgain();
+              }}
+              onBackgroundPress={modal?.hide}
+            />
+          ),
+          modalProps: { animationType: 'slide', justifying: 'bottom' },
+        });
       }
     });
   };

@@ -54,7 +54,7 @@ const BottomModalContent: React.FC<BottomSlideModalContentProps> = props => {
           bottom: 0,
         }}
       >
-        <View style={[style.modal, { paddingHorizontal: 20, paddingBottom: 70 }]}>
+        <View style={[style.modal, { paddingHorizontal: 20, paddingBottom: 30 }]}>
           {props.header}
           <View style={[style.children, { width: '100%' }]}>{props.inputContent}</View>
           <View
@@ -96,19 +96,19 @@ const BottomModalContent: React.FC<BottomSlideModalContentProps> = props => {
             ) : (
               <></>
             )}
-            {props.neverSeeAgainShow ? (
-              <TouchableOpacity
-                style={{ paddingVertical: 7 }}
-                onPress={() => {
-                  props.onNeverSeeAgainPress?.();
-                }}
-              >
-                <Text style={style.neverSeeText}>다시보지 않기</Text>
-              </TouchableOpacity>
-            ) : (
-              <></>
-            )}
           </View>
+          {props.neverSeeAgainShow ? (
+            <TouchableOpacity
+              style={{ paddingTop: 15 }}
+              onPress={() => {
+                props.onNeverSeeAgainPress?.();
+              }}
+            >
+              <Text style={style.neverSeeText}>다시보지 않기</Text>
+            </TouchableOpacity>
+          ) : (
+            <></>
+          )}
         </View>
       </KeyboardAvoidingView>
     </>

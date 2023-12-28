@@ -60,7 +60,7 @@ const FavoriteTeams = ({ navigation, route }: MainStackScreenProps<'BookMark'>) 
   }, [navigation]);
 
   return (
-    <View style={{ backgroundColor: 'white', flex: 1 }}>
+    <View style={{ backgroundColor: 'white', flex: 1, paddingHorizontal: 20 }}>
       <FlatList
         showsHorizontalScrollIndicator={false}
         keyExtractor={item => item.projectName.concat(item.teamId)}

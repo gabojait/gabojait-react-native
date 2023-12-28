@@ -1,6 +1,6 @@
 import { CheckBox, makeStyles, Text, useTheme } from '@rneui/themed';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Animated, Easing, ScrollView, View } from 'react-native';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { ScrollView, View } from 'react-native';
 import { FilledButton, OutlinedButton } from '@/presentation/components/Button';
 import { OnboardingScreenProps } from '@/presentation/navigation/types';
 import CustomInput from '@/presentation/components/CustomInput';
@@ -33,13 +33,11 @@ import { useMutationDialog } from '@/reactQuery/util/useMutationDialog';
 import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import '@/lib/date';
-import useForm from '@/presentation/components/useForm';
 import useValidator, {
   FormField,
   ValidationLevel,
 } from '@/presentation/screens/Onboarding/useValidator';
 import useFormField from '@/presentation/screens/Onboarding/useFormField';
-import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent';
 import messaging from '@react-native-firebase/messaging';
 
 export type RegisterRequestForm = { [key in keyof RegisterRequestDto]: FormField<any> };
@@ -75,12 +73,14 @@ const QueryKey = {
   register: (registerDto: RegisterRequestDto) => ['register', registerDto],
 } as const;
 const ValidatorInput = (props: CustomInputProps & { validator: FormField<string> }) => {
+  const { theme } = useTheme();
   return (
     <CustomInput
       {...props}
       value={props.validator.value}
       onChangeText={props.validator.setValue}
       validatorResult={props.validator.state}
+      inputContainerStyle={{ height: theme.boxComponentHeight.xl }}
     />
   );
 };
@@ -339,7 +339,7 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
   return (
     <View>
       <ScrollView style={styles.view} showsVerticalScrollIndicator={false}>
-        <View style={styles.item}>
+        <View>
           <ValidatorInput
             validator={stateSeperatedForm.username!}
             shape={'round'}
@@ -362,7 +362,7 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
             }
           />
         </View>
-        <View style={styles.item}>
+        <View style={{ paddingTop: 7 }}>
           <ValidatorInput
             validator={stateSeperatedForm.nickname!}
             placeholder="닉네임 입력"
@@ -384,7 +384,7 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
             }
           />
         </View>
-        <View style={styles.item}>
+        <View style={[styles.item, { paddingBottom: 20, paddingTop: 7 }]}>
           <ValidatorInput
             shape={'round'}
             placeholder="비밀번호 입력"
@@ -392,7 +392,7 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
             validator={stateSeperatedForm.password!}
           />
         </View>
-        <View style={styles.item}>
+        <View style={[styles.item, { paddingBottom: 20, marginTop: -13 }]}>
           <ValidatorInput
             shape={'round'}
             validator={stateSeperatedForm.passwordReEntered!}
@@ -401,7 +401,7 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
           />
         </View>
 
-        <View style={styles.item}>
+        <View style={{ marginTop: -13 }}>
           <ValidatorInput
             placeholder="이메일 입력"
             shape="round"
@@ -424,7 +424,7 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
           />
         </View>
         {!authCodeCollapsed && (
-          <View style={styles.item}>
+          <View style={[styles.item, { marginTop: -13 }]}>
             <CustomInput
               shape="round"
               placeholder="인증번호 입력"
@@ -453,8 +453,7 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
           </View>
         )}
 
-        <View>
-          <Text style={styles.label}>생년월일 입력</Text>
+        <View style={{ marginTop: 7 }}>
           <DropdownButton
             style={{ borderColor: theme.colors.grey3 }}
             text={

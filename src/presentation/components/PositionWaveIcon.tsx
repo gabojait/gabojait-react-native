@@ -5,8 +5,8 @@ import Wave from './wave';
 import { theme } from '../theme';
 
 export interface WaveComponentProps {
-  currentCnt: number;
-  recruitNumber: number;
+  currentCnt?: number;
+  recruitNumber?: number;
   textView?: ReactNode;
   color?: string;
   radious: number;

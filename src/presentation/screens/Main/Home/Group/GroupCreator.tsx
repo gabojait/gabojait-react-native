@@ -58,21 +58,6 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
     },
   );
 
-  const positionToCntField: {
-    [key in Position]:
-      | 'managerMaxCnt'
-      | 'backendMaxCnt'
-      | 'frontendMaxCnt'
-      | 'designerMaxCnt'
-      | 'otherMaxCnt';
-  } = {
-    [Position.Manager]: 'managerMaxCnt',
-    [Position.Backend]: 'backendMaxCnt',
-    [Position.Frontend]: 'frontendMaxCnt',
-    [Position.Designer]: 'designerMaxCnt',
-    [Position.None]: 'otherMaxCnt',
-  };
-
   function handleCreateTeam() {
     createTeamMutation.mutate(teamCreateState);
   }
