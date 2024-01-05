@@ -74,4 +74,4 @@ buck-out/
 /android/app/release.keystore
 .env*
 android/app/releaseStaging/
-
+android/AndroidSecretSecure

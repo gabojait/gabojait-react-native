@@ -1,0 +1,3 @@
+[submodule "android/AndroidSecretSecure"]
+	path = android/AndroidSecretSecure
+	url = https://github.com/gabojait/AndroidSecretSecure.git
