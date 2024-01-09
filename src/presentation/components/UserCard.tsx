@@ -43,7 +43,7 @@ export const UserCard = ({
             gap: 20,
           }}
         >
-          <View style={{ height: '100%', display: 'flex' }}>
+          <View style={{ display: 'flex', width: 100, height: 100 }}>
             <CachedImage
               style={{
                 flex: 1,
@@ -73,7 +73,7 @@ export const UserCard = ({
               <RatingBar ratingScore={item.rating} size={20} />
               <Text style={styles.score}>{item.rating}</Text>
             </View>
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+            <View style={{ flexDirection: 'row' }}>
               {item.skills.length === 0 && <View style={{ height: 38, padding: 10 }} />}
               {item.skills?.map(skill => (
                 <Chip
@@ -83,6 +83,8 @@ export const UserCard = ({
                       borderRadius: theme.radius.xs,
                       padding: 5,
                       borderWidth: 0,
+                      marginEnd: 5,
+                      marginBottom: 5,
                     },
                   ]}
                 >
