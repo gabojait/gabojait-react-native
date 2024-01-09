@@ -2,8 +2,8 @@ import { FilledButton } from '@/presentation/components/Button';
 import CardWrapper from '@/presentation/components/CardWrapper';
 import { RatingInput } from '@/presentation/components/RatingInput';
 import { Text, useTheme } from '@rneui/themed';
-import React, { Suspense, useRef, useState } from 'react';
-import { TextInput, View } from 'react-native';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
+import { ScrollView, TextInput, View } from 'react-native';
 import CustomInput from '@/presentation/components/CustomInput';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import PagerView from 'react-native-pager-view';
@@ -79,11 +79,12 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
   const [reviewResultState, setReviewResultState] = useState<ReviewAnswer[]>([]);
   const [reviewState, setReviewState] = useState<ReviewQuestionsProps[]>([]);
   const [pageCount, setPageCount] = useState<number>(1);
-  const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
-
+  const [buttonDisabled, setButtonDisabled] = useState<boolean>(true);
+  const [reviewValidation, setReviewValidation] = useState({ post: false, rating: false });
+  const [answer, setAnswer] = useState<ReviewAnswer>({ teamMemberId: '0', post: '', rating: '' });
   function updateTextReview(teamMemberId: string, text: string) {
-    const questionId = 0;
-    const otherQuestionId = 1;
+    const questionId = 1;
+    const otherQuestionId = 0;
     const newReview: ReviewQuestionsProps = {
       post: text,
       rating: '',
@@ -91,7 +92,7 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
       questionId: questionId,
     };
     const otherReviews: ReviewQuestionsProps = reviewState.find(
-      item => item.questionId != questionId,
+      item => item.questionId == otherQuestionId,
     ) ?? { post: '', rating: '', teamMemberId: teamMemberId, questionId: otherQuestionId };
 
     const result: ReviewAnswer[] = [
@@ -102,10 +103,9 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
       },
       newReview,
     ];
-    result.map(item =>
-      console.log(`answer: ${item.post}, rate: ${item.rating}, userId: ${teamMemberId}`),
-    );
+    isValidPost(text);
     setReviewState([otherReviews, newReview]);
+    judgeButtonDisabled();
   }
 
   const updateRatingReview = (teamMemberId: string, score: string) => {
@@ -118,7 +118,7 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
       questionId: questionId,
     };
     const otherReviews: ReviewQuestionsProps = reviewState.find(
-      item => item.questionId != questionId,
+      item => item.questionId == otherQuestionId,
     ) ?? { post: '', rating: '', teamMemberId: teamMemberId, questionId: otherQuestionId };
 
     const result: ReviewAnswer[] = [
@@ -129,12 +129,57 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
       },
       newReview,
     ];
-    result.map(item =>
-      console.log(`answer: ${item.post}, rate: ${item.rating}, teamMemberId: ${teamMemberId}`),
-    );
+    isValidRating(score);
     setReviewState([otherReviews, newReview]);
+    judgeButtonDisabled();
   };
 
+  function mergeReviewAnswer() {
+    mergePostAndRatingToAnswer();
+    setReviewResultState(prevState => [...prevState, answer]);
+  }
+
+  function mergePostAndRatingToAnswer() {
+    setReviewResultState(prevState => [...prevState, answer]);
+  }
+
+  useEffect(() => {
+    const ratingAnswer = reviewState.find(item => item.questionId == 0);
+    const postAnswer = reviewState.find(item => item.questionId == 1);
+    setAnswer(prevState => ({
+      ...prevState,
+      teamMemberId: reviewState[0]?.teamMemberId || '0',
+      rating: ratingAnswer?.rating || 'novalue',
+      post: postAnswer?.post || 'novalue',
+    }));
+  }, [reviewState]);
+
+  function judgeButtonDisabled() {
+    if (reviewValidation.post && reviewValidation.rating) {
+      setButtonDisabled(false);
+    } else {
+      setButtonDisabled(true);
+    }
+  }
+
+  function isValidPost(post: string) {
+    if (post.length != 0) {
+      return setReviewValidation(prevState => ({ ...prevState, post: true }));
+    }
+  }
+
+  function isValidRating(rating: string) {
+    if (parseInt(rating) > 0) {
+      return setReviewValidation(prevState => ({ ...prevState, rating: true }));
+    }
+  }
+
+  function initializeReview() {
+    setReviewState([]);
+    setButtonDisabled(true);
+    setReviewValidation({ post: false, rating: false });
+    setAnswer({ teamMemberId: '', post: '', rating: '' });
+  }
   const moveToNextPage = (index: number) => {
     requestAnimationFrame(() => pagerViewRef.current?.setPage(index));
     setPageCount(pageCount + 1);
@@ -178,8 +223,8 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
         scrollEnabled={false}
       >
         {teamData.teamMembers.map((item, index) => (
-          <View key={item.nickname}>
-            {item.userId != profileData?.userId.toString() ? (
+          <ScrollView key={item.nickname}>
+            {pageCount > 1 ? (
               <CardWrapper
                 style={{ marginLeft: 20, minWidth: 300, marginBottom: 10, marginTop: 2 }}
               >
@@ -294,7 +339,7 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
                 </View>
               </>
             )}
-            <View>
+            <View style={{ paddingTop: 100 }}>
               {item.userId != profileData?.userId.toString() ? (
                 <View>
                   {isLastindex(index) ? (
@@ -325,16 +370,9 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
                       containerStyle={{ marginHorizontal: 70 }}
                       disabled={buttonDisabled}
                       onPress={() => {
-                        setReviewResultState(prevState => [...prevState, ...reviewState]);
-                        console.log('reviewResultState:');
-                        reviewResultState.map(item => {
-                          console.log(
-                            `item.post:${item.post}, item.rating:${item.rating}, item.revieweeUserId:${item.teamMemberId}`,
-                          );
-                        });
-                        setReviewState([]);
+                        mergeReviewAnswer();
+                        initializeReview();
                         moveToNextPage(pageCount);
-                        //setButtonDisabled(true); //초기화
                       }}
                     />
                   )}
@@ -343,7 +381,7 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
                 <></>
               )}
             </View>
-          </View>
+          </ScrollView>
         ))}
       </PagerView>
     </>
