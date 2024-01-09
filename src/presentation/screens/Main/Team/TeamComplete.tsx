@@ -29,13 +29,10 @@ export const TeamComplete = ({ navigation }: MainStackScreenProps<'TeamComplete'
     {
       onSuccessClick() {
         queryClient.invalidateQueries(teamKeys.myTeam);
+        navigation.navigate('CompleteSuccess');
       },
     },
   );
-
-  if (teamComplete.data) {
-    navigation.navigate('CompleteSuccess');
-  }
 
   return (
     <View style={[globalStyles.container]}>
