@@ -32,22 +32,19 @@ function TeamHistoryComponent({ navigation, route }: MainStackScreenProps<'TeamH
       { ...filter, pageFrom: undefined },
     ],
   };
-  const { data, isLoading, error }: UseQueryResult<TeamDto[]> = useQuery(
+  const {
+    data: teamHistory,
+    isLoading,
+    error,
+  }: UseQueryResult<{ data: TeamDto[]; total: number }> = useQuery(
     [reviewKeys.reviewAvailableTeams],
     () => getTeamsToReview(),
     {
       useErrorBoundary: true,
     },
   );
-  const teams = data?.map(item => {
-    const teamCnts = mapTeamDtoToPositionRecruiting(item);
-    return {
-      ...item,
-      teamMemberCnts: teamCnts,
-    };
-  });
 
-  if (!data) {
+  if (!teamHistory) {
     return null;
   }
 
@@ -57,7 +54,15 @@ function TeamHistoryComponent({ navigation, route }: MainStackScreenProps<'TeamH
         <FlatList
           showsHorizontalScrollIndicator={false}
           keyExtractor={(item, _) => item?.projectName.concat(item.teamId)}
-          data={teams || []}
+          data={
+            teamHistory?.data?.map(item => {
+              const teamCnts = mapTeamDtoToPositionRecruiting(item);
+              return {
+                ...item,
+                teamMemberCnts: teamCnts,
+              };
+            }) || []
+          }
           renderItem={({ item }) => (
             <TeamBanner
               teamMembersCnt={item.teamMemberCnts ?? []}
