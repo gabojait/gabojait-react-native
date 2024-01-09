@@ -154,7 +154,7 @@ dependencies {
 
     debugImplementation("com.facebook.flipper:flipper-fresco-plugin:${FLIPPER_VERSION}")
     if (hermesEnabled.toBoolean()) {
-        implementation("com.facebook.react:heremes-android")
+        implementation("com.facebook.react:hermes-android")
     } else {
         implementation jscFlavor
     }
