@@ -8,7 +8,7 @@ import { RootStackNavigationProps } from '@/presentation/navigation/RootNavigati
 import { useModelList } from '@/reactQuery/util/useModelList';
 import { getNotifications, makeReadNotification } from '@/data/api/notification';
 import { Position } from '@/data/model/type/Position';
-import { Swipeable, TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const NotificationQueryKey = {
   all: ['notification'],
@@ -110,18 +110,18 @@ export default function AlertPage({ navigation }: MainStackScreenProps<'AlertPag
                       .replace('MainBottomTabNavigation', { screen: 'Team' });
                   }
                   case AlertType.TEAM_COMPLETE: {
-                    return navigation.replace('TeamReview', { teamId: '' });
+                    return navigation.replace('MainNavigation', { screen: 'TeamHistory' });
                   }
                   // Offer from User to Team
                   case AlertType.USER_OFFER: {
-                    return navigation.replace('ApplyStatus', {
-                      screen: 'Frontend',
+                    return navigation.replace('MainNavigation', {
+                      screen: 'ApplyStatus',
                       params: { position: Position.Frontend },
                     });
                   }
                   // Offer from Team to User
                   case AlertType.TEAM_OFFER: {
-                    return navigation.replace('OfferFromTeamPage');
+                    return navigation.replace('MainNavigation', { screen: 'OfferFromTeamPage' });
                   }
                 }
               }}

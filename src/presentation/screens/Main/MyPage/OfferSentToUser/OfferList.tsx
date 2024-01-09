@@ -75,7 +75,7 @@ const OfferListComponent = ({
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => {
-              navigation.getParent()?.navigate('ProfilePreview', { userId: item.offerId });
+              navigation.getParent()?.navigate('ProfilePreview', { userId: item.user.userId });
             }}
           >
             <UserCard item={item.user} position={Position.Manager} />
