@@ -8,7 +8,7 @@ import CustomInput from '@/presentation/components/CustomInput';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import PagerView from 'react-native-pager-view';
 import ReviewAnswer from '@/data/model/Review/ReviewAnswer';
-import { changeToTitleCase, HEIGHT, WIDTH } from '@/presentation/utils/util';
+import { changeToTitleCase, HEIGHT } from '@/presentation/utils/util';
 import useModal from '@/presentation/components/modal/useModal';
 import { PositionIcon } from '@/presentation/components/PartIcon';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
@@ -24,6 +24,7 @@ import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 import { Loading } from '../../Loading';
 import TeamDto from '@/data/model/Team/TeamDto';
+import SymbolModalContent from '@/presentation/components/modalContent/SymbolModalContent';
 
 interface ReviewQuestionsProps extends ReviewAnswer {
   questionId: number;
@@ -82,6 +83,7 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(true);
   const [reviewValidation, setReviewValidation] = useState({ post: false, rating: false });
   const [answer, setAnswer] = useState<ReviewAnswer>({ teamMemberId: '0', post: '', rating: '' });
+
   function updateTextReview(teamMemberId: string, text: string) {
     const questionId = 1;
     const otherQuestionId = 0;
@@ -95,14 +97,6 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
       item => item.questionId == otherQuestionId,
     ) ?? { post: '', rating: '', teamMemberId: teamMemberId, questionId: otherQuestionId };
 
-    const result: ReviewAnswer[] = [
-      {
-        post: otherReviews.post,
-        rating: otherReviews.rating,
-        teamMemberId: otherReviews.teamMemberId,
-      },
-      newReview,
-    ];
     isValidPost(text);
     setReviewState([otherReviews, newReview]);
     judgeButtonDisabled();
@@ -121,27 +115,14 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
       item => item.questionId == otherQuestionId,
     ) ?? { post: '', rating: '', teamMemberId: teamMemberId, questionId: otherQuestionId };
 
-    const result: ReviewAnswer[] = [
-      {
-        post: otherReviews.post,
-        rating: otherReviews.rating,
-        teamMemberId: otherReviews.teamMemberId,
-      },
-      newReview,
-    ];
     isValidRating(score);
     setReviewState([otherReviews, newReview]);
     judgeButtonDisabled();
   };
 
-  function mergeReviewAnswer() {
-    mergePostAndRatingToAnswer();
-    setReviewResultState(prevState => [...prevState, answer]);
-  }
-
-  function mergePostAndRatingToAnswer() {
-    setReviewResultState(prevState => [...prevState, answer]);
-  }
+  useEffect(() => {
+    warningModal();
+  }, []);
 
   useEffect(() => {
     const ratingAnswer = reviewState.find(item => item.questionId == 0);
@@ -152,7 +133,34 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
       rating: ratingAnswer?.rating || 'novalue',
       post: postAnswer?.post || 'novalue',
     }));
+    console.log(
+      `answer-----answer.teamMemberId: ${answer.teamMemberId} answer.post: ${answer.post} answer.rating: ${answer.rating}`,
+    );
   }, [reviewState]);
+
+  useEffect(() => {
+    reviewResultState.map(item => {
+      console.log(`teamMemberId: ${item.teamMemberId} post: ${item.post} rating: ${item.rating}`);
+    });
+    if (isAllReviewed(reviewResultState, teamData)) {
+      submitReviews();
+    }
+  }, [reviewResultState]);
+
+  function mergeReviewAnswer() {
+    setReviewResultState(prevState => [...prevState, answer]);
+  }
+
+  function submitReviews() {
+    submitReviewMutation.mutate([{ reviews: reviewResultState } as Reviews, teamId]);
+  }
+
+  function isAllReviewed(reviewResult: ReviewAnswer[], teamData: TeamDto | undefined) {
+    if (teamData && reviewResult.length == teamData.teamMembers.length) {
+      return true;
+    }
+    return false;
+  }
 
   function judgeButtonDisabled() {
     if (reviewValidation.post && reviewValidation.rating) {
@@ -180,6 +188,7 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
     setReviewValidation({ post: false, rating: false });
     setAnswer({ teamMemberId: '', post: '', rating: '' });
   }
+
   const moveToNextPage = (index: number) => {
     requestAnimationFrame(() => pagerViewRef.current?.setPage(index));
     setPageCount(pageCount + 1);
@@ -191,6 +200,20 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
     } else {
       false;
     }
+  };
+
+  const warningModal = () => {
+    modal?.show({
+      content: (
+        <SymbolModalContent
+          title={'잠깐!'}
+          symbol={<Text style={{ fontSize: theme.emojiSize.md, textAlign: 'center' }}>🥺</Text>}
+          text={'리뷰는 수정이 어려우니\n  신중하게 선택해주세요'}
+          yesButton={{ title: '확인', onPress: () => modal.hide() }}
+        />
+      ),
+      modalProps: { animationType: 'none', justifying: 'center' },
+    });
   };
 
   if (!teamData) {
@@ -224,121 +247,83 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
       >
         {teamData.teamMembers.map((item, index) => (
           <ScrollView key={item.nickname}>
-            {pageCount > 1 ? (
-              <CardWrapper
-                style={{ marginLeft: 20, minWidth: 300, marginBottom: 10, marginTop: 2 }}
-              >
-                <View style={{ width: '100%' }}>
-                  <View
-                    style={{ flexDirection: 'row', paddingVertical: 20, paddingHorizontal: 20 }}
-                  >
-                    <PositionIcon
-                      position={item.position}
-                      isRecruitDone={true}
-                      radious={theme.positionIconRadious.md}
-                    />
-                    <View style={{ paddingHorizontal: 10, justifyContent: 'center' }}>
-                      <Text
-                        style={{
-                          fontSize: theme.fontSize.lg,
-                          fontWeight: theme.fontWeight.bold,
-                          color: 'black',
-                        }}
-                      >
-                        {item.nickname}
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: theme.fontSize.md,
-                          fontWeight: theme.fontWeight.light,
-                          color: theme.colors.grey1,
-                        }}
-                      >
-                        {changeToTitleCase(item.position)}
-                      </Text>
-                    </View>
-                  </View>
-                  <View
-                    style={{
-                      paddingVertical: 20,
-                      borderTopWidth: 1,
-                      borderTopColor: theme.colors.disabled,
-                    }}
-                  >
+            <CardWrapper style={{ marginLeft: 20, minWidth: 300, marginBottom: 10, marginTop: 2 }}>
+              <View style={{ width: '100%' }}>
+                <View style={{ flexDirection: 'row', paddingVertical: 20, paddingHorizontal: 20 }}>
+                  <PositionIcon
+                    position={item.position}
+                    isRecruitDone={true}
+                    radious={theme.positionIconRadious.md}
+                  />
+                  <View style={{ paddingHorizontal: 10, justifyContent: 'center' }}>
                     <Text
                       style={{
-                        textAlign: 'center',
-                        fontSize: theme.fontSize.md,
+                        fontSize: theme.fontSize.lg,
                         fontWeight: theme.fontWeight.bold,
                         color: 'black',
-                        paddingBottom: 10,
                       }}
                     >
-                      함께한 팀원은 어떠셨나요?
+                      {item.nickname}
                     </Text>
-                    <RatingInput
-                      updateRatingScore={score => updateRatingReview(item.userId, score.toString())}
-                      size={theme.ratingBarSize.xl}
-                    />
-                  </View>
-                  <View
-                    style={{
-                      paddingVertical: 20,
-                      borderTopWidth: 1,
-                      borderTopColor: theme.colors.disabled,
-                    }}
-                  >
-                    <CustomInput
-                      onChangeText={(text: string) => updateTextReview(item.userId, text)}
-                      shape="round"
-                      containerStyle={{ paddingHorizontal: 20 }}
-                      size={'sm'}
-                      multiline={true}
-                      numberOfLines={4}
-                      style={{ minHeight: 90, fontSize: 14 }}
-                      maxLength={200}
-                      placeholder="팀원에 대한 리뷰를 남겨주세요"
-                      onPressIn={() => {
-                        ref_input1.current?.focus();
+                    <Text
+                      style={{
+                        fontSize: theme.fontSize.md,
+                        fontWeight: theme.fontWeight.light,
+                        color: theme.colors.grey1,
                       }}
-                      ref={ref_input1}
-                    />
+                    >
+                      {changeToTitleCase(item.position)}
+                    </Text>
                   </View>
                 </View>
-              </CardWrapper>
-            ) : (
-              <>
                 <View
-                  style={[
-                    {
-                      display: 'flex',
-                      backgroundColor: 'white',
-                      borderRadius: 38,
-                      padding: 20,
-                      width: WIDTH * 0.6,
-                      marginLeft: 70,
-                    },
-                  ]}
+                  style={{
+                    paddingVertical: 20,
+                    borderTopWidth: 1,
+                    borderTopColor: theme.colors.disabled,
+                  }}
                 >
-                  <Text style={{ fontSize: 22, fontWeight: 'bold', textAlign: 'center' }}>
-                    잠깐
-                  </Text>
                   <Text
                     style={{
                       textAlign: 'center',
-                      paddingVertical: 16,
-                      fontSize: 12,
-                      fontWeight: 'bold',
-                      lineHeight: 25,
+                      fontSize: theme.fontSize.md,
+                      fontWeight: theme.fontWeight.bold,
+                      color: 'black',
+                      paddingBottom: 10,
                     }}
                   >
-                    {'리뷰는 수정이 어려우니\n 신중하게 선택해주세요'}
+                    함께한 팀원은 어떠셨나요?
                   </Text>
-                  <Text style={{ fontSize: 40, textAlign: 'center' }}>🥺</Text>
-                  <FilledButton title={'확인'} onPress={() => moveToNextPage(pageCount)} />
+                  <RatingInput
+                    updateRatingScore={score => updateRatingReview(item.userId, score.toString())}
+                    size={theme.ratingBarSize.xl}
+                  />
                 </View>
-              </>
-            )}
+                <View
+                  style={{
+                    paddingVertical: 20,
+                    borderTopWidth: 1,
+                    borderTopColor: theme.colors.disabled,
+                  }}
+                >
+                  <CustomInput
+                    onChangeText={(text: string) => updateTextReview(item.userId, text)}
+                    shape="round"
+                    containerStyle={{ paddingHorizontal: 20 }}
+                    size={'sm'}
+                    multiline={true}
+                    numberOfLines={4}
+                    style={{ minHeight: 90, fontSize: 14 }}
+                    maxLength={200}
+                    placeholder="팀원에 대한 리뷰를 남겨주세요"
+                    onPressIn={() => {
+                      ref_input1.current?.focus();
+                    }}
+                    ref={ref_input1}
+                  />
+                </View>
+              </View>
+            </CardWrapper>
             <View style={{ paddingTop: 100 }}>
               {item.userId != profileData?.userId.toString() ? (
                 <View>
@@ -349,18 +334,7 @@ const TeamReviewComponent = ({ navigation, route }: MainStackScreenProps<'TeamRe
                       containerStyle={{ marginHorizontal: 70 }}
                       disabled={buttonDisabled}
                       onPress={() => {
-                        setReviewResultState(prevState => [...prevState, ...reviewState]);
-                        setReviewState([]);
-                        console.log('reviewResultState:');
-                        reviewResultState.map(item => {
-                          console.log(
-                            `item.post:${item.post}, item.rating:${item.rating}, item.revieweeUserId:${item.teamMemberId}`,
-                          );
-                        });
-                        submitReviewMutation.mutate([
-                          { reviews: reviewResultState } as Reviews,
-                          teamId,
-                        ]);
+                        mergeReviewAnswer();
                       }}
                     />
                   ) : (
