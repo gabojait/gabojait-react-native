@@ -33,7 +33,6 @@ import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 import { getMyProfile, setProfileImage, setUserSeekingTeam } from '@/data/api/profile';
 import ProfileViewResponse from '@/data/model/Profile/ProfileViewResponse';
 import { DocumentPickerResponse } from 'react-native-document-picker';
-import useGlobalStyles from '@/presentation/styles';
 import { ProfileImage } from '@/presentation/components/ProfileImage';
 
 const Header = ({ navigation }: StackHeaderProps) => {
@@ -116,7 +115,6 @@ const ProfileComponent = ({ navigation, route }: ProfileStackParamListProps<'Vie
       header: Header,
     });
   }
-  const globalStyles = useGlobalStyles();
 
   const PortfolioNotExist = () => (
     <View style={{ flex: 1, paddingTop: 20 }}>
