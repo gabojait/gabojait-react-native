@@ -211,8 +211,9 @@ const ProfilePreviewComponent = ({ navigation, route }: MainStackScreenProps<'Pr
         onPressBookMark={handleFavoriteTeam}
         onPressReport={handleReportModal}
         toChangeColor={isFavorite(profile?.isFavorite!)}
+        headerStyle={{ backgroundColor: '#f5f5f5' }}
       />
-      <ScrollView style={{ flex: 1 }}>
+      <ScrollView style={{ flex: 1, backgroundColor: '#f5f5f5', borderBottomColor: '#f5f5f5' }}>
         <View
           style={{
             flex: 0.2,

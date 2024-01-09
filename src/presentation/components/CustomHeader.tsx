@@ -11,6 +11,7 @@ const CustomHeader: React.FC<HeaderProps> = ({
   leftChildren,
   rightChildren,
   align,
+  headerstyle,
 }) => {
   const navigation = useNavigation();
   const { theme } = useTheme();
@@ -40,7 +41,7 @@ const CustomHeader: React.FC<HeaderProps> = ({
   );
 
   return (
-    <View style={[headerStyle.parent, { borderColor: theme.colors.disabled }]}>
+    <View style={[headerStyle.parent, { borderColor: theme.colors.disabled }, headerstyle]}>
       {canGoBack && title ? (
         <>
           <View style={{ flex: 3, paddingBottom: 26 }}>{canGoBack ? back : null}</View>

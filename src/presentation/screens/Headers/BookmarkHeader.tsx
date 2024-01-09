@@ -1,17 +1,16 @@
 import CustomHeader from '@/presentation/components/CustomHeader';
-import { getHeaderTitle } from '@react-navigation/elements';
 import { StackHeaderProps } from '@react-navigation/stack';
-import { TouchableOpacity } from 'react-native';
+import { StyleProp, TouchableOpacity, View, ViewStyle } from 'react-native';
 import CustomIcon from '@/presentation/components/icon/Gabojait';
-import { Icon, useTheme } from '@rneui/themed';
+import { Icon } from '@rneui/themed';
 import React from 'react';
-import { View } from 'react-native';
 
 type BookMarkHeaderProps = {
   stackHeaderProps?: StackHeaderProps;
   onPressBookMark: () => void;
   onPressReport: () => void;
   toChangeColor: string;
+  headerStyle?: StyleProp<ViewStyle>;
 };
 
 const BookMarkHeader: React.FC<BookMarkHeaderProps> = ({
@@ -19,6 +18,7 @@ const BookMarkHeader: React.FC<BookMarkHeaderProps> = ({
   onPressBookMark,
   onPressReport,
   toChangeColor,
+  headerStyle,
 }) => {
   return (
     <CustomHeader
@@ -35,6 +35,7 @@ const BookMarkHeader: React.FC<BookMarkHeaderProps> = ({
         </View>
       }
       align="center"
+      headerstyle={headerStyle}
     />
   );
 };
