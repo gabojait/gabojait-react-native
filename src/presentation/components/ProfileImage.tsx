@@ -10,10 +10,12 @@ export const ProfileImage = ({
   imageUrl,
   onChangeImage,
   containerStyle,
+  isAvailableToChangeImage,
 }: {
   imageUrl: string | null;
   onChangeImage: (newImage: DocumentPickerResponse) => void;
   containerStyle?: StyleProp<ViewStyle>;
+  isAvailableToChangeImage: boolean;
 }) => {
   const styles = useStyles();
   const { theme } = useTheme();
@@ -45,7 +47,7 @@ export const ProfileImage = ({
       <TouchableOpacity
         style={{ flex: 1 }}
         onPress={() => {
-          pickNewImage();
+          isAvailableToChangeImage ? pickNewImage() : {};
         }}
       >
         {!imageUrl ? (

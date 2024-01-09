@@ -233,7 +233,11 @@ const ProfilePreviewComponent = ({ navigation, route }: MainStackScreenProps<'Pr
               style={{ flex: 1, backgroundColor: 'white', height: 40, borderTopLeftRadius: 18 }}
             />
           </View>
-          <ProfileImage imageUrl={profile.imageUrl} onChangeImage={() => {}} />
+          <ProfileImage
+            imageUrl={profile.imageUrl}
+            onChangeImage={() => {}}
+            isAvailableToChangeImage={false}
+          />
           <View style={{ flex: 0.9 }}>
             <View style={{ flex: 1, height: 40 }} />
             <View
@@ -253,11 +257,15 @@ const ProfilePreviewComponent = ({ navigation, route }: MainStackScreenProps<'Pr
               profile={profile}
               rightChild={
                 <FilledButton
-                  title={'초대하기'}
+                  title={buttonState.title}
                   onPress={() => {
                     handleOfferMutation();
                   }}
-                  buttonStyle={{ height: 48, paddingVertical: -10 }}
+                  buttonStyle={{
+                    height: 48,
+                    paddingVertical: -10,
+                    backgroundColor: buttonState.color,
+                  }}
                   titleStyle={{
                     fontSize: theme.fontSize.md,
                     fontWeight: theme.fontWeight.semibold,

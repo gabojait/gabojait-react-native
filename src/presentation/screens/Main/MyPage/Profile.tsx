@@ -146,6 +146,7 @@ const ProfileComponent = ({ navigation, route }: ProfileStackParamListProps<'Vie
     const formData = new FormData();
     formData.append('image', {
       name: newImage?.name,
+      type: newImage?.type,
       uri: newImage?.uri,
     });
     mutateProfileImage(formData);
@@ -173,6 +174,7 @@ const ProfileComponent = ({ navigation, route }: ProfileStackParamListProps<'Vie
         <ProfileImage
           imageUrl={profile.imageUrl}
           onChangeImage={newImage => updateImage(newImage)}
+          isAvailableToChangeImage={true}
         />
         <View style={{ flex: 0.9 }}>
           <View style={{ flex: 1, height: 40 }} />
