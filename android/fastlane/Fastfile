@@ -1,0 +1,179 @@
+default_platform(:android)
+
+platform :android do
+	require 'json'
+	require '../../fastlane_functions'
+
+  desc "Runs all the tests"
+  lane :test do
+	gradle(task: "test")
+  end
+
+  desc "Codepush to android production track"
+  lane :codepush_to_release do
+    #codepush_staging으로 디버깅을 끝내고 실행하는 걸 전제로 두기때문에 hotifix version 업데이트 하지 않음
+    version_number = read_android_version()
+    hotfix_number = read_and_parse_json('../../package.json')[ENV['ANDROID_HOTFIX_VERSION']].to_i
+    Dir.chdir('../../') do
+      sh "appcenter codepush release-react  --app #{ENV['OWNER_NAME']}/#{ENV['APP_NAME']} --deployment-name Production --development true --description 'version #{version_number}-#{hotfix_number} Production codepush test' --mandatory true --disable-duplicate-release-error"
+    end
+    slack(
+      message: "Android Gabojait 사용자 버전 #{version_number}-#{hotfix_number} - Codepush Production 업로드 완료",
+      slack_url: ENV['SLACK_URL']
+    )
+  end
+
+  desc "Codepush to android staging track "
+  lane :codepush_to_staging do |options|
+    update_android_version(options)
+		#codepush_staging으로 디버깅을 끝내고 실행하는 걸 전제로 두기때문에 hotifix version 업데이트 하지 않음
+    version_number = read_android_version()
+    increment_hotfix_number(ENV['ANDROID_HOTFIX_VERSION'])
+    hotfix_number = read_and_parse_json('../../package.json')[ENV['ANDROID_HOTFIX_VERSION']].to_i
+    Dir.chdir('../../') do
+      sh "appcenter codepush release-react  --app #{ENV['OWNER_NAME']}/#{ENV['APP_NAME']} --deployment-name Staging --development true --description 'version #{version_number}-#{hotfix_number} Staging codepush test' --mandatory true --disable-duplicate-release-error"
+    end
+    slack(
+      message: "Android Gabojait 테스  버전 #{version_number}-#{hotfix_number} Codepush Staging 업로드 완료",
+      slack_url: ENV['SLACK_URL']
+    )
+  end
+
+	desc "Build"
+	lane :build do
+		gradle(
+			task: "assemble",
+			build_type: "Release"
+		)
+		increment_build_number()
+	end
+
+	desc "구글 플레이 내부 업데이트(Submit a new version to the internal track in the Google Play)"
+	lane :deploy_internal do |options|
+		gradle(task: "clean")
+		gradle(
+			task: "bundle",
+			build_type: "Release"
+		)
+		upload_to_play_store(
+			track: "internal",
+			aab: '../app/build/outputs/bundle/release/app-release.aab'
+		)
+		slack(
+			message: "Android Gabojait 버전 #{new_version_number} - 구글 내부 테스트 업로드 완료",
+			slack_url: ENV['SLACK_URL']
+    )
+	end
+
+  desc "구글 플레이 출시(Deploy a new version to the Google Play)"
+  lane :deploy do |options|
+    update_android_version(options)
+    gradle(task: "clean bundleRelease")
+    upload_to_play_store(
+      track: "production",
+      aab: '../app/build/outputs/bundle/release/app-release.aab',
+	    skip_upload_metadata: false,
+	    skip_upload_changelogs: false,
+	    skip_upload_screenshots: false,
+	    skip_upload_images: false,
+	    skip_upload_apk: false
+    )
+	  slack(
+	    message: "Android Gabojait 버전 #{new_version_number} - 구글 플레이 업로드 완료",
+	    slack_url: ENV['SLACK_URL']
+	  )
+	end
+
+	desc "android native 버전 증가 테스트"
+  lane :test_update_android_version do |options|
+  	  previous_android_version = read_android_version()
+  		update_android_version(options)
+  		puts "Successfully update android native version #{previous_android_version} to #{read_android_version()}!"
+  end
+
+	desc "gabojait-react-native/package.json의 android-hotfixVersion을 증가시키는 테스트"
+  lane :test_hotfix do
+    increment_hotfix_number(ENV['ANDROID_HOTFIX_VERSION'])
+  end
+
+	def increment_build_number()
+		path = '../app/build.gradle'
+		re = /versionCode\s+(\d+)/
+
+		s = File.read(path)
+		versionCode = s[re, 1].to_i
+		s[re, 1] = (versionCode + 1).to_s
+
+		f = File.new(path, 'w')
+		f.write(s)
+		f.close
+	end
+
+	def read_android_version()
+		path = '../app/build.gradle'
+		re = /versionName\s+("\d+.\d+.\d+")/
+    s = File.read(path)
+    versionName = s[re, 1].gsub!('"','').split('.')
+    return "#{versionName[0]}.#{versionName[1]}.#{versionName[2]}"
+	end
+
+	def increment_android_version(bump_type: nil, version_number: nil)
+		path = '../app/build.gradle'
+		re = /versionName\s+("\d+.\d+.\d+")/
+		s = File.read(path)
+		versionName = s[re, 1].gsub!('"','').split('.')
+
+		major = versionName[0].to_i
+		minor = versionName[1].to_i
+		patch = versionName[2].to_i
+
+		if (bump_type == 'major')
+			major += 1
+			minor = 0
+			patch = 0
+		elsif (bump_type == 'minor')
+			minor += 1
+			patch = 0
+		elsif (bump_type == 'patch')
+			patch += 1
+		end
+
+		if(version_number)
+				s[re, 1] = "\"#{version_number}\""
+				handle_semantic_version_number(bump_type:version_number,os_hotfix_version:ENV['ANDROID_HOTFIX_VERSION'])
+		else
+				s[re, 1] = "\"#{major}.#{minor}.#{patch}\""
+				handle_semantic_version_number(bump_type:"#{major}.#{minor}.#{patch}",os_hotfix_version:ENV['ANDROID_HOTFIX_VERSION'])
+		end
+
+		f = File.new(path, 'w')
+		f.write(s)
+		f.close
+	end
+
+# android native semantic 버전번호 업데이트
+	def update_android_version(options)
+		if options[:version]
+			version = options[:version]
+		else
+			version = prompt(text: "Enter the version type or specific version\n(major, minor, patch or 1.0.0): ")
+		end
+
+		re = /\d+.\d+.\d+/
+		versionNum = version[re, 0]
+
+		if (versionNum)
+			increment_android_version(
+				version_number: versionNum
+			)
+		elsif (version == 'major' || version == 'minor' || version == 'patch')
+			increment_android_version(
+				bump_type: version
+			)
+		else
+			UI.user_error!("[ERROR] Wrong version!!!!!!")
+		end
+	end
+
+end
+
