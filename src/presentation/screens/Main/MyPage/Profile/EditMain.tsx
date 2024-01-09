@@ -91,6 +91,7 @@ export function EditMainHeader() {
           <OkDialogModalContent
             text="프로필 수정 완료"
             onOkClick={() => {
+              queryClient.invalidateQueries(profileKeys.myProfile);
               modal?.hide();
             }}
           />

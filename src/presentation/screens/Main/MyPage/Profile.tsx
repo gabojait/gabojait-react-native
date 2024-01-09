@@ -1,5 +1,5 @@
 import React, { ReactNode, Suspense, useEffect, useMemo, useState } from 'react';
-import { makeStyles, Text, useTheme } from '@rneui/themed';
+import { CheckBox, makeStyles, Text, useTheme } from '@rneui/themed';
 import { Linking, ScrollView, StyleProp, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { FilledButton } from '@/presentation/components/Button';
 import ProfileViewDto from '@/data/model/Profile/ProfileViewDto';
@@ -30,7 +30,7 @@ import { ProjectIcon } from '@/presentation/components/icon/CustomIcon';
 import { Loading } from '@/presentation/screens/Loading';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 import { profileKeys } from '@/reactQuery/key/ProfileKeys';
-import { getMyProfile, setProfileImage } from '@/data/api/profile';
+import { getMyProfile, setProfileImage, setUserSeekingTeam } from '@/data/api/profile';
 import ProfileViewResponse from '@/data/model/Profile/ProfileViewResponse';
 import { DocumentPickerResponse } from 'react-native-document-picker';
 import useGlobalStyles from '@/presentation/styles';
@@ -96,6 +96,19 @@ const ProfileComponent = ({ navigation, route }: ProfileStackParamListProps<'Vie
       },
     },
   );
+  const { mutate: mutateIsSeekingTeam, data } = useMutation(
+    (args: boolean) => setUserSeekingTeam(args),
+    {
+      useErrorBoundary: true,
+      retry: 0,
+      onSuccess: () => {
+        queryClient.invalidateQueries([profileKeys.myProfile]);
+      },
+      onError: (error: Error) => {
+        console.log(`팀 찾기여부 업로드 실패:${error}`);
+      },
+    },
+  );
   const profileExist = useMemo(() => isProfileExist(profile), [profile]);
   const [image, setImage] = useState<Asset | null>(null);
   if (profileExist) {
@@ -152,6 +165,10 @@ const ProfileComponent = ({ navigation, route }: ProfileStackParamListProps<'Vie
     mutateProfileImage(formData);
   }
 
+  function updateIsSeekingTeam(isSeekingTeam: boolean) {
+    mutateIsSeekingTeam(isSeekingTeam);
+  }
+
   if (!profile) {
     return null;
   }
@@ -203,7 +220,10 @@ const ProfileComponent = ({ navigation, route }: ProfileStackParamListProps<'Vie
             }}
           >
             <View style={{ paddingTop: 20, backgroundColor: 'white' }}>
-              <PortfolioView profile={profile} />
+              <PortfolioView
+                profile={profile}
+                onCheckBoxPressed={isSeekingTeam => updateIsSeekingTeam(isSeekingTeam)}
+              />
             </View>
             <Text style={{ marginBottom: 11, marginTop: 30, fontSize: 17 }}>학력/경력</Text>
             {profile.educations?.length ?? 0 > 0 ? (
@@ -397,9 +417,11 @@ export const IconLabel = ({
 export const PortfolioView = ({
   profile,
   rightChild,
+  onCheckBoxPressed,
 }: {
   profile: ProfileViewDto;
   rightChild?: ReactNode;
+  onCheckBoxPressed?: (isSeekingTeam: boolean) => void;
 }) => {
   const { theme } = useTheme();
   const styles = useStyles();
@@ -431,18 +453,72 @@ export const PortfolioView = ({
   }
 
   return (
-    <View>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <View>
-          <Text
+    <View style={{ flex: 1 }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+        <View style={{ flex: 1 }}>
+          <View
             style={{
-              fontSize: theme.fontSize.lg,
-              fontWeight: theme.fontWeight.bold,
-              marginBottom: 12,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              flex: 1,
             }}
           >
-            {profile.nickname}
-          </Text>
+            <Text
+              style={{
+                fontSize: theme.fontSize.lg,
+                fontWeight: theme.fontWeight.bold,
+                marginBottom: 12,
+              }}
+            >
+              {profile.nickname}
+            </Text>
+            {onCheckBoxPressed ? (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  paddingEnd: 10,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: theme.fontSize.md,
+                    fontWeight: theme.fontWeight.light,
+                  }}
+                >
+                  팀 초대 허용
+                </Text>
+                <CheckBox
+                  checked={profile.isSeekingTeam || false}
+                  checkedIcon={
+                    <MaterialIcon name="check-box" size={25} color={theme.colors.primary} />
+                  }
+                  uncheckedIcon={
+                    <MaterialIcon
+                      name="check-box-outline-blank"
+                      size={18}
+                      color={theme.colors.grey2}
+                    />
+                  }
+                  onPress={() => onCheckBoxPressed(!profile.isSeekingTeam)}
+                  containerStyle={{ padding: 0, flex: 1 }}
+                  textStyle={{
+                    fontSize: theme.fontSize.md,
+                    fontWeight: theme.fontWeight.light,
+                    color: 'black',
+                  }}
+                  wrapperStyle={{
+                    alignItems: 'center',
+                    justifyContent: 'flex-end',
+                    marginEnd: -22,
+                  }}
+                />
+              </View>
+            ) : (
+              <></>
+            )}
+          </View>
           {isPositionExists() ? (
             <ToggleButton
               title={KoreanPosition[profile.position ?? Position.None]}
@@ -452,6 +528,7 @@ export const PortfolioView = ({
                 justifyContent: 'center',
                 borderRadius: theme.radius.smd,
                 height: theme.boxComponentHeight.md,
+                maxWidth: 120,
               }}
               onClick={() => {}}
             />
