@@ -241,12 +241,16 @@ export const EducationList = ({
 
 function useDatePickerModal(onChangeData: (data: Periodical) => void) {
   const modal = useModal();
-
+  const globalstyles = useGlobalStyles();
   const showDatePickerModal = (i: number, data: Periodical, dates: string[]) => {
     modal?.show({
       content: (
         <DatePickerModalContent
-          title={<Text h3>{i == 0 ? '시작' : '끝난'} 기간을 입력해주세요</Text>}
+          title={
+            <Text style={globalstyles.modalTitle}>
+              {i == 0 ? '시작' : '끝난'} 기간을 입력해주세요
+            </Text>
+          }
           doneButtonText="다음"
           onModalVisibityChanged={(visibility, isCurrent) => {
             if (!visibility) {
