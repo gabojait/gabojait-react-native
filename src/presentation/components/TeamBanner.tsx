@@ -28,6 +28,7 @@ const TeamBanner: React.FC<
             flexDirection: 'row',
             justifyContent: 'center',
             flex: 1,
+            paddingStart: 20,
           }}
         >
           {teamMembers
@@ -38,7 +39,7 @@ const TeamBanner: React.FC<
                 isRecruitDone={IsRecruitDone(item)}
                 currentCnt={item.currentCnt}
                 recruitNumber={item.recruitCnt}
-                radious={theme.positionIconRadious.md}
+                radious={theme.positionIconRadious.lg}
                 key={index}
               />
             ))}

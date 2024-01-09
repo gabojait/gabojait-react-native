@@ -9,6 +9,7 @@ import React, { Suspense, useEffect, useState } from 'react';
 import { UserCard } from '@/presentation/components/UserCard';
 import OffersFromOtherDto from '@/data/model/Offer/OffersFromUserDto';
 import { Loading } from '@/presentation/screens/Loading';
+import { useQueryClient } from 'react-query';
 
 const OfferList = ({
   navigation,
@@ -30,6 +31,7 @@ const OfferListComponent = ({
     pageSize: 20,
     position: route.params.position,
   };
+  const queryClient = useQueryClient();
   const [params, setParams] = useState({ pageFrom: 1, pageSize: 20 } as PageRequest);
   const { data, isLoading, error, fetchNextPage, refetch, isRefreshing } = useModelList<
     GetOfferFromOthersProps,

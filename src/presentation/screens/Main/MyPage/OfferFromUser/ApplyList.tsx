@@ -17,6 +17,7 @@ import { PositionTabParamList, PositionTabParamListProps } from '@/presentation/
 import { Loading } from '@/presentation/screens/Loading';
 import { mapToSeekingTeamKey } from '@/presentation/utils/util';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
+import { useQueryClient } from 'react-query';
 
 const ApplyList = ({
   navigation,
@@ -50,6 +51,7 @@ const ApplyListComponent = ({
       });
     },
   });
+  const queryClient = useQueryClient();
 
   const { mutation: rejectOfferMutation } = useMutationDialog(
     offerKeys.rejectOfferFromUser,
@@ -61,6 +63,11 @@ const ApplyListComponent = ({
     [offerKeys.acceptOfferFromUser, teamKeys.myTeam],
     async (args: [number, boolean]) => acceptOfferFromUser(...args),
     'CENTER',
+    {
+      onSuccessClick() {
+        queryClient.invalidateQueries(teamKeys.myTeam);
+      },
+    },
   );
 
   useEffect(() => {

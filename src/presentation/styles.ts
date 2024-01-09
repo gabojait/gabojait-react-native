@@ -5,12 +5,6 @@ const useGlobalStyles = makeStyles(theme => ({
     borderWidth: 1,
     borderColor: theme.colors.disabled,
     backgroundColor: 'white',
-    shadowColor: 'black',
-    shadowOpacity: 0.2,
-    shadowOffset: {
-      width: 2,
-      height: 2,
-    },
     borderRadius: 20,
     padding: 25,
     display: 'flex',
@@ -20,6 +14,12 @@ const useGlobalStyles = makeStyles(theme => ({
   card2: {
     padding: 30,
     marginVertical: 5,
+    marginHorizontal: 20,
+  },
+  cardWrapper: {
+    paddingHorizontal: 13,
+    paddingVertical: 17,
+    marginTop: 20,
     marginHorizontal: 20,
   },
   container: {

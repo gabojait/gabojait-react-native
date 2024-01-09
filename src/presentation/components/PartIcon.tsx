@@ -23,23 +23,13 @@ export const PositionIcon: React.FC<
   const { theme } = useTheme();
 
   return (
-    // <View
-    //   style={{
-    //     borderColor: theme.colors.primary,
-    //     borderWidth: 1,
-    //     display: 'flex',
-    //     justifyContent: 'center',
-    //     alignItems: 'center',
-    //     borderRadius: radious,
-    //     width: radious * 2,
-    //     height: radious * 2,
-    //     marginHorizontal: PixelRatio.getPixelSizeForLayoutSize(2),
-    //     backgroundColor: isDone ? theme.colors.primary : 'white',
-    //   }}
-    // >
-    //   <PositionInitialTextView position={position} />
-    // </View>
-    <View style={{ paddingHorizontal: radious * 0.8 }}>
+    <View
+      style={{
+        paddingStart: 20,
+        paddingEnd: 40,
+        justifyContent: 'flex-end',
+      }}
+    >
       {isDone ? (
         <NoneWaveIcon radious={radious} position={position} />
       ) : (
@@ -47,7 +37,7 @@ export const PositionIcon: React.FC<
           currentCnt={currentCnt}
           recruitNumber={recruitNumber}
           textView={<PositionInitialTextView position={position} />}
-          radious={radious}
+          radious={radious * 0.8}
         />
       )}
     </View>

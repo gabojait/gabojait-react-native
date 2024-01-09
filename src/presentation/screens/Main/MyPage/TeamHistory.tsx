@@ -1,15 +1,20 @@
 import { getTeamsToReview } from '@/data/api/review';
 import TeamDto from '@/data/model/Team/TeamDto';
-import TeamBanner from '@/presentation/components/TeamBanner';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import { reviewKeys } from '@/reactQuery/key/ReviewKeys';
 import { PageRequest } from '@/reactQuery/util/useModelList';
 import React, { Suspense } from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 import { useQuery, useQueryErrorResetBoundary, UseQueryResult } from 'react-query';
 import { Loading } from '../../Loading';
 import { mapTeamDtoToPositionRecruiting } from '@/presentation/model/mapper/mapTeamDtoToPositionRecruiting';
+import CardWrapper from '@/presentation/components/CardWrapper';
+import { Position } from '@/data/model/type/Position';
+import PositionWaveIcon from '@/presentation/components/PositionWaveIcon';
+import { mapToInitial } from '@/presentation/utils/util';
+import useGlobalStyles from '@/presentation/styles';
+import { useTheme } from '@rneui/themed';
 
 export default function TeamHistory({ navigation, route }: MainStackScreenProps<'TeamHistory'>) {
   const { reset } = useQueryErrorResetBoundary();
@@ -43,6 +48,8 @@ function TeamHistoryComponent({ navigation, route }: MainStackScreenProps<'TeamH
       useErrorBoundary: true,
     },
   );
+  const globalStyles = useGlobalStyles();
+  const { theme } = useTheme();
 
   if (!teamHistory) {
     return null;
@@ -64,12 +71,41 @@ function TeamHistoryComponent({ navigation, route }: MainStackScreenProps<'TeamH
             }) || []
           }
           renderItem={({ item }) => (
-            <TeamBanner
-              teamMembersCnt={item.teamMemberCnts ?? []}
-              teamName={item.projectName}
-              onArrowPress={() => navigation.navigate('TeamReview', { teamId: item.teamId })}
-              containerStyle={{ marginHorizontal: 20 }}
-            />
+            <TouchableOpacity
+              onPress={() => navigation.navigate('TeamReview', { teamId: item.teamId })}
+            >
+              <CardWrapper style={[globalStyles.cardWrapper, { maxHeight: 200, minHeight: 150 }]}>
+                <Text
+                  style={{
+                    justifyContent: 'flex-start',
+                    fontWeight: theme.fontWeight.bold,
+                    fontSize: theme.fontSize.md,
+                    paddingBottom: 30,
+                    paddingStart: 10,
+                    width: '100%',
+                  }}
+                >
+                  {item.projectName}
+                </Text>
+                <View style={{ flexDirection: 'row' }}>
+                  {item.teamMemberCnts
+                    .filter(recruit => recruit.position != Position.None)
+                    .map(item => (
+                      <PositionWaveIcon
+                        currentCnt={item.currentCnt}
+                        recruitNumber={item.recruitCnt}
+                        textView={
+                          <Text style={globalStyles.itnitialText}>
+                            {mapToInitial(item.position)}
+                          </Text>
+                        }
+                        key={item.position}
+                        radious={theme.positionIconRadious.md}
+                      />
+                    ))}
+                </View>
+              </CardWrapper>
+            </TouchableOpacity>
           )}
         />
       </View>
