@@ -1,6 +1,6 @@
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import React, { Suspense, useEffect, useState } from 'react';
-import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, View } from 'react-native';
 import { getOffersSentToTeam } from '@/data/api/offer';
 import { PageRequest, useModelList } from '@/reactQuery/util/useModelList';
 import { offerKeys } from '@/reactQuery/key/OfferKeys';
@@ -9,11 +9,8 @@ import { useQueryErrorResetBoundary } from 'react-query';
 import { Loading } from '../../../Loading';
 import { mapTeamDtoToPositionRecruiting } from '@/presentation/model/mapper/mapTeamDtoToPositionRecruiting';
 import useGlobalStyles from '@/presentation/styles';
-import CardWrapper from '@/presentation/components/CardWrapper';
 import { useTheme } from '@rneui/themed';
-import { mapToInitial } from '@/presentation/utils/util';
-import { Position } from '@/data/model/type/Position';
-import PositionWaveIcon from '@/presentation/components/PositionWaveIcon';
+import TeamBanner from '@/presentation/components/TeamBanner';
 
 const OfferToTeamHistory = ({ navigation, route }: MainStackScreenProps<'OfferToTeamHistory'>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -93,39 +90,12 @@ const OfferToTeamHistoryComponent = ({
           )
           .flat()}
         renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => navigation.navigate('GroupDetail', { teamId: item.team.teamId })}
-          >
-            <CardWrapper style={[globalStyles.cardWrapper, { maxHeight: 200, minHeight: 150 }]}>
-              <Text
-                style={{
-                  justifyContent: 'flex-start',
-                  fontWeight: theme.fontWeight.bold,
-                  fontSize: theme.fontSize.md,
-                  paddingBottom: 30,
-                  paddingStart: 10,
-                  width: '100%',
-                }}
-              >
-                {item.team.projectName}
-              </Text>
-              <View style={{ flexDirection: 'row' }}>
-                {item.teamMemberCnts
-                  .filter(recruit => recruit.position != Position.None)
-                  .map(item => (
-                    <PositionWaveIcon
-                      currentCnt={item.currentCnt}
-                      recruitNumber={item.recruitCnt}
-                      textView={
-                        <Text style={globalStyles.itnitialText}>{mapToInitial(item.position)}</Text>
-                      }
-                      key={item.position}
-                      radious={theme.positionIconRadious.md}
-                    />
-                  ))}
-              </View>
-            </CardWrapper>
-          </TouchableOpacity>
+          <TeamBanner
+            teamMembersCnt={item?.teamMemberCnts ?? []}
+            teamName={item?.team.projectName ?? ''}
+            onArrowPress={() => navigation.navigate('GroupDetail', { teamId: item.team.teamId })}
+            containerStyle={{ marginHorizontal: 20 }}
+          />
         )}
       />
     </View>

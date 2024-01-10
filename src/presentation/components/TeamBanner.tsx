@@ -1,11 +1,13 @@
 import { CardProps } from '@rneui/base';
 import { useTheme } from '@rneui/themed';
 import React from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import PositionRecruiting from '../model/PositionRecruitng';
-import { PositionIcon } from './PartIcon';
 import { BaseCard } from '@/presentation/components/BaseCard';
 import { Position } from '@/data/model/type/Position';
+import { mapToInitial } from '@/presentation/utils/util';
+import PositionWaveIcon from '@/presentation/components/PositionWaveIcon';
+import useGlobalStyles from '@/presentation/styles';
 
 const TeamBanner: React.FC<
   CardProps & {
@@ -18,6 +20,7 @@ const TeamBanner: React.FC<
   const IsRecruitDone = (item: PositionRecruiting) => {
     return item.currentCnt === item.recruitCnt;
   };
+  const globalStyles = useGlobalStyles();
 
   return (
     <View style={[containerStyle, { paddingTop: 16 }]}>
@@ -28,19 +31,19 @@ const TeamBanner: React.FC<
             flexDirection: 'row',
             justifyContent: 'center',
             flex: 1,
-            paddingStart: 20,
           }}
         >
           {teamMembers
             ?.filter(item => item.position !== Position.None)
             .map((item, index) => (
-              <PositionIcon
-                position={item.position}
-                isRecruitDone={IsRecruitDone(item)}
+              <PositionWaveIcon
                 currentCnt={item.currentCnt}
                 recruitNumber={item.recruitCnt}
-                radious={theme.positionIconRadious.lg}
-                key={index}
+                textView={
+                  <Text style={globalStyles.itnitialText}>{mapToInitial(item.position)}</Text>
+                }
+                key={item.position}
+                radious={theme.positionIconRadious.md}
               />
             ))}
         </View>
