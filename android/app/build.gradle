@@ -150,13 +150,6 @@ android {
             }
         }
     }
-
-//    task copySecret(type: Copy) {
-//        from project(':AndroidSecretSecure').file('./gabojait-android-cloud-service-key.json')
-//        into '../secretResources'
-//    }
-//
-//    processResources.dependsOn('copySecret')
 }
 
 dependencies {

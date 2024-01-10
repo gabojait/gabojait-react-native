@@ -72,7 +72,7 @@ const QueryKey = {
   ],
   register: (registerDto: RegisterRequestDto) => ['register', registerDto],
 } as const;
-const ValidatorInput = (props: CustomInputProps & { validator: FormField<string> }) => {
+export const ValidatorInput = (props: CustomInputProps & { validator: FormField<string> }) => {
   const { theme } = useTheme();
   return (
     <CustomInput
@@ -354,11 +354,6 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
                 onPress={() => {
                   dispatch(signOut());
                   stateSeperatedForm.username?.validate();
-                  // if (stateSeperatedForm.username.state) {
-                  // dispatch(signOut());
-                  //   userIdDupCheckMutation?.mutate(stateSeperatedForm.username.value);
-                  // }
-                  // stateSeperatedForm.username.validate();
                 }}
               />
             }
@@ -379,10 +374,6 @@ const Register = ({ navigation, route }: OnboardingScreenProps<'Register'>) => {
                 onPress={async () => {
                   dispatch(signOut());
                   await stateSeperatedForm.nickname?.validate();
-                  // if (stateSeperatedForm.nickname.state) {
-                  // nickNmDupCheckMutation.mutate(stateSeperatedForm.nickname.value);
-                  // }
-                  // await stateSeperatedForm.nickname.validate();
                 }}
               />
             }

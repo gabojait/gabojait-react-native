@@ -7,9 +7,9 @@ import DocumentPicker, { types } from 'react-native-document-picker';
 import useGlobalStyles from '@/presentation/styles';
 import { createPortfolio, deletePortfolio, updatePortfolio } from '@/redux/action/profileActions';
 import { List } from '@/presentation/screens/Main/MyPage/Profile/EditEducationAndWork';
-import CustomInput from '@/presentation/components/CustomInput';
 import { DeleteIcon } from '@/presentation/components/icon/CustomIcon';
 import { WIDTH } from '@/presentation/utils/util';
+import CustomInput from '@/presentation/components/CustomInput';
 
 const EditPortfolio = () => {
   // Todo: Implement Portfolio Reducer
@@ -134,7 +134,6 @@ export const PortfolioList = ({
   fieldType: PortfolioType;
 }) => {
   const { theme } = useTheme();
-
   async function pickDocument(portfolio: Portfolio) {
     try {
       console.log('pickDocument success!....');
@@ -173,16 +172,12 @@ export const PortfolioList = ({
               titleEditable
               fieldColor="white"
               onDeleteItem={() => {
-                console.log(`삭제할 포트폴리오ID는 ----------------${portfolio.portfolioId}입니다`);
                 onDeletePortfolio(portfolio.portfolioId!);
               }}
               onChangeName={text => onChangePortfolio({ ...portfolio, portfolioName: text })}
             >
               <TouchableOpacity
                 onPress={() => {
-                  console.log(
-                    `portfolio.media = ${portfolio.media}, PortfolioType.File = ${PortfolioType.File}`,
-                  );
                   portfolio.media == PortfolioType.File ? pickDocument(portfolio) : undefined;
                 }}
               >
