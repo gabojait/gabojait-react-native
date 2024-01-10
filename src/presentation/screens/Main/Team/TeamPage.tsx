@@ -211,7 +211,7 @@ export const TeamPageComponent = ({ navigation, route }: MainBottomTabNavigation
           <TouchableOpacity
             onPress={() => {
               navigation.navigate('MainNavigation', {
-                screen: 'OpenChatingPage',
+                screen: 'WebViewPage',
                 params: { uri: teamData?.openChatUrl! },
               });
             }}

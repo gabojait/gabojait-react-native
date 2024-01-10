@@ -20,7 +20,7 @@ import { CompleteSuccess } from '../screens/Main/Team/CompleteSuccess';
 import OpenSourceLicense from '../screens/Main/MyPage/Setting/OpenSourceLicense';
 import GroupCreator from '../screens/Main/Home/Group/GroupCreator';
 import Header from '../screens/Headers/CloseHeader';
-import { OpenChatingPage } from '../screens/Main/Team/OpenChatingPage';
+import { WebViewPage } from '../screens/Main/Team/WebViewPage';
 import { TeamEditor } from '../screens/Main/Team/TeamEditor';
 import { ManageTeammate } from '../screens/Main/Team/ManageTeammate';
 import ProfilePreview from '../screens/Main/Home/TeamMate/ProfilePreview';
@@ -211,8 +211,8 @@ const MainNavigation = () => {
           component={TeamEditor}
         />
         <Main.Screen
-          name="OpenChatingPage"
-          component={OpenChatingPage}
+          name="WebViewPage"
+          component={WebViewPage}
           options={{
             header: Header,
           }}

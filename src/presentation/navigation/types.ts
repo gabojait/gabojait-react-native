@@ -52,7 +52,7 @@ export type MainStackParamList = {
   OfferToTeamHistory: undefined;
   GroupDetail: { teamId: string };
   GroupCreator: undefined;
-  OpenChatingPage: { uri: string };
+  WebViewPage: { uri: string };
   PositionSelector: { teamId: string };
   Setting: undefined;
   AlarmSetting: undefined;
