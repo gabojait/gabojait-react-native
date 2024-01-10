@@ -1,6 +1,6 @@
 import React, { ReactNode, Suspense, useEffect, useMemo, useState } from 'react';
 import { CheckBox, makeStyles, Text, useTheme } from '@rneui/themed';
-import { Linking, ScrollView, StyleProp, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { ScrollView, StyleProp, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { FilledButton } from '@/presentation/components/Button';
 import ProfileViewDto from '@/data/model/Profile/ProfileViewDto';
 
@@ -34,6 +34,7 @@ import { getMyProfile, setProfileImage, setUserSeekingTeam } from '@/data/api/pr
 import ProfileViewResponse from '@/data/model/Profile/ProfileViewResponse';
 import { DocumentPickerResponse } from 'react-native-document-picker';
 import { ProfileImage } from '@/presentation/components/ProfileImage';
+import Portfolio from '@/data/model/Profile/Portfolio';
 
 const Header = ({ navigation }: StackHeaderProps) => {
   const { theme } = useTheme();
@@ -167,6 +168,15 @@ const ProfileComponent = ({ navigation, route }: ProfileStackParamListProps<'Vie
     mutateIsSeekingTeam(isSeekingTeam);
   }
 
+  function openLinkPage(portfolio: Portfolio) {
+    if (portfolio.media == 'LINK') {
+      navigation.replace('MainNavigation', {
+        screen: 'OpenChatingPage',
+        params: { uri: portfolio.portfolioUrl },
+      });
+    }
+  }
+
   if (!profile) {
     return null;
   }
@@ -278,9 +288,7 @@ const ProfileComponent = ({ navigation, route }: ProfileStackParamListProps<'Vie
                       marginRight: 10,
                     }}
                     onClick={async () => {
-                      if (await Linking.canOpenURL(portfolio.portfolioUrl)) {
-                        Linking.openURL(portfolio.portfolioUrl);
-                      }
+                      openLinkPage(portfolio);
                     }}
                   />
                 ))
