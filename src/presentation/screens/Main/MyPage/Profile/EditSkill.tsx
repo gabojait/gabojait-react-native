@@ -83,7 +83,7 @@ const EditSkill = () => {
       {skills.map((skill, idx) => (
         <SliderItem
           sliderColor={sliderColors[Level[skill.level ?? 'low'] - 1]}
-          value={Level[skill.level ?? 'low']}
+          value={Level[skill.level ?? '']}
           title={skill.skillName}
           onTitleChange={title => {
             dispatch(updateSkill(skill.skillId!, { ...skill, skillName: title }));
@@ -96,9 +96,10 @@ const EditSkill = () => {
             dispatch(
               updateSkill(skill.skillId!, {
                 ...skill,
-                level: Object.entries(Level).find(
-                  ([_, lvl]) => lvl == value,
-                )?.[0] as keyof typeof Level,
+                level:
+                  (Object.entries(Level).find(
+                    ([_, lvl]) => lvl == value,
+                  )?.[0] as keyof typeof Level) || 'LOW',
               }),
             );
           }}
