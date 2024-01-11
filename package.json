@@ -2,13 +2,8 @@
   "name": "gabojait",
   "version": "^1.0.0",
   "private": true,
-<<<<<<< HEAD
-  "iOS-hotfixVersion": "5",
-  "android-hotfixVersion": "7",
-=======
   "iOS-hotfixVersion": "6",
   "android-hotfixVersion": "6",
->>>>>>> develop
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
