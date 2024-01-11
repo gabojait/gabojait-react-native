@@ -17,9 +17,10 @@ platform :ios do
     match(type: "appstore")
     upload_to_testflight
     version_number = get_version_number(xcodeproj: "gabojait.xcodeproj")
+    hotfix_number = read_and_parse_json('../../package.json')[ENV['IOS_HOTFIX_VERSION']].to_i
     build_number = get_build_number.to_i
     slack(
-      message: "iOS Gabojait 버전 #{version_number} - TestFlight 업로드 완료",
+      message: "iOS Gabojait 버전 #{version_number}-#{hotfix_number} TestFlight 업로드 완료",
       payload: { "Version": version_number + "(" + build_number.to_s + ")" },
     )
   end
@@ -70,7 +71,7 @@ platform :ios do
         automatic_release: true,
       )
       slack(
-        message: "iOS Gabojait 스토어 버전 #{new_version_number} - App Store 배포 완료",
+        message: "iOS Gabojait 스토어 버전 #{new_version_number} App Store 배포 완료",
         slack_url: ENV['SLACK_URL']
       )
       sh "watchbuild"

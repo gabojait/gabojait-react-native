@@ -18,7 +18,7 @@ platform :android do
       sh "appcenter codepush release-react  --app #{ENV['OWNER_NAME']}/#{ENV['APP_NAME']} --deployment-name Production --development true --description 'version #{version_number}-#{hotfix_number} Production codepush test' --mandatory true --disable-duplicate-release-error"
     end
     slack(
-      message: "Android Gabojait 사용자 버전 #{version_number}-#{hotfix_number} - Codepush Production 업로드 완료",
+      message: "Android Gabojait 사용자 버전 #{version_number}-#{hotfix_number} Codepush Production 업로드 완료",
       slack_url: ENV['SLACK_URL']
     )
   end
@@ -34,7 +34,7 @@ platform :android do
       sh "appcenter codepush release-react  --app #{ENV['OWNER_NAME']}/#{ENV['APP_NAME']} --deployment-name Staging --development true --description 'version #{version_number}-#{hotfix_number} Staging codepush test' --mandatory true --disable-duplicate-release-error"
     end
     slack(
-      message: "Android Gabojait 테스  버전 #{version_number}-#{hotfix_number} Codepush Staging 업로드 완료",
+      message: "Android Gabojait 테스xm  버전 #{version_number}-#{hotfix_number} Codepush Staging 업로드 완료",
       slack_url: ENV['SLACK_URL']
     )
   end
@@ -60,7 +60,7 @@ platform :android do
 			aab: './app/build/outputs/bundle/release/app-release.aab'
 		)
 		slack(
-			message: "Android Gabojait 버전 #{new_version_number} - 구글 내부 테스트 업로드 완료",
+			message: "Android Gabojait 버전 #{new_version_number} 구글 내부 테스트 업로드 완료",
 			slack_url: ENV['SLACK_URL']
     )
 	end
@@ -79,7 +79,7 @@ platform :android do
 	    skip_upload_apk: false
     )
 	  slack(
-	    message: "Android Gabojait 버전 #{new_version_number} - 구글 플레이 업로드 완료",
+	    message: "Android Gabojait 버전 #{new_version_number} 구글 플레이 업로드 완료",
 	    slack_url: ENV['SLACK_URL']
 	  )
 	end
