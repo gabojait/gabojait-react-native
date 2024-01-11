@@ -2,7 +2,7 @@
   "name": "gabojait",
   "version": "^1.0.0",
   "private": true,
-  "iOS-hotfixVersion": "5",
+  "iOS-hotfixVersion": "6",
   "android-hotfixVersion": "6",
   "scripts": {
     "android": "react-native run-android",
