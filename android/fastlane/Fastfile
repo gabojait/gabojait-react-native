@@ -57,7 +57,7 @@ platform :android do
 		)
 		upload_to_play_store(
 			track: "internal",
-			aab: '../app/build/outputs/bundle/release/app-release.aab'
+			aab: './app/build/outputs/bundle/release/app-release.aab'
 		)
 		slack(
 			message: "Android Gabojait 버전 #{new_version_number} - 구글 내부 테스트 업로드 완료",
@@ -71,7 +71,7 @@ platform :android do
     gradle(task: "clean bundleRelease")
     upload_to_play_store(
       track: "production",
-      aab: '../app/build/outputs/bundle/release/app-release.aab',
+      aab: './app/build/outputs/bundle/release/app-release.aab',
 	    skip_upload_metadata: false,
 	    skip_upload_changelogs: false,
 	    skip_upload_screenshots: false,
