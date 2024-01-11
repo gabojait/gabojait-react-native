@@ -15,14 +15,6 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 ## iOS
 
-### ios test
-
-```sh
-[bundle exec] fastlane ios test
-```
-
-Runs all the tests
-
 ### ios build
 
 ```sh
@@ -39,10 +31,10 @@ Build
 
 Push a new beta build to TestFlight
 
-### ios codepush_release
+### ios codepush_production
 
 ```sh
-[bundle exec] fastlane ios codepush_release
+[bundle exec] fastlane ios codepush_production
 ```
 
 Push a new release hotfix update through Codepush
