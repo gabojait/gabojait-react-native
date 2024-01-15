@@ -169,9 +169,10 @@ const ProfileComponent = ({ navigation, route }: ProfileStackParamListProps<'Vie
   }
 
   function openLinkPage(portfolio: Portfolio) {
+    console.log(`url:${portfolio.portfolioUrl}`);
     if (portfolio.media == 'LINK') {
-      navigation.replace('MainNavigation', {
-        screen: 'OpenChatingPage',
+      navigation.getParent()?.navigate('MainNavigation', {
+        screen: 'WebViewPage',
         params: { uri: portfolio.portfolioUrl },
       });
     }
