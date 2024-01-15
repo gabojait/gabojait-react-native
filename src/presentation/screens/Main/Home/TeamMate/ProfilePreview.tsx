@@ -1,7 +1,7 @@
 import { MainStackScreenProps } from '@/presentation/navigation/types';
 import React, { Suspense, useEffect, useState } from 'react';
 import { Text, useTheme } from '@rneui/themed';
-import { Linking, ScrollView, TouchableOpacity, View } from 'react-native';
+import { ScrollView, TouchableOpacity, View } from 'react-native';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { RatingBar } from '@/presentation/components/RatingBar';
 import { Level } from '@/data/model/Profile/Skill';
@@ -44,6 +44,7 @@ import { ProfileReviewItem } from '@/presentation/components/ProfileReviewItem';
 import { isSkillExists } from '@/presentation/utils/ProfileUtils';
 import { ProjectIcon } from '@/presentation/components/icon/CustomIcon';
 import { ProfileImage } from '@/presentation/components/ProfileImage';
+import Portfolio from '@/data/model/Profile/Portfolio';
 
 const ProfilePreview = ({ navigation, route }: MainStackScreenProps<'ProfilePreview'>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -201,6 +202,15 @@ const ProfilePreviewComponent = ({ navigation, route }: MainStackScreenProps<'Pr
     }
   }
 
+  function openLinkPage(portfolio: Portfolio) {
+    console.log(`url:${portfolio.portfolioUrl}`);
+    if (portfolio.media == 'LINK') {
+      navigation.getParent()?.navigate('WebViewPage', {
+        params: { uri: portfolio.portfolioUrl },
+      });
+    }
+  }
+
   if (!profile) {
     return null;
   }
@@ -330,9 +340,7 @@ const ProfilePreviewComponent = ({ navigation, route }: MainStackScreenProps<'Pr
                     marginRight: 10,
                   }}
                   onClick={async () => {
-                    if (await Linking.canOpenURL(portfolio.portfolioUrl)) {
-                      Linking.openURL(portfolio.portfolioUrl);
-                    }
+                    openLinkPage(portfolio);
                   }}
                 />
               ))
@@ -352,7 +360,7 @@ const ProfilePreviewComponent = ({ navigation, route }: MainStackScreenProps<'Pr
                     marginRight: 10,
                     justifyContent: 'flex-start',
                   }}
-                  onClick={async () => {}}
+                  onClick={() => {}}
                 />
               ))
             ) : (

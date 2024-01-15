@@ -58,8 +58,19 @@ const EditPortfolio = () => {
     dispatch(deletePortfolio(id));
   };
 
-  const handleEdit = (portfolio: Portfolio) => {
+  const handleFileEdit = (portfolio: Portfolio) => {
     dispatch(updatePortfolio(portfolio.portfolioId!, portfolio));
+  };
+
+  const handleLinkEdit = (portfolio: Portfolio) => {
+    dispatch(updatePortfolio(portfolio.portfolioId!, portfolio));
+  };
+  const isValidateLink = (url: string) => {
+    const pattern = /^https:\/\//;
+    if (pattern.test(url)) {
+      return true;
+    }
+    return false;
   };
 
   useEffect(() => {
@@ -88,7 +99,7 @@ const EditPortfolio = () => {
       <PortfolioList
         fieldType={PortfolioType.Url}
         onAddPortfolio={portfolio => handleAdd(portfolio)}
-        onChangePortfolio={handleEdit}
+        onChangePortfolio={handleLinkEdit}
         onDeletePortfolio={handleDelete}
         portfolios={portfolios.filter(portfolio => portfolio.media == PortfolioType.Url)}
       />
@@ -105,7 +116,7 @@ const EditPortfolio = () => {
       <PortfolioList
         fieldType={PortfolioType.File}
         onAddPortfolio={portfolio => handleAdd(portfolio)}
-        onChangePortfolio={handleEdit}
+        onChangePortfolio={handleFileEdit}
         onDeletePortfolio={handleDelete}
         portfolios={portfolios.filter(portfolio => portfolio.media == PortfolioType.File)}
       />
@@ -115,7 +126,7 @@ const EditPortfolio = () => {
 };
 
 const placeHolders = {
-  LINK: 'URL 주소를 입력해주세요!',
+  LINK: 'URL 주소를 입력해주세요! ex)https://',
   FILE: '.jpg, .jpeg, .png, .pdf 포맷만 가능합니다!',
 };
 
