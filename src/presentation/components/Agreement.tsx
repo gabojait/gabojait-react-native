@@ -40,32 +40,34 @@ const AgreementItem: React.FC<AgreementItemProps & RegisterProps> = props => {
           flexDirection: 'row',
         }}
       >
-        <CheckBox
-          checked={props.checked}
-          onPress={() => props.onCheckedChange(!props.checked)}
-          title={props.text}
-          containerStyle={{ alignSelf: 'baseline', paddingEnd: 0, marginEnd: 0 }}
-          checkedIcon={<MaterialIcon name="check-box" size={18} color={theme.colors.primary} />}
-          uncheckedIcon={
-            <MaterialIcon name="check-box-outline-blank" size={18} color={theme.colors.grey2} />
-          }
-        />
-        <Text
-          onPress={() =>
-            navigation.navigate('WebView', {
-              url: props.url,
-              title: '약관',
-            })
-          }
-          style={{
-            color: theme.colors.primary,
-            textDecorationLine: 'underline',
-            flex: 1,
-            textAlignVertical: 'center',
-          }}
-        >
-          약관보기
-        </Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <CheckBox
+            checked={props.checked}
+            onPress={() => props.onCheckedChange(!props.checked)}
+            title={props.text}
+            containerStyle={{ alignSelf: 'baseline', paddingEnd: 0, marginEnd: 0 }}
+            checkedIcon={<MaterialIcon name="check-box" size={18} color={theme.colors.primary} />}
+            uncheckedIcon={
+              <MaterialIcon name="check-box-outline-blank" size={18} color={theme.colors.grey2} />
+            }
+          />
+          <Text
+            onPress={() =>
+              navigation.navigate('WebView', {
+                url: props.url,
+                title: '약관',
+              })
+            }
+            style={{
+              color: theme.colors.primary,
+              textDecorationLine: 'underline',
+              flex: 1,
+              textAlignVertical: 'center',
+            }}
+          >
+            약관보기
+          </Text>
+        </View>
       </ScrollView>
     </View>
   );
