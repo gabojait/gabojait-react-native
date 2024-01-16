@@ -7,4 +7,5 @@ export const teamKeys = {
   recruiting: 'recruiting',
   createTeam: ['createTeam'] as const,
   getTeam: ['getTeam'] as const,
+  getTeamByTeamId: (teamId: string) => ['team', teamId],
 };

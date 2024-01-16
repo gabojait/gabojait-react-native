@@ -55,7 +55,7 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
   const queryClient = useQueryClient();
   const reportStateRef = useRef<Input>(null);
   const { data, isLoading, error }: UseQueryResult<TeamDetailDto> = useQuery(
-    [teamKeys.getTeam, teamId],
+    teamKeys.getTeamByTeamId(teamId),
     () => getTeam(teamId),
     {
       useErrorBoundary: true,
@@ -67,8 +67,19 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
     {
       useErrorBoundary: true,
       retry: 0,
-      onSuccess: () => {
-        queryClient.invalidateQueries([teamKeys.getTeam, teamId, favoriteKeys.favoriteTeam]);
+      onSettled: (data, error, [_teamId], context) => {
+        queryClient.invalidateQueries([
+          teamKeys.getTeamByTeamId(_teamId),
+          favoriteKeys.favoriteTeam,
+        ]);
+      },
+      onMutate: async ([_teamId, { isAddFavorite }]) => {
+        await queryClient.cancelQueries(teamKeys.getTeamByTeamId(_teamId));
+        const oldData = queryClient.getQueryData(
+          teamKeys.getTeamByTeamId(_teamId),
+        ) as TeamDetailDto;
+        const newData = { ...oldData, isFavorite: isAddFavorite };
+        queryClient.setQueryData(teamKeys.getTeamByTeamId(_teamId), newData);
       },
     },
   );
