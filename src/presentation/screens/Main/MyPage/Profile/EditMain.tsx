@@ -23,6 +23,7 @@ import { getProfile } from '@/redux/reducers/profileReducer';
 import OkDialogModalContent from '@/presentation/components/modalContent/OkDialogModalContent';
 import { profileKeys } from '@/reactQuery/key/ProfileKeys';
 import ProfileViewDto from '@/data/model/Profile/ProfileViewDto';
+import ProfileViewResponse from '@/data/model/Profile/ProfileViewResponse';
 
 const useUpdateProfile = (data: ProfileViewDto) => {
   const queryClient = useQueryClient();
@@ -34,7 +35,25 @@ const useUpdateProfile = (data: ProfileViewDto) => {
     works: data?.works ?? [],
   };
 
-  const profileSkillMutation = useMutation(updateProfileInfo);
+  const profileSkillMutation = useMutation(updateProfileInfo, {
+    useErrorBoundary: true,
+    onSettled: (data, error, context) => {
+      queryClient.invalidateQueries([profileKeys.myProfile]);
+    },
+    onMutate: async ({ educations, skills, portfolios, position, works }) => {
+      await queryClient.cancelQueries(profileKeys.myProfile);
+      const oldData = queryClient.getQueryData(profileKeys.myProfile) as ProfileViewResponse;
+      const newData = {
+        ...oldData,
+        educations: educations,
+        skills: skills,
+        portfolios: portfolios,
+        position: position,
+        works: works,
+      };
+      queryClient.setQueryData(profileKeys.myProfile, newData);
+    },
+  });
 
   return {
     ...profileSkillMutation,
@@ -63,7 +82,6 @@ const useUpdateProfile = (data: ProfileViewDto) => {
         })),
       }),
     mutateAsync: () => profileSkillMutation.mutateAsync(profile),
-    onSuccess: () => queryClient.invalidateQueries(profileKeys.myProfile),
   };
 };
 
@@ -74,11 +92,17 @@ export function EditMainHeader() {
   const queryClient = useQueryClient();
   const { mutate: mutateDescription, data: descriptionData } = useMutation(
     profileKeys.myProfile,
-    () => updateDescription({ profileDescription: data?.profileDescription || '' }),
+    (args: { profileDescription: string }) => updateDescription({ ...args }),
     {
       useErrorBoundary: true,
-      onSuccess: () => {
-        queryClient.invalidateQueries(profileKeys.myProfile);
+      onSettled: (data, error, context) => {
+        queryClient.invalidateQueries([profileKeys.myProfile]);
+      },
+      onMutate: async ({ profileDescription }) => {
+        await queryClient.cancelQueries(profileKeys.myProfile);
+        const oldData = queryClient.getQueryData(profileKeys.myProfile) as ProfileViewResponse;
+        const newData = { ...oldData, profileDescription: profileDescription };
+        queryClient.setQueryData(profileKeys.myProfile, newData);
       },
     },
   );
@@ -109,7 +133,7 @@ export function EditMainHeader() {
         <Text
           onPress={() => {
             mutate();
-            mutateDescription();
+            mutateDescription(data?.profileDescription || '');
           }}
           style={{ color: theme.colors.primary, fontSize: 20 }}
         >
