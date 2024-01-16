@@ -67,12 +67,7 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
   }
 
   function updateOpenchatUrl(text: string) {
-    const regex = new RegExp('(https|http)?://(www\\.)?' + 'open.kakao.com' + '/o/.+', 'g');
-
-    setTeamCreateState(prevState => ({
-      ...prevState,
-      openChatUrl: text.match(regex)?.[0]?.toString() ?? '',
-    }));
+    setTeamCreateState(prevState => ({ ...prevState, openChatUrl: text }));
   }
 
   function updateProjectDescription(text: string) {
