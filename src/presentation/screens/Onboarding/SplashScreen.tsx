@@ -1,14 +1,13 @@
 import { RootStackScreenProps } from '@/presentation/navigation/types';
 import React, { useEffect } from 'react';
-import { Alert, PermissionsAndroid, Platform, View, BackHandler } from 'react-native';
+import { Alert, BackHandler, PermissionsAndroid, Platform, View } from 'react-native';
 import messaging from '@react-native-firebase/messaging';
-import CodePush, { DownloadProgress, LocalPackage, RemotePackage } from 'react-native-code-push';
+import CodePush, { DownloadProgress, RemotePackage } from 'react-native-code-push';
 import Splash from 'react-native-splash-screen';
 import { refreshToken } from '@/data/api/accounts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingSpinner from '../Loading';
 import { onlineManager } from 'react-query';
-import { AlertType } from '@/data/model/type/AlertType';
 import { AsyncStorageKey } from '@/lib/asyncStorageKey';
 import { axiosConfig } from '@/lib/axiosInstance';
 import usePlatform from '@/lib/usePlatform';
@@ -132,21 +131,6 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
     });
   }
 
-  function handleSubscribe() {
-    messaging().onMessage(async remoteMessage => {
-      try {
-        console.log(`
-      새로운 FCM 메시지가 도착했어요.
-      ----------
-      ${JSON.stringify(remoteMessage)}
-      ----------
-      `);
-      } catch (e) {
-        console.error(e);
-      }
-    });
-  }
-
   const checkNetworkConnection = () => {
     if (!onlineManager.isOnline()) {
       Alert.alert('오류', '네트워크에 연결돼있지 않습니다. 앱을 종료합니다.', [
@@ -193,7 +177,6 @@ const SplashScreen = ({ navigation }: RootStackScreenProps<'SplashScreen'>) => {
           return 1;
         }
         console.log('FCM 셋업 완료');
-        handleSubscribe();
         console.log('메시지 핸들러 셋업 완료 ');
         handleFcmTokenRefresh();
       }
