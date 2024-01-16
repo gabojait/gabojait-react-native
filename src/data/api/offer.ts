@@ -1,7 +1,6 @@
 import client from '@/lib/axiosInstance';
 import { Position } from '@/data/model/type/Position';
 import { PageModel, PageRequest } from '@/reactQuery/util/useModelList';
-import BriefOfferDto from '@/data/model/Offer/BriefOfferDto';
 import OffersFromOtherDto from '../model/Offer/OffersFromUserDto';
 
 export type GetOfferFromOthersProps = {
@@ -60,7 +59,7 @@ export const getOffersSentToTeam = async (body: PageRequest) => {
 };
 
 export const getOfferSentToUser = async (params: GetOfferFromOthersProps) => {
-  const result = await client.get(`team/offer/sent`, {
+  const result = await client.get('team/offer/sent', {
     params: {
       'page-from': params.pageFrom,
       'page-size': params.pageSize,
@@ -70,10 +69,6 @@ export const getOfferSentToUser = async (params: GetOfferFromOthersProps) => {
   return result as any as PageModel<OffersFromOtherDto>;
 };
 
-export const rejectOfferFromUser = async (offerId: number) => {
-  return await client.delete(`team/offer/${offerId}`);
-};
-
-export const acceptOfferFromUser = async (offerId: number, isAccepted: boolean) => {
+export const decideOfferFromUser = async (offerId: number, isAccepted: boolean) => {
   return await client.patch(`team/offer/${offerId}`, { isAccepted: isAccepted });
 };

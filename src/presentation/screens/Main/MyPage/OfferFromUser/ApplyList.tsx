@@ -1,9 +1,4 @@
-import {
-  acceptOfferFromUser,
-  GetOfferFromOthersProps,
-  getOffersFromUser,
-  rejectOfferFromUser,
-} from '@/data/api/offer';
+import { decideOfferFromUser, GetOfferFromOthersProps, getOffersFromUser } from '@/data/api/offer';
 import { OutlinedButton } from '@/presentation/components/Button';
 import CardWrapper from '@/presentation/components/CardWrapper';
 import { RatingBar } from '@/presentation/components/RatingBar';
@@ -53,15 +48,9 @@ const ApplyListComponent = ({
   });
   const queryClient = useQueryClient();
 
-  const { mutation: rejectOfferMutation } = useMutationDialog(
-    offerKeys.rejectOfferFromUser,
-    async (offerId: number) => rejectOfferFromUser(offerId),
-    'CENTER',
-  );
-
-  const { mutation: acceptOfferMutation } = useMutationDialog(
+  const { mutation: decideOfferMutation } = useMutationDialog(
     [offerKeys.acceptOfferFromUser, teamKeys.myTeam],
-    async (args: [number, boolean]) => acceptOfferFromUser(...args),
+    async (args: [number, boolean]) => decideOfferFromUser(...args),
     'CENTER',
     {
       onSuccessClick() {
@@ -139,7 +128,7 @@ const ApplyListComponent = ({
                 </View>
                 <View>
                   <OutlinedButton
-                    onPress={() => acceptOfferMutation.mutate([item.offerId, true])}
+                    onPress={() => decideOfferMutation.mutate([item.offerId, true])}
                     size="sm"
                     title={'함께하기'}
                     style={{ borderRadius: 5, paddingBottom: 10 }}
@@ -149,7 +138,7 @@ const ApplyListComponent = ({
                     title={'거절하기'}
                     style={{ borderRadius: 5, borderColor: theme.colors.disabled }}
                     titleStyle={{ color: theme.colors.disabled }}
-                    onPress={() => rejectOfferMutation.mutate(item.offerId)}
+                    onPress={() => decideOfferMutation.mutate([item.offerId, false])}
                   />
                 </View>
               </View>
