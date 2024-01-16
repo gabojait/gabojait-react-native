@@ -154,7 +154,9 @@ export const ManageTeammateComponent = ({
                   isRecruitDone={true}
                   radious={theme.positionIconRadious.md}
                 />
-                <Text style={globalStyles.textUnderPosition}>{item.nickname}</Text>
+                <Text style={[globalStyles.textUnderPosition, { marginStart: -20 }]}>
+                  {item.nickname}
+                </Text>
               </View>
               <View>
                 <OutlinedButton

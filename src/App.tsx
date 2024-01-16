@@ -1,4 +1,4 @@
-import { DevSettings, SafeAreaView } from 'react-native';
+import { DevSettings, Platform, SafeAreaView } from 'react-native';
 import { ThemeProvider } from '@rneui/themed';
 import { RootNavigation } from './presentation/navigation/RootNavigation';
 import allReducers from '@/redux/reducers';
@@ -20,6 +20,14 @@ import './assets/locales/index';
 import NetInfo from '@react-native-community/netinfo';
 import CodePush, { CodePushOptions } from 'react-native-code-push';
 import { OverlayProvider } from '@toss/use-overlay';
+import messaging from '@react-native-firebase/messaging';
+import {
+  displayBackgroundNotification,
+  displayForegroundNotification,
+  setAndroidAlarmChannel,
+  setAndroidForegroundService,
+  setIosCategories,
+} from '@/presentation/utils/ForegroundMessageUtils';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -62,7 +70,29 @@ const App = () => {
         setSafeAreaBackgroundColor(prev => (prev === 'white' ? 'yellow' : 'white'));
       });
     }
+    initializeMessage();
   }, []);
+
+  function initializeMessage() {
+    if (Platform.OS === 'ios') {
+      setIosCategories();
+    } else {
+      setAndroidForegroundService();
+      setAndroidAlarmChannel();
+    }
+
+    messaging().onMessage(async remoteMessage => {
+      let id = 0;
+      displayForegroundNotification(id.toString(), remoteMessage);
+      id++;
+    });
+
+    messaging().setBackgroundMessageHandler(async remoteMessage => {
+      let id = 0;
+      displayBackgroundNotification(id.toString(), remoteMessage);
+      id++;
+    });
+  }
 
   const backgroundStyle = {
     flex: 1,
