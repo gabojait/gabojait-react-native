@@ -1,6 +1,5 @@
 import notifee from '@notifee/react-native';
 import { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
-import { fcmIcon } from '@/assets/images/imageUrls';
 
 export const MessageChannel = {
   alarm: 'gabojait_alarm',
@@ -37,7 +36,7 @@ export function displayForegroundNotification(
       channelId: MessageChannel.alarm,
       asForegroundService: true,
       colorized: true,
-      smallIcon: fcmIcon,
+      smallIcon: 'ic_fcm_alarm',
     },
     ios: {
       categoryId: MessageChannel.alarm,
@@ -60,7 +59,7 @@ export function displayBackgroundNotification(
       channelId: MessageChannel.alarm,
       asForegroundService: false,
       colorized: true,
-      smallIcon: fcmIcon,
+      smallIcon: 'ic_fcm_alarm',
     },
     ios: {
       categoryId: MessageChannel.alarm,
