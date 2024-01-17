@@ -155,6 +155,9 @@ export const TeamPageComponent = ({ navigation, route }: MainBottomTabNavigation
         queryClient.invalidateQueries([profileKeys.myProfile]);
       },
     },
+    {
+      useErrorBoundary: true,
+    },
   );
 
   return (

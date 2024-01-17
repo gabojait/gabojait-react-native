@@ -71,6 +71,37 @@ export const TeamEditorComponent = ({ navigation, route }: MainStackScreenProps<
         queryClient.invalidateQueries(teamKeys.myTeam);
       },
     },
+    {
+      useErrorBoundary: true,
+      onSettled: (data, error, context) => {
+        queryClient.invalidateQueries(teamKeys.myTeam);
+      },
+      onMutate: async ({
+        expectation,
+        projectDescription,
+        projectName,
+        openChatUrl,
+        frontendMaxCnt,
+        backendMaxCnt,
+        managerMaxCnt,
+        designerMaxCnt,
+      }) => {
+        await queryClient.cancelQueries(teamKeys.myTeam);
+        const oldData = queryClient.getQueryData(teamKeys.myTeam) as TeamDto;
+        const newData: TeamDto = {
+          ...oldData,
+          expectation: expectation,
+          projectDescription: projectDescription,
+          projectName: projectName,
+          openChatUrl: openChatUrl,
+          frontendMaxCnt: frontendMaxCnt,
+          backendMaxCnt: backendMaxCnt,
+          managerMaxCnt: managerMaxCnt,
+          designerMaxCnt: designerMaxCnt,
+        };
+        queryClient.setQueryData(teamKeys.myTeam, newData);
+      },
+    },
   );
   const [teamUpdateState, setTeamUpdateState] = useState<TeamRequestDto>({
     expectation: '',
