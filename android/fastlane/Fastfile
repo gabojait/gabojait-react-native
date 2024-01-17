@@ -50,7 +50,7 @@ platform :android do
 
 	desc "구글 플레이 내부 업데이트(Submit a new version to the internal track in the Google Play)"
 	lane :deploy_internal do |options|
-		update_android_version(options)
+		#update_android_version(options)
 		gradle(task: "clean")
 		gradle(
 			task: "bundle",
