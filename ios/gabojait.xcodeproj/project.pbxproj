@@ -535,7 +535,7 @@
 				CODE_SIGN_ENTITLEMENTS = gabojait/gabojait.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 14;
 				DEVELOPMENT_TEAM = 7LF5463DRN;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = gabojait/Info.plist;
@@ -588,7 +588,7 @@
 				CODE_SIGN_ENTITLEMENTS = gabojait/gabojait.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 14;
 				DEVELOPMENT_TEAM = 7LF5463DRN;
 				INFOPLIST_FILE = gabojait/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "가보자잇";
@@ -848,7 +848,7 @@
 				CODE_SIGN_ENTITLEMENTS = gabojait/gabojait.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 14;
 				DEVELOPMENT_TEAM = 7LF5463DRN;
 				INFOPLIST_FILE = gabojait/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "가보자잇";
