@@ -59,7 +59,6 @@ export function displayBackgroundNotification(
       channelId: MessageChannel.alarm,
       asForegroundService: false,
       colorized: true,
-      smallIcon: 'ic_fcm_alarm',
     },
     ios: {
       categoryId: MessageChannel.alarm,
