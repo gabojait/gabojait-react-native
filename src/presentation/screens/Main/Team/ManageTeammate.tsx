@@ -16,6 +16,8 @@ import React, { Suspense, useState } from 'react';
 import { ScrollView, TextInput, View } from 'react-native';
 import { useQuery, useQueryClient, useQueryErrorResetBoundary, UseQueryResult } from 'react-query';
 import { Loading } from '../../Loading';
+import { Position } from '@/data/model/type/Position';
+import BriefProfileDto from '@/data/model/Profile/BriefProfileDto';
 
 export const ManageTeammate = ({ navigation, route }: MainStackScreenProps<'ManageTeammate'>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -54,11 +56,59 @@ export const ManageTeammateComponent = ({
     async (userId: number) => fireTeammate(userId),
     'CENTER',
     {
-      onSuccessClick() {
-        queryClient.fetchQuery(teamKeys.myTeam);
+      onSuccessClick() {},
+    },
+    {
+      onSettled: (data, error, variables, context) => {
+        queryClient.invalidateQueries(teamKeys.myTeam);
+      },
+      onMutate: async (userId: number) => {
+        await queryClient.cancelQueries(teamKeys.myTeam);
+        const oldData = queryClient.getQueryData(teamKeys.myTeam) as TeamDto;
+        const newData: TeamDto = updateTeam(userId, oldData);
+        queryClient.setQueryData(teamKeys.myTeam, newData);
       },
     },
   );
+
+  function updateTeam(teamMemberId: number, oldData: TeamDto) {
+    const position = getPosition(teamMemberId, oldData.teamMembers);
+    const newTeamMember = updateTeamMember(teamMemberId, oldData.teamMembers);
+    const newPositionsCurrentCnt = updatePositionCurrentCnt(position || Position.None, oldData);
+    const newData: TeamDto = {
+      ...oldData,
+      frontendCurrentCnt: newPositionsCurrentCnt.frontendCurrentCnt,
+      backendCurrentCnt: newPositionsCurrentCnt.backendCurrentCnt,
+      managerCurrentCnt: newPositionsCurrentCnt.managerCurrentCnt,
+      designerCurrentCnt: newPositionsCurrentCnt.designerCurrentCnt,
+      teamMembers: newTeamMember,
+    };
+    return newData;
+  }
+
+  function getPosition(teamMemberId: number, data: Array<BriefProfileDto>) {
+    const user = data.find(value => value.userId == teamMemberId.toString());
+    return user?.position;
+  }
+
+  function updateTeamMember(teamMemberId: number, teamMembers: Array<BriefProfileDto>) {
+    return teamMembers.filter(value => {
+      value.userId != teamMemberId.toString();
+    });
+  }
+
+  function updatePositionCurrentCnt(position: Position, data: TeamDto) {
+    if (position == Position.Frontend) {
+      data.frontendCurrentCnt -= 1;
+    } else if (position == Position.Backend) {
+      data.backendCurrentCnt -= 1;
+    } else if (position == Position.Designer) {
+      data.designerCurrentCnt -= 1;
+    } else if (position == Position.Manager) {
+      data.managerCurrentCnt -= 1;
+    }
+    return data;
+  }
 
   function reportCompeletedModal() {
     modal?.show({
