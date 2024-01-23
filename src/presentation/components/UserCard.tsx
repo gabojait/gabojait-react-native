@@ -7,7 +7,6 @@ import UserProfileDto from '@/data/model/User/UserProfileDto';
 import UserProfileOfferDto from '@/data/model/User/UserProfileBriefDto';
 import { Position } from '@/data/model/type/Position';
 import { Chip } from '@/presentation/screens/Main/MyPage/Profile';
-import LoadingSpinner from '@/presentation/screens/Loading';
 import { CachedImage } from '@georstat/react-native-image-cache';
 import { defaultProfile } from '@/assets/images/imageUrls';
 
@@ -64,7 +63,6 @@ export const UserCard = ({
               }
               resizeMode={'cover'}
               onError={() => setImagesNotValid(prev => prev.add(item.imageUrl))}
-              loadingImageComponent={LoadingSpinner}
             />
           </View>
           <View style={{ paddingStart: 20 }}>
