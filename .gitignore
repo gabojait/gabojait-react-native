@@ -71,6 +71,9 @@ buck-out/
 /ios/gabojait.app.dSYM
 /ios/gabojait.app.dSYM.zip
 /android/app/google-services.json
+/android/app/src/google-services.json
 /android/app/release.keystore
 .env*
 android/app/releaseStaging/
+android/app/src/main/res/*/node_modules*
+android/app/src/main/assets/index.android.bundle
