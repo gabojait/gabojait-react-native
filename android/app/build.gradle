@@ -146,8 +146,6 @@ android {
                 copy{
                     from project(':AndroidSecretSecure').file('./gabojait-android-googleapi-services.json')
                     into '../secretResources'
-                    from project(':AndroidSecretSecure').file('./gabojait-services.json')
-                    into '../secretResources'
                 }
             }
         }
