@@ -75,3 +75,5 @@ buck-out/
 .env*
 env.d.ts
 android/app/releaseStaging/
+android/app/src/main/res/*/node_modules*
+android/app/src/main/assets/index.android.bundle
