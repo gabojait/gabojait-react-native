@@ -1,19 +1,19 @@
 import { ResponseWrapper } from '@/data/model/ResponseWrapper';
 import { Result } from '@/redux/reducers';
 import axios, {
-  AxiosRequestConfig,
-  AxiosRequestHeaders,
   AxiosInstance,
   AxiosInterceptorManager,
-  AxiosResponse,
   AxiosInterceptorOptions,
-  AxiosError,
+  AxiosRequestConfig,
+  AxiosRequestHeaders,
+  AxiosResponse,
   RawAxiosRequestConfig,
 } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BASE_URL } from '@env';
 
 export const axiosConfig: AxiosRequestConfig = {
-  baseURL: 'https://gabojait-dev.nogamsung.com/api/v1',
+  baseURL: BASE_URL,
   headers: {} as AxiosRequestHeaders,
   timeout: 10 * 1000,
 };
