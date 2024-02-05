@@ -70,7 +70,7 @@ buck-out/
 /ios/GoogleService-Info.plist
 /ios/gabojait.app.dSYM
 /ios/gabojait.app.dSYM.zip
-/android/app/google-services.json
 /android/app/release.keystore
+/android/app/debug.keystore
 .env*
 android/app/releaseStaging/

@@ -144,7 +144,9 @@ android {
             doLast {
                 // processResources에 의존하는 작업 수행
                 copy{
-                    from project(':AndroidSecretSecure').file('./gabojait-android-7b48a7d71142.json')
+                    from project(':AndroidSecretSecure').file('./gabojait-android-googleapi-services.json')
+                    into '../secretResources'
+                    from project(':AndroidSecretSecure').file('./gabojait-services.json')
                     into '../secretResources'
                 }
             }
