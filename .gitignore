@@ -73,8 +73,8 @@ buck-out/
 /android/app/release.keystore
 /android/app/debug.keystore
 .env*
-env.d.ts
-android/app/releaseStaging/
-android/app/src/main/res/*/node_modules*
-android/app/src/main/assets/index.android.bundle
-android/secretResources
+/env.d.ts
+/android/app/releaseStaging/
+/android/app/src/main/res/*/node_modules*
+/android/app/src/main/assets/index.android.bundle
+/android/secretResources
