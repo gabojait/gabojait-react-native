@@ -210,6 +210,7 @@ const GroupDetailComponent = ({ navigation, route }: MainStackScreenProps<'Group
             <Text style={globalStyles.textLight13}>{data?.expectation}</Text>
           </View>
         </CardWrapper>
+        <View style={{ height: 20 }} />
       </ScrollView>
     </View>
   );
