@@ -353,7 +353,7 @@ const ProfileComponent = ({ navigation, route }: ProfileStackParamListProps<'Vie
                       onPress={() => {
                         navigation.getParent()?.navigate('MainNavigation', {
                           screen: 'MoreReview',
-                          params: { userId: 2 },
+                          params: { userId: profile?.userId },
                         });
                       }}
                     >

@@ -246,7 +246,7 @@ const MyReview = ({ data }: { data: ProfileViewDto }) => {
           renderItem={({ item }) => (
             <ReviewItem
               name={item.reviewer}
-              score={2.5}
+              score={item.rating}
               content={item.post}
               style={{ width: WIDTH * 0.7, marginEnd: 10 }}
             />
