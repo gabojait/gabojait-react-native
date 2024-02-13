@@ -63,7 +63,8 @@
     "redux": "^4.2.0",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.4.2",
-    "typesafe-actions": "^5.1.0"
+    "typesafe-actions": "^5.1.0",
+    "uri-scheme": "^1.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

@@ -8526,6 +8526,11 @@ uri-js@^4.2.2:
   dependencies:
     punycode "^2.1.0"
 
+uri-scheme@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/uri-scheme/-/uri-scheme-1.2.0.tgz#1ca79d58f435400c626d3b17673691db2171413b"
+  integrity sha512-eEwuzuoX5wkBpf0AatbKXX9kGxk0QDbLMUUWeBIC3WhCi3f/D9o3ch5+wy9SeyfnGEjBLjgYlVgYq92IoBt/YA==
+
 url-parse@^1.4.7:
   version "1.5.10"
   resolved "https://registry.yarnpkg.com/url-parse/-/url-parse-1.5.10.tgz#9d3c2f736c1d75dd3bd2be507dcc111f1e2ea9c1"
