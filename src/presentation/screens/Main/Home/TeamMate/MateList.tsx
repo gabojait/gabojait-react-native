@@ -2,21 +2,13 @@ import { GetProfileProps, getUserSeekingTeam } from '@/data/api/profile';
 import UserProfileOfferDto from '@/data/model/User/UserProfileBriefDto';
 import { useModelList } from '@/reactQuery/util/useModelList';
 import { useTheme } from '@rneui/themed';
-import {
-  MainStackParamList,
-  MainStackScreenProps,
-  PositionTabParamList,
-  PositionTabParamListProps,
-} from '@/presentation/navigation/types';
+import { PositionTabParamList, PositionTabParamListProps } from '@/presentation/navigation/types';
 import React, { Suspense, useEffect } from 'react';
 import { FlatList, TouchableOpacity, View } from 'react-native';
 import { UserCard } from '@/presentation/components/UserCard';
 import Error404Boundary from '@/presentation/components/errorComponent/Error404Boundary';
 import { Loading } from '@/presentation/screens/Loading';
 import { useQueryErrorResetBoundary } from 'react-query';
-import { MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
-import { RootStackNavigationProps } from '@/presentation/navigation/RootNavigation';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { mapToSeekingTeamKey } from '@/presentation/utils/util';
 
 const MateList = ({ navigation, route }: PositionTabParamListProps<keyof PositionTabParamList>) => {
