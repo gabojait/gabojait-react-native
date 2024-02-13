@@ -1,22 +1,13 @@
 import { getHeaderTitle } from '@react-navigation/elements';
-import { StackHeaderProps, StackScreenProps } from '@react-navigation/stack';
-import React, { useCallback, useEffect, useState } from 'react';
+import { StackHeaderProps } from '@react-navigation/stack';
+import React from 'react';
 import { View } from 'react-native';
 import CustomIcon from '@/presentation/components/icon/Gabojait';
 import { OutlinedButton } from '../../components/Button';
 import CustomHeader from '../../components/CustomHeader';
 import color from '@/presentation/res/styles/color';
-import { store } from '@/redux/store';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { BoardSwitchActionType } from '@/redux/action_types/boardSwitchTypes';
-import { Provider, useDispatch } from 'react-redux';
-import boardSwitchReducer from '@/redux/reducers/boardSwitchReducer';
-import {
-  BoardStackParamList,
-  RootStackParamList,
-  RootStackScreenProps,
-} from '@/presentation/navigation/types';
-import { useNavigation } from '@react-navigation/native';
 
 const HomeHeader: React.FC<StackHeaderProps> = ({ navigation, route, options, back }) => {
   const title = getHeaderTitle(options, route.name);
