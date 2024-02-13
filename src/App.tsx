@@ -27,7 +27,7 @@ import {
   setAndroidAlarmChannel,
   setAndroidForegroundService,
   setIosCategories,
-} from '@/presentation/utils/ForegroundMessageUtils';
+} from '@/presentation/utils/FcmMessageUtils';
 
 const queryClient = new QueryClient({
   defaultOptions: {
