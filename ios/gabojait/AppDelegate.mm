@@ -1,3 +1,4 @@
+#import <React/RCTLinkingManager.h>
 #import "AppDelegate.h"
 
 // Firebase
@@ -5,10 +6,9 @@
 #import "RNFBMessagingModule.h"
 
 #import <React/RCTBundleURLProvider.h>
-#import "RNSplashScreen.h"  // here
-
-// CodePush
+#import "RNSplashScreen.h"
 #import <CodePush/CodePush.h>
+
 
 @implementation AppDelegate
 
@@ -51,4 +51,10 @@
 #endif
 }
 
+- (BOOL)application:(UIApplication *)application
+   openURL:(NSURL *)url
+   options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
+{
+  return [RCTLinkingManager application:application openURL:url options:options];
+}
 @end
