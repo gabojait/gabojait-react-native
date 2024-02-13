@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import MainBottomTabNavigation from '@/presentation/navigation/MainBottomTabNavigation';
@@ -8,7 +8,7 @@ import WebViewPage from '../components/WebView';
 import SplashScreen from '../screens/Onboarding/SplashScreen';
 import MainNavigation from './MainNavigation';
 import AxiosWrapper from '../utils/AxiosWrapper';
-import { NotificationProvider } from '@/data/localdb/notificationProvider';
+import { linking } from '@/presentation/schemeLink/linkInitializer';
 
 export type RootStackNavigationProps<T extends keyof RootStackParamList = 'default'> =
   StackNavigationProp<RootStackParamList, T>;
@@ -17,7 +17,7 @@ const RootStack = createStackNavigator<RootStackParamList>();
 
 export const RootNavigation = () => {
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       {/* initialRouteName은 일시적. 추후 자동로그인 가능 여부에 따라 OnboardingNavigation, MainNavigation으로 라우팅될 예정 */}
       <AxiosWrapper>
         <RootStack.Navigator initialRouteName={'SplashScreen'}>
