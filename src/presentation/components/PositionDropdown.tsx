@@ -1,13 +1,12 @@
-import {Icon, Text, useTheme} from '@rneui/themed';
+import { Icon, Text, useTheme } from '@rneui/themed';
 import React, { useEffect, useState } from 'react';
-import { PixelRatio, Platform, StyleSheet,  TouchableOpacity, View } from 'react-native';
+import { PixelRatio, Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list';
-import Gabojait from '@/presentation/components/icon/Gabojait';
 import PositionCountDto from '@/data/model/Team/PostionCountDto';
 import { Position } from '@/data/model/type/Position';
 import PositionDropdownContent from '@/presentation/model/PositionDropdownContent';
 import PositionCount from '../model/PositionCount';
-import { mapPositionToTextName, mapKoreanToPosition } from '../utils/PositionDropdownUtils';
+import { mapKoreanToPosition, mapPositionToTextName } from '../utils/PositionDropdownUtils';
 import PositionRecruiting from '../model/PositionRecruitng';
 import { mapToInitial } from '../utils/util';
 
@@ -17,6 +16,7 @@ interface positionDropdownProps {
   dropdownData: PositionDropdownContent[];
   onDropdownSelected: (value: Position) => void;
   defaultData: PositionRecruiting;
+  isSingleSelection: boolean;
 }
 
 export const PositionDropdown = ({
@@ -25,6 +25,7 @@ export const PositionDropdown = ({
   dropdownData,
   onDropdownSelected,
   defaultData,
+  isSingleSelection,
 }: positionDropdownProps) => {
   const { theme } = useTheme();
   const [position, setPosition] = useState<Position>(defaultData.position);
@@ -52,8 +53,11 @@ export const PositionDropdown = ({
   }, [positionResult]);
 
   function initializePlaceHolderText(text: string | (() => string)) {
-    if (text == '') return '팀원 포지션을 선택해주세요';
-    else return placeholdeText;
+    if (text == '') {
+      return '팀원 포지션을 선택해주세요';
+    } else {
+      return placeholdeText;
+    }
   }
 
   function onPositionSelected(value: string) {
@@ -82,6 +86,62 @@ export const PositionDropdown = ({
     setCodename(mapToInitial(position));
   }
 
+  const Spinner = () => {
+    return (
+      <View style={{ flexDirection: 'row' }}>
+        <View
+          style={{
+            width: 20,
+            height: 23,
+            backgroundColor: theme.colors.grey0,
+            alignItems: 'center',
+            marginTop: 10,
+          }}
+        >
+          <TouchableOpacity onPress={() => decrease()}>
+            <Icon
+              type={'octicon'}
+              name={'chevron-down'}
+              size={20}
+              style={styles.minusIcon}
+              color={'black'}
+            />
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            width: 35,
+            height: 23,
+            backgroundColor: theme.colors.grey0,
+            alignItems: 'center',
+            marginTop: 10,
+          }}
+        >
+          <Text style={{ color: 'black', fontSize: 17 }}>{count}</Text>
+        </View>
+        <View
+          style={{
+            width: 20,
+            height: 23,
+            backgroundColor: theme.colors.grey0,
+            alignItems: 'center',
+            marginTop: 10,
+          }}
+        >
+          <TouchableOpacity onPress={() => increase()}>
+            <Icon
+              type={'octicon'}
+              name={'chevron-up'}
+              size={20}
+              style={styles.plusIcon}
+              color={'black'}
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
+
   return (
     <View
       style={[
@@ -94,7 +154,7 @@ export const PositionDropdown = ({
         style={[
           {
             flexDirection: 'row',
-            alignItems: 'flex-start',
+            alignItems: 'center',
             justifyContent: 'space-between',
             flex: 1,
           },
@@ -127,61 +187,13 @@ export const PositionDropdown = ({
               {codename}
             </Text>
           </View>
-          <View style={{ flexDirection: 'row' }}>
-            <View
-              style={{
-                width: 15,
-                height: 21,
-                backgroundColor: theme.colors.grey0,
-                alignItems: 'center',
-                marginTop: 10,
-              }}
-            >
-              <TouchableOpacity onPress={() => increase()}>
-                <Gabojait
-                  name="plus"
-                  size={13}
-                  style={styles.plusIcon}
-                  color={theme.colors.grey2}
-                />
-              </TouchableOpacity>
-            </View>
-            <View
-              style={{
-                width: 51,
-                height: 21,
-                backgroundColor: theme.colors.grey0,
-                alignItems: 'center',
-                marginTop: 10,
-              }}
-            >
-              <Text style={{ color: theme.colors.grey2, fontSize: 17 }}>{count}</Text>
-            </View>
-            <View
-              style={{
-                width: 15,
-                height: 21,
-                backgroundColor: theme.colors.grey0,
-                alignItems: 'center',
-                marginTop: 10,
-              }}
-            >
-              <TouchableOpacity onPress={() => decrease()}>
-                <Gabojait
-                  name="minus"
-                  size={2}
-                  style={styles.minusIcon}
-                  color={theme.colors.grey2}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
         </View>
         <View
           style={{
             flexDirection: 'row',
             borderColor: theme.colors.grey0,
             borderRadius: 6,
+            marginStart: 10,
             justifyContent: 'space-between',
             backgroundColor: theme.colors.grey0,
           }}
@@ -211,7 +223,7 @@ export const PositionDropdown = ({
                 borderColor: theme.colors.grey0,
                 borderRadius: 6,
               }}
-              arrowicon={<Text></Text>}
+              arrowicon={<Text />}
               dropdownShown={false}
             />
           ) : (
@@ -232,6 +244,7 @@ export const PositionDropdown = ({
           </TouchableOpacity>
         </View>
       </View>
+      {isSingleSelection ? null : <Spinner />}
     </View>
   );
 };

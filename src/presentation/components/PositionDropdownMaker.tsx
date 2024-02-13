@@ -1,7 +1,6 @@
-import { TouchableOpacity, View } from 'react-native';
+import { Animated, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import React, { useEffect, useState } from 'react';
-import { Animated } from 'react-native';
 import { PositionDropdown } from './PositionDropdown';
 import { useTheme } from '@rneui/themed';
 import CustomIcon from '@/presentation/components/icon/Gabojait';
@@ -53,7 +52,6 @@ export const PositionDropdownMaker = ({
   useEffect(() => {
     updatePositionState();
   }, [state]);
-
 
   function updatePositionState() {
     const selectedPositions = teamMemberRecruit.map(item => {
@@ -174,6 +172,7 @@ export const PositionDropdownMaker = ({
           onDropdownSelected={(value: Position) => {}}
           dropdownData={positionState}
           defaultData={mapPositionCountToPositionRecruiting(item.positionData)}
+          isSingleSelection={false}
         />
       </Animated.View>
     );

@@ -238,6 +238,7 @@ export const PositionDropdownEditor = ({
           onDropdownSelected={(value: Position) => {}}
           dropdownData={positionState}
           defaultData={item.positionData}
+          isSingleSelection={false}
         />
       </Animated.View>
     );
