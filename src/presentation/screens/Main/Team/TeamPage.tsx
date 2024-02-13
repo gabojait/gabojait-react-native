@@ -35,14 +35,15 @@ interface LeaderFooterParams {
 
 const LeaderHeader = ({ onPressEditor }: LeaderHeaderParams) => {
   const styles = useStyles();
+  const globalStyles = useGlobalStyles();
   const { theme } = useTheme();
   return (
-    <View style={styles.header}>
+    <View style={[styles.header, globalStyles.headerHeight]}>
       <Text
         style={{
+          fontWeight: theme.fontWeight.semibold,
           fontSize: theme.fontSize.lg,
-          fontWeight: theme.fontWeight.bold,
-          textAlignVertical: 'center',
+          textAlign: 'center',
         }}
       >
         팀페이지
@@ -56,9 +57,10 @@ const LeaderHeader = ({ onPressEditor }: LeaderHeaderParams) => {
 
 const TeamMateHeader = () => {
   const styles = useStyles();
+  const globalStyles = useGlobalStyles();
   const { theme } = useTheme();
   return (
-    <View style={styles.header}>
+    <View style={[styles.header, globalStyles.headerHeight]}>
       <Text style={{ fontSize: theme.fontSize.lg, fontWeight: theme.fontWeight.bold }}>
         팀페이지
       </Text>

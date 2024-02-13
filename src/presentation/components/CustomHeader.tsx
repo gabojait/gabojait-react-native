@@ -4,6 +4,7 @@ import React from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import CustomIcon from '@/presentation/components/icon/Gabojait';
+import useGlobalStyles from '@/presentation/styles';
 
 const CustomHeader: React.FC<HeaderProps> = ({
   title,
@@ -13,6 +14,7 @@ const CustomHeader: React.FC<HeaderProps> = ({
   align,
   headerstyle,
 }) => {
+  const globalStyles = useGlobalStyles();
   const navigation = useNavigation();
   const { theme } = useTheme();
   const back = (
@@ -41,7 +43,14 @@ const CustomHeader: React.FC<HeaderProps> = ({
   );
 
   return (
-    <View style={[headerStyle.parent, { borderColor: theme.colors.disabled }, headerstyle]}>
+    <View
+      style={[
+        headerStyle.parent,
+        { borderColor: theme.colors.disabled, alignItems: 'center' },
+        headerstyle,
+        globalStyles.headerHeight,
+      ]}
+    >
       {canGoBack && title ? (
         <>
           <View style={{ flex: 3, paddingBottom: 26 }}>{canGoBack ? back : null}</View>
@@ -80,7 +89,7 @@ const headerStyle = StyleSheet.create({
   parent: {
     ...headerGlobalStyle,
     paddingStart: 10,
-    paddingVertical: 15,
+    paddingVertical: 10,
     borderBottomWidth: 1,
     backgroundColor: 'white',
     justifyContent: 'space-between',

@@ -158,5 +158,8 @@ const useGlobalStyles = makeStyles(theme => ({
     borderRadius: 8,
     top: -(140 - 30),
   },
+  headerHeight: {
+    minHeight: 41,
+  },
 }));
 export default useGlobalStyles;
