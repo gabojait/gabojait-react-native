@@ -1,4 +1,4 @@
-import { Button, useTheme, ButtonProps } from '@rneui/themed';
+import { Button, ButtonProps, useTheme } from '@rneui/themed';
 import React from 'react';
 import { FontWeight, theme } from '../theme';
 import useGlobalStyles from '../styles';
@@ -76,6 +76,7 @@ const OutlinedButton: React.FC<OutlinedButtonProps> = ({
           borderRadius: theme.radius[size],
           padding: theme.spacing[size],
           paddingHorizontal: theme.spacing[size],
+          borderWidth: size == 'xs' ? 2 : 1,
         },
         props.style,
       ]}
