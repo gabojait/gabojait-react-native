@@ -1,5 +1,5 @@
 import { BackHandler, View } from 'react-native';
-import React, { Children, ReactNode } from 'react';
+import React from 'react';
 import { FilledButton } from '../Button';
 import { Text, useTheme } from '@rneui/themed';
 import { WIDTH } from '@/presentation/utils/util';
