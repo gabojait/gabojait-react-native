@@ -5,7 +5,6 @@ import { QueryClient } from 'react-query';
 import { schemeLinkConfig } from '@/presentation/schemeLink/schemeLinkConfig';
 import { reviewKeys } from '@/reactQuery/key/ReviewKeys';
 import { teamKeys } from '@/reactQuery/key/TeamKeys';
-import { linking } from '@/presentation/schemeLink/linkInitializer';
 
 const AppScheme = 'gabojait';
 export const MessageChannel = {
@@ -156,12 +155,6 @@ export function displayBackgroundNotification(
 }
 
 export function removeCache(url: string | undefined, queryClient: QueryClient) {
-  console.log(`removeCache================url:${url}`);
-  console.log(
-    `removeCache================case URL:${
-      linking.prefixes[0] + schemeLinkConfig.screens.MainNavigation.screens.TeamHistory
-    }`,
-  );
   switch (url) {
     case AppScheme + ':/' + schemeLinkConfig.screens.MainNavigation.screens.ApplyStatus:
       break;
