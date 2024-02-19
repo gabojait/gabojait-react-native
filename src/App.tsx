@@ -57,13 +57,14 @@ export function HeadlessCheck({ isHeadless }: { isHeadless: boolean }) {
 
 const App = () => {
   const [safeAreaBackgroundColor, setSafeAreaBackgroundColor] = useState('white');
+
   useEffect(() => {
     if (__DEV__) {
       DevSettings.addMenuItem('Toggle Safe Area Color (iOS Only)', () => {
         setSafeAreaBackgroundColor(prev => (prev === 'white' ? 'yellow' : 'white'));
       });
     }
-    initializeMessage();
+    initializeMessage(queryClient);
   }, []);
 
   const backgroundStyle = {
