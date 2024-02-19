@@ -8,7 +8,6 @@ import TeamHistory from '../screens/Main/MyPage/TeamHistory';
 import TitleWithCloseHeader from '../screens/Headers/TitleWithCloseHeader';
 import TeamReview from '../screens/Main/MyPage/TeamReview';
 import BookMark from '../screens/Main/MyPage/BookMark';
-import OfferFromTeamPage from '../screens/Main/MyPage/OfferFromTeam/OfferFromTeamPage';
 import OfferToTeamHistory from '../screens/Main/MyPage/OfferToTeam/OfferToTeamHistory';
 import Setting from '../screens/Main/MyPage/Setting/Setting';
 import AlarmSetting from '../screens/Main/MyPage/Setting/AlarmSetting';
@@ -29,6 +28,7 @@ import JoinTeam from '../screens/Main/MyPage/OfferFromTeam/JoinTeam';
 import OfferSentUser from '../screens/Main/MyPage/OfferSentToUser/OfferSentUser';
 import AlertPage from '../screens/Main/AlertPage';
 import { MoreReview } from '@/presentation/screens/Main/MyPage/MoreReview';
+import OfferFromTeam from '../screens/Main/MyPage/OfferFromTeam/OfferFromTeam';
 
 const Main = createStackNavigator<MainStackParamList>();
 
@@ -94,8 +94,8 @@ const MainNavigation = () => {
           }}
         />
         <Main.Screen
-          name="OfferFromTeamPage"
-          component={OfferFromTeamPage}
+          name="OfferFromTeam"
+          component={OfferFromTeam}
           options={{
             header: TitleWithCloseHeader,
             headerTitle: '제안서',

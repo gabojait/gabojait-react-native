@@ -18,7 +18,7 @@ const QueryKey = {
   ],
 };
 
-const OfferFromTeamPage = ({ navigation, route }: MainStackScreenProps<'OfferFromTeamPage'>) => {
+const OfferFromTeam = ({ navigation, route }: MainStackScreenProps<'OfferFromTeam'>) => {
   return (
     <Suspense fallback={Loading()}>
       <OfferFromTeamPageComponent navigation={navigation} route={route} />
@@ -26,7 +26,7 @@ const OfferFromTeamPage = ({ navigation, route }: MainStackScreenProps<'OfferFro
   );
 };
 
-const OfferFromTeamPageComponent = ({ navigation }: MainStackScreenProps<'OfferFromTeamPage'>) => {
+const OfferFromTeamPageComponent = ({ navigation }: MainStackScreenProps<'OfferFromTeam'>) => {
   const [params, setParams] = useState({ pageFrom: 1, pageSize: 20 } as PageRequest);
   const { data, isLoading, error, fetchNextPage, refetch, isRefreshing } = useModelList({
     initialParam: {
@@ -103,4 +103,4 @@ const OfferFromTeamPageComponent = ({ navigation }: MainStackScreenProps<'OfferF
     </View>
   );
 };
-export default OfferFromTeamPage;
+export default OfferFromTeam;

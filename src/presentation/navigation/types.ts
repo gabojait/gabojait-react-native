@@ -46,7 +46,7 @@ export type MainStackParamList = {
   TeamHistory: undefined;
   TeamReview: { teamId: string };
   BookMark: { isLeader: boolean };
-  OfferFromTeamPage: undefined;
+  OfferFromTeam: undefined;
   TeamDetail: { teamId: string; targetPosition: Position; offerId: number };
   JoinTeam: { teamId: string; targetPosition: Position; offerId: number };
   OfferToTeamHistory: undefined;
