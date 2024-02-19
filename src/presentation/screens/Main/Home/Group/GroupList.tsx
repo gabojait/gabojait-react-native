@@ -201,7 +201,9 @@ const GroupListComponent = ({ navigation }: BoardStackParamListProps<'GroupList'
       >
         <FloatingButton
           title="팀 생성"
-          onPress={() => navigation.navigate('MainNavigation', { screen: 'GroupCreator' })}
+          onPress={() => {
+            navigation.navigate('MainNavigation', { screen: 'GroupCreator' });
+          }}
         />
       </View>
     </View>

@@ -57,6 +57,7 @@ const Login = ({ navigation }: OnboardingScreenProps<'Login'>) => {
       }
     }
   }, [data, loading, error]);
+
   const globalStyles = useGlobalStyles();
 
   return (

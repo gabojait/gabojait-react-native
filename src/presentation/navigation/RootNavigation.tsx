@@ -18,7 +18,6 @@ const RootStack = createStackNavigator<RootStackParamList>();
 export const RootNavigation = () => {
   return (
     <NavigationContainer linking={linking}>
-      {/* initialRouteName은 일시적. 추후 자동로그인 가능 여부에 따라 OnboardingNavigation, MainNavigation으로 라우팅될 예정 */}
       <AxiosWrapper>
         <RootStack.Navigator initialRouteName={'SplashScreen'}>
           <RootStack.Screen
