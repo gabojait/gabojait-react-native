@@ -13,16 +13,13 @@ export const linking = {
 
   subscribe(listener: (url: string) => void) {
     console.log('linking subscribe to ', listener);
-    const onReceiveURL = (event: { url: string }) => {
-      const { url } = event;
-      console.log('link has url ', url, event);
-      return listener(url);
-    };
-
-    Linking.addEventListener('url', onReceiveURL);
+    const linkingSubscription = Linking.addEventListener('url', (event: { url: string }) => {
+      console.log('Received deep link:', event.url);
+      listener(event.url);
+    });
     return () => {
-      console.log('linking unsubscribe to ', listener);
-      Linking.removeAllListeners('url');
+      linkingSubscription.remove();
+      console.log('linkingSubscription removed!!!');
     };
   },
   schemeLinkConfig,
