@@ -122,8 +122,8 @@ const ApplyListComponent = ({
                   <Text style={styles.name}>{item.user.nickname}</Text>
                   <Text style={styles.position}>{item.user.position}</Text>
                   <View style={{ flexDirection: 'row', paddingBottom: 10 }}>
-                    <RatingBar ratingScore={3.5} size={theme.ratingBarSize.md} />
-                    <Text style={styles.score}>3.5</Text>
+                    <RatingBar ratingScore={item.user.rating} size={theme.ratingBarSize.md} />
+                    <Text style={styles.score}>{item.user.rating}</Text>
                   </View>
                 </View>
                 <View>
