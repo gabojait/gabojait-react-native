@@ -12,14 +12,11 @@ export const linking = {
   },
 
   subscribe(listener: (url: string) => void) {
-    console.log('linking subscribe to ', listener);
     const linkingSubscription = Linking.addEventListener('url', (event: { url: string }) => {
-      console.log('Received deep link:', event.url);
       listener(event.url);
     });
     return () => {
       linkingSubscription.remove();
-      console.log('linkingSubscription removed!!!');
     };
   },
   schemeLinkConfig,
