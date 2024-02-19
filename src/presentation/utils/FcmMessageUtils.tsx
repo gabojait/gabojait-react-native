@@ -108,7 +108,7 @@ export function displayForegroundNotification(
   });
 }
 
-function openDeepLink(url: string | undefined) {
+export function openDeepLink(url: string | undefined) {
   if (url) {
     Linking.openURL(url);
   }
