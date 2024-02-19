@@ -13,6 +13,7 @@ export const linking = {
 
   subscribe(listener: (url: string) => void) {
     const linkingSubscription = Linking.addEventListener('url', (event: { url: string }) => {
+      initializeCache(event.url);
       listener(event.url);
     });
     return () => {
