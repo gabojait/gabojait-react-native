@@ -16,12 +16,12 @@ export const schemeLinkConfig = {
         Profile: undefined,
         MoreReview: undefined,
         OfferSentUser: undefined,
-        ApplyStatus: '/MainNavigation/ApplyStatus', //'/my/offer/team/received', ok
+        ApplyStatus: '/MainNavigation/ApplyStatus',
         ProfilePreview: undefined,
-        TeamHistory: '/MainNavigation/TeamHistory', //'/my/team-history/review',
+        TeamHistory: '/MainNavigation/TeamHistory',
         TeamReview: '/MainNavigation/TeamReview',
         BookMark: undefined,
-        OfferFromTeam: '/MainNavigation/OfferFromTeam', //'/my/offer/user/received',
+        OfferFromTeam: '/MainNavigation/OfferFromTeam',
         TeamDetail: undefined,
         JoinTeam: undefined,
         OfferToTeamHistory: undefined,
@@ -45,11 +45,11 @@ export const schemeLinkConfig = {
       screens: {
         Home: {
           screens: {
-            GroupList: '/MainBottomTabNavigation/Home/GroupList', //'/home',
+            GroupList: '/MainBottomTabNavigation/Home/GroupList',
             TeamMate: undefined,
           },
         },
-        Team: '/MainBottomTabNavigation/Team', //'/team',
+        Team: '/MainBottomTabNavigation/Team',
         MyPage: {
           screens: {
             View: undefined,
