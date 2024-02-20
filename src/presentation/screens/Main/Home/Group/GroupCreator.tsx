@@ -20,9 +20,14 @@ import { t } from 'i18next';
 import { Position } from '@/data/model/type/Position';
 import {
   isEmptyInputExisted,
+  isLeaderPositionExist,
   isOpenChatUrlValidate,
   isRecruitCntValidate,
 } from '@/presentation/utils/TeamCreateOrEditUtils';
+import PositionDropdownContent from '@/presentation/model/PositionDropdownContent';
+import { KoreanPosition } from '@/presentation/model/type/Position';
+import { PositionDropdown } from '@/presentation/components/PositionDropdown';
+import PositionRecruiting from '@/presentation/model/PositionRecruitng';
 
 const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'>) => {
   const { theme } = useTheme();
@@ -37,6 +42,7 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
     backendMaxCnt: 0,
     managerMaxCnt: 0,
     designerMaxCnt: 0,
+    leaderPosition: Position.None,
   });
   const globalStyles = useGlobalStyles();
   const ref_input1 = useRef<TextInput | null>(null);
@@ -46,7 +52,7 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
   const { mutation: createTeamMutation } = useMutationDialog<TeamRequestDto, unknown>(
     teamKeys.createTeam,
     async (dto: TeamRequestDto) => createTeam(dto),
-    'BOTTOM',
+    'CENTER',
     {
       onSuccessClick() {
         navigation.goBack();
@@ -57,9 +63,44 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
       },
     },
   );
+  const [positionState, setPositionState] = useState<PositionDropdownContent[]>([
+    { key: Position.Backend, value: KoreanPosition.BACKEND, disabled: false },
+    { key: Position.Frontend, value: KoreanPosition.FRONTEND, disabled: false },
+    { key: Position.Designer, value: KoreanPosition.DESIGNER, disabled: false },
+    { key: Position.Manager, value: KoreanPosition.MANAGER, disabled: false },
+  ]);
 
-  function handleCreateTeam() {
-    createTeamMutation.mutate(teamCreateState);
+  async function handleCreateTeam() {
+    const result: TeamRequestDto = await getFinalResultWithLeaderPositionCount(
+      teamCreateState.leaderPosition,
+    );
+    console.log(
+      `data:leaderPosition:${result.leaderPosition}, backendMaxCnt:${result.backendMaxCnt}, frontendMaxCnt:${result.frontendMaxCnt}, designerMaxCnt:${result.designerMaxCnt}, managerMaxCnt:${result.managerMaxCnt}`,
+    );
+    createTeamMutation.mutate(result);
+  }
+
+  async function getFinalResultWithLeaderPositionCount(leaderPosition: Position) {
+    const positionToKey: Record<Position, string | null> = {
+      [Position.Frontend]: 'frontendMaxCnt',
+      [Position.Backend]: 'backendMaxCnt',
+      [Position.Designer]: 'designerMaxCnt',
+      [Position.Manager]: 'managerMaxCnt',
+      [Position.None]: '',
+    };
+    const key = positionToKey[leaderPosition];
+    let count: number;
+    let rest: Partial<TeamRequestDto>;
+
+    setTeamCreateState(prevState => {
+      count = prevState[key] || 0;
+      rest = { ...prevState };
+    });
+
+    return {
+      ...rest,
+      [key]: count + 1,
+    };
   }
 
   function updateExpectation(text: string) {
@@ -78,6 +119,10 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
     setTeamCreateState(prevState => ({ ...prevState, projectName: text }));
   }
 
+  function updateLeaderPosition(position: Position) {
+    setTeamCreateState(prevState => ({ ...prevState, leaderPosition: position }));
+  }
+
   function updateTeamMemberRecruitCnts(data: PositionCountDto[]) {
     const frontendCnt = data.find(it => it.position === Position.Frontend)?.totalRecruitCnt || 0;
     const backendCnt = data.find(it => it.position === Position.Backend)?.totalRecruitCnt || 0;
@@ -93,6 +138,12 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
   }
 
   function isAllInputValidate() {
+    try {
+      isLeaderPositionExist(teamCreateState);
+    } catch (error) {
+      EmptyInputWarningModal();
+      return false;
+    }
     try {
       isRecruitCntValidate(teamCreateState);
     } catch (error) {
@@ -239,12 +290,27 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
         </View>
 
         <View style={styles.item}>
+          <Text style={styles.text}>나의 포지션 설정</Text>
+          <CardWrapper style={[styles.dropdownBox, { paddingTop: 20 }]}>
+            <PositionDropdown
+              onCloseClick={() => {}}
+              onSelectPosition={(data: PositionCountDto) => {}}
+              onDropdownSelected={(value: Position) => updateLeaderPosition(value)}
+              dropdownData={positionState}
+              defaultData={
+                { position: Position.None, recruitCnt: 0, currentCnt: 0 } as PositionRecruiting
+              }
+              isSingleSelection={true}
+            />
+          </CardWrapper>
+        </View>
+
+        <View style={styles.item}>
           <Text style={styles.text}>원하는 팀원</Text>
           <CardWrapper style={[styles.dropdownBox, { paddingVertical: 20 }]}>
             <PositionDropdownMaker
               onTeamMemberRecruitChanged={(data: PositionCountDto[]) => {
                 updateTeamMemberRecruitCnts(data);
-                console.log(data);
               }}
             />
           </CardWrapper>

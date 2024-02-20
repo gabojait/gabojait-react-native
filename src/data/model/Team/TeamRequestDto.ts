@@ -1,3 +1,5 @@
+import { Position } from '@/data/model/type/Position';
+
 export default interface TeamRequestDto {
   expectation: string;
   openChatUrl: string;
@@ -7,4 +9,5 @@ export default interface TeamRequestDto {
   backendMaxCnt: number;
   managerMaxCnt: number;
   designerMaxCnt: number;
+  leaderPosition: Position;
 }

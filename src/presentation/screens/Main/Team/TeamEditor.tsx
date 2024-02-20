@@ -112,6 +112,7 @@ export const TeamEditorComponent = ({ navigation, route }: MainStackScreenProps<
     designerMaxCnt: 0,
     frontendMaxCnt: 0,
     backendMaxCnt: 0,
+    leaderPosition: Position.None,
   });
 
   const [initializedTeamMember, setinitializedTeamMember] = useState<PositionRecruiting[]>([]);

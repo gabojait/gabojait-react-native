@@ -1,5 +1,6 @@
 import TeamRequestDto from '@/data/model/Team/TeamRequestDto';
 import { t } from 'i18next';
+import { Position } from '@/data/model/type/Position';
 
 export function isRecruitCntValidate(teamData: TeamRequestDto) {
   const totalTeamMemberCnt =
@@ -42,4 +43,11 @@ export function isOpenChatUrlValidate(teamData: TeamRequestDto) {
   } else {
     throw Error(t('warn_openchatlink_invalid_format'));
   }
+}
+
+export function isLeaderPositionExist(teamData: TeamRequestDto) {
+  if (teamData.leaderPosition == Position.None) {
+    return false;
+  }
+  return true;
 }
