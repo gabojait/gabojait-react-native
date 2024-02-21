@@ -128,7 +128,7 @@ const useGlobalStyles = makeStyles(theme => ({
   tabBarLabel: {
     fontSize: 13,
     fontWeight: theme.fontWeight.semibold,
-    paddingTop: 10,
+    paddingTop: 5,
   },
   positionText: {
     fontSize: 20,

@@ -20,7 +20,7 @@ const MainBottomTabNavigation = () => {
       backBehavior="none"
       screenOptions={{
         tabBarActiveTintColor: theme.colors.primary,
-        tabBarInactiveTintColor: theme.colors.black,
+        tabBarInactiveTintColor: '#9A9A9A',
         tabBarLabelStyle: globalStyles.tabBarLabel,
         tabBarStyle: globalStyles.tabBar,
       }}
@@ -31,6 +31,7 @@ const MainBottomTabNavigation = () => {
           component={Board}
           options={{
             tabBarIcon: ({ size, color }) => <CustomIcon name="home" size={size} color={color} />,
+            tabBarLabel: '홈',
           }}
         />
         <MainBottomTab.Screen
@@ -38,6 +39,7 @@ const MainBottomTabNavigation = () => {
           component={TeamPage}
           options={{
             tabBarIcon: ({ size, color }) => <CustomIcon name="people" size={size} color={color} />,
+            tabBarLabel: '팀페이지',
           }}
         />
         <MainBottomTab.Screen
@@ -45,6 +47,7 @@ const MainBottomTabNavigation = () => {
           component={MyPage}
           options={{
             tabBarIcon: ({ size, color }) => <CustomIcon name="person" size={size} color={color} />,
+            tabBarLabel: '마이페이지',
           }}
         />
       </MainBottomTab.Group>
