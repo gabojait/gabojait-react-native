@@ -75,7 +75,9 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
       teamCreateState.leaderPosition,
     );
     console.log(
-      `data:leaderPosition:${result.leaderPosition}, backendMaxCnt:${result.backendMaxCnt}, frontendMaxCnt:${result.frontendMaxCnt}, designerMaxCnt:${result.designerMaxCnt}, managerMaxCnt:${result.managerMaxCnt}`,
+      `GroupDetail: {leaderPosition:${result.leaderPosition},managerMaxCnt:${result.managerMaxCnt},
+      frontendMaxCnt:${result.frontendMaxCnt},backendMaxCnt:${result.backendMaxCnt},designerMaxCnt:${result.designerMaxCnt},projectName:${result.projectName},
+      openChatUrl:${result.openChatUrl}, projectDescription:${result.projectDescription},expectation: ${result.expectation}`,
     );
     createTeamMutation.mutate(result);
   }
@@ -95,9 +97,12 @@ const GroupCreator = ({ navigation, route }: MainStackScreenProps<'GroupCreator'
     setTeamCreateState(prevState => {
       count = prevState[key] || 0;
       rest = { ...prevState };
+      delete rest[key];
+      return prevState;
     });
 
     return {
+      leaderPosition: leaderPosition,
       ...rest,
       [key]: count + 1,
     };
