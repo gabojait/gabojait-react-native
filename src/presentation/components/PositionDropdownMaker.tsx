@@ -44,6 +44,8 @@ export const PositionDropdownMaker = ({
     { key: Position.Designer, value: KoreanPosition.DESIGNER, disabled: false },
     { key: Position.Manager, value: KoreanPosition.MANAGER, disabled: false },
   ]);
+  const [plusIconColor, setPlusIconColor] = useState(theme.colors.grey1);
+  const [availablePositionDropdown, setAvailablePositionDropdown] = useState(0);
 
   useEffect(() => {
     onTeamMemberRecruitChanged(teamMemberRecruit);
@@ -51,7 +53,33 @@ export const PositionDropdownMaker = ({
 
   useEffect(() => {
     updatePositionState();
+    handlePlusIconColor();
   }, [state]);
+
+  function handleAddAction() {
+    if (availablePositionDropdown < positionState.length) {
+      addView();
+      increaseAvailablePositionDropdown();
+    }
+  }
+
+  function handleHideAction(removeIndex: number) {
+    if (availablePositionDropdown <= positionState.length) {
+      hideView(removeIndex);
+      decreaseAvailablePositionDropdown();
+    }
+  }
+
+  function handlePlusIconColor() {
+    console.log(
+      `availablePositionDropdown:${availablePositionDropdown},positionState.length:${positionState.length}`,
+    );
+    if (availablePositionDropdown == positionState.length) {
+      setPlusIconColor('white');
+    } else {
+      setPlusIconColor(theme.colors.grey1);
+    }
+  }
 
   function updatePositionState() {
     const selectedPositions = teamMemberRecruit.map(item => {
@@ -163,7 +191,7 @@ export const PositionDropdownMaker = ({
       >
         <PositionDropdown
           onCloseClick={() => {
-            hideView(idx);
+            handleHideAction(idx);
           }}
           onSelectPosition={(data: PositionCountDto) => {
             updatePositionDropdownArray(data, idx);
@@ -178,11 +206,23 @@ export const PositionDropdownMaker = ({
     );
   });
 
+  function decreaseAvailablePositionDropdown() {
+    setAvailablePositionDropdown(prevState => {
+      return prevState - 1;
+    });
+  }
+
+  function increaseAvailablePositionDropdown() {
+    setAvailablePositionDropdown(prevState => {
+      return prevState + 1;
+    });
+  }
+
   return (
     <View style={{ alignItems: 'center', width: '100%', justifyContent: 'center' }}>
       <ScrollView style={{ backgroundColor: 'white' }}>{newArray}</ScrollView>
-      <TouchableOpacity onPress={() => addView()}>
-        <CustomIcon name="plus-square" size={25} color={theme.colors.grey1} />
+      <TouchableOpacity onPress={() => handleAddAction()}>
+        <CustomIcon name="plus-square" size={25} color={plusIconColor} />
       </TouchableOpacity>
     </View>
   );
