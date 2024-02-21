@@ -33,6 +33,10 @@ import {
   isOpenChatUrlValidate,
   isRecruitCntValidate,
 } from '@/presentation/utils/TeamCreateOrEditUtils';
+import { PositionDropdown } from '@/presentation/components/PositionDropdown';
+import PositionDropdownContent from '@/presentation/model/PositionDropdownContent';
+import { KoreanPosition } from '@/presentation/model/type/Position';
+import BriefProfileDto from '@/data/model/Profile/BriefProfileDto';
 
 export const TeamEditor = ({ navigation, route }: MainStackScreenProps<'TeamEditor'>) => {
   const { reset } = useQueryErrorResetBoundary();
@@ -116,6 +120,12 @@ export const TeamEditorComponent = ({ navigation, route }: MainStackScreenProps<
   });
 
   const [initializedTeamMember, setinitializedTeamMember] = useState<PositionRecruiting[]>([]);
+  const [positionState, setPositionState] = useState<PositionDropdownContent[]>([
+    { key: Position.Backend, value: KoreanPosition.BACKEND, disabled: false },
+    { key: Position.Frontend, value: KoreanPosition.FRONTEND, disabled: false },
+    { key: Position.Designer, value: KoreanPosition.DESIGNER, disabled: false },
+    { key: Position.Manager, value: KoreanPosition.MANAGER, disabled: false },
+  ]);
 
   useEffect(() => {
     setTeamUpdateState({
@@ -131,6 +141,11 @@ export const TeamEditorComponent = ({ navigation, route }: MainStackScreenProps<
     setinitializedTeamMember(mapTeamDtoToPositionRecruiting(teamData));
     console.log(`TeamEditor------------------initializedTeamMember:${initializedTeamMember}`);
   }, [teamData]);
+
+  function findLeaderPosition(teamMembers: BriefProfileDto[]) {
+    const leader = teamMembers.find(item => item.isLeader == true);
+    return leader?.position;
+  }
 
   function updateExpectation(text: string) {
     setTeamUpdateState(prevState => ({ ...prevState, expectation: text }));
@@ -309,6 +324,22 @@ export const TeamEditorComponent = ({ navigation, route }: MainStackScreenProps<
               />
             </CardWrapper>
           </TouchableOpacity>
+        </View>
+
+        <View style={styles.item}>
+          <Text style={styles.text}>나의 포지션 설정</Text>
+          <CardWrapper style={[styles.dropdownBox, { paddingTop: 20 }]}>
+            <PositionDropdown
+              onCloseClick={() => {}}
+              onSelectPosition={(data: PositionCountDto) => {}}
+              onDropdownSelected={(value: Position) => {}}
+              dropdownData={positionState}
+              defaultData={
+                { position: Position.None, recruitCnt: 0, currentCnt: 0 } as PositionRecruiting
+              }
+              isSingleSelection={true}
+            />
+          </CardWrapper>
         </View>
 
         <View style={styles.item}>
