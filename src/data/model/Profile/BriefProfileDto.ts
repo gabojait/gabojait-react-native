@@ -1,7 +1,7 @@
 import { Position } from '../type/Position';
 
 export default interface BriefProfileDto {
-  isLeader: string;
+  isLeader: boolean;
   username: string;
   position: Position;
   userId: string;
