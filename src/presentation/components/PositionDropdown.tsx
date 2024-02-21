@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
     flex: 1,
     ...Platform.select({
       ios: {
-        paddingTop: 9,
+        paddingTop: 4,
       },
       android: {
         textAlignVertical: 'center',
